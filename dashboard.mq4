@@ -1,4 +1,5 @@
-// Dashboard template v.1.0
+// ProfitRobots Dashboard template v.1.0
+// You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
 #property strict

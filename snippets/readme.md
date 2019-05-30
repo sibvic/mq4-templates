@@ -9,6 +9,7 @@ Usage:
     input string start_time = "000000"; // Start time in hhmmss format
     input string stop_time = "000000"; // Stop time in hhmmss format
     
+    TradingTime* tradingTime;
     void OnInit()
     {
         tradingTime = new TradingTime();
@@ -20,6 +21,12 @@ Usage:
             tradingTime = NULL;
             return INIT_FAILED;
         }
+    }
+
+    void OnDeinit()
+    {
+        delete tradingTime;
+        tradingTime = NULL;
     }
 
     void OnCalculate()

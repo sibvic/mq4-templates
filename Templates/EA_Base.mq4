@@ -307,20 +307,18 @@ TradeController *CreateController(const string symbol, const ENUM_TIMEFRAMES tim
       case DirectLogic:
          controller.SetLongCondition(longCondition);
          controller.SetShortCondition(shortCondition);
-         controller.AddLongMoneyManagement(longMoneyManagement);
-         controller.AddShortMoneyManagement(shortMoneyManagement);
          controller.SetExitLongCondition(exitLongCondition);
          controller.SetExitShortCondition(exitShortCondition);
          break;
       case ReversalLogic:
          controller.SetLongCondition(shortCondition);
          controller.SetShortCondition(longCondition);
-         controller.AddLongMoneyManagement(shortMoneyManagement);
-         controller.AddShortMoneyManagement(longMoneyManagement);
          controller.SetExitLongCondition(exitShortCondition);
          controller.SetExitShortCondition(exitLongCondition);
          break;
    }
+   controller.AddLongMoneyManagement(longMoneyManagement);
+   controller.AddShortMoneyManagement(shortMoneyManagement);
 
    controller.SetExitAllCondition(new DisabledCondition());
 #ifdef NET_STOP_LOSS_FEATURE

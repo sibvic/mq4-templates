@@ -29,11 +29,36 @@ Usage:
         tradingTime = NULL;
     }
 
-    void OnCalculate()
+    void OnTick()
     {
         if (!tradingTime.IsTradingTime(Time[period]))
         {
             Print("Outside of trading time");
             return 0;
         }
+    }
+
+## AccountStatistics
+
+Shows account statistics on the chart: date, balance, equity, profit, leverage, spread, range and price.
+
+Usage:
+
+    #include <InstrumentInfo.mq4>
+    #include <OrdersIterator.mq4>
+    AccountStatistics* stats;
+    void OnInit()
+    {
+        stats = new AccountStatistics("EA Name");
+    }
+
+    void OnDeinit()
+    {
+        delete stats;
+        stats = NULL;
+    }
+
+    void OnTick()
+    {
+        stats.Update();
     }

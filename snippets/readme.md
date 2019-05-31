@@ -62,3 +62,23 @@ Usage:
     {
         stats.Update();
     }
+
+## MarketOrderBuilder
+
+Builds and executes market order
+
+Usage:
+
+    MarketOrderBuilder *orderBuilder = new MarketOrderBuilder();
+    string error;
+    int order = orderBuilder
+        .SetSide(BuySide)
+        .SetInstrument("EURUSD")
+        .SetAmount(0.1)
+        .SetSlippage(3)
+        .SetMagicNumber(42)
+        .SetStopLoss(1.15)
+        .SetTakeProfit(1.20)
+        .SetComment("Test")
+        .Execute(error);
+    delete orderBuilder;

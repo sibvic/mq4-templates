@@ -217,9 +217,9 @@ enum OrderSide
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
 #include <MandatoryClosing.mq4>
-#include <TradeController.mq4>
+#include <TradingController.mq4>
 
-TradeController *controllers[];
+TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
 AccountStatistics *stats;
 #endif
@@ -240,7 +240,7 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    return (ICondition *)new ShortCondition(symbol, timeframe);
 }
 
-TradeController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
+TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
 {
    TradingTime *tradingTime = new TradingTime();
    if (!tradingTime.Init(start_time, stop_time, error))
@@ -262,7 +262,7 @@ TradeController *CreateController(const string symbol, const ENUM_TIMEFRAMES tim
       return NULL;
    }
    Signaler *signaler = new Signaler(symbol, timeframe);
-   TradeController *controller = new TradeController(tradeCalculator, timeframe, signaler);
+   TradingController *controller = new TradingController(tradeCalculator, timeframe, signaler);
    if (breakeven_type == StopLimitDoNotUse)
       controller.SetBreakeven(new DisabledBreakevenLogic());
    else
@@ -387,7 +387,7 @@ int OnInit()
 #endif
 
    string error;
-   TradeController *controller = CreateController(_Symbol, (ENUM_TIMEFRAMES)_Period, error);
+   TradingController *controller = CreateController(_Symbol, (ENUM_TIMEFRAMES)_Period, error);
    if (controller == NULL)
    {
       Print(error);

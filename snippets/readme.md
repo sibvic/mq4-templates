@@ -162,3 +162,7 @@ Provides information about an instrument/symbol/ticker.
 ## Linq
 
 Linq-like interface for processing data.
+
+## MandatoryClosing
+
+Closes all trades and deletes all orders on time.

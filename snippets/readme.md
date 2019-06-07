@@ -154,3 +154,7 @@ Custom exit logic.
 ## EntryStrategy
 
 Entry strategy.
+
+## InstrumentInfo
+
+Provides information about an instrument/symbol/ticker.

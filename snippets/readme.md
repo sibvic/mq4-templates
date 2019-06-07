@@ -158,3 +158,7 @@ Entry strategy.
 ## InstrumentInfo
 
 Provides information about an instrument/symbol/ticker.
+
+## Linq
+
+Linq-like interface for processing data.

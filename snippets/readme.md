@@ -82,3 +82,39 @@ Usage:
         .SetComment("Test")
         .Execute(error);
     delete orderBuilder;
+
+## Breakeven
+
+Moves stop loss to the specified point when the selected level of profit will be reached.
+
+Usage:
+
+    input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
+    input double breakeven_value = 10; // Trigger for the breakeven
+    input double breakeven_level = 0; // Breakeven target
+    IBreakevenLogic* breakeven;
+
+    int OnInit()
+    {
+        if (breakeven_type == StopLimitDoNotUse)
+            breakeven = new DisabledBreakevenLogic();
+        else
+            breakeven = new BreakevenLogic(breakeven_type, breakeven_value, breakeven_level, NULL);
+    }
+
+    void OnDeinit()
+    {
+        delete breakeven;
+        breakeven = NULL;
+    }
+
+    void OnTick()
+    {
+        breakeven.DoLogic(0);
+
+        if (NeedOpenPosition())
+        {
+            int ticket = OpenPosition();
+            breakeven.CreateBreakeven(ticket, 0);
+        }
+    }

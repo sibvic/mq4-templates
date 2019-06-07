@@ -118,3 +118,15 @@ Usage:
             breakeven.CreateBreakeven(ticket, 0);
         }
     }
+
+## IndicatorStreams
+
+Set of indicator stream. Used to calculate indicator over another indicator.
+
+## Averages
+
+Set of averages.
+
+## Signaler
+
+Shows alerts.

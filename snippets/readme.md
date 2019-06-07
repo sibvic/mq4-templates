@@ -142,3 +142,7 @@ Builds bar stream and multi-color stream.
 ## CloseOnOpposite
 
 Close on oppisite logic.
+
+## Condition
+
+Condition classes.

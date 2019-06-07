@@ -146,3 +146,7 @@ Close on oppisite logic.
 ## Condition
 
 Condition classes.
+
+## CustomExitLogic
+
+Custom exit logic.

@@ -134,3 +134,7 @@ Shows alerts.
 ## Action
 
 Action interface
+
+## CandleStreams and ColoredStream
+
+Builds bar stream and multi-color stream.

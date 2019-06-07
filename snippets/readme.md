@@ -150,3 +150,7 @@ Condition classes.
 ## CustomExitLogic
 
 Custom exit logic.
+
+## EntryStrategy
+
+Entry strategy.

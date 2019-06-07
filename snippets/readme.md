@@ -130,3 +130,7 @@ Set of averages.
 ## Signaler
 
 Shows alerts.
+
+## Action
+
+Action interface

@@ -200,4 +200,8 @@ Usage:
 
 ## Stream
 
-Base streams
+Base streams.
+
+## OrdersIterator
+
+Iterates through orders.

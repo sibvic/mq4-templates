@@ -166,3 +166,38 @@ Linq-like interface for processing data.
 ## MandatoryClosing
 
 Closes all trades and deletes all orders on time.
+
+## AlertSignal
+
+Draws an arrow on the chart and sends alert.
+
+Usage:
+
+    AlertSignal* signal;
+    void OnInit()
+    {
+        PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+        signal = new AlertSignal(new AlertCondition(), highStream);
+        highStream.Release();
+        int id = 0;
+        id = signal.RegisterStreams(id, "Alert thrown", 217);
+    }
+
+    void OnDeinit()
+    {
+        delete signal;
+        signal = NULL;
+    }
+
+    void OnTick()
+    {
+        //...
+        for (int pos = limit; pos >= 0; --pos)
+        {
+            signal.Update();
+        }
+    }
+
+## Stream
+
+Base streams

@@ -1,4 +1,4 @@
-//Signaler v 1.6
+//Signaler v 1.7
 extern string   AlertsSection            = ""; // == Alerts ==
 extern bool     popup_alert              = true; // Popup message
 extern bool     notification_alert       = false; // Push notification
@@ -21,11 +21,6 @@ void AdvancedAlert(string key, string text, string instrument, string timeframe)
 int ShellExecuteW(int hwnd,string Operation,string File,string Parameters,string Directory,int ShowCmd);
 #import
 
-#define ENTER_BUY_SIGNAL 1
-#define ENTER_SELL_SIGNAL -1
-#define EXIT_BUY_SIGNAL 2
-#define EXIT_SELL_SIGNAL -2
-
 class Signaler
 {
    string _symbol;
@@ -38,66 +33,17 @@ public:
       _timeframe = timeframe;
    }
 
-   void SendNotifications(const int direction)
+   string GetSymbol()
    {
-      if (direction == 0)
-         return;
-
-      datetime currentTime = iTime(_symbol, _timeframe, 0);
-      if (_lastDatetime == currentTime)
-         return;
-
-      _lastDatetime = currentTime;
-      string tf = GetTimeframe();
-      string alert_Subject;
-      string alert_Body;
-      switch (direction)
-      {
-         case ENTER_BUY_SIGNAL:
-            alert_Subject = "Buy signal on " + _symbol + "/" + tf;
-            alert_Body = "Buy signal on " + _symbol + "/" + tf;
-            break;
-         case ENTER_SELL_SIGNAL:
-            alert_Subject = "Sell signal on " + _symbol + "/" + tf;
-            alert_Body = "Sell signal on " + _symbol + "/" + tf;
-            break;
-         case EXIT_BUY_SIGNAL:
-            alert_Subject = "Exit buy signal on " + _symbol + "/" + tf;
-            alert_Body = "Exit buy signal on " + _symbol + "/" + tf;
-            break;
-         case EXIT_SELL_SIGNAL:
-            alert_Subject = "Exit sell signal on " + _symbol + "/" + tf;
-            alert_Body = "Exit sell signal on " + _symbol + "/" + tf;
-            break;
-      }
-      SendNotifications(alert_Subject, alert_Body, _symbol, tf);
+      return _symbol;
    }
 
-   void SendNotifications(const string subject, string message = NULL, string symbol = NULL, string timeframe = NULL)
+   ENUM_TIMEFRAMES GetTimeframe()
    {
-      if (message == NULL)
-         message = subject;
-      if (symbol == NULL)
-         symbol = _symbol;
-      if (timeframe == NULL)
-         timeframe = GetTimeframe();
-
-      if (start_program)
-         ShellExecuteW(0, "open", program_path, "", "", 1);
-      if (popup_alert)
-         Alert(message);
-      if (email_alert)
-         SendMail(subject, message);
-      if (play_sound)
-         PlaySound(sound_file);
-      if (notification_alert)
-         SendNotification(message);
-      if (advanced_alert && advanced_key != "" && !IsTesting())
-         AdvancedAlert(advanced_key, message, symbol, timeframe);
+      return _timeframe;
    }
 
-private:
-   string GetTimeframe()
+   string GetTimeframeStr()
    {
       switch (_timeframe)
       {
@@ -112,6 +58,29 @@ private:
          case PERIOD_W1: return "W1";
       }
       return "M1";
+   }
+
+   void SendNotifications(const string subject, string message = NULL, string symbol = NULL, string timeframe = NULL)
+   {
+      if (message == NULL)
+         message = subject;
+      if (symbol == NULL)
+         symbol = _symbol;
+      if (timeframe == NULL)
+         timeframe = GetTimeframeStr();
+
+      if (start_program)
+         ShellExecuteW(0, "open", program_path, "", "", 1);
+      if (popup_alert)
+         Alert(message);
+      if (email_alert)
+         SendMail(subject, message);
+      if (play_sound)
+         PlaySound(sound_file);
+      if (notification_alert)
+         SendNotification(message);
+      if (advanced_alert && advanced_key != "" && !IsTesting())
+         AdvancedAlert(advanced_key, message, symbol, timeframe);
    }
 };
 

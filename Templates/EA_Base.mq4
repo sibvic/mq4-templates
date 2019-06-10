@@ -1,3 +1,6 @@
+// Base EA template
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 #property version   "1.0"
 #property description "Developed by Victor Tereschenko: sibvic@gmail.com"
 #property strict
@@ -262,6 +265,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       return NULL;
    }
    Signaler *signaler = new Signaler(symbol, timeframe);
+   signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
    TradingController *controller = new TradingController(tradeCalculator, timeframe, signaler);
    if (breakeven_type == StopLimitDoNotUse)
       controller.SetBreakeven(new DisabledBreakevenLogic());

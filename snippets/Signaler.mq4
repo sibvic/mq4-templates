@@ -1,4 +1,5 @@
 //Signaler v 1.7
+// More templates and snippets on https://github.com/sibvic/mq4-templates
 extern string   AlertsSection            = ""; // == Alerts ==
 extern bool     popup_alert              = true; // Popup message
 extern bool     notification_alert       = false; // Push notification
@@ -26,11 +27,17 @@ class Signaler
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
    datetime _lastDatetime;
+   string _prefix;
 public:
    Signaler(const string symbol, ENUM_TIMEFRAMES timeframe)
    {
       _symbol = symbol;
       _timeframe = timeframe;
+   }
+
+   void SetMessagePrefix(string prefix)
+   {
+      _prefix = prefix;
    }
 
    string GetSymbol()
@@ -64,6 +71,8 @@ public:
    {
       if (message == NULL)
          message = subject;
+      if (_prefix != "" && _prefix != NULL)
+         message = _prefix + message;
       if (symbol == NULL)
          symbol = _symbol;
       if (timeframe == NULL)

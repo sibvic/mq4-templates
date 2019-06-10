@@ -105,7 +105,7 @@ public:
             }
             break;
          case PriceVolume:
-            val = iVolume(_symbol, _timeframe, period);
+            val = (double)iVolume(_symbol, _timeframe, period);
             break;
       }
       val += _shift * _instrument.GetPipSize();

@@ -1,4 +1,6 @@
 // Custom exit logic v. 1.0
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 interface ICustomExitLogic
 {
 public:

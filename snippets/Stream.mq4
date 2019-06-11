@@ -1,4 +1,6 @@
 // Stream v.2.0
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 interface IStream
 {
 public:

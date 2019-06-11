@@ -205,3 +205,7 @@ Base streams.
 ## OrdersIterator
 
 Iterates through orders.
+
+## TradeCalculator
+
+Trade calculator.

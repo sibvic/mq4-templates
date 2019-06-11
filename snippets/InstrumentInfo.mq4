@@ -1,4 +1,6 @@
 // Instrument info v.1.4
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 class InstrumentInfo
 {
    string _symbol;

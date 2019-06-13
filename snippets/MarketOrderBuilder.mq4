@@ -91,6 +91,9 @@ public:
                   errorMessage = "Invalid volume: " + DoubleToStr(_amount);
                }
                return -1;
+            case ERR_OFF_QUOTES:
+               errorMessage = "No quotes";
+               return -1;
             case ERR_TRADE_NOT_ALLOWED:
                errorMessage = "Trading is not allowed";
                return -1;

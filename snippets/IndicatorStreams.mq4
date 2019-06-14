@@ -203,10 +203,11 @@ public:
    {
    }
 
-   int RegisterStream(int id, color clr, int width, ENUM_LINE_STYLE style)
+   int RegisterStream(int id, color clr, int width, ENUM_LINE_STYLE style, string name)
    {
       SetIndexBuffer(id, _stream);
       SetIndexStyle(id, DRAW_LINE, style, width, clr);
+      SetIndexLabel(id, name);
       return id + 1;
    }
 

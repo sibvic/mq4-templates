@@ -21,6 +21,7 @@ string GenerateIndicatorName(const string target)
 }
 
 #include "InstrumentInfo.mq4"
+#include "Streams/AStream.mq4"
 #include "stream.mq4"
 #include "condition.mq4"
 #include "signaler.mq4"
@@ -73,9 +74,9 @@ int init()
    PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
 
    int id = 0;
-   up = new AlertSignal(new UpAlertCondition(), highStream, mainSignaler);
+   up = new AlertSignal(new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), highStream, mainSignaler);
    id = up.RegisterStreams(id, "Up", 218, Red);
-   down = new AlertSignal(new DownAlertCondition(), lowStream, mainSignaler);
+   down = new AlertSignal(new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), lowStream, mainSignaler);
    id = down.RegisterStreams(id, "Down", 217, Green);
    lowStream.Release();
    highStream.Release();

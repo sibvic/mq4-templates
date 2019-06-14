@@ -4,6 +4,8 @@
 #property strict
 #property indicator_chart_window
 //#property indicator_separate_window
+#property indicator_buffers 1
+#property indicator_color1 Red
 
 string IndicatorName;
 string IndicatorObjPrefix;
@@ -24,6 +26,8 @@ int init()
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
+
+   IndicatorBuffers(1);
 
    return 0;
 }

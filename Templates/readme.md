@@ -6,7 +6,7 @@ Dashboard/scanner template.
 
 ## EA_Base
 
-EA template.
+EA template. Parameters of this EA descripbed [here](https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters).
 
 ## indicator_base
 

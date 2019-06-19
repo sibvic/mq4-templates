@@ -21,8 +21,9 @@ string GenerateIndicatorName(const string target)
 }
 
 #include "InstrumentInfo.mq4"
+#include "Streams/IStream.mq4"
 #include "Streams/AStream.mq4"
-#include "stream.mq4"
+#include "Streams/PriceStream.mq4"
 #include "condition.mq4"
 #include "signaler.mq4"
 #include "AlertSignal.mq4"
@@ -65,6 +66,11 @@ public:
 
 int init()
 {
+   if (!IsDllsAllowed() && advanced_alert)
+   {
+      Print("Error: Dll calls must be allowed!");
+      return INIT_FAILED;
+   }
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
@@ -87,8 +93,11 @@ int init()
 int deinit()
 {
    delete mainSignaler;
+   mainSignaler = NULL;
    delete up;
+   up = NULL;
    delete down;
+   down = NULL;
    ObjectsDeleteAll(ChartID(), IndicatorObjPrefix);
    return 0;
 }

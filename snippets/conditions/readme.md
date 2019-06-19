@@ -1,5 +1,13 @@
 # Conditions
 
+## ICondition
+
+Condition interface.
+
+## ABaseCondition
+
+Base condition implementation.
+
 ## RSI conditions
 
 ### RSIAboveLevelCondition

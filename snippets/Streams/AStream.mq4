@@ -1,3 +1,6 @@
+
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 class AStream : public IStream
 {
 protected:

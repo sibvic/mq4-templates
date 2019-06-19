@@ -8,6 +8,10 @@ Interface for streams.
 
 Interface for bar streams.
 
+## HABarStream
+
+Bar stream of Heikin Ashi
+
 ## AStream
 
 Abstract base for streams.

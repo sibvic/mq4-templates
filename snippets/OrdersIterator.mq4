@@ -1,4 +1,4 @@
-// Orders iterator v 1.8
+// Orders iterator v 1.9
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 enum CompareType
 {
@@ -96,6 +96,7 @@ public:
    double GetProfit() { return OrderProfit(); }
    double IsBuy() { return OrderType() == OP_BUY; }
    double IsSell() { return OrderType() == OP_SELL; }
+   int GetTicket() { return OrderTicket(); }
 
    int Count()
    {
@@ -141,6 +142,11 @@ public:
             return OrderTicket();
       }
       return -1;
+   }
+
+   void Reset()
+   {
+      _lastIndex = INT_MIN;
    }
 
 private:

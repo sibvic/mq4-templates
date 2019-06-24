@@ -131,10 +131,6 @@ Set of averages.
 
 Shows alerts.
 
-## Action
-
-Action interface
-
 ## CandleStreams and ColoredStream
 
 Builds bar stream and multi-color stream.
@@ -233,3 +229,23 @@ Moves stop loss and take profit.
 ### MoveSL
 
 Moves stop loss.
+
+## Order
+
+Order entity.
+
+## TrailingController
+
+Controller for trailing.
+
+## MoneyManagement
+
+Money management.
+
+## TradingController
+
+Trading controller.
+
+## TradingTimeConditions
+
+Enters into a position on trading time start and exits on trading time end.

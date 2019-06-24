@@ -37,3 +37,7 @@ PSAR below close.
 ### PSARAbovePriceCondition
 
 PSAR above close.
+
+## HitProfitCondition
+
+Check whether required proifit is reached.

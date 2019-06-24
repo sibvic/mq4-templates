@@ -1,4 +1,4 @@
-// Breakeven logic v. 1.11
+// Breakeven logic v. 2.0
 interface IBreakevenLogic
 {
 public:
@@ -116,22 +116,22 @@ private:
 
 class BreakevenLogic : public IBreakevenLogic
 {
-   BreakevenController *_breakeven[];
    StopLimitType _triggerType;
    double _trigger;
    double _target;
    TradeCalculator *_calculator;
    Signaler *_signaler;
-   IConditionFactory *_conditionFactory;
+   ActionOnConditionLogic* _actions;
 public:
    BreakevenLogic(const StopLimitType triggerType, const double trigger,
-      const double target, Signaler *signaler)
+      const double target, Signaler *signaler, ActionOnConditionLogic* actions)
    {
       Init();
       _signaler = signaler;
       _triggerType = triggerType;
       _trigger = trigger;
       _target = target;
+      _actions = actions;
    }
 
    BreakevenLogic()
@@ -142,27 +142,6 @@ public:
    ~BreakevenLogic()
    {
       delete _calculator;
-      delete _conditionFactory;
-      int count = ArraySize(_breakeven);
-      for (int i = 0; i < count; ++i)
-      {
-         delete _breakeven[i];
-      }
-   }
-
-   BreakevenLogic *SetConditionFactory(IConditionFactory *conditionFactory)
-   {
-      _conditionFactory = conditionFactory;
-      return &this;
-   }
-
-   void DoLogic(const int period)
-   {
-      int i_count = ArraySize(_breakeven);
-      for (int i = 0; i < i_count; ++i)
-      {
-         _breakeven[i].DoLogic(period);
-      }
    }
 
    void CreateBreakeven(const int order, const int period, const StopLimitType triggerType, 
@@ -186,41 +165,36 @@ public:
       double basePrice = OrderOpenPrice();
       double targetValue = _calculator.CalculateTakeProfit(isBuy, target, StopLimitPips, OrderLots(), basePrice);
       double triggerValue = _calculator.CalculateTakeProfit(isBuy, trigger, triggerType, OrderLots(), basePrice);
-      ICondition *condition = _conditionFactory == NULL ? NULL : _conditionFactory.CreateCondition(order);
-      CreateBreakeven(order, triggerValue, targetValue, condition, "");
+      CreateBreakeven(order, triggerValue, targetValue, "");
    }
 
-   void CreateBreakeven(const int order, const int period)
+   void CreateBreakeven(const int orderId, const int period)
    {
-      CreateBreakeven(order, period, _triggerType, _trigger, _target);
+      CreateBreakeven(orderId, period, _triggerType, _trigger, _target);
    }
 private:
    void Init()
    {
       _calculator = NULL;
-      _conditionFactory = NULL;
       _signaler = NULL;
       _triggerType = StopLimitDoNotUse;
       _trigger = 0;
       _target = 0;
    }
 
-   void CreateBreakeven(const int ticketId, const double trigger, const double target, ICondition *condition, const string name)
+   void CreateBreakeven(const int ticketId, const double trigger, const double target, const string name)
    {
       if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES))
          return;
       IOrder *order = new OrderByMagicNumber(OrderMagicNumber());
-      int i_count = ArraySize(_breakeven);
-      for (int i = 0; i < i_count; ++i)
+      HitProfitCondition* condition = new HitProfitCondition();
+      condition.Set(order, trigger);
+      IAction* action = new MoveToBreakevenAction(trigger, target, name, order, _signaler);
+      if (!_actions.AddActionOnCondition(action, condition))
       {
-         if (_breakeven[i].SetOrder(order, trigger, target, condition, name))
-            return;
+         delete action;
+         delete condition;
       }
-
-      ArrayResize(_breakeven, i_count + 1);
-      _breakeven[i_count] = new BreakevenController(_signaler);
-      if (!_breakeven[i_count].SetOrder(order, trigger, target, condition, name))
-         delete order;
    }
 };
 

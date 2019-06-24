@@ -206,6 +206,30 @@ Base streams.
 
 Iterates through orders.
 
+### GetTicket
+
+Get ticket id of the current order.
+
+### Reset
+
+Reset indicator, so it could be iterated again using Next().
+
 ## TradeCalculator
 
 Trade calculator.
+
+### GetBreakevenPrice
+
+Get breakeven price for the trades.
+
+## TradingCommands
+
+Common trading commands.
+
+### MoveSLTP
+
+Moves stop loss and take profit.
+
+### MoveSL
+
+Moves stop loss.

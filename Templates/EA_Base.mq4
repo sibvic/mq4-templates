@@ -28,6 +28,8 @@ string EA_NAME = "[EA NAME]";
 
 #define POSITION_CAP_FEATURE extern
 
+#define CUSTOM_EXIT_FEATURE
+
 enum TradingMode
 {
    TradingModeLive, // Live
@@ -155,7 +157,9 @@ bool ecn_broker = false;
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
 #include <condition.mq4>
+#ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
+#endif
 #include <Stream.mq4>
 #ifndef USE_MARKET_ORDERS
 class LongEntryStream : public AStream
@@ -266,14 +270,16 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    }
    Signaler *signaler = new Signaler(symbol, timeframe);
    signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
+   ActionOnConditionLogic* actions = new ActionOnConditionLogic();
    TradingController *controller = new TradingController(tradeCalculator, timeframe, signaler);
+   controller.SetActions(actions);
    if (breakeven_type == StopLimitDoNotUse)
       controller.SetBreakeven(new DisabledBreakevenLogic());
    else
       #ifdef USE_NET_BREAKEVEN
          controller.SetBreakeven(new NetBreakevenLogic(tradeCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
       #else
-         controller.SetBreakeven(new BreakevenLogic(breakeven_type, breakeven_value, breakeven_level, signaler));
+         controller.SetBreakeven(new BreakevenLogic(breakeven_type, breakeven_value, breakeven_level, signaler, actions));
       #endif
 
    if (trailing_type == TrailingDontUse)
@@ -363,7 +369,9 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
    controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice));
 #endif
+#ifdef CUSTOM_EXIT_FEATURE
    controller.SetCustomExit(new CustomExitLogic());
+#endif
    if (mandatory_closing)
       controller.SetMandatoryClosing(new DoMandatoryClosing(magic_number, slippage_points));
    else

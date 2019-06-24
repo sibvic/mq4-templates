@@ -5,6 +5,7 @@ class TradingController
    datetime _lastbartime;
    double _lastLot;
    IBreakevenLogic *_breakeven;
+   ActionOnConditionLogic* actions;
    ITrailingLogic *_trailing;
    Signaler *_signaler;
    datetime _lastBarDate;
@@ -38,9 +39,11 @@ class TradingController
    ICustomExitLogic *_customExit;
 #endif
    string _algorithmId;
+   ActionOnConditionLogic* _actions;
 public:
    TradingController(TradeCalculator *calculator, ENUM_TIMEFRAMES timeframe, Signaler *signaler, const string algorithmId = "")
    {
+      _actions = NULL;
       _algorithmId = algorithmId;
 #ifdef CUSTOM_EXIT_FEATURE
       _customExit = NULL;
@@ -75,6 +78,7 @@ public:
 
    ~TradingController()
    {
+      delete _actions;
 #ifdef CUSTOM_EXIT_FEATURE
       delete _customExit;
 #endif
@@ -118,6 +122,7 @@ public:
 #ifdef CUSTOM_EXIT_FEATURE
    void SetCustomExit(ICustomExitLogic *customExit) { _customExit = customExit; }
 #endif
+   void SetActions(ActionOnConditionLogic* actions) { _actions = actions; }
    void SetTradingTime(TradingTime *tradingTime) { _tradingTime = tradingTime; }
    void SetBreakeven(IBreakevenLogic *breakeven) { _breakeven = breakeven; }
    void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }
@@ -160,7 +165,7 @@ public:
    {
       int tradePeriod = trade_live == TradingModeLive ? 0 : 1;
       datetime current_time = iTime(_calculator.GetSymbol(), _timeframe, tradePeriod);
-      _breakeven.DoLogic(tradePeriod);
+      _actions.DoLogic(tradePeriod);
       _trailing.DoLogic();
 #ifdef NET_STOP_LOSS_FEATURE
       _netStopLoss.DoLogic();

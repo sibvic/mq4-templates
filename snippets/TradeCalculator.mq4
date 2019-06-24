@@ -1,4 +1,4 @@
-// Trade calculator v.1.15
+// Trade calculator v.1.16
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 class TradeCalculator
@@ -44,21 +44,17 @@ public:
       return false;
    }
 
-   double GetBreakevenPrice(const int side, const int magicNumber, double &totalAmount)
+   double GetBreakevenPrice(OrdersIterator &it1, const OrderSide side, double &totalAmount)
    {
       totalAmount = 0.0;
       double lotStep = SymbolInfoDouble(_symbol.GetSymbol(), SYMBOL_VOLUME_STEP);
-      double price = side == OP_BUY ? GetBid() : GetAsk();
+      double price = side == BuySide ? _symbol.GetBid() : _symbol.GetAsk();
       double totalPL = 0;
-      OrdersIterator it1();
-      it1.WhenMagicNumber(magicNumber);
-      it1.WhenSymbol(_symbol.GetSymbol());
-      it1.WhenOrderType(side);
       while (it1.Next())
       {
          double orderLots = OrderLots();
          totalAmount += orderLots / lotStep;
-         if (side == OP_BUY)
+         if (side == BuySide)
             totalPL += (price - OrderOpenPrice()) * (OrderLots() / lotStep);
          else
             totalPL += (OrderOpenPrice() - price) * (OrderLots() / lotStep);
@@ -66,7 +62,17 @@ public:
       if (totalAmount == 0.0)
          return 0.0;
       double shift = -(totalPL / totalAmount);
-      return side == OP_BUY ? price + shift : price - shift;
+      return side == BuySide ? price + shift : price - shift;
+   }
+
+   double GetBreakevenPrice(const int side, const int magicNumber, double &totalAmount)
+   {
+      totalAmount = 0.0;
+      OrdersIterator it1();
+      it1.WhenMagicNumber(magicNumber);
+      it1.WhenSymbol(_symbol.GetSymbol());
+      it1.WhenOrderType(side);
+      return GetBreakevenPrice(it1, side == OP_BUY ? BuySide : SellSide, totalAmount);
    }
    
    double CalculateTakeProfit(const bool isBuy, const double takeProfit, const StopLimitType takeProfitType, const double amount, double basePrice)

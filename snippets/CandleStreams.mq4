@@ -23,10 +23,10 @@ public:
       SetIndexStyle(id + 1, DRAW_HISTOGRAM, STYLE_SOLID, 5, clr);
       SetIndexBuffer(id + 1, CloseStream);
       SetIndexLabel(id + 1, "Close");
-      SetIndexStyle(id + 2, DRAW_HISTOGRAM, STYLE_SOLID, 5, clr);
+      SetIndexStyle(id + 2, DRAW_HISTOGRAM, STYLE_SOLID, 1, clr);
       SetIndexBuffer(id + 2, HighStream);
       SetIndexLabel(id + 2, "High");
-      SetIndexStyle(id + 3, DRAW_HISTOGRAM, STYLE_SOLID, 5, clr);
+      SetIndexStyle(id + 3, DRAW_HISTOGRAM, STYLE_SOLID, 1, clr);
       SetIndexBuffer(id + 3, LowStream);
       SetIndexLabel(id + 3, "Low");
       return id + 4;

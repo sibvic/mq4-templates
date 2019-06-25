@@ -14,4 +14,8 @@ Template of the indicator/oscillator base.
 
 ## arrows_base
 
-template of the indicator/oscillator with arrows to draw.
+Template of the indicator/oscillator with arrows to draw.
+
+## candles_overlay
+
+Two candle streams. Used to color the candles.

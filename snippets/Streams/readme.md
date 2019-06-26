@@ -27,3 +27,19 @@ Stream from the buffer filled externally.
 ## CustomTimeframeBarStream
 
 Custom timeframe bar stream.
+
+## BarStream
+
+Bar stream.
+
+## D1CustomHourBarStream
+
+D1 bar source with a custom start hour.
+
+## ACustomBarStream
+
+Abstract class for a custom bar sources.
+
+## W1CustomHourAndDayBarStream
+
+W1 bar source with a custom start hour and week day.

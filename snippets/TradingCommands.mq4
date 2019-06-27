@@ -1,4 +1,4 @@
-// Trading commands v.2.6
+// Trading commands v.2.7
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 class TradingCommands
@@ -114,6 +114,9 @@ public:
             break;
          case ERR_INVALID_TRADE_VOLUME:
             error = "Invalid trade volume: " + DoubleToStr(amount);
+            break;
+         case ERR_TRADE_PROHIBITED_BY_FIFO:
+            error = "Prohibited by FIFO";
             break;
          default:
             error = "Last error: " + IntegerToString(lastError);

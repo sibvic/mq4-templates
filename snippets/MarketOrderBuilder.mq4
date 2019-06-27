@@ -1,4 +1,6 @@
-// Market order builder v 1.4
+// Market order builder v 1.5
+// More templates and snippets on https://github.com/sibvic/mq4-templates
+
 class MarketOrderBuilder
 {
    OrderSide _orderSide;
@@ -96,6 +98,9 @@ public:
                return -1;
             case ERR_TRADE_NOT_ALLOWED:
                errorMessage = "Trading is not allowed";
+               return -1;
+            case ERR_TRADE_HEDGE_PROHIBITED:
+               errorMessage = "Trade hedge prohibited";
                return -1;
             case ERR_INVALID_STOPS:
                {

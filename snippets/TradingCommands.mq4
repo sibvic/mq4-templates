@@ -1,4 +1,4 @@
-// Trading commands v.2.7
+// Trading commands v.2.8
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 class TradingCommands
@@ -127,12 +127,22 @@ public:
 
    static int CloseTrades(OrdersIterator &it, const int slippage)
    {
+      int failed = 0;
+      return CloseTrades(it, slippage, failed);
+   }
+
+   static int CloseTrades(OrdersIterator &it, const int slippage, int& failed)
+   {
       int closedPositions = 0;
+      failed = 0;
       while (it.Next())
       {
          string error;
          if (!CloseCurrentOrder(slippage, error))
+         {
+            ++failed;
             Print("Failed to close positoin. ", error);
+         }
          else
             ++closedPositions;
       }

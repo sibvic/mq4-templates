@@ -14,6 +14,10 @@ Show number of bars when the last condition accured.
 
 Show the current trand (Up or Down Condition).
 
+### TextValueCell
+
+Shows custom formatted text.
+
 ## EA_Base
 
 EA template. Parameters of this EA descripbed [here](https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters).

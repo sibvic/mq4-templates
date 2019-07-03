@@ -136,23 +136,6 @@ public:
    }
 
 private:
-   string GetTimeframe()
-   {
-      switch (_timeframe)
-      {
-         case PERIOD_M1: return "M1";
-         case PERIOD_M5: return "M5";
-         case PERIOD_D1: return "D1";
-         case PERIOD_H1: return "H1";
-         case PERIOD_H4: return "H4";
-         case PERIOD_M15: return "M15";
-         case PERIOD_M30: return "M30";
-         case PERIOD_MN1: return "MN1";
-         case PERIOD_W1: return "W1";
-      }
-      return "M1";
-   }
-
    int GetDirection(int& barsBack)
    {
       for (barsBack = 0; barsBack < MathMin(MAX_LOOPBACK, iBars(_symbol, _timeframe) - 1); ++barsBack)
@@ -163,6 +146,55 @@ private:
             return ENTER_SELL_SIGNAL;
       }
       barsBack = -1;
+      return 0;
+   }
+
+   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
+};
+
+class TextValueCell : public ICell
+{
+   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
+   ICondition* _upCondition;
+   ICondition* _downCondition;
+public:
+   TextValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   { 
+      _id = id; 
+      _x = x; 
+      _y = y; 
+      _symbol = symbol; 
+      _timeframe = timeframe; 
+      _upCondition = new UpCondition(_symbol, _timeframe);
+      _downCondition = new DownCondition(_symbol, _timeframe);
+   }
+
+   ~TextValueCell()
+   {
+      delete _upCondition;
+      delete _downCondition;
+   }
+
+   virtual void Draw()
+   { 
+      string label;
+      int direction = GetDirection(label); 
+      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+   }
+
+private:
+   int GetDirection(string& text)
+   {
+      if (_upCondition.IsPass(0))
+      {
+         text = "";
+         return ENTER_BUY_SIGNAL;
+      }
+      if (_downCondition.IsPass(0))
+      {
+         text = "";
+         return ENTER_SELL_SIGNAL;
+      }
       return 0;
    }
 
@@ -199,23 +231,6 @@ public:
    }
 
 private:
-   string GetTimeframe()
-   {
-      switch (_timeframe)
-      {
-         case PERIOD_M1: return "M1";
-         case PERIOD_M5: return "M5";
-         case PERIOD_D1: return "D1";
-         case PERIOD_H1: return "H1";
-         case PERIOD_H4: return "H4";
-         case PERIOD_M15: return "M15";
-         case PERIOD_M30: return "M30";
-         case PERIOD_MN1: return "MN1";
-         case PERIOD_W1: return "W1";
-      }
-      return "M1";
-   }
-
    int GetDirection()
    {
       if (_upCondition.IsPass(0))

@@ -20,8 +20,42 @@ extern color    Up_Color                 = clrLime;
 extern color    Dn_Color                 = clrRed;
 extern color    Neutral_Color            = clrDarkGray;
 
+#define MAX_LOOPBACK 500
+
 string   WindowName;
 int      WindowNumber;
+
+#include <ICondition.mq4>
+#include <InstrumentInfo.mq4>
+#include <ABaseCondition.mq4>
+
+class UpCondition : public ABaseCondition
+{
+public:
+   UpCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+   }
+
+   virtual bool IsPass(const int period)
+   {
+      return false;
+   }
+};
+
+class DownCondition : public ABaseCondition
+{
+public:
+   DownCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+   }
+
+   virtual bool IsPass(const int period)
+   {
+      return false;
+   }
+};
 
 // Dashboard v.1.2
 class Iterator
@@ -70,14 +104,99 @@ public:
 #define ENTER_SELL_SIGNAL -1
 #define EXIT_BUY_SIGNAL 2
 #define EXIT_SELL_SIGNAL -2
-class ValueCell : public ICell
+class BarsBackValueCell : public ICell
 {
-   string _id; int _x; int _y; string _symbol; int _timeframe; datetime _lastDatetime;
+   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
+   ICondition* _upCondition;
+   ICondition* _downCondition;
 public:
-   ValueCell(const string id, const int x, const int y, const string symbol, const int timeframe)
-   { _id = id; _x = x; _y = y; _symbol = symbol; _timeframe = timeframe; }
+   BarsBackValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   { 
+      _id = id; 
+      _x = x; 
+      _y = y; 
+      _symbol = symbol; 
+      _timeframe = timeframe; 
+      _upCondition = new UpCondition(_symbol, _timeframe);
+      _downCondition = new DownCondition(_symbol, _timeframe);
+   }
+
+   ~BarsBackValueCell()
+   {
+      delete _upCondition;
+      delete _downCondition;
+   }
+
    virtual void Draw()
-   { int direction = GetDirection(); ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); }
+   { 
+      int barsBack;
+      int direction = GetDirection(barsBack); 
+      string label = direction != 0 ? IntegerToString(barsBack) : "-";
+      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+   }
+
+private:
+   string GetTimeframe()
+   {
+      switch (_timeframe)
+      {
+         case PERIOD_M1: return "M1";
+         case PERIOD_M5: return "M5";
+         case PERIOD_D1: return "D1";
+         case PERIOD_H1: return "H1";
+         case PERIOD_H4: return "H4";
+         case PERIOD_M15: return "M15";
+         case PERIOD_M30: return "M30";
+         case PERIOD_MN1: return "MN1";
+         case PERIOD_W1: return "W1";
+      }
+      return "M1";
+   }
+
+   int GetDirection(int& barsBack)
+   {
+      for (barsBack = 0; barsBack < MathMin(MAX_LOOPBACK, iBars(_symbol, _timeframe) - 1); ++barsBack)
+      {
+         if (_upCondition.IsPass(barsBack))
+            return ENTER_BUY_SIGNAL;
+         if (_downCondition.IsPass(barsBack))
+            return ENTER_SELL_SIGNAL;
+      }
+      barsBack = -1;
+      return 0;
+   }
+
+   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
+};
+
+class TrendValueCell : public ICell
+{
+   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
+   ICondition* _upCondition;
+   ICondition* _downCondition;
+public:
+   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   { 
+      _id = id; 
+      _x = x; 
+      _y = y; 
+      _symbol = symbol; 
+      _timeframe = timeframe; 
+      _upCondition = new UpCondition(_symbol, _timeframe);
+      _downCondition = new DownCondition(_symbol, _timeframe);
+   }
+
+   ~TrendValueCell()
+   {
+      delete _upCondition;
+      delete _downCondition;
+   }
+
+   virtual void Draw()
+   { 
+      int direction = GetDirection(); 
+      ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+   }
 
 private:
    string GetTimeframe()
@@ -99,9 +218,10 @@ private:
 
    int GetDirection()
    {
-      // insert your code here.
-      // return ENTER_BUY_SIGNAL for the up trend/buy
-      // return ENTER_SELL_SIGNAL for the down trend/sell
+      if (_upCondition.IsPass(0))
+         return ENTER_BUY_SIGNAL;
+      if (_downCondition.IsPass(0))
+         return ENTER_SELL_SIGNAL;
       // return EXIT_BUY_SIGNAL for the up trend end/exit buy
       // return EXIT_SELL_SIGNAL for the down trend end/exit sell
       // return 0 for the neutral/no action
@@ -220,7 +340,7 @@ public:
       Iterator yIterator(50, 30);
       for (int i = 0; i < sym_count; i++)
       {
-         row.Add(new ValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
+         row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
       }
    }
 

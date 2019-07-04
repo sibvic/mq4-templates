@@ -249,3 +249,11 @@ Trading controller.
 ## TradingTimeConditions
 
 Enters into a position on trading time start and exits on trading time end.
+
+## PositionCap
+
+Limit number of opened trades
+
+## OrderBuilder
+
+Creates an order.

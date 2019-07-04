@@ -43,3 +43,11 @@ Abstract class for a custom bar sources.
 ## W1CustomHourAndDayBarStream
 
 W1 bar source with a custom start hour and week day.
+
+## HighestHighStream
+
+Gives highest values during loopback period.
+
+## LowersLowStream
+
+Gives lowest values during loopback period.

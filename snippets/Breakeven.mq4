@@ -2,116 +2,13 @@
 interface IBreakevenLogic
 {
 public:
-   virtual void DoLogic(const int period) = 0;
    virtual void CreateBreakeven(const int order, const int period) = 0;
 };
 
 class DisabledBreakevenLogic : public IBreakevenLogic
 {
 public:
-   void DoLogic(const int period) {}
    void CreateBreakeven(const int order, const int period) {}
-};
-
-class BreakevenController
-{
-   IOrder *_order;
-   bool _finished;
-   double _trigger;
-   double _target;
-   Signaler *_signaler;
-   InstrumentInfo *_instrument;
-   ICondition *_condition;
-   string _name;
-public:
-   BreakevenController(Signaler *signaler)
-   {
-      _order = NULL;
-      _condition = NULL;
-      _instrument = NULL;
-      _signaler = signaler;
-      _finished = true;
-   }
-
-   ~BreakevenController()
-   {
-      delete _order;
-      delete _condition;
-      delete _instrument;
-   }
-   
-   bool SetOrder(IOrder *order, const double trigger, const double target, ICondition *condition)
-   {
-      return SetOrder(order, trigger, target, condition, "");
-   }
-
-   bool SetOrder(IOrder *order, const double trigger, const double target, ICondition *condition, const string name)
-   {
-      if (!_finished)
-         return false;
-      if (!order.Select())
-         return false;
-
-      string symbol = OrderSymbol();
-      if (_instrument == NULL || symbol != _instrument.GetSymbol())
-      {
-         delete _instrument;
-         _instrument = new InstrumentInfo(symbol);
-      }
-      _finished = false;
-      _trigger = trigger;
-      _target = target;
-      delete _order;
-      _order = order;
-      delete _condition;
-      _name = name;
-      _condition = condition;
-      return true;
-   }
-
-   void DoLogic(const int period)
-   {
-      if (_finished || !_order.Select())
-      {
-         _finished = true;
-         return;
-      }
-
-      int type = OrderType();
-      if (type == OP_BUY)
-      {
-         if (_instrument.GetAsk() >= _trigger || (_condition != NULL && _condition.IsPass(period)))
-         {
-            int ticket = OrderTicket();
-            if (_signaler != NULL)
-               _signaler.SendNotifications(GetNamePrefix() + "Trade " + IntegerToString(ticket) + " has reached " 
-                  + DoubleToString(_trigger, _instrument.GetDigits()) + ". Stop loss moved to " 
-                  + DoubleToString(_target, _instrument.GetDigits()));
-            int res = OrderModify(ticket, OrderOpenPrice(), _target, OrderTakeProfit(), 0, CLR_NONE);
-            _finished = true;
-         }
-      }
-      else if (type == OP_SELL)
-      {
-         if (_instrument.GetBid() < _trigger || (_condition != NULL && _condition.IsPass(period)))
-         {
-            int ticket = OrderTicket();
-            if (_signaler != NULL)
-               _signaler.SendNotifications(GetNamePrefix() + "Trade " + IntegerToString(ticket) + " has reached " 
-                  + DoubleToString(_trigger, _instrument.GetDigits()) + ". Stop loss moved to " 
-                  + DoubleToString(_target, _instrument.GetDigits()));
-            int res = OrderModify(ticket, OrderOpenPrice(), _target, OrderTakeProfit(), 0, CLR_NONE);
-            _finished = true;
-         }
-      }
-   }
-private:
-   string GetNamePrefix()
-   {
-      if (_name == "")
-         return "";
-      return _name + ". ";
-   }
 };
 
 class BreakevenLogic : public IBreakevenLogic

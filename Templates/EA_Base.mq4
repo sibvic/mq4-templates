@@ -156,6 +156,8 @@ bool ecn_broker = false;
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
+#include <ICondition.mq4>
+#include <ABaseCondition.mq4>
 #include <condition.mq4>
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>

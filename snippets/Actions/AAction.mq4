@@ -1,3 +1,7 @@
+// AAction v1.0
+
+#ifndef AAction_IMP
+
 class AAction : public IAction
 {
 protected:
@@ -19,3 +23,7 @@ public:
          delete &this;
    }
 };
+
+#define AAction_IMP
+
+#endif

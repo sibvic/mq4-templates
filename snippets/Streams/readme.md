@@ -51,3 +51,7 @@ Gives highest values during loopback period.
 ## LowersLowStream
 
 Gives lowest values during loopback period.
+
+## ColoredStream
+
+Two color stream (draws a line using two colors).

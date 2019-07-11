@@ -162,8 +162,8 @@ bool ecn_broker = false;
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
 #endif
-#include <Stream.mq4>
 #ifndef USE_MARKET_ORDERS
+#include <AStream.mq4>
 class LongEntryStream : public AStream
 {
 public:
@@ -204,6 +204,12 @@ enum OrderSide
 #include <OrdersIterator.mq4>
 #include <TradeCalculator.mq4>
 #include <Order.mq4>
+#include <IAction.mq4>
+#include <AAction.mq4>
+#include <MoveToBreakevenAction.mq4>
+#include <ActionOnConditionController.mq4>
+#include <ActionOnConditionLogic.mq4>
+#include <HitProfitCondition.mq4>
 #include <breakeven.mq4>
 #include <TrailingController.mq4>
 #ifdef NET_STOP_LOSS_FEATURE

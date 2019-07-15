@@ -1,4 +1,4 @@
-// Trading controller v2.15
+// Trading controller v3.0
 class TradingController
 {
    ENUM_TIMEFRAMES _timeframe;
@@ -9,7 +9,7 @@ class TradingController
    ITrailingLogic *_trailing;
    Signaler *_signaler;
    datetime _lastBarDate;
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
 #ifdef NET_STOP_LOSS_FEATURE
    INetStopLossStrategy *_netStopLoss;
 #endif
@@ -41,7 +41,7 @@ class TradingController
    string _algorithmId;
    ActionOnConditionLogic* _actions;
 public:
-   TradingController(TradeCalculator *calculator, ENUM_TIMEFRAMES timeframe, Signaler *signaler, const string algorithmId = "")
+   TradingController(TradingCalculator *calculator, ENUM_TIMEFRAMES timeframe, Signaler *signaler, const string algorithmId = "")
    {
       _actions = NULL;
       _algorithmId = algorithmId;
@@ -122,7 +122,7 @@ public:
 #ifdef CUSTOM_EXIT_FEATURE
    void SetCustomExit(ICustomExitLogic *customExit) { _customExit = customExit; }
 #endif
-   void SetActions(ActionOnConditionLogic* actions) { _actions = actions; }
+   void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
    void SetTradingTime(TradingTime *tradingTime) { _tradingTime = tradingTime; }
    void SetBreakeven(IBreakevenLogic *breakeven) { _breakeven = breakeven; }
    void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }

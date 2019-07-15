@@ -7,6 +7,8 @@ public:
    virtual int Exit(const OrderSide side) = 0;
 };
 
+#ifndef USE_MARKET_ORDERS
+
 class PendingEntryStrategy : public IEntryStrategy
 {
    string _symbol;
@@ -76,7 +78,7 @@ private:
       return _shortEntryPrice.GetValue(period, price);
    }
 };
-
+#else
 class MarketEntryStrategy : public IEntryStrategy
 {
    string _symbol;
@@ -125,3 +127,4 @@ public:
       return TradingCommands::CloseTrades(toClose, _slippagePoints);
    }
 };
+#endif

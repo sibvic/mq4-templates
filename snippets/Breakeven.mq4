@@ -16,7 +16,7 @@ class BreakevenLogic : public IBreakevenLogic
    StopLimitType _triggerType;
    double _trigger;
    double _target;
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
    Signaler *_signaler;
    ActionOnConditionLogic* _actions;
 public:
@@ -54,11 +54,11 @@ public:
       if (_calculator == NULL || symbol != _calculator.GetSymbol())
       {
          delete _calculator;
-         _calculator = TradeCalculator::Create(symbol);
+         _calculator = TradingCalculator::Create(symbol);
          if (_calculator == NULL)
             return;
       }
-      int isBuy = TradeCalculator::IsBuyOrder();
+      int isBuy = TradingCalculator::IsBuyOrder();
       double basePrice = OrderOpenPrice();
       double targetValue = _calculator.CalculateTakeProfit(isBuy, target, StopLimitPips, OrderLots(), basePrice);
       double triggerValue = _calculator.CalculateTakeProfit(isBuy, trigger, triggerType, OrderLots(), basePrice);
@@ -103,9 +103,9 @@ class NetBreakevenController
    double _target;
    StopLimitType _triggerType;
    Signaler *_signaler;
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
 public:
-   NetBreakevenController(TradeCalculator *calculator, Signaler *signaler)
+   NetBreakevenController(TradingCalculator *calculator, Signaler *signaler)
    {
       _calculator = calculator;
       _signaler = signaler;
@@ -186,10 +186,10 @@ class NetBreakevenLogic : public IBreakevenLogic
    StopLimitType _triggerType;
    double _trigger;
    double _target;
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
    Signaler *_signaler;
 public:
-   NetBreakevenLogic(TradeCalculator *calculator, const StopLimitType triggerType, const double trigger,
+   NetBreakevenLogic(TradingCalculator *calculator, const StopLimitType triggerType, const double trigger,
       const double target, Signaler *signaler)
    {
       _signaler = signaler;

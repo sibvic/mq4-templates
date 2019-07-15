@@ -1,26 +1,26 @@
 // Trade calculator v.1.16
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
-class TradeCalculator
+class TradingCalculator
 {
    InstrumentInfo *_symbol;
 
-   TradeCalculator(const string symbol)
+   TradingCalculator(const string symbol)
    {
       _symbol = new InstrumentInfo(symbol);
    }
 public:
-   static TradeCalculator *Create(const string symbol)
+   static TradingCalculator *Create(const string symbol)
    {
       ResetLastError();
       double temp = MarketInfo(symbol, MODE_POINT); 
       if (GetLastError() != 0)
          return NULL;
 
-      return new TradeCalculator(symbol);
+      return new TradingCalculator(symbol);
    }
 
-   ~TradeCalculator()
+   ~TradingCalculator()
    {
       delete _symbol;
    }

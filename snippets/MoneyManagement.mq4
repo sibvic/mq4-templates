@@ -1,4 +1,4 @@
-// Money management strategy v.1.4
+// Money management strategy v.2.0
 interface IMoneyManagementStrategy
 {
 public:
@@ -8,7 +8,7 @@ public:
 class AMoneyManagementStrategy : public IMoneyManagementStrategy
 {
 protected:
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
    PositionSizeType _lotsType;
    double _lots;
    StopLimitType _stopLossType;
@@ -17,7 +17,7 @@ protected:
    double _takeProfit;
    double _leverageOverride;
 
-   AMoneyManagementStrategy(TradeCalculator *calculator, PositionSizeType lotsType, double lots
+   AMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
       , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
       , const double leverageOverride)
    {
@@ -35,7 +35,7 @@ protected:
 class LongMoneyManagementStrategy : public AMoneyManagementStrategy
 {
 public:
-   LongMoneyManagementStrategy(TradeCalculator *calculator, PositionSizeType lotsType, double lots
+   LongMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
       , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
       , const double leverageOverride = 0)
       : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit, leverageOverride)
@@ -64,7 +64,7 @@ public:
 class ShortMoneyManagementStrategy : public AMoneyManagementStrategy
 {
 public:
-   ShortMoneyManagementStrategy(TradeCalculator *calculator, PositionSizeType lotsType, double lots
+   ShortMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
       , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
       , const double leverageOverride = 0)
       : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit, leverageOverride)

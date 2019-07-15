@@ -210,7 +210,7 @@ Get ticket id of the current order.
 
 Reset indicator, so it could be iterated again using Next().
 
-## TradeCalculator
+## TradingCalculator
 
 Trade calculator.
 

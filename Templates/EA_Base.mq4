@@ -156,8 +156,8 @@ bool ecn_broker = false;
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
-#include <ICondition.mq4>
-#include <ABaseCondition.mq4>
+#include <conditions/ICondition.mq4>
+#include <conditions/ABaseCondition.mq4>
 #include <condition.mq4>
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
@@ -204,9 +204,9 @@ enum OrderSide
 #include <OrdersIterator.mq4>
 #include <TradingCalculator.mq4>
 #include <Order.mq4>
-#include <IAction.mq4>
-#include <AAction.mq4>
-#include <MoveToBreakevenAction.mq4>
+#include <Actions/IAction.mq4>
+#include <Actions/AAction.mq4>
+#include <Actions/MoveToBreakevenAction.mq4>
 #include <ActionOnConditionController.mq4>
 #include <ActionOnConditionLogic.mq4>
 #include <HitProfitCondition.mq4>
@@ -269,23 +269,23 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       return NULL;
    }
 
-   TradingCalculator *TradingCalculator = TradingCalculator::Create(symbol);
-   if (!TradingCalculator.IsLotsValid(lots_value, lots_type, error))
+   TradingCalculator *tradingCalculator = TradingCalculator::Create(symbol);
+   if (!tradingCalculator.IsLotsValid(lots_value, lots_type, error))
    {
-      delete TradingCalculator;
+      delete tradingCalculator;
       delete tradingTime;
       return NULL;
    }
    Signaler *signaler = new Signaler(symbol, timeframe);
    signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
-   TradingController *controller = new TradingController(TradingCalculator, timeframe, signaler);
+   TradingController *controller = new TradingController(tradingCalculator, timeframe, signaler);
    controller.SetActions(actions);
    if (breakeven_type == StopLimitDoNotUse)
       controller.SetBreakeven(new DisabledBreakevenLogic());
    else
       #ifdef USE_NET_BREAKEVEN
-         controller.SetBreakeven(new NetBreakevenLogic(TradingCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
+         controller.SetBreakeven(new NetBreakevenLogic(tradingCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
       #else
          controller.SetBreakeven(new BreakevenLogic(breakeven_type, breakeven_value, breakeven_level, signaler, actions));
       #endif
@@ -308,16 +308,16 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
          break;
       case MartingaleOnLoss:
-         controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(TradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
-         controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(TradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
+         controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
+         controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
          break;
    }
 #endif
 
    ICondition *longCondition = CreateLongCondition(symbol, timeframe);
    ICondition *shortCondition = CreateShortCondition(symbol, timeframe);
-   IMoneyManagementStrategy *longMoneyManagement = new LongMoneyManagementStrategy(TradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
-   IMoneyManagementStrategy *shortMoneyManagement = new ShortMoneyManagementStrategy(TradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
+   IMoneyManagementStrategy *longMoneyManagement = new LongMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
+   IMoneyManagementStrategy *shortMoneyManagement = new ShortMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
    ICondition *exitLongCondition = new ExitLongCondition(symbol, timeframe);
    ICondition *exitShortCondition = new ExitShortCondition(symbol, timeframe);
    switch (logic_direction)
@@ -341,13 +341,13 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    controller.SetExitAllCondition(new DisabledCondition());
 #ifdef NET_STOP_LOSS_FEATURE
    if (net_stop_loss_type != StopLimitDoNotUse)
-      controller.SetNetStopLossStrategy(new NetStopLossStrategy(TradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number));
+      controller.SetNetStopLossStrategy(new NetStopLossStrategy(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number));
    else
       controller.SetNetStopLossStrategy(new NoNetStopLossStrategy());
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
    if (net_take_profit_type != StopLimitDoNotUse)
-      controller.SetNetTakeProfitStrategy(new NetTakeProfitStrategy(TradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number));
+      controller.SetNetTakeProfitStrategy(new NetTakeProfitStrategy(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number));
    else
       controller.SetNetTakeProfitStrategy(new NoNetTakeProfitStrategy());
 #endif

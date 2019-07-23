@@ -1,33 +1,34 @@
-// ProfitRobots Dashboard template v.1.0
+// ProfitRobots Dashboard template v.1.1
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
 #property strict
 
-extern string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
-extern string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD,GBPJPY,EURGBP,AUDUSD,NZDUSD";
-extern bool     Include_M1               = true;
-extern bool     Include_M5               = true;
-extern bool     Include_M15              = true;
-extern bool     Include_M30              = true;
-extern bool     Include_H1               = true;
-extern bool     Include_H4               = true;
-extern bool     Include_D1               = true;
-extern bool     Include_W1               = true;
-extern bool     Include_MN1              = true;
-extern color    Labels_Color             = clrWhite;
-extern color    Up_Color                 = clrLime;
-extern color    Dn_Color                 = clrRed;
-extern color    Neutral_Color            = clrDarkGray;
+input string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
+input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD,GBPJPY,EURGBP,AUDUSD,NZDUSD";
+input bool     Include_M1               = true;
+input bool     Include_M5               = true;
+input bool     Include_M15              = true;
+input bool     Include_M30              = true;
+input bool     Include_H1               = true;
+input bool     Include_H4               = true;
+input bool     Include_D1               = true;
+input bool     Include_W1               = true;
+input bool     Include_MN1              = true;
+input color    Labels_Color             = clrWhite;
+input color    Up_Color                 = clrLime;
+input color    Dn_Color                 = clrRed;
+input color    Neutral_Color            = clrDarkGray;
+input int x_shift = 1000; // X coordinate
 
 #define MAX_LOOPBACK 500
 
 string   WindowName;
 int      WindowNumber;
 
-#include <ICondition.mq4>
+#include <conditions/ICondition.mq4>
 #include <InstrumentInfo.mq4>
-#include <ABaseCondition.mq4>
+#include <conditions/ABaseCondition.mq4>
 
 class UpCondition : public ABaseCondition
 {
@@ -326,10 +327,10 @@ class GridBuilder
    int Original_x;
    Iterator xIterator;
 public:
-   GridBuilder()
-      :xIterator(1000, -120)
+   GridBuilder(int x)
+      :xIterator(x, -120)
    {
-      Original_x = 1000;
+      Original_x = x;
       grid = new Grid();
    }
 
@@ -388,13 +389,14 @@ private:
    }
 };
 
+
 int init()
 {
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder();
+   GridBuilder builder(x_shift);
    builder.SetSymbols(Pairs);
 
    if (Include_M1)
@@ -425,6 +427,7 @@ int deinit()
 {
    ObjectsDeleteAll(ChartID(), IndicatorObjPrefix);
    delete grid;
+   grid = NULL;
    return 0;
 }
 

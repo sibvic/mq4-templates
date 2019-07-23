@@ -41,3 +41,7 @@ PSAR above close.
 ## HitProfitCondition
 
 Check whether required proifit is reached.
+
+## NoCondition
+
+Always true.

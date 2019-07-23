@@ -207,13 +207,13 @@ enum OrderSide
 #include <Actions/IAction.mq4>
 #include <Actions/AAction.mq4>
 #include <Actions/MoveToBreakevenAction.mq4>
-#include <ActionOnConditionController.mq4>
-#include <ActionOnConditionLogic.mq4>
-#include <HitProfitCondition.mq4>
+#include <Logic/ActionOnConditionController.mq4>
+#include <Logic/ActionOnConditionLogic.mq4>
+#include <Conditions/HitProfitCondition.mq4>
 #include <breakeven.mq4>
 #include <TrailingController.mq4>
 #ifdef NET_STOP_LOSS_FEATURE
-#include <NetStopLoss.mq4>
+#include <MoveNetStopLossAction.mq4>
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
 #include <NetTakeProfit.mq4>
@@ -341,15 +341,19 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    controller.SetExitAllCondition(new DisabledCondition());
 #ifdef NET_STOP_LOSS_FEATURE
    if (net_stop_loss_type != StopLimitDoNotUse)
-      controller.SetNetStopLossStrategy(new NetStopLossStrategy(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number));
-   else
-      controller.SetNetStopLossStrategy(new NoNetStopLossStrategy());
+   {
+      IAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
+      actions.AddActionOnCondition(action, new NoCondition());
+      action.Release();
+   }
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
    if (net_take_profit_type != StopLimitDoNotUse)
-      controller.SetNetTakeProfitStrategy(new NetTakeProfitStrategy(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number));
-   else
-      controller.SetNetTakeProfitStrategy(new NoNetTakeProfitStrategy());
+   {
+      IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number);
+      actions.AddActionOnCondition(action, new NoCondition());
+      action.Release();
+   }
 #endif
 
    if (close_on_opposite)

@@ -77,12 +77,6 @@ public:
    bool IsPass(const int period) { return false; }
 };
 
-class NoCondition : public ICondition
-{
-public:
-   bool IsPass(const int period) { return true; }
-};
-
 class AndCondition : public ICondition
 {
    ICondition *_conditions[];

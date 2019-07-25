@@ -54,4 +54,29 @@ Gives lowest values during loopback period.
 
 ## ColoredStream
 
-Two color stream (draws a line using two colors).
+Color streams (draws a line using several colors).
+
+Usage:
+
+    ColoredStream _streams;
+    int init()
+    {
+        int id = 0;
+        id = _streams.RegisterStream(id, up_color, "Up");
+        id = _streams.RegisterStream(id, down_color, "Down");
+        id = _streams.RegisterStream(id, neutral_color, "Neutral");
+        id = _streams.RegisterInternal(id);
+    }
+
+    int start()
+    {
+        for (int i = limit; i >= 0; i--)
+        {
+            if (IsUp(i))
+                _streams.Set(value[i], i, 0);
+            else if (IsDown(i)) 
+                _streams.Set(value[i], i, 1);
+            else
+                _streams.Set(value[i], i, 2);
+        }
+    }

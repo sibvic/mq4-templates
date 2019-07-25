@@ -1,37 +1,45 @@
-// Colored stream v1.0
+// Colored stream v2.0
+
+class ColoredStreamData
+{
+public:
+   double Stream[];
+};
 
 class ColoredStream
 {
 public:
-   double _clr1[];
-   double _clr2[];
+   ColoredStreamData _streams[];
    double _data[];
 
-   int RegisterStream(int id, color clr1, color clr2)
+   int RegisterInternal(int id)
    {
-      SetIndexStyle(id + 0, DRAW_LINE, STYLE_SOLID, 1, clr1);
-      SetIndexBuffer(id + 0, _clr1);
-      SetIndexStyle(id + 1, DRAW_LINE, STYLE_SOLID, 1, clr2);
-      SetIndexBuffer(id + 1, _clr2);
-      SetIndexStyle(id + 2, DRAW_NONE);
-      SetIndexBuffer(id + 2, _data);
-      return id + 3;
+      SetIndexBuffer(id + 0, _data);
+      return id + 1;
+   }
+
+   int RegisterStream(int id, color clr)
+   {
+      int size = ArraySize(_streams);
+      ArrayResize(_streams, size + 1);
+      SetIndexStyle(id + 0, DRAW_LINE, STYLE_SOLID, 1, clr);
+      SetIndexBuffer(id + 0, _streams[size].Stream);
+      return id + 1;
    }
 
    void Set(double value, int period, int colorIndex)
    {
       _data[period] = value;
-      if (colorIndex == 0)
+      for (int i = 0; i < ArraySize(_streams); ++i)
       {
-         _clr1[period] = value;
-         _clr2[period] = EMPTY_VALUE;
-         if (_clr1[period + 1] == EMPTY_VALUE)
-            _clr1[period + 1] = _clr2[period + 1];
-         return;
+         if (colorIndex == i)
+         {
+            _streams[i].Stream[period] = value;
+            if (_streams[i].Stream[period + 1] == EMPTY_VALUE)
+               _streams[i].Stream[period + 1] = _data[period + 1];   
+         }
+         else
+            _streams[i].Stream[period] = EMPTY_VALUE;
       }
-      _clr2[period] = value;
-      _clr1[period] = EMPTY_VALUE;
-      if (_clr2[period + 1] == EMPTY_VALUE)
-         _clr2[period + 1] = _clr1[period + 1];
    }
 };

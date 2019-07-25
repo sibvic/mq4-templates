@@ -1,4 +1,4 @@
-// Trading controller v3.0
+// Trading controller v4.0
 class TradingController
 {
    ENUM_TIMEFRAMES _timeframe;
@@ -10,12 +10,6 @@ class TradingController
    Signaler *_signaler;
    datetime _lastBarDate;
    TradingCalculator *_calculator;
-#ifdef NET_STOP_LOSS_FEATURE
-   INetStopLossStrategy *_netStopLoss;
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-   INetTakeProfitStrategy *_netTakeProfit;
-#endif
    TradingTime *_tradingTime;
    ICondition *_longCondition;
    ICondition *_shortCondition;
@@ -35,9 +29,6 @@ class TradingController
 #endif
    IEntryStrategy *_entryStrategy;
    IMandatoryClosingLogic *_mandatoryClosing;
-#ifdef CUSTOM_EXIT_FEATURE
-   ICustomExitLogic *_customExit;
-#endif
    string _algorithmId;
    ActionOnConditionLogic* _actions;
 public:
@@ -45,9 +36,6 @@ public:
    {
       _actions = NULL;
       _algorithmId = algorithmId;
-#ifdef CUSTOM_EXIT_FEATURE
-      _customExit = NULL;
-#endif
 #ifdef POSITION_CAP_FEATURE
       _longPositionCap = NULL;
       _shortPositionCap = NULL;
@@ -59,12 +47,6 @@ public:
 #endif
       _longCondition = NULL;
       _shortCondition = NULL;
-#ifdef NET_STOP_LOSS_FEATURE
-      _netStopLoss = NULL;
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-      _netTakeProfit = NULL;
-#endif
       _calculator = calculator;
       _signaler = signaler;
       _timeframe = timeframe;
@@ -79,9 +61,6 @@ public:
    ~TradingController()
    {
       delete _actions;
-#ifdef CUSTOM_EXIT_FEATURE
-      delete _customExit;
-#endif
       delete _mandatoryClosing;
       delete _entryStrategy;
 #ifdef POSITION_CAP_FEATURE
@@ -110,28 +89,13 @@ public:
       delete _trailing;
       delete _longCondition;
       delete _shortCondition;
-#ifdef NET_STOP_LOSS_FEATURE
-      delete _netStopLoss;
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-      delete _netTakeProfit;
-#endif
       delete _tradingTime;
    }
 
-#ifdef CUSTOM_EXIT_FEATURE
-   void SetCustomExit(ICustomExitLogic *customExit) { _customExit = customExit; }
-#endif
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
    void SetTradingTime(TradingTime *tradingTime) { _tradingTime = tradingTime; }
    void SetBreakeven(IBreakevenLogic *breakeven) { _breakeven = breakeven; }
    void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }
-#ifdef NET_STOP_LOSS_FEATURE
-   void SetNetStopLossStrategy(INetStopLossStrategy *strategy) { _netStopLoss = strategy; }
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-   void SetNetTakeProfitStrategy(INetTakeProfitStrategy *strategy) { _netTakeProfit = strategy; }
-#endif
    void SetLongCondition(ICondition *condition) { _longCondition = condition; }
    void SetShortCondition(ICondition *condition) { _shortCondition = condition; }
    void SetExitAllCondition(ICondition *condition) { _exitAllCondition = condition; }
@@ -167,12 +131,6 @@ public:
       datetime current_time = iTime(_calculator.GetSymbol(), _timeframe, tradePeriod);
       _actions.DoLogic(tradePeriod);
       _trailing.DoLogic();
-#ifdef NET_STOP_LOSS_FEATURE
-      _netStopLoss.DoLogic();
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-      _netTakeProfit.DoLogic();
-#endif
       if (trade_live == TradingModeOnBarClose)
       {
          if (_lastBarDate != current_time)
@@ -185,9 +143,6 @@ public:
       DoMartingale(_longMartingale);
 #endif
 
-#ifdef CUSTOM_EXIT_FEATURE
-      _customExit.DoLogic();
-#endif
       bool exitAll = _exitAllCondition.IsPass(tradePeriod);
       if (exitAll || (_exitLongCondition.IsPass(tradePeriod) && !_exitLongCondition.IsPass(tradePeriod + 1)))
       {

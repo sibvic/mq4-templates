@@ -1,4 +1,4 @@
-// Colored stream v2.0
+// Colored stream v2.1
 
 class ColoredStreamData
 {
@@ -18,13 +18,25 @@ public:
       return id + 1;
    }
 
-   int RegisterStream(int id, color clr)
+   int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      SetIndexStyle(id + 0, DRAW_LINE, STYLE_SOLID, 1, clr);
+      SetIndexStyle(id + 0, lineType, STYLE_SOLID, 1, clr);
       SetIndexBuffer(id + 0, _streams[size].Stream);
+      if (label != "")
+         SetIndexLabel(id + 0, label);
       return id + 1;
+   }
+
+   int GetColorIndex(int period)
+   {
+      for (int i = 0; i < ArraySize(_streams); ++i)
+      {
+         if (_streams[i].Stream[period] != EMPTY_VALUE)
+            return i;
+      }
+      return -1;
    }
 
    void Set(double value, int period, int colorIndex)

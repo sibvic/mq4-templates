@@ -10,23 +10,23 @@
 string EA_NAME = "[EA NAME]";
 #endif
 
-#define REVERSABLE_LOGIC_FEATURE extern
+#define REVERSABLE_LOGIC_FEATURE input
 
-#define STOP_LOSS_FEATURE extern
+#define STOP_LOSS_FEATURE input
 #define USE_ATR_TRAILLING
-#define NET_STOP_LOSS_FEATURE extern
+#define NET_STOP_LOSS_FEATURE input
 #define USE_NET_BREAKEVEN
 
-#define TAKE_PROFIT_FEATURE extern
-#define NET_TAKE_PROFIT_FEATURE extern
+#define TAKE_PROFIT_FEATURE input
+#define NET_TAKE_PROFIT_FEATURE input
 
-#define MARTINGALE_FEATURE extern
+#define MARTINGALE_FEATURE input
 #define USE_MARKET_ORDERS
 
-#define WEEKLY_TRADING_TIME_FEATURE extern
-#define TRADING_TIME_FEATURE extern
+#define WEEKLY_TRADING_TIME_FEATURE input
+#define TRADING_TIME_FEATURE input
 
-#define POSITION_CAP_FEATURE extern
+#define POSITION_CAP_FEATURE input
 
 #define CUSTOM_EXIT_FEATURE
 
@@ -36,7 +36,7 @@ enum TradingMode
    TradingModeOnBarClose // On bar close
 };
 
-extern string GeneralSection = ""; // == General ==
+input string GeneralSection = ""; // == General ==
 input TradingMode trade_live = TradingModeLive; // Trade live?
 enum PositionSizeType
 {
@@ -56,14 +56,14 @@ enum TradingSide
    ShortSideOnly, // Short
    BothSides // Both
 };
-extern double lots_value = 0.1; // Position size
-extern PositionSizeType lots_type = PositionSizeContract; // Position size type
-extern double leverage_override = 0; // Leverage override (for bad brokers, use 0 to disable)
-extern int slippage_points = 3; // Slippage, points
-extern TradingSide trading_side = BothSides; // What trades should be taken
+input double lots_value = 0.1; // Position size
+input PositionSizeType lots_type = PositionSizeContract; // Position size type
+input double leverage_override = 0; // Leverage override (for bad brokers, use 0 to disable)
+input int slippage_points = 3; // Slippage, points
+input TradingSide trading_side = BothSides; // What trades should be taken
 REVERSABLE_LOGIC_FEATURE LogicDirection logic_direction = DirectLogic; // Logic type
 #ifdef USE_MARKET_ORDERS
-   extern bool close_on_opposite = true; // Close on opposite signal
+   input bool close_on_opposite = true; // Close on opposite signal
 #else
    bool close_on_opposite = false;
 #endif
@@ -86,10 +86,16 @@ enum MartingaleLotSizingType
    MartingaleLotSizingMultiplicator, // Using miltiplicator
    MartingaleLotSizingAdd // Addition
 };
+enum MartingaleStepSizeType
+{
+   MartingaleStepSizePips, // Pips
+   MartingaleStepSizePercent, // %
+};
 MARTINGALE_FEATURE MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
 MARTINGALE_FEATURE MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
 MARTINGALE_FEATURE double martingale_lot_value = 1.5; // Matringale lot sizing value
-MARTINGALE_FEATURE double martingale_step = 5; // Open matringale position step, pips
+MARTINGALE_FEATURE MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
+MARTINGALE_FEATURE double martingale_step = 5; // Open matringale position step
 
 STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
 enum TrailingType
@@ -213,10 +219,10 @@ enum OrderSide
 #include <breakeven.mq4>
 #include <TrailingController.mq4>
 #ifdef NET_STOP_LOSS_FEATURE
-#include <MoveNetStopLossAction.mq4>
+#include <Actions/MoveNetStopLossAction.mq4>
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
-#include <NetTakeProfit.mq4>
+#include <Actions/MoveNetTakeProfitAction.mq4>
 #endif
 #include <TradingTime.mq4>
 #include <MoneyManagement.mq4>
@@ -233,6 +239,7 @@ enum OrderSide
 #include <EntryStrategy.mq4>
 #include <MandatoryClosing.mq4>
 #include <TradingController.mq4>
+#include <Conditions/NoCondition.mq4>
 
 TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
@@ -253,6 +260,16 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
       return (ICondition *)new DisabledCondition();
 
    return (ICondition *)new ShortCondition(symbol, timeframe);
+}
+
+ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   return new ExitLongCondition(symbol, timeframe)
+}
+
+ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   return new ExitShortCondition(symbol, timeframe)
 }
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
@@ -308,8 +325,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
          break;
       case MartingaleOnLoss:
-         controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
-         controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step, martingale_lot_value));
+         controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
+         controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
          break;
    }
 #endif
@@ -318,8 +335,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    ICondition *shortCondition = CreateShortCondition(symbol, timeframe);
    IMoneyManagementStrategy *longMoneyManagement = new LongMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
    IMoneyManagementStrategy *shortMoneyManagement = new ShortMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
-   ICondition *exitLongCondition = new ExitLongCondition(symbol, timeframe);
-   ICondition *exitShortCondition = new ExitShortCondition(symbol, timeframe);
+   ICondition *exitLongCondition = CreateExitLongCondition(symbol, timeframe);
+   ICondition *exitShortCondition = CreateExitShortCondition(symbol, timeframe);
    switch (logic_direction)
    {
       case DirectLogic:

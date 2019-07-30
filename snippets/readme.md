@@ -257,3 +257,7 @@ Limit number of opened trades
 ## OrderBuilder
 
 Creates an order.
+
+## MartingaleStrategy
+
+Martingale strategy.

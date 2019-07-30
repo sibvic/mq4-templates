@@ -19,10 +19,11 @@ public:
       _magicNumber = magicNumber;
    }
 
-   virtual void DoAction()
+   virtual bool DoAction()
    {
       MoveStopLoss(OP_BUY);
       MoveStopLoss(OP_SELL);
+      return true;
    }
 private:
    void MoveStopLoss(const int side)

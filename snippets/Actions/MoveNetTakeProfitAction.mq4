@@ -1,6 +1,6 @@
 // Move net take profit action v 1.0
 
-#ifndef MoveNetStopLossAction_IMP
+#ifndef MoveNetTakeProfitAction_IMP
 
 class MoveNetTakeProfitAction : public AAction
 {
@@ -19,10 +19,11 @@ public:
       _magicNumber = magicNumber;
    }
 
-   virtual void DoAction()
+   virtual bool DoAction()
    {
       MoveTakeProfit(OP_BUY);
       MoveTakeProfit(OP_SELL);
+      return true;
    }
 private:
    void MoveTakeProfit(const int side)
@@ -71,6 +72,6 @@ private:
    }
 };
 
-#define MoveNetStopLossAction_IMP
+#define MoveNetTakeProfitAction_IMP
 
 #endif

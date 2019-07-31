@@ -169,7 +169,7 @@ bool ecn_broker = false;
 #include <CustomExitLogic.mq4>
 #endif
 #ifndef USE_MARKET_ORDERS
-#include <AStream.mq4>
+#include <Streams/AStream.mq4>
 class LongEntryStream : public AStream
 {
 public:
@@ -264,12 +264,12 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 
 ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
-   return new ExitLongCondition(symbol, timeframe)
+   return new ExitLongCondition(symbol, timeframe);
 }
 
 ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
-   return new ExitShortCondition(symbol, timeframe)
+   return new ExitShortCondition(symbol, timeframe);
 }
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)

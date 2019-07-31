@@ -58,7 +58,6 @@ enum TradingSide
 };
 input double lots_value = 0.1; // Position size
 input PositionSizeType lots_type = PositionSizeContract; // Position size type
-input double leverage_override = 0; // Leverage override (for bad brokers, use 0 to disable)
 input int slippage_points = 3; // Slippage, points
 input TradingSide trading_side = BothSides; // What trades should be taken
 REVERSABLE_LOGIC_FEATURE LogicDirection logic_direction = DirectLogic; // Logic type
@@ -74,7 +73,8 @@ POSITION_CAP_FEATURE int no_of_positions = 1; // Max # of buy+sell positions
 POSITION_CAP_FEATURE int no_of_buy_position = 1; // Max # of buy positions
 POSITION_CAP_FEATURE int no_of_sell_position = 1; // Max # of sell positions
 
-MARTINGALE_FEATURE string MartingaleSection = ""; // == Martingale type ==
+#ifdef MARTINGALE_FEATURE
+input string MartingaleSection = ""; // == Martingale type ==
 enum MartingaleType
 {
    MartingaleDoNotUse, // Do not use
@@ -91,11 +91,12 @@ enum MartingaleStepSizeType
    MartingaleStepSizePips, // Pips
    MartingaleStepSizePercent, // %
 };
-MARTINGALE_FEATURE MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
-MARTINGALE_FEATURE MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
-MARTINGALE_FEATURE double martingale_lot_value = 1.5; // Matringale lot sizing value
-MARTINGALE_FEATURE MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
-MARTINGALE_FEATURE double martingale_step = 5; // Open matringale position step
+input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
+input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
+input double martingale_lot_value = 1.5; // Matringale lot sizing value
+input MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
+input double martingale_step = 5; // Open matringale position step
+#endif
 
 STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
 enum TrailingType
@@ -127,8 +128,10 @@ STOP_LOSS_FEATURE double trailing_start = 0; // Min distance to order to activat
 STOP_LOSS_FEATURE StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
 STOP_LOSS_FEATURE double breakeven_value = 10; // Trigger for the breakeven
 STOP_LOSS_FEATURE double breakeven_level = 0; // Breakeven target
-NET_STOP_LOSS_FEATURE StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
-NET_STOP_LOSS_FEATURE double net_stop_loss_value = 10; // Net stop loss value
+#ifdef NET_STOP_LOSS_FEATURE
+input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
+input double net_stop_loss_value = 10; // Net stop loss value
+#endif
 
 TAKE_PROFIT_FEATURE string TakeProfitSection            = ""; // == Take Profit ==
 TAKE_PROFIT_FEATURE StopLimitType take_profit_type = StopLimitDoNotUse; // Take profit type
@@ -136,6 +139,7 @@ TAKE_PROFIT_FEATURE double take_profit_value           = 10; // Take profit valu
 NET_TAKE_PROFIT_FEATURE StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
 NET_TAKE_PROFIT_FEATURE double net_take_profit_value = 10; // Net take profit value
 
+#ifndef DayOfWeek_IMP
 enum DayOfWeek
 {
    DayOfWeekSunday = 0, // Sunday
@@ -146,6 +150,8 @@ enum DayOfWeek
    DayOfWeekFriday = 5, // Friday
    DayOfWeekSaturday = 6 // Saturday
 };
+#define DayOfWeek_IMP
+#endif
 
 TRADING_TIME_FEATURE string OtherSection            = ""; // == Other ==
 TRADING_TIME_FEATURE int magic_number        = 42; // Magic number

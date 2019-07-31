@@ -1,4 +1,4 @@
-// Trade calculator v.1.16
+// Trade calculator v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 class TradingCalculator
@@ -109,16 +109,16 @@ public:
       return 0.0;
    }
 
-   double GetLots(const PositionSizeType lotsType, const double lotsValue, const double stopDistance, const double leverageOverride = 0)
+   double GetLots(const PositionSizeType lotsType, const double lotsValue, const double stopDistance)
    {
       switch (lotsType)
       {
          case PositionSizeAmount:
-            return GetLotsForMoney(lotsValue, leverageOverride);
+            return GetLotsForMoney(lotsValue);
          case PositionSizeContract:
             return LimitLots(RoundLots(lotsValue));
          case PositionSizeEquity:
-            return GetLotsForMoney(AccountEquity() * lotsValue / 100.0, leverageOverride);
+            return GetLotsForMoney(AccountEquity() * lotsValue / 100.0);
          case PositionSizeRisk:
          {
             double affordableLoss = AccountEquity() * lotsValue / 100.0;
@@ -171,14 +171,8 @@ private:
       return true;
    }
 
-   double GetLotsForMoney(const double money, const double leverageOverride = 0)
+   double GetLotsForMoney(const double money)
    {
-      if (leverageOverride != 0)
-      {
-         double lotSize = MarketInfo(_symbol.GetSymbol(), MODE_LOTSIZE);
-         double lots = RoundLots(money * leverageOverride / lotSize);
-         return LimitLots(lots);
-      }
       double marginRequired = MarketInfo(_symbol.GetSymbol(), MODE_MARGINREQUIRED);
       if (marginRequired <= 0.0)
       {

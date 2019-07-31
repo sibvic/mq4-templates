@@ -1,4 +1,4 @@
-// Money management strategy v.2.0
+// Money management strategy v.2.1
 interface IMoneyManagementStrategy
 {
 public:
@@ -15,11 +15,9 @@ protected:
    double _stopLoss;
    StopLimitType _takeProfitType;
    double _takeProfit;
-   double _leverageOverride;
 
    AMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
-      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
-      , const double leverageOverride)
+      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit)
    {
       _calculator = calculator;
       _lotsType = lotsType;
@@ -28,7 +26,6 @@ protected:
       _stopLoss = stopLoss;
       _takeProfitType = takeProfitType;
       _takeProfit = takeProfit;
-      _leverageOverride = leverageOverride;
    }
 };
 
@@ -36,9 +33,8 @@ class LongMoneyManagementStrategy : public AMoneyManagementStrategy
 {
 public:
    LongMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
-      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
-      , const double leverageOverride = 0)
-      : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit, leverageOverride)
+      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit)
+      : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit)
    {
    }
 
@@ -47,11 +43,11 @@ public:
       if (_lotsType == PositionSizeRisk)
       {
          stopLoss = _calculator.CalculateStopLoss(true, _stopLoss, _stopLossType, 0.0, entryPrice);
-         amount = _calculator.GetLots(_lotsType, _lots, entryPrice - stopLoss, _leverageOverride);
+         amount = _calculator.GetLots(_lotsType, _lots, entryPrice - stopLoss);
       }
       else
       {
-         amount = _calculator.GetLots(_lotsType, _lots, 0.0, _leverageOverride);
+         amount = _calculator.GetLots(_lotsType, _lots, 0.0);
          stopLoss = _calculator.CalculateStopLoss(true, _stopLoss, _stopLossType, amount, entryPrice);
       }
       if (_takeProfitType == StopLimitRiskReward)
@@ -65,9 +61,8 @@ class ShortMoneyManagementStrategy : public AMoneyManagementStrategy
 {
 public:
    ShortMoneyManagementStrategy(TradingCalculator *calculator, PositionSizeType lotsType, double lots
-      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit
-      , const double leverageOverride = 0)
-      : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit, leverageOverride)
+      , StopLimitType stopLossType, double stopLoss, StopLimitType takeProfitType, double takeProfit)
+      : AMoneyManagementStrategy(calculator, lotsType, lots, stopLossType, stopLoss, takeProfitType, takeProfit)
    {
    }
 
@@ -76,11 +71,11 @@ public:
       if (_lotsType == PositionSizeRisk)
       {
          stopLoss = _calculator.CalculateStopLoss(false, _stopLoss, _stopLossType, 0.0, entryPrice);
-         amount = _calculator.GetLots(_lotsType, _lots, stopLoss - entryPrice, _leverageOverride);
+         amount = _calculator.GetLots(_lotsType, _lots, stopLoss - entryPrice);
       }
       else
       {
-         amount = _calculator.GetLots(_lotsType, _lots, 0.0, _leverageOverride);
+         amount = _calculator.GetLots(_lotsType, _lots, 0.0);
          stopLoss = _calculator.CalculateStopLoss(false, _stopLoss, _stopLossType, amount, entryPrice);
       }
       if (_takeProfitType == StopLimitRiskReward)

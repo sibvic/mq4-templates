@@ -1,5 +1,6 @@
 // Trading time v.1.5
 
+#ifndef DayOfWeek_IMP
 enum DayOfWeek
 {
    DayOfWeekSunday = 0, // Sunday
@@ -10,6 +11,8 @@ enum DayOfWeek
    DayOfWeekFriday = 5, // Friday
    DayOfWeekSaturday = 6 // Saturday
 };
+#define DayOfWeek_IMP
+#endif
 
 class TradingTime
 {

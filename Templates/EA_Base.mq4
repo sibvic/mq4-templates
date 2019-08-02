@@ -136,8 +136,10 @@ input double net_stop_loss_value = 10; // Net stop loss value
 TAKE_PROFIT_FEATURE string TakeProfitSection            = ""; // == Take Profit ==
 TAKE_PROFIT_FEATURE StopLimitType take_profit_type = StopLimitDoNotUse; // Take profit type
 TAKE_PROFIT_FEATURE double take_profit_value           = 10; // Take profit value
-NET_TAKE_PROFIT_FEATURE StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
-NET_TAKE_PROFIT_FEATURE double net_take_profit_value = 10; // Net take profit value
+#ifdef NET_TAKE_PROFIT_FEATURE
+input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
+input double net_take_profit_value = 10; // Net take profit value
+#endif
 
 #ifndef DayOfWeek_IMP
 enum DayOfWeek
@@ -339,8 +341,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
 
    ICondition *longCondition = CreateLongCondition(symbol, timeframe);
    ICondition *shortCondition = CreateShortCondition(symbol, timeframe);
-   IMoneyManagementStrategy *longMoneyManagement = new LongMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
-   IMoneyManagementStrategy *shortMoneyManagement = new ShortMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value, leverage_override);
+   IMoneyManagementStrategy *longMoneyManagement = new LongMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value);
+   IMoneyManagementStrategy *shortMoneyManagement = new ShortMoneyManagementStrategy(tradingCalculator, lots_type, lots_value, stop_loss_type, stop_loss_value, take_profit_type, take_profit_value);
    ICondition *exitLongCondition = CreateExitLongCondition(symbol, timeframe);
    ICondition *exitShortCondition = CreateExitShortCondition(symbol, timeframe);
    switch (logic_direction)

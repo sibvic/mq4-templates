@@ -31,7 +31,7 @@ public:
 };
 
 #ifdef USE_ATR_TRAILLING
-#include <TrailingControllerATR.mq4>
+#include <TrailingController/TrailingControllerATR.mq4>
 #endif
 
 class TrailingController : public ITrailingController

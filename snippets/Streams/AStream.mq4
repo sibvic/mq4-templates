@@ -1,5 +1,8 @@
-
+// Abstract stream v1.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+
+#ifndef AStream_IMP
+#include <IStream.mq4>
 
 class AStream : public IStream
 {
@@ -41,3 +44,5 @@ public:
          delete &this;
    }
 };
+#define AStream_IMP
+#endif

@@ -144,12 +144,12 @@ public:
 #endif
 
       bool exitAll = _exitAllCondition.IsPass(tradePeriod);
-      if (exitAll || (_exitLongCondition.IsPass(tradePeriod) && !_exitLongCondition.IsPass(tradePeriod + 1)))
+      if (exitAll || _exitLongCondition.IsPass(tradePeriod))
       {
          if (_entryStrategy.Exit(BuySide) > 0)
             _signaler.SendNotifications("Exit Buy");
       }
-      if (exitAll || (_exitShortCondition.IsPass(tradePeriod) && !_exitShortCondition.IsPass(tradePeriod + 1)))
+      if (exitAll || _exitShortCondition.IsPass(tradePeriod))
       {
          if (_entryStrategy.Exit(SellSide) > 0)
             _signaler.SendNotifications("Exit Sell");
@@ -163,7 +163,7 @@ public:
       if (current_time == _lastbartime)
          return;
 
-      if (_longCondition.IsPass(tradePeriod) && !_longCondition.IsPass(tradePeriod + 1))
+      if (_longCondition.IsPass(tradePeriod))
       {
 #ifdef POSITION_CAP_FEATURE
          if (_longPositionCap.IsLimitHit())
@@ -189,7 +189,7 @@ public:
          }
          _signaler.SendNotifications("Buy");
       }
-      if (_shortCondition.IsPass(tradePeriod) && !_shortCondition.IsPass(tradePeriod + 1))
+      if (_shortCondition.IsPass(tradePeriod))
       {
 #ifdef POSITION_CAP_FEATURE
          if (_shortPositionCap.IsLimitHit())

@@ -5,6 +5,8 @@
 #property description "Developed by Victor Tereschenko: sibvic@gmail.com"
 #property strict
 
+#define ACT_ON_SWITCH_CONDITION
+
 #define SHOW_ACCOUNT_STAT
 #ifdef SHOW_ACCOUNT_STAT
 string EA_NAME = "[EA NAME]";
@@ -67,11 +69,13 @@ REVERSABLE_LOGIC_FEATURE LogicDirection logic_direction = DirectLogic; // Logic 
    bool close_on_opposite = false;
 #endif
 
-POSITION_CAP_FEATURE string CapSection = ""; // == Position cap ==
-POSITION_CAP_FEATURE bool position_cap = false; // Position Cap
-POSITION_CAP_FEATURE int no_of_positions = 1; // Max # of buy+sell positions
-POSITION_CAP_FEATURE int no_of_buy_position = 1; // Max # of buy positions
-POSITION_CAP_FEATURE int no_of_sell_position = 1; // Max # of sell positions
+#ifdef POSITION_CAP_FEATURE
+input string CapSection = ""; // == Position cap ==
+input bool position_cap = false; // Position Cap
+input int no_of_positions = 1; // Max # of buy+sell positions
+input int no_of_buy_position = 1; // Max # of buy positions
+input int no_of_sell_position = 1; // Max # of sell positions
+#endif
 
 #ifdef MARTINGALE_FEATURE
 input string MartingaleSection = ""; // == Martingale type ==
@@ -172,6 +176,7 @@ bool ecn_broker = false;
 #include <InstrumentInfo.mq4>
 #include <conditions/ICondition.mq4>
 #include <conditions/ABaseCondition.mq4>
+#include <conditions/ActOnSwitchCondition.mq4>
 #include <condition.mq4>
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
@@ -259,7 +264,12 @@ ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    if (trading_side == ShortSideOnly)
       return (ICondition *)new DisabledCondition();
 
-   return (ICondition *)new LongCondition(symbol, timeframe);
+   LongCondition* condition = new LongCondition(symbol, timeframe);
+   #ifdef ACT_ON_SWITCH_CONDITION
+   return new ActOnSwitchCondition(condition);
+   #else
+   return (ICondition *)condition;
+   #endif
 }
 
 ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
@@ -267,17 +277,32 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    if (trading_side == ShortSideOnly)
       return (ICondition *)new DisabledCondition();
 
-   return (ICondition *)new ShortCondition(symbol, timeframe);
+   ShortCondition* condition = new ShortCondition(symbol, timeframe);
+   #ifdef ACT_ON_SWITCH_CONDITION
+   return new ActOnSwitchCondition(condition);
+   #else
+   return (ICondition *)condition;
+   #endif
 }
 
 ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
-   return new ExitLongCondition(symbol, timeframe);
+   ExitLongCondition* condition = new ExitLongCondition(symbol, timeframe);
+   #ifdef ACT_ON_SWITCH_CONDITION
+   return new ActOnSwitchCondition(condition);
+   #else
+   return (ICondition *)condition;
+   #endif
 }
 
 ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
-   return new ExitShortCondition(symbol, timeframe);
+   ExitShortCondition* condition = new ExitShortCondition(symbol, timeframe);
+   #ifdef ACT_ON_SWITCH_CONDITION
+   return new ActOnSwitchCondition(condition);
+   #else
+   return (ICondition *)condition;
+   #endif
 }
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)

@@ -80,3 +80,7 @@ Usage:
                 _streams.Set(value[i], i, 2);
         }
     }
+
+## StDevStream
+
+Standard deviation stream

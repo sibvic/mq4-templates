@@ -4,13 +4,13 @@
 
 class MoveNetStopLossAction : public AAction
 {
-   TradeCalculator *_calculator;
+   TradingCalculator *_calculator;
    int _magicNumber;
    double _stopLoss;
    StopLimitType _type;
    Signaler *_signaler;
 public:
-   MoveNetStopLossAction(TradeCalculator *calculator, StopLimitType type, const double stopLoss, Signaler *signaler, const int magicNumber)
+   MoveNetStopLossAction(TradingCalculator *calculator, StopLimitType type, const double stopLoss, Signaler *signaler, const int magicNumber)
    {
       _type = type;
       _calculator = calculator;

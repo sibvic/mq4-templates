@@ -21,8 +21,8 @@ string GenerateIndicatorName(const string target)
 }
 
 #include "conditions/ICondition.mq4"
-#include "conditions/ABaseCondition.mq4"
 #include "InstrumentInfo.mq4"
+#include "conditions/ABaseCondition.mq4"
 #include "Streams/IStream.mq4"
 #include "Streams/AStream.mq4"
 #include "Streams/PriceStream.mq4"

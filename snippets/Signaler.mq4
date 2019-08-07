@@ -1,7 +1,7 @@
 //Signaler v 1.7
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 extern string   AlertsSection            = ""; // == Alerts ==
-extern bool     popup_alert              = true; // Popup message
+extern bool     popup_alert              = false; // Popup message
 extern bool     notification_alert       = false; // Push notification
 extern bool     email_alert              = false; // Email
 extern bool     play_sound               = false; // Play sound on alert

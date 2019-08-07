@@ -1,4 +1,4 @@
-// Trading controller v4.0
+// Trading controller v4.1
 class TradingController
 {
    ENUM_TIMEFRAMES _timeframe;
@@ -165,6 +165,7 @@ public:
 
       if (_longCondition.IsPass(tradePeriod))
       {
+         _closeOnOpposite.DoClose(SellSide);
 #ifdef POSITION_CAP_FEATURE
          if (_longPositionCap.IsLimitHit())
          {
@@ -172,7 +173,6 @@ public:
             return;
          }
 #endif
-         _closeOnOpposite.DoClose(SellSide);
          for (int i = 0; i < ArraySize(_longMoneyManagement); ++i)
          {
             double stopLoss = 0.0;
@@ -191,6 +191,7 @@ public:
       }
       if (_shortCondition.IsPass(tradePeriod))
       {
+         _closeOnOpposite.DoClose(BuySide);
 #ifdef POSITION_CAP_FEATURE
          if (_shortPositionCap.IsLimitHit())
          {
@@ -198,8 +199,6 @@ public:
             return;
          }
 #endif
-         _closeOnOpposite.DoClose(BuySide);
-
          for (int i = 0; i < ArraySize(_shortMoneyManagement); ++i)
          {
             double stopLoss = 0.0;

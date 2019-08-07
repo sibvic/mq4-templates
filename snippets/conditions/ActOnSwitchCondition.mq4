@@ -17,7 +17,7 @@ public:
 
    virtual bool IsPass(const int period)
    {
-      return _condition.IsPass(period) && !_condition.IsPass(period) + 1;
+      return _condition.IsPass(period) && !_condition.IsPass(period + 1);
    }
 };
 #define ActOnSwitchCondition_IMP

@@ -238,6 +238,24 @@ Order entity.
 
 Controller for trailing.
 
+Usage:
+
+    TrailingLogic* trailingController = NULL;
+    Signaler* signaler = NULL;
+
+    int init()
+    {
+        trailingController = new TrailingLogic(trailing_type, trailing_step, 0, trailing_start, timeframe, signaler);
+    }
+
+    int start()
+    {
+        trailingController.DoLogic();
+        
+        int order = 0;
+        trailingController.Create(order, distance_to_stop_in_pips);
+    }
+
 ## MoneyManagement
 
 Money management.

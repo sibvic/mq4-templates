@@ -20,6 +20,9 @@ input color    Up_Color                 = clrLime;
 input color    Dn_Color                 = clrRed;
 input color    Neutral_Color            = clrDarkGray;
 input int x_shift = 1000; // X coordinate
+input int font_size = 10; // Font Size;
+input int cell_width = 120; // Cell width
+input int cell_height = 30; // Cell height
 
 #define MAX_LOOPBACK 500
 
@@ -98,7 +101,7 @@ class LabelCell : public ICell
    string _id; string _text; int _x; int _y;
 public:
    LabelCell(const string id, const string text, const int x, const int y) { _id = id; _text = text; _x = x; _y = y; } 
-   virtual void Draw() { ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, 1, WindowNumber, "Arial", 12); }
+   virtual void Draw() { ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, 1, WindowNumber, "Arial", font_size); }
 };
 
 #define ENTER_BUY_SIGNAL 1
@@ -133,7 +136,7 @@ public:
       int barsBack;
       int direction = GetDirection(barsBack); 
       string label = direction != 0 ? IntegerToString(barsBack) : "-";
-      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size);
    }
 
 private:
@@ -180,7 +183,7 @@ public:
    { 
       string label;
       int direction = GetDirection(label); 
-      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
    }
 
 private:
@@ -228,7 +231,7 @@ public:
    virtual void Draw()
    { 
       int direction = GetDirection(); 
-      ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", 10); 
+      ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
    }
 
 private:
@@ -328,7 +331,7 @@ class GridBuilder
    Iterator xIterator;
 public:
    GridBuilder(int x)
-      :xIterator(x, -120)
+      :xIterator(x, -cell_width)
    {
       Original_x = x;
       grid = new Grid();
@@ -339,7 +342,7 @@ public:
       split(sym_arr, symbols, ",");
       sym_count = ArraySize(sym_arr);
 
-      Iterator yIterator(50, 30);
+      Iterator yIterator(50, cell_height);
       Row *row = grid.AddRow();
       row.Add(new EmptyCell());
       for (int i = 0; i < sym_count; i++)
@@ -353,7 +356,7 @@ public:
       int x = xIterator.GetNext();
       Row *row = grid.AddRow();
       row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, 20));
-      Iterator yIterator(50, 30);
+      Iterator yIterator(50, cell_height);
       for (int i = 0; i < sym_count; i++)
       {
          row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
@@ -389,6 +392,76 @@ private:
    }
 };
 
+// void OnChartEvent(const int id,
+//                   const long &lparam,
+//                   const double &dparam,
+//                   const string &sparam)
+// {
+//    handleButtonClicks();
+// }
+
+// void handleButtonClicks()
+// {
+//    int pair_num = ArraySize(pairs) - 1;
+//    for (int p = 0; p < pair_num; p++)
+//    {
+//       string pair = pairs[p];
+//       for (int t = 0; t < ArraySize(iTF); t++)
+//       {  
+//          if (!bTF[t])
+//             continue;
+      
+//          string arrow_id = Pref + "AO direction " + pair + " " + sTF[t];
+//          if (ObjectGetInteger(0, arrow_id, OBJPROP_STATE))
+//          {
+//             ObjectSetInteger(0, arrow_id, OBJPROP_STATE, false);
+//             ChartSetSymbolPeriod(0, pair, iTF[t]);
+//             return;
+//          }
+//       }
+//       string symbolId = "ADR " + pair;
+//       if (ObjectGetInteger(0, symbolId, OBJPROP_STATE))
+//       {
+//          ObjectSetInteger(0, symbolId, OBJPROP_STATE, false);
+//          ChartOpen(pair, _Period);
+//          return;
+//       }
+//    }
+// }
+
+// void DrawSymbolButton(string name, int corn, int x, int y, int width, int height, string symbol, color Clr=Green, int Win=0, int FSize=10)
+// {
+//    int Error = ObjectFind(name);
+//    if (Error != Win)
+//       ObjectCreate(name, OBJ_BUTTON, Win, 0, 0);
+     
+//    ObjectSet(name, OBJPROP_CORNER, corn);
+//    ObjectSet(name, OBJPROP_XDISTANCE, x);
+//    ObjectSet(name, OBJPROP_YDISTANCE, y);
+//    ObjectSetString(0, name, OBJPROP_FONT, "Arial");
+//    ObjectSetString(0, name, OBJPROP_TEXT, symbol);
+//    ObjectSetInteger(0, name, OBJPROP_COLOR, Clr);
+//    ObjectSetInteger(0, name, OBJPROP_XSIZE, width);
+//    ObjectSetInteger(0, name, OBJPROP_YSIZE, height);
+//    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
+// }
+ 
+// void DrawButton(string name, int corn, int x, int y, int code=0, color Clr=Green, int Win=0, int FSize=10)
+// {
+//    int Error = ObjectFind(name);
+//    if (Error != Win)
+//       ObjectCreate(name, OBJ_BUTTON, Win, 0, 0);
+     
+//    ObjectSet(name, OBJPROP_CORNER, corn);
+//    ObjectSet(name, OBJPROP_XDISTANCE, x);
+//    ObjectSet(name, OBJPROP_YDISTANCE, y);
+//    ObjectSetString(0, name, OBJPROP_FONT, "Wingdings");
+//    ObjectSetString(0, name, OBJPROP_TEXT, CharToStr(code));
+//    ObjectSetInteger(0, name, OBJPROP_COLOR, Clr);
+//    ObjectSetInteger(0, name, OBJPROP_XSIZE, 13);
+//    ObjectSetInteger(0, name, OBJPROP_YSIZE, 13);
+//    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
+// }
 
 int init()
 {
@@ -420,6 +493,8 @@ int init()
 
    grid = builder.Build();
 
+   //ChartSetInteger(0, CHART_EVENT_MOUSE_MOVE, 1);
+
    return(0);
 }
 
@@ -433,6 +508,7 @@ int deinit()
 
 int start()
 {
+   //handleButtonClicks();
    WindowNumber = WindowFind(IndicatorName);
    grid.Draw();
    

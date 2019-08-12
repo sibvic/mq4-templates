@@ -61,3 +61,7 @@ True when the spread less that the specified amount.
 ## AndCondition
 
 True when all subconditions are true.
+
+## SecondsBeforeCandleClose
+
+True when there is n seconds remained before candle close.

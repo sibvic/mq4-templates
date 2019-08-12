@@ -225,11 +225,9 @@ enum OrderSide
 #include <Order.mq4>
 #include <Actions/IAction.mq4>
 #include <Actions/AAction.mq4>
-#include <Actions/MoveToBreakevenAction.mq4>
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
-#include <breakeven.mq4>
 #include <TrailingController.mq4>
 #ifdef NET_STOP_LOSS_FEATURE
 #include <Actions/MoveNetStopLossAction.mq4>
@@ -251,6 +249,7 @@ enum OrderSide
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
 #include <MandatoryClosing.mq4>
+#include <Actions/MoveStopLossOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
 
@@ -331,14 +330,16 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
    TradingController *controller = new TradingController(tradingCalculator, timeframe, signaler);
    controller.SetActions(actions);
-   if (breakeven_type == StopLimitDoNotUse)
-      controller.SetBreakeven(new DisabledBreakevenLogic());
-   else
+   if (breakeven_type != StopLimitDoNotUse)
+   {
       #ifdef USE_NET_BREAKEVEN
-         controller.SetBreakeven(new NetBreakevenLogic(tradingCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
+      //TODO:controller.SetBreakeven(new NetBreakevenLogic(tradingCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
       #else
-         controller.SetBreakeven(new BreakevenLogic(breakeven_type, breakeven_value, breakeven_level, signaler, actions));
+      MoveStopLossOnProfitOrderAction* orderAction = new MoveStopLossOnProfitOrderAction(breakeven_type, breakeven_value, breakeven_level, signaler, actions);
+      controller.AddOrderAction(orderAction);
+      orderAction.Release();
       #endif
+   }
 
    if (trailing_type == TrailingDontUse)
       controller.SetTrailing(new DisabledTrailingLogic());

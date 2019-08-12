@@ -1,10 +1,12 @@
-// Trading controller v4.1
+// Trading controller v5.0
+
+#include <actions/AOrderAction.mq4>
+
 class TradingController
 {
    ENUM_TIMEFRAMES _timeframe;
    datetime _lastbartime;
    double _lastLot;
-   IBreakevenLogic *_breakeven;
    ActionOnConditionLogic* actions;
    ITrailingLogic *_trailing;
    Signaler *_signaler;
@@ -31,6 +33,7 @@ class TradingController
    IMandatoryClosingLogic *_mandatoryClosing;
    string _algorithmId;
    ActionOnConditionLogic* _actions;
+   AOrderAction* _orderHandlers[];
 public:
    TradingController(TradingCalculator *calculator, ENUM_TIMEFRAMES timeframe, Signaler *signaler, const string algorithmId = "")
    {
@@ -60,6 +63,10 @@ public:
 
    ~TradingController()
    {
+      for (int i = 0; i < ArraySize(_orderHandlers); ++i)
+      {
+         delete _orderHandlers[i];
+      }
       delete _actions;
       delete _mandatoryClosing;
       delete _entryStrategy;
@@ -85,16 +92,21 @@ public:
       delete _exitShortCondition;
       delete _calculator;
       delete _signaler;
-      delete _breakeven;
       delete _trailing;
       delete _longCondition;
       delete _shortCondition;
       delete _tradingTime;
    }
 
+   void AddOrderAction(AOrderAction* orderAction)
+   {
+      int count = ArraySize(_orderHandlers);
+      ArrayResize(_orderHandlers, count + 1);
+      _orderHandlers[count] = orderAction;
+      orderAction.AddRef();
+   }
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
    void SetTradingTime(TradingTime *tradingTime) { _tradingTime = tradingTime; }
-   void SetBreakeven(IBreakevenLogic *breakeven) { _breakeven = breakeven; }
    void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }
    void SetLongCondition(ICondition *condition) { _longCondition = condition; }
    void SetShortCondition(ICondition *condition) { _shortCondition = condition; }
@@ -180,10 +192,13 @@ public:
             if (order >= 0)
             {
                _lastbartime = current_time;
+               for (int orderHandlerIndex = 0; orderHandlerIndex < ArraySize(_orderHandlers); ++orderHandlerIndex)
+               {
+                  _orderHandlers[orderHandlerIndex].DoAction(order);
+               }
 #ifdef MARTINGALE_FEATURE
                _longMartingale.OnOrder(order);
 #endif
-               _breakeven.CreateBreakeven(order, tradePeriod);
                _trailing.Create(order, (_calculator.GetAsk() - stopLoss) / _calculator.GetPipSize());
             }
          }
@@ -206,10 +221,13 @@ public:
             if (order >= 0)
             {
                _lastbartime = current_time;
+               for (int orderHandlerIndex = 0; orderHandlerIndex < ArraySize(_orderHandlers); ++orderHandlerIndex)
+               {
+                  _orderHandlers[orderHandlerIndex].DoAction(order);
+               }
 #ifdef MARTINGALE_FEATURE
                _shortMartingale.OnOrder(order);
 #endif
-               _breakeven.CreateBreakeven(order, tradePeriod);
                _trailing.Create(order, (stopLoss - _calculator.GetBid()) / _calculator.GetPipSize());
             }
          }

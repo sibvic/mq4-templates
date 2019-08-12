@@ -27,3 +27,7 @@ Used to execute action on orders.
 ## MoveStopLossOnProfitOrderAction
 
 Creates MoveNetStopLossAction for orders.
+
+## CloseOrderAction
+
+Closes order.

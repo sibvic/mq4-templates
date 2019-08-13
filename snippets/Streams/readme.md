@@ -84,3 +84,8 @@ Usage:
 ## StDevStream
 
 Standard deviation stream
+
+## CandleStreams and ColoredStream
+
+Builds bar stream and multi-color stream.
+

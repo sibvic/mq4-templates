@@ -131,10 +131,6 @@ Set of averages.
 
 Shows alerts.
 
-## CandleStreams and ColoredStream
-
-Builds bar stream and multi-color stream.
-
 ## CloseOnOpposite
 
 Close on oppisite logic.

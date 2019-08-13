@@ -1,4 +1,4 @@
-//Visibility controller v1.0
+//Visibility controller v1.1
 class VisibilityCotroller
 {
    string buttonId;
@@ -6,7 +6,7 @@ class VisibilityCotroller
    bool show_data;
    bool recalc;
 public:
-   void Init(string id, string indicatorName)
+   void Init(string id, string indicatorName, string caption, int x, int y)
    {
       recalc = false;
       visibilityId = indicatorName + "_visibility";
@@ -16,9 +16,9 @@ public:
          
       buttonId = id;
       ChartSetInteger(0, CHART_EVENT_MOUSE_MOVE, 1);
-      createButton(buttonId, "WALT", 65, 20, "Impact", 8, clrDarkRed, clrBlack, clrWhite);
-      ObjectSetInteger(0, buttonId, OBJPROP_YDISTANCE, button_y);
-      ObjectSetInteger(0, buttonId, OBJPROP_XDISTANCE, button_x);
+      createButton(buttonId, caption, 65, 20, "Impact", 8, clrDarkRed, clrBlack, clrWhite);
+      ObjectSetInteger(0, buttonId, OBJPROP_YDISTANCE, x);
+      ObjectSetInteger(0, buttonId, OBJPROP_XDISTANCE, y);
    }
 
    bool HandleButtonClicks()

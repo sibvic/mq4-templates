@@ -281,13 +281,16 @@ Martingale strategy.
 Used for show/hide indicator data button.
 
 Usage:
+        
+    extern int button_x = 20;
+    extern int button_y = 30;
 
     VisibilityCotroller _visibility;
 
     int init() 
     {
         //...
-        _visibility.Init("CloseButton", "My indicator");
+        _visibility.Init("CloseButton", "My indicator", "Show/Hide", button_x, button_y);
         return (0);
     }
 

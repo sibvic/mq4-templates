@@ -275,3 +275,43 @@ Creates an order.
 ## MartingaleStrategy
 
 Martingale strategy.
+
+## VisibilityCotroller
+
+Used for show/hide indicator data button.
+
+Usage:
+
+    VisibilityCotroller _visibility;
+
+    int init() 
+    {
+        //...
+        _visibility.Init("CloseButton", "My indicator");
+        return (0);
+    }
+
+    int start()
+    {
+        _visibility.HandleButtonClicks();
+        if (!_visibility.IsVisible())
+        {
+            Clean();
+            return 0;
+        }
+        int limit = Bars - 2;
+        if (IndicatorCounted() > 2 && !_visibility.IsRecalcNeeded()) 
+            limit = Bars - IndicatorCounted() - 1;
+        _visibility.ResetRecalc();
+        //calc data
+    }
+
+    void OnChartEvent(const int id,
+                    const long &lparam,
+                    const double &dparam,
+                    const string &sparam)
+    {
+        if (_visibility.HandleButtonClicks())
+            start();
+    }
+

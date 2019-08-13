@@ -1,4 +1,4 @@
-// Move net take profit action v 1.0
+// Move net take profit action v 1.1
 
 #ifndef MoveNetTakeProfitAction_IMP
 
@@ -23,7 +23,7 @@ public:
    {
       MoveTakeProfit(OP_BUY);
       MoveTakeProfit(OP_SELL);
-      return true;
+      return false;
    }
 private:
    void MoveTakeProfit(const int side)

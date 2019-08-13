@@ -4,7 +4,16 @@
 #property strict
 #property indicator_chart_window
 //#property indicator_separate_window
-#property indicator_buffers 2
+#property indicator_buffers 8
+
+enum DisplayType
+{
+   Arrows, // Arrows
+   Candles // Candles Color
+};
+input DisplayType Type = Arrows; // Presentation Type
+input color up_color = Green; // Up color
+input color down_color = Red; // Down color
 
 string IndicatorName;
 string IndicatorObjPrefix;
@@ -20,15 +29,16 @@ string GenerateIndicatorName(const string target)
    return name;
 }
 
-#include "conditions/ICondition.mq4"
-#include "InstrumentInfo.mq4"
-#include "conditions/ABaseCondition.mq4"
-#include "Streams/IStream.mq4"
-#include "Streams/AStream.mq4"
-#include "Streams/PriceStream.mq4"
-#include "condition.mq4"
-#include "signaler.mq4"
-#include "AlertSignal.mq4"
+#include <conditions/ICondition.mq4>
+#include <InstrumentInfo.mq4>
+#include <conditions/ABaseCondition.mq4>
+#include <Streams/IStream.mq4>
+#include <Streams/AStream.mq4>
+#include <Streams/PriceStream.mq4>
+#include <condition.mq4>
+#include <signaler.mq4>
+#include <AlertSignal.mq4>
+#include <CandleStreams.mq4>
 
 AlertSignal* up;
 AlertSignal* down;
@@ -77,17 +87,26 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
-   PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
-
+   ICondition* upCondition = Complet ? new UpAlertConditionComplet(_Symbol, (ENUM_TIMEFRAMES)_Period) : new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* downCondition = Complet ? new DownAlertConditionComplet(_Symbol, (ENUM_TIMEFRAMES)_Period) : new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   up = new AlertSignal(upCondition, mainSignaler);
+   down = new AlertSignal(downCondition, mainSignaler);
+      
    int id = 0;
-   up = new AlertSignal(new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), highStream, mainSignaler);
-   id = up.RegisterStreams(id, "Up", 218, Red);
-   down = new AlertSignal(new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), lowStream, mainSignaler);
-   id = down.RegisterStreams(id, "Down", 217, Green);
-   lowStream.Release();
-   highStream.Release();
+   if (Type == Arrows)
+   {
+      PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+      PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
+      id = up.RegisterStreams(id, "Up", 217, up_color, highStream);
+      id = down.RegisterStreams(id, "Down", 218, down_color, lowStream);
+      lowStream.Release();
+      highStream.Release();
+   }
+   else
+   {
+      id = up.RegisterStreams(id, up_color);
+      id = down.RegisterStreams(id, down_color);
+   }
 
    return 0;
 }

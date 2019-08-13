@@ -1,4 +1,4 @@
-// Move net stop loss action v 1.0
+// Move net stop loss action v 1.1
 
 #ifndef MoveNetStopLossAction_IMP
 
@@ -23,7 +23,7 @@ public:
    {
       MoveStopLoss(OP_BUY);
       MoveStopLoss(OP_SELL);
-      return true;
+      return false;
    }
 private:
    void MoveStopLoss(const int side)

@@ -1,3 +1,10 @@
+// Indicator trailing logic v1.0
+
+#ifndef IndicatorTrailingLogic_IMP
+#define IndicatorTrailingLogic_IMP
+
+#include <../Streams/IStreamFactory.mq4>
+
 class IndicatorTrailingLogic : public ITrailingLogic
 {
    ITrailingController *_trailing[];
@@ -67,3 +74,5 @@ public:
       _trailing[i_count] = trailingController;
    }
 };
+
+#endif

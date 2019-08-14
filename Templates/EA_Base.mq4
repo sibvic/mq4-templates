@@ -16,19 +16,20 @@ string EA_NAME = "[EA NAME]";
 
 #define STOP_LOSS_FEATURE input
 #define USE_ATR_TRAILLING
-#define NET_STOP_LOSS_FEATURE input
+#define NET_STOP_LOSS_FEATURE
 #define USE_NET_BREAKEVEN
+//#define INDICATOR_BASED_TRAILING
 
 #define TAKE_PROFIT_FEATURE input
-#define NET_TAKE_PROFIT_FEATURE input
+#define NET_TAKE_PROFIT_FEATURE
 
-#define MARTINGALE_FEATURE input
+#define MARTINGALE_FEATURE
 #define USE_MARKET_ORDERS
 
 #define WEEKLY_TRADING_TIME_FEATURE input
 #define TRADING_TIME_FEATURE input
 
-#define POSITION_CAP_FEATURE input
+#define POSITION_CAP_FEATURE 
 
 #define CUSTOM_EXIT_FEATURE
 
@@ -106,10 +107,14 @@ STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
 enum TrailingType
 {
    TrailingDontUse, // No trailing
+#ifdef INDICATOR_BASED_TRAILING
+   TrailingIndicator, // Based on indicator
+#else
    TrailingPips, // Use trailing in pips
    TrailingPercent // Use trailing in % of stop
-#ifdef USE_ATR_TRAILLING
+   #ifdef USE_ATR_TRAILLING
    ,TrailingATR // Use ATR trailing
+   #endif
 #endif
 };
 enum StopLimitType
@@ -181,8 +186,8 @@ bool ecn_broker = false;
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
 #endif
-#ifndef USE_MARKET_ORDERS
 #include <Streams/AStream.mq4>
+#ifndef USE_MARKET_ORDERS
 class LongEntryStream : public AStream
 {
 public:
@@ -228,7 +233,12 @@ enum OrderSide
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
+#ifdef INDICATOR_BASED_TRAILING
+#include <TrailingController/StreamTrailingController.mq4>
+#include <TrailingController/IndicatorTrailingLogic.mq4>
+#else
 #include <TrailingController.mq4>
+#endif
 #ifdef NET_STOP_LOSS_FEATURE
 #include <Actions/MoveNetStopLossAction.mq4>
 #endif
@@ -304,6 +314,13 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
+#ifdef INDICATOR_BASED_TRAILING
+IStreamFactory* CreateTrailingStreamFactory(const string symbol, const ENUM_TIMEFRAMES timeframe)
+{
+   return NULL;
+}
+#endif
+
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
 {
    TradingTime *tradingTime = new TradingTime();
@@ -344,10 +361,14 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    if (trailing_type == TrailingDontUse)
       controller.SetTrailing(new DisabledTrailingLogic());
    else
-      #ifdef USE_ATR_TRAILLING
-         controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, atr_trailing_multiplier, 0, timeframe, signaler));
+      #ifdef INDICATOR_BASED_TRAILING
+      controller.SetTrailing(new IndicatorTrailingLogic(CreateTrailingStreamFactory(symbol, timeframe), signaler));
       #else
-         controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, 0, trailing_start, timeframe, signaler));
+         #ifdef USE_ATR_TRAILLING
+      controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, atr_trailing_multiplier, 0, timeframe, signaler));
+         #else
+      controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, 0, trailing_start, timeframe, signaler));
+         #endif
       #endif
 
    controller.SetTradingTime(tradingTime);

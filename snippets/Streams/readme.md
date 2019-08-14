@@ -89,3 +89,14 @@ Standard deviation stream
 
 Builds bar stream and multi-color stream.
 
+## IStreamFactory
+
+Stream factory.
+
+## StreamFactory
+
+Stream factory dummy.
+
+## StdAveragesStream
+
+Returns iMA value

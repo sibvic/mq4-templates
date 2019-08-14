@@ -1,3 +1,8 @@
+// Price stream v1.0
+
+#ifndef PriceStream_IMP
+#define PriceStream_IMP
+#include <AStream.mq4>
 enum PriceType
 {
    PriceClose = PRICE_CLOSE, // Close
@@ -17,10 +22,10 @@ class PriceStream : public AStream
 {
    PriceType _price;
 public:
-   PriceStream(const string symbol, const ENUM_TIMEFRAMES timeframe, const PriceType price)
+   PriceStream(const string symbol, const ENUM_TIMEFRAMES timeframe, const PriceType __price)
       :AStream(symbol, timeframe)
    {
-      _price = price;
+      _price = __price;
    }
 
    bool GetValue(const int period, double &val)
@@ -71,3 +76,4 @@ public:
       return true;
    }
 };
+#endif

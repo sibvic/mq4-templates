@@ -3,6 +3,7 @@
 
 #ifndef AStream_IMP
 #include <IStream.mq4>
+#include <../InstrumentInfo.mq4>
 
 class AStream : public IStream
 {

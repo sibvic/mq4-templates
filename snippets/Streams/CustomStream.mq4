@@ -1,3 +1,10 @@
+// Custom stream v1.0
+
+#ifndef CustomStream_IMP
+#define CustomStream_IMP
+
+#include <AStream.mq4>
+
 class CustomStream : public AStream
 {
 public:
@@ -29,3 +36,5 @@ public:
       return _stream[period] != EMPTY_VALUE;
    }
 };
+
+#endif

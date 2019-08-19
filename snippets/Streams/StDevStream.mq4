@@ -2,6 +2,8 @@
 
 #ifndef StDev_IMP
 
+#include <IStream.mq4>
+
 class StDevStream : public IStream
 {
    int _references;

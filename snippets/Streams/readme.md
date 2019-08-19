@@ -99,4 +99,12 @@ Stream factory dummy.
 
 ## StdAveragesStream
 
-Returns iMA value
+Returns iMA value.
+
+## BoilingerBandStream
+
+Boilinger Band stream.
+
+## SmaOnStream
+
+SMA/MVA stream.

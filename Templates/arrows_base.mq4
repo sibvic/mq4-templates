@@ -1,3 +1,5 @@
+// Arrows base v1.1
+
 #property copyright "Copyright © 2019, "
 #property link      ""
 #property version   "1.0"
@@ -38,7 +40,7 @@ string GenerateIndicatorName(const string target)
 #include <condition.mq4>
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
-#include <CandleStreams.mq4>
+#include <Streams/CandleStreams.mq4>
 
 AlertSignal* up;
 AlertSignal* down;
@@ -104,8 +106,8 @@ int init()
    }
    else
    {
-      id = up.RegisterStreams(id, up_color);
-      id = down.RegisterStreams(id, down_color);
+      id = up.RegisterStreams(id, "Up", up_color);
+      id = down.RegisterStreams(id, "Down", down_color);
    }
 
    return 0;

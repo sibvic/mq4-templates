@@ -1,4 +1,4 @@
-// Alert signal v.2.0
+// Alert signal v.2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AlertSignal_IMP
@@ -44,14 +44,13 @@ public:
       SetIndexArrow(id + 0, code);
       
       return id + 1;
-      return _candleStreams.RegisterStreams(clr);
    }
 
    int RegisterStreams(int id, string name, color clr)
    {
       _message = name;
       _candleStreams = new CandleStreams();
-      return _candleStreams.RegisterStreams(id clr);
+      return _candleStreams.RegisterStreams(id, clr);
    }
 
    void Update(int period)

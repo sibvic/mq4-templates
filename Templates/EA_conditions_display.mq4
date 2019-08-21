@@ -1,5 +1,6 @@
 // EA condition display v1.0
 
+#property version   "1.0"
 #property indicator_separate_window
 #property strict
 #property indicator_buffers 21

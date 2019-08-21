@@ -88,9 +88,10 @@ int init()
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
+   mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
 
-   ICondition* upCondition = Complet ? new UpAlertConditionComplet(_Symbol, (ENUM_TIMEFRAMES)_Period) : new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   ICondition* downCondition = Complet ? new DownAlertConditionComplet(_Symbol, (ENUM_TIMEFRAMES)_Period) : new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* upCondition = new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    up = new AlertSignal(upCondition, mainSignaler);
    down = new AlertSignal(downCondition, mainSignaler);
       

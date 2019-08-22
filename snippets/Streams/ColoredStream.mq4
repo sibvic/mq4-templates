@@ -18,11 +18,11 @@ public:
       return id + 1;
    }
 
-   int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE)
+   int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE, ENUM_LINE_STYLE lineStyle = STYLE_SOLID, int width = 1)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      SetIndexStyle(id + 0, lineType, STYLE_SOLID, 1, clr);
+      SetIndexStyle(id + 0, lineType, lineStyle, width, clr);
       SetIndexBuffer(id + 0, _streams[size].Stream);
       if (label != "")
          SetIndexLabel(id + 0, label);

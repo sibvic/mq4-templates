@@ -99,24 +99,6 @@ public:
    }
 };
 
-class RangeStream : public IStream
-{
-   string _symbol;
-   ENUM_TIMEFRAMES _timeframe;
-public:
-   RangeStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-   {
-      _symbol = symbol;
-      _timeframe = timeframe;
-   }
-
-   virtual bool GetValue(const int period, double &val)
-   {
-      val = iHigh(_symbol, _timeframe, 0) - iLow(_symbol, _timeframe, 0);
-      return true;
-   }
-};
-
 class MoveStream : public IStream
 {
    string _symbol;

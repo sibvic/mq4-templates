@@ -108,3 +108,7 @@ Boilinger Band stream.
 ## SmaOnStream
 
 SMA/MVA stream.
+
+## RangeStream
+
+Range stream.

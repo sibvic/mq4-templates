@@ -1,4 +1,4 @@
-// Grid builder v1.0
+// Grid builder v1.1
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
@@ -9,12 +9,10 @@ class GridBuilder
    Grid *grid;
    int Original_x;
    Iterator xIterator;
-   Signaler* _signaler;
 public:
-   GridBuilder(int x, Signaler* signaler)
+   GridBuilder(int x)
       :xIterator(x, -cell_width)
    {
-      _signaler = signaler;
       Original_x = x;
       grid = new Grid();
    }
@@ -41,7 +39,7 @@ public:
       Iterator yIterator(50, cell_height);
       for (int i = 0; i < sym_count; i++)
       {
-         row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe, _signaler));
+         row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
       }
    }
 

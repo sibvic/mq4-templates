@@ -1,4 +1,4 @@
-// Arrows base v1.1
+// Arrows base v1.2
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -89,6 +89,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
    mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
 
    ICondition* upCondition = new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);

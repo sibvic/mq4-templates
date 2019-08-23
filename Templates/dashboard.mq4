@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.1
+// ProfitRobots Dashboard template v.1.2
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -19,9 +19,9 @@ input color    Labels_Color             = clrWhite;
 input color    Up_Color                 = clrLime;
 input color    Dn_Color                 = clrRed;
 input color    Neutral_Color            = clrDarkGray;
-input int x_shift = 1000; // X coordinate
+input int x_shift = 900; // X coordinate
 input int font_size = 10; // Font Size;
-input int cell_width = 120; // Cell width
+input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
 
 #include <Signaler.mq4>
@@ -334,7 +334,6 @@ Grid *grid;
 //    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
 // }
 
-Signaler* mainSignaler;
 
 int init()
 {
@@ -343,8 +342,6 @@ int init()
       Print("Error: Dll calls must be allowed!");
       return INIT_FAILED;
    }
-   mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
 
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";

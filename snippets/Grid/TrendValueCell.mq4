@@ -1,4 +1,4 @@
-// Trend value cell v1.0
+// Trend value cell v1.1
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -14,9 +14,10 @@ class TrendValueCell : public ICell
    Signaler* _signaler;
    datetime _lastSignalDate;
 public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, Signaler* signaler)
+   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
    { 
-      _signaler = signaler;
+      _signaler = new Signaler(symbol, timeframe);
+      _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
       _id = id; 
       _x = x; 
       _y = y; 
@@ -28,6 +29,7 @@ public:
 
    ~TrendValueCell()
    {
+      delete _signaler;
       delete _upCondition;
       delete _downCondition;
    }

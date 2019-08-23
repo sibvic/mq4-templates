@@ -24,6 +24,8 @@ input int font_size = 10; // Font Size;
 input int cell_width = 120; // Cell width
 input int cell_height = 30; // Cell height
 
+#include <Signaler.mq4>
+
 #define MAX_LOOPBACK 500
 
 string   WindowName;
@@ -205,70 +207,7 @@ private:
    color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
 };
 
-class TrendValueCell : public ICell
-{
-   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
-   ICondition* _upCondition;
-   ICondition* _downCondition;
-public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
-   { 
-      _id = id; 
-      _x = x; 
-      _y = y; 
-      _symbol = symbol; 
-      _timeframe = timeframe; 
-      _upCondition = new UpCondition(_symbol, _timeframe);
-      _downCondition = new DownCondition(_symbol, _timeframe);
-   }
-
-   ~TrendValueCell()
-   {
-      delete _upCondition;
-      delete _downCondition;
-   }
-
-   virtual void Draw()
-   { 
-      int direction = GetDirection(); 
-      ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
-   }
-
-private:
-   int GetDirection()
-   {
-      if (_upCondition.IsPass(0))
-         return ENTER_BUY_SIGNAL;
-      if (_downCondition.IsPass(0))
-         return ENTER_SELL_SIGNAL;
-      // return EXIT_BUY_SIGNAL for the up trend end/exit buy
-      // return EXIT_SELL_SIGNAL for the down trend end/exit sell
-      // return 0 for the neutral/no action
-      return 0;
-   }
-
-   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
-   string GetDirectionSymbol(const int direction)
-   {
-      if (direction == ENTER_BUY_SIGNAL)
-      {
-         return "BUY";
-      }
-      else if (direction == ENTER_SELL_SIGNAL)
-      {
-         return "SELL";
-      }
-      if (direction == EXIT_BUY_SIGNAL)
-      {
-         return "EXIT BUY";
-      }
-      else if (direction == EXIT_SELL_SIGNAL)
-      {
-         return "EXIT SELL";
-      }
-      return "-";
-   }
-};
+#include <Grid/TrendValueCell.mq4>
 
 string IndicatorName;
 string IndicatorObjPrefix;
@@ -322,75 +261,7 @@ public:
 
 Grid *grid;
 
-class GridBuilder
-{
-   string sym_arr[];
-   int sym_count;
-   Grid *grid;
-   int Original_x;
-   Iterator xIterator;
-public:
-   GridBuilder(int x)
-      :xIterator(x, -cell_width)
-   {
-      Original_x = x;
-      grid = new Grid();
-   }
-
-   void SetSymbols(const string symbols)
-   {
-      split(sym_arr, symbols, ",");
-      sym_count = ArraySize(sym_arr);
-
-      Iterator yIterator(50, cell_height);
-      Row *row = grid.AddRow();
-      row.Add(new EmptyCell());
-      for (int i = 0; i < sym_count; i++)
-      {
-         row.Add(new LabelCell(IndicatorObjPrefix + sym_arr[i] + "_Name", sym_arr[i], Original_x + 80, yIterator.GetNext()));
-      }
-   }
-
-   void AddTimeframe(const string label, const ENUM_TIMEFRAMES timeframe)
-   {
-      int x = xIterator.GetNext();
-      Row *row = grid.AddRow();
-      row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, 20));
-      Iterator yIterator(50, cell_height);
-      for (int i = 0; i < sym_count; i++)
-      {
-         row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
-      }
-   }
-
-   Grid *Build()
-   {
-      return grid;
-   }
-
-private:
-   void split(string& arr[], string str, string sym) 
-   {
-      ArrayResize(arr, 0);
-      int len = StringLen(str);
-      for (int i=0; i < len;)
-      {
-         int pos = StringFind(str, sym, i);
-         if (pos == -1)
-            pos = len;
-   
-         string item = StringSubstr(str, i, pos-i);
-         item = StringTrimLeft(item);
-         item = StringTrimRight(item);
-   
-         int size = ArraySize(arr);
-         ArrayResize(arr, size+1);
-         arr[size] = item;
-   
-         i = pos+1;
-      }
-   }
-};
+#include <Grid/GridBuilder.mq4>
 
 // void OnChartEvent(const int id,
 //                   const long &lparam,
@@ -463,8 +334,18 @@ private:
 //    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
 // }
 
+Signaler* mainSignaler;
+
 int init()
 {
+   if (!IsDllsAllowed() && advanced_alert)
+   {
+      Print("Error: Dll calls must be allowed!");
+      return INIT_FAILED;
+   }
+   mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
+
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);

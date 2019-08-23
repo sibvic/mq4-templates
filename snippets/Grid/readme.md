@@ -1,0 +1,5 @@
+# Grid
+
+## TrendValueCell
+
+Shows trend.

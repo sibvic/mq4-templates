@@ -1,45 +1,81 @@
-// Grid builder v1.1
+// Grid builder v1.2
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
 class GridBuilder
 {
-   string sym_arr[];
-   int sym_count;
+   string _symbols[];
+   int _symbolsCount;
    Grid *grid;
-   int Original_x;
-   Iterator xIterator;
+   int _originalX;
+   int _originalY;
+   Iterator _xIterator;
+   Iterator _yIterator;
+   bool _verticalMode;
 public:
-   GridBuilder(int x)
-      :xIterator(x, -cell_width)
+   GridBuilder(int x, int y, bool verticalMode)
+      :_xIterator(x, -cell_width), _yIterator(y, cell_height)
    {
-      Original_x = x;
+      _verticalMode = verticalMode;
+      _originalY = y;
+      _originalX = x;
       grid = new Grid();
    }
 
    void SetSymbols(const string symbols)
    {
-      split(sym_arr, symbols, ",");
-      sym_count = ArraySize(sym_arr);
+      split(_symbols, symbols, ",");
+      _symbolsCount = ArraySize(_symbols);
 
-      Iterator yIterator(50, cell_height);
-      Row *row = grid.AddRow();
-      row.Add(new EmptyCell());
-      for (int i = 0; i < sym_count; i++)
+      if (_verticalMode)
       {
-         row.Add(new LabelCell(IndicatorObjPrefix + sym_arr[i] + "_Name", sym_arr[i], Original_x + 80, yIterator.GetNext()));
+         Iterator yIterator(_originalY, cell_height);
+         Row *row = grid.AddRow();
+         row.Add(new EmptyCell());
+         for (int i = 0; i < _symbolsCount; i++)
+         {
+            string id = IndicatorObjPrefix + _symbols[i] + "_Name";
+            row.Add(new LabelCell(id, _symbols[i], _originalX + cell_width, yIterator.GetNext()));
+         }
+      }
+      else
+      {
+         Iterator xIterator(_originalX, -cell_width);
+         Row *row = grid.AddRow();
+         row.Add(new EmptyCell());
+         for (int i = 0; i < _symbolsCount; i++)
+         {
+            string id = IndicatorObjPrefix + _symbols[i] + "_Name";
+            row.Add(new LabelCell(id, _symbols[i], xIterator.GetNext(), _originalY - cell_height));
+         }
       }
    }
 
    void AddTimeframe(const string label, const ENUM_TIMEFRAMES timeframe)
    {
-      int x = xIterator.GetNext();
-      Row *row = grid.AddRow();
-      row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, 20));
-      Iterator yIterator(50, cell_height);
-      for (int i = 0; i < sym_count; i++)
+      if (_verticalMode)
       {
-         row.Add(new TrendValueCell(IndicatorObjPrefix + sym_arr[i] + "_" + label, x, yIterator.GetNext(), sym_arr[i], timeframe));
+         int x = _xIterator.GetNext();
+         Row *row = grid.AddRow();
+         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, cell_height));
+         Iterator yIterator(_originalY, cell_height);
+         for (int i = 0; i < _symbolsCount; i++)
+         {
+            string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
+            row.Add(new TrendValueCell(id, x, yIterator.GetNext(), _symbols[i], timeframe));
+         }
+      }
+      else
+      {
+         int y = _yIterator.GetNext();
+         Row *row = grid.AddRow();
+         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, cell_width, y));
+         Iterator xIterator(_originalX, -cell_width);
+         for (int i = 0; i < _symbolsCount; i++)
+         {
+            string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
+            row.Add(new TrendValueCell(id, xIterator.GetNext(), y, _symbols[i], timeframe));
+         }
       }
    }
 

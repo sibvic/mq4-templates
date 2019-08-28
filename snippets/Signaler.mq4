@@ -26,7 +26,6 @@ class Signaler
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
-   datetime _lastDatetime;
    string _prefix;
 public:
    Signaler(const string symbol, ENUM_TIMEFRAMES timeframe)

@@ -387,7 +387,7 @@ int deinit()
 int start()
 {
    //handleButtonClicks();
-   WindowNumber = WindowFind(IndicatorName);
+   WindowNumber = MathMax(0, WindowFind(IndicatorName));
    grid.Draw();
    
    return 0;

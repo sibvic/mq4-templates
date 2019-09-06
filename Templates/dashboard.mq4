@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.2
+// ProfitRobots Dashboard template v.1.3
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -31,8 +31,6 @@ input int cell_height = 30; // Cell height
 string   WindowName;
 int      WindowNumber;
 
-#include <conditions/ICondition.mq4>
-#include <InstrumentInfo.mq4>
 #include <conditions/ABaseCondition.mq4>
 
 class UpCondition : public ABaseCondition
@@ -62,6 +60,16 @@ public:
       return false;
    }
 };
+
+ICondition* CreateUpCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   return new UpCondition(symbol, timeframe);
+}
+
+ICondition* CreateDownCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   return new DownCondition(symbol, timeframe);
+}
 
 // Dashboard v.1.2
 class Iterator
@@ -123,8 +131,8 @@ public:
       _y = y; 
       _symbol = symbol; 
       _timeframe = timeframe; 
-      _upCondition = new UpCondition(_symbol, _timeframe);
-      _downCondition = new DownCondition(_symbol, _timeframe);
+      _upCondition = CreateUpCondition(_symbol, _timeframe);
+      _downCondition = CreateDownCondition(_symbol, _timeframe);
    }
 
    ~BarsBackValueCell()
@@ -171,8 +179,8 @@ public:
       _y = y; 
       _symbol = symbol; 
       _timeframe = timeframe; 
-      _upCondition = new UpCondition(_symbol, _timeframe);
-      _downCondition = new DownCondition(_symbol, _timeframe);
+      _upCondition = CreateUpCondition(_symbol, _timeframe);
+      _downCondition = CreateDownCondition(_symbol, _timeframe);
    }
 
    ~TextValueCell()
@@ -347,7 +355,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift);
+   GridBuilder builder(x_shift, 50, false);
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

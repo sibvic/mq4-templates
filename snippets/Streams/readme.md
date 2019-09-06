@@ -112,3 +112,7 @@ SMA/MVA stream.
 ## RangeStream
 
 Range stream.
+
+## BoilingerBandStandardStream
+
+Boilinger bands using standard MT4 function.

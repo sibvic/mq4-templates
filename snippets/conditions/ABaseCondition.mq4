@@ -1,6 +1,11 @@
 // ABaseCondition v1.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
+#ifndef ABaseCondition_IMP
+#define ABaseCondition_IMP
+#include <ICondition.mq4>
+#include <../InstrumentInfo.mq4>
+
 class ABaseCondition : public ICondition
 {
 protected:
@@ -19,3 +24,4 @@ public:
       delete _instrument;
    }
 };
+#endif

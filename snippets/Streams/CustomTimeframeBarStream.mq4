@@ -1,3 +1,10 @@
+// Custom timeframe bar stream v1.0
+
+#include <ACustomBarStream.mq4>
+
+#ifndef CustomTimeframeBarStream_IMP
+#define CustomTimeframeBarStream_IMP
+
 class CustomTimeframeBarStream : public ACustomBarStream
 {
    string _symbol;
@@ -43,3 +50,4 @@ public:
       }
    }
 };
+#endif

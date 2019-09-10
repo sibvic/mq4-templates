@@ -1,3 +1,10 @@
+// ACustomBarStream v1.1
+
+#include <IBarStream.mq4>
+
+#ifndef ACustomBarStream_IMP
+#define ACustomBarStream_IMP
+
 class ACustomBarStream : public IBarStream
 {
 protected:
@@ -43,7 +50,7 @@ public:
       return true;
    }
 
-   virtual double GetOpen(const int period, double &open)
+   virtual bool GetOpen(const int period, double &open)
    {
       if (_size <= period)
          return false;
@@ -51,7 +58,7 @@ public:
       return true;
    }
 
-   virtual double GetHigh(const int period, double &high)
+   virtual bool GetHigh(const int period, double &high)
    {
       if (_size <= period)
          return false;
@@ -59,7 +66,7 @@ public:
       return true;
    }
 
-   virtual double GetLow(const int period, double &low)
+   virtual bool GetLow(const int period, double &low)
    {
       if (_size <= period)
          return false;
@@ -67,7 +74,7 @@ public:
       return true;
    }
 
-   virtual double GetClose(const int period, double &close)
+   virtual bool GetClose(const int period, double &close)
    {
       if (_size <= period)
          return false;
@@ -116,3 +123,4 @@ public:
       return _size;
    }
 };
+#endif

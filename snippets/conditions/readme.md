@@ -65,3 +65,7 @@ True when all subconditions are true.
 ## SecondsBeforeCandleClose
 
 True when there is n seconds remained before candle close.
+
+## PriceOutsideBandCondition
+
+Price outside Boilinger bands condition.

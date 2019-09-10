@@ -4,6 +4,12 @@
 #property indicator_separate_window
 #property strict
 
+enum DisplayMode
+{
+   Vertical,
+   Horizontal
+};
+
 input string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
 input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD,GBPJPY,EURGBP,AUDUSD,NZDUSD";
 input bool     Include_M1               = true;
@@ -20,6 +26,7 @@ input color    Up_Color                 = clrLime;
 input color    Dn_Color                 = clrRed;
 input color    Neutral_Color            = clrDarkGray;
 input int x_shift = 900; // X coordinate
+input DisplayMode display_mode = Horizontal; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
@@ -355,7 +362,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, false);
+   GridBuilder builder(x_shift, 50, display_mode == Vertical);
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

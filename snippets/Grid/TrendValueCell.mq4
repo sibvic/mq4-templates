@@ -1,4 +1,4 @@
-// Trend value cell v1.1
+// Trend value cell v1.2
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -23,8 +23,8 @@ public:
       _y = y; 
       _symbol = symbol; 
       _timeframe = timeframe; 
-      _upCondition = new UpCondition(_symbol, _timeframe);
-      _downCondition = new DownCondition(_symbol, _timeframe);
+      _upCondition = CreateUpCondition(_symbol, _timeframe);
+      _downCondition = CreateDownCondition(_symbol, _timeframe);
    }
 
    ~TrendValueCell()

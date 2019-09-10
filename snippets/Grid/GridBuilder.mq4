@@ -1,4 +1,4 @@
-// Grid builder v1.2
+// Grid builder v1.3
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
@@ -40,7 +40,7 @@ public:
       }
       else
       {
-         Iterator xIterator(_originalX, -cell_width);
+         Iterator xIterator(_originalX - cell_width, -cell_width);
          Row *row = grid.AddRow();
          row.Add(new EmptyCell());
          for (int i = 0; i < _symbolsCount; i++)
@@ -69,8 +69,8 @@ public:
       {
          int y = _yIterator.GetNext();
          Row *row = grid.AddRow();
-         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, cell_width, y));
-         Iterator xIterator(_originalX, -cell_width);
+         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _originalX, y));
+         Iterator xIterator(_originalX - cell_width, -cell_width);
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_" + label;

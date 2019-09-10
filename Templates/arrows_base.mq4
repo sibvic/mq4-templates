@@ -1,4 +1,4 @@
-// Arrows base v1.2
+// Arrows base v1.3
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -42,8 +42,7 @@ string GenerateIndicatorName(const string target)
 #include <AlertSignal.mq4>
 #include <Streams/CandleStreams.mq4>
 
-AlertSignal* up;
-AlertSignal* down;
+AlertSignal* conditions[];
 Signaler* mainSignaler;
 
 class UpAlertCondition : public ABaseCondition
@@ -91,25 +90,28 @@ int init()
    mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
    mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
 
+   int id = 0;
+
    ICondition* upCondition = new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   up = new AlertSignal(upCondition, mainSignaler);
-   down = new AlertSignal(downCondition, mainSignaler);
+   int size = ArraySize(conditions);
+   ArrayResize(conditions, size + 2);
+   conditions[size] = new AlertSignal(upCondition, mainSignaler);
+   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler);
       
-   int id = 0;
    if (Type == Arrows)
    {
       PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
       PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
-      id = up.RegisterStreams(id, "Up", 217, up_color, highStream);
-      id = down.RegisterStreams(id, "Down", 218, down_color, lowStream);
+      id = conditions[size].RegisterStreams(id, "Up", 217, up_color, highStream);
+      id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, lowStream);
       lowStream.Release();
       highStream.Release();
    }
    else
    {
-      id = up.RegisterStreams(id, "Up", up_color);
-      id = down.RegisterStreams(id, "Down", down_color);
+      id = conditions[size].RegisterStreams(id, "Up", up_color);
+      id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
    }
 
    return 0;
@@ -119,10 +121,11 @@ int deinit()
 {
    delete mainSignaler;
    mainSignaler = NULL;
-   delete up;
-   up = NULL;
-   delete down;
-   down = NULL;
+   for (int i = 0; i < ArraySize(conditions); ++i)
+   {
+      delete conditions[i];
+   }
+   ArrayResize(conditions, 0);
    ObjectsDeleteAll(ChartID(), IndicatorObjPrefix);
    return 0;
 }
@@ -137,8 +140,11 @@ int start()
    int limit = ExtCountedBars > 1 ? Bars - ExtCountedBars - 1 : Bars - 1;
    for (int pos = limit; pos >= 0; --pos)
    {
-      up.Update(pos);
-      down.Update(pos);
+      for (int i = 0; i < ArraySize(conditions); ++i)
+      {
+         ICondition* item = conditions[i];
+         item.Update(pos);
+      }
    } 
    return 0;
 }

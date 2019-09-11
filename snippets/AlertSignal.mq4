@@ -1,4 +1,4 @@
-// Alert signal v.2.1
+// Alert signal v.2.2
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AlertSignal_IMP
@@ -15,13 +15,15 @@ class AlertSignal
    string _message;
    datetime _lastSignal;
    CandleStreams* _candleStreams;
+   bool _onBarClose;
 public:
-   AlertSignal(ICondition* condition, Signaler* signaler)
+   AlertSignal(ICondition* condition, Signaler* signaler, bool onBarClose = false)
    {
       _condition = condition;
       _price = NULL;
       _candleStreams = NULL;
       _signaler = signaler;
+      _onBarClose = onBarClose;
    }
 
    ~AlertSignal()
@@ -55,7 +57,7 @@ public:
 
    void Update(int period)
    {
-      if (!_condition.IsPass(period))
+      if (!_condition.IsPass(_onBarClose ? period + 1 : period))
       {
          if (_candleStreams != NULL)
             _candleStreams.Clear(period);

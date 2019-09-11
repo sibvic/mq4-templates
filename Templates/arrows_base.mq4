@@ -1,4 +1,4 @@
-// Arrows base v1.3
+// Arrows base v1.4
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -8,11 +8,18 @@
 //#property indicator_separate_window
 #property indicator_buffers 8
 
+enum SingalMode
+{
+   SingalModeLive, // Live
+   SingalModeOnBarClose // On bar close
+};
+
 enum DisplayType
 {
    Arrows, // Arrows
    Candles // Candles Color
 };
+input SingalMode signal_mode = SingalModeLive; // Signal mode
 input DisplayType Type = Arrows; // Presentation Type
 input color up_color = Green; // Up color
 input color down_color = Red; // Down color
@@ -96,8 +103,8 @@ int init()
    ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
-   conditions[size] = new AlertSignal(upCondition, mainSignaler);
-   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler);
+   conditions[size] = new AlertSignal(upCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
       
    if (Type == Arrows)
    {

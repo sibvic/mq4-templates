@@ -69,3 +69,29 @@ True when there is n seconds remained before candle close.
 ## PriceOutsideBandCondition
 
 Price outside Boilinger bands condition.
+
+## TroughCondition
+
+Checks for the lowest point n bars in both sides.
+
+Example:
+
+    n = 2;
+    54345 // true
+
+## PeakCondition
+
+Checks for the highest point n bars in both sides.
+
+Example:
+
+    n = 2;
+    56765 // true
+    
+## RegularBearishDivergenceCondition
+
+Regular bearish divergence condition. indicator fall + high rise
+
+## RegularBullishDivergenceCondition
+
+Regular bullish divergence condition. indicator rise + low fall

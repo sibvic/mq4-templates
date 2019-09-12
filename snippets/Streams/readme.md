@@ -116,3 +116,7 @@ Range stream.
 ## BoilingerBandStandardStream
 
 Boilinger bands using standard MT4 function.
+
+## MoveStream
+
+Calculates total move (open-close) on timeframe bar during another timeframe bar.

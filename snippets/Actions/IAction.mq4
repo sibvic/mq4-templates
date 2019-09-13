@@ -1,4 +1,8 @@
 // Action v1.0
+
+#ifndef IAction_IMP
+#define IAction_IMP
+
 interface IAction
 {
 public:
@@ -7,3 +11,5 @@ public:
    
    virtual bool DoAction() = 0;
 };
+
+#endif

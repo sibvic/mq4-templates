@@ -2,6 +2,8 @@
 
 #ifndef AAction_IMP
 
+#include <IAction.mq4>
+
 class AAction : public IAction
 {
 protected:

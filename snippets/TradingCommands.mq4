@@ -1,6 +1,11 @@
 // Trading commands v.2.8
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
+#ifndef TradingCommands_IMP
+#define TradingCommands_IMP
+
+#include <OrdersIterator.mq4>
+
 class TradingCommands
 {
 public:
@@ -149,3 +154,5 @@ public:
       return closedPositions;
    }
 };
+
+#endif

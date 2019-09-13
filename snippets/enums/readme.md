@@ -1,0 +1,5 @@
+# Enums
+
+## OrderSide
+
+Order side.

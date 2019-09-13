@@ -1,9 +1,15 @@
 // Orders iterator v 1.10
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+
+#ifndef OrdersIterator_IMP
+#define OrdersIterator_IMP
+
 enum CompareType
 {
    CompareLessThan
 };
+
+#include <enums/OrderSide.mq4>
 
 class OrdersIterator
 {
@@ -197,3 +203,5 @@ private:
       return (OrderType() == OP_BUY || OrderType() == OP_SELL) && OrderCloseTime() == 0.0;
    }
 };
+
+#endif

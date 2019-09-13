@@ -1,4 +1,12 @@
-// Order builder v.1.3
+// Order builder v.1.4
+
+#ifndef OrderBuilder_IMP
+#define OrderBuilder_IMP
+
+#include <InstrumentInfo.mq4>
+#include <TradingCommands.mq4>
+#include <enums/OrderSide.mq4>
+
 class OrderBuilder
 {
    OrderSide _orderSide;
@@ -10,7 +18,20 @@ class OrderBuilder
    double _limit;
    int _magicNumber;
    string _comment;
+   bool _ecnBroker;
 public:
+   OrderBuilder()
+   {
+      _ecnBroker = false;
+   }
+
+   // Sets ECN broker flag
+   OrderBuilder* SetECNBroker(bool isEcn)
+   {
+      _ecnBroker = isEcn;
+      return &this;
+   }
+
    OrderBuilder *SetSide(const OrderSide orderSide)
    {
       _orderSide = orderSide;
@@ -76,9 +97,8 @@ public:
          orderType = rate > instrument.GetAsk() ? OP_BUYSTOP : OP_BUYLIMIT;
       else
          orderType = rate < instrument.GetBid() ? OP_SELLSTOP : OP_SELLLIMIT;
-      bool ecnBroker = false;
       int order;
-      if (ecn_broker)
+      if (_ecnBroker)
          order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);
       else
          order = OrderSend(_instrument, orderType, _amount, rate, _slippage, sl, tp, _comment, _magicNumber);
@@ -119,8 +139,10 @@ public:
                break;
          }
       }
-      else if (ecnBroker)
+      else if (_ecnBroker)
          TradingCommands::MoveSLTP(order, sl, tp, errorMessage);
       return order;
    }
 };
+
+#endif

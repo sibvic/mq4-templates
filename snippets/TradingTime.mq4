@@ -14,6 +14,9 @@ enum DayOfWeek
 #define DayOfWeek_IMP
 #endif
 
+#ifndef TradingTime_IMP
+#define TradingTime_IMP
+
 class TradingTime
 {
    int _startTime;
@@ -175,3 +178,4 @@ private:
       return (hours * 60 + minutes) * 60 + seconds;
    }
 };
+#endif

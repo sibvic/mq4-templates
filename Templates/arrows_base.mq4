@@ -1,4 +1,4 @@
-// Arrows base v1.4
+// Arrows base v1.5
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -149,7 +149,7 @@ int start()
    {
       for (int i = 0; i < ArraySize(conditions); ++i)
       {
-         ICondition* item = conditions[i];
+         AlertSignal* item = conditions[i];
          item.Update(pos);
       }
    } 

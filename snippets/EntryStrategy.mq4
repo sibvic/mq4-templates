@@ -1,4 +1,5 @@
 // Entry strategy v.1.2
+#include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
 public:

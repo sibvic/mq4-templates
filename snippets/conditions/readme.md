@@ -95,3 +95,7 @@ Regular bearish divergence condition. indicator fall + high rise
 ## RegularBullishDivergenceCondition
 
 Regular bullish divergence condition. indicator rise + low fall
+
+## OrCondition
+
+Or condition.

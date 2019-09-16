@@ -1,6 +1,7 @@
 // Trading controller v5.0
 
 #include <actions/AOrderAction.mq4>
+#include <enums/OrderSide.mq4>
 
 class TradingController
 {

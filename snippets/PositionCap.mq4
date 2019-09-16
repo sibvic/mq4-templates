@@ -1,4 +1,5 @@
 // Position cap v.1.1
+#include <enums/OrderSide.mq4>
 interface IPositionCapStrategy
 {
 public:

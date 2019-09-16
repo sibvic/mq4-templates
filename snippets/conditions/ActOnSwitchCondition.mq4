@@ -1,6 +1,8 @@
 // Act on switch condition v1.0
 #ifndef ActOnSwitchCondition_IMP
-// And condition v1.0
+#define ActOnSwitchCondition_IMP
+
+#include <ICondition.mq4>
 class ActOnSwitchCondition : public ICondition
 {
    ICondition* _condition;
@@ -20,5 +22,4 @@ public:
       return _condition.IsPass(period) && !_condition.IsPass(period + 1);
    }
 };
-#define ActOnSwitchCondition_IMP
 #endif

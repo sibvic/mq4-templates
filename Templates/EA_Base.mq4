@@ -6,32 +6,25 @@
 #property strict
 
 #define ACT_ON_SWITCH_CONDITION
-
 #define SHOW_ACCOUNT_STAT
-#ifdef SHOW_ACCOUNT_STAT
-string EA_NAME = "[EA NAME]";
-#endif
-
 #define REVERSABLE_LOGIC_FEATURE input
-
 #define STOP_LOSS_FEATURE input
 #define USE_ATR_TRAILLING
 #define NET_STOP_LOSS_FEATURE
 #define USE_NET_BREAKEVEN
 //#define INDICATOR_BASED_TRAILING
-
 #define TAKE_PROFIT_FEATURE input
 #define NET_TAKE_PROFIT_FEATURE
-
 #define MARTINGALE_FEATURE
 #define USE_MARKET_ORDERS
-
 #define WEEKLY_TRADING_TIME_FEATURE input
 #define TRADING_TIME_FEATURE input
-
 #define POSITION_CAP_FEATURE 
-
 #define CUSTOM_EXIT_FEATURE
+
+#ifdef SHOW_ACCOUNT_STAT
+string EA_NAME = "[EA NAME]";
+#endif
 
 enum TradingMode
 {
@@ -179,10 +172,8 @@ bool ecn_broker = false;
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
-#include <conditions/ICondition.mq4>
-#include <conditions/ABaseCondition.mq4>
 #include <conditions/ActOnSwitchCondition.mq4>
-#include <condition.mq4>
+#include <conditions/DisabledCondition.mq4>
 #ifdef CUSTOM_EXIT_FEATURE
 #include <CustomExitLogic.mq4>
 #endif
@@ -218,12 +209,6 @@ public:
    }
 };
 #endif
-
-enum OrderSide
-{
-   BuySide,
-   SellSide
-};
 
 #include <OrdersIterator.mq4>
 #include <TradingCalculator.mq4>
@@ -267,6 +252,72 @@ TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
 AccountStatistics *stats;
 #endif
+
+#include <conditions/ABaseCondition.mq4>
+
+class LongCondition : public ABaseCondition
+{
+public:
+   LongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+
+   }
+
+   bool IsPass(const int period)
+   {
+      //TODO: implement
+      return false;
+   }
+};
+
+class ShortCondition : public ABaseCondition
+{
+public:
+   ShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+
+   }
+
+   bool IsPass(const int period)
+   {
+      //TODO: implement
+      return false;
+   }
+};
+
+class ExitLongCondition : public ABaseCondition
+{
+public:
+   ExitLongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+
+   }
+   
+   bool IsPass(const int period)
+   {
+      //TODO: implement
+      return false;
+   }
+};
+
+class ExitShortCondition : public ABaseCondition
+{
+public:
+   ExitShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ABaseCondition(symbol, timeframe)
+   {
+
+   }
+   
+   bool IsPass(const int period)
+   {
+      //TODO: implement
+      return false;
+   }
+};
 
 ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {

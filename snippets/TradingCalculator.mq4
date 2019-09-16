@@ -1,6 +1,6 @@
 // Trade calculator v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
-
+#include <enums/OrderSide.mq4>
 class TradingCalculator
 {
    InstrumentInfo *_symbol;

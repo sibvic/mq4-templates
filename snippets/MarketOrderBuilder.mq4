@@ -1,6 +1,6 @@
 // Market order builder v 1.5
 // More templates and snippets on https://github.com/sibvic/mq4-templates
-
+#include <enums/OrderSide.mq4>
 class MarketOrderBuilder
 {
    OrderSide _orderSide;

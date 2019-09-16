@@ -1,4 +1,5 @@
 // Martingale strategy v2.0
+#include <enums/OrderSide>
 
 interface IMartingaleStrategy
 {

@@ -45,7 +45,6 @@ string GenerateIndicatorName(const string target)
 #include <Streams/IStream.mq4>
 #include <Streams/AStream.mq4>
 #include <Streams/PriceStream.mq4>
-#include <condition.mq4>
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
 #include <Streams/CandleStreams.mq4>

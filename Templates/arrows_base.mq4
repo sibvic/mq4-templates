@@ -1,4 +1,4 @@
-// Arrows base v1.5
+// Arrows base v1.6
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -21,6 +21,7 @@ enum DisplayType
 };
 input SingalMode signal_mode = SingalModeLive; // Signal mode
 input DisplayType Type = Arrows; // Presentation Type
+input double shift_arrows_pips = 0.1; // Shift arrows
 input color up_color = Green; // Up color
 input color down_color = Red; // Down color
 
@@ -109,7 +110,9 @@ int init()
    if (Type == Arrows)
    {
       PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+      highStream.SetShift(shift_arrows_pips);
       PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
+      lowStream.SetShift(-shift_arrows_pips);
       id = conditions[size].RegisterStreams(id, "Up", 217, up_color, highStream);
       id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, lowStream);
       lowStream.Release();

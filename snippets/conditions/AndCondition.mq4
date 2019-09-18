@@ -1,4 +1,7 @@
 // And condition v1.0
+#include <ICondition.mq4>
+#ifndef AndCondition_IMP
+#define AndCondition_IMP
 class AndCondition : public ICondition
 {
    ICondition *_conditions[];
@@ -30,3 +33,4 @@ public:
       return true;
    }
 };
+#endif

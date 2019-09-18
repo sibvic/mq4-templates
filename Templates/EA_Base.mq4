@@ -7,7 +7,7 @@
 
 #define ACT_ON_SWITCH_CONDITION
 #define SHOW_ACCOUNT_STAT
-#define REVERSABLE_LOGIC_FEATURE input
+#define REVERSABLE_LOGIC_FEATURE
 #define STOP_LOSS_FEATURE input
 #define USE_ATR_TRAILLING
 #define NET_STOP_LOSS_FEATURE
@@ -56,7 +56,11 @@ input double lots_value = 0.1; // Position size
 input PositionSizeType lots_type = PositionSizeContract; // Position size type
 input int slippage_points = 3; // Slippage, points
 input TradingSide trading_side = BothSides; // What trades should be taken
-REVERSABLE_LOGIC_FEATURE LogicDirection logic_direction = DirectLogic; // Logic type
+#ifdef REVERSABLE_LOGIC_FEATURE
+input LogicDirection logic_direction = DirectLogic; // Logic type
+#else
+LogicDirection logic_direction = DirectLogic;
+#endif
 #ifdef USE_MARKET_ORDERS
    input bool close_on_opposite = true; // Close on opposite signal
 #else

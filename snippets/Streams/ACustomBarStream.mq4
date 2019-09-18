@@ -1,4 +1,4 @@
-// ACustomBarStream v1.1
+// ACustomBarStream v1.2
 
 #include <IBarStream.mq4>
 
@@ -34,12 +34,26 @@ public:
       if (_references == 0)
          delete &this;
    }
+
    virtual bool GetValue(const int period, double &val)
    {
       if (period >= _size)
          return false;
       val = _close[_size - 1 - period];
       return true;
+   }
+
+   virtual bool FindDatePeriod(const datetime date, int& period)
+   {
+      for (int i = 0; i < _size; ++i)
+      {
+         if (_dates[_size - 1 - i] <= date)
+         {
+            period = MathMax(i, 0);
+            return true;
+         }
+      }
+      return false;
    }
 
    virtual bool GetDate(const int period, datetime &dt)

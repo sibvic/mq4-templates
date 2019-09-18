@@ -1,4 +1,4 @@
-// IBarStream v1.1
+// IBarStream v1.2
 
 #include <IStream.mq4>
 
@@ -9,6 +9,8 @@ interface IBarStream : public IStream
 {
 public:
    virtual bool GetValues(const int period, double &open, double &high, double &low, double &close) = 0;
+
+   virtual bool FindDatePeriod(const datetime date, int& period) = 0;
 
    virtual bool GetOpen(const int period, double &open) = 0;
    virtual bool GetHigh(const int period, double &high) = 0;

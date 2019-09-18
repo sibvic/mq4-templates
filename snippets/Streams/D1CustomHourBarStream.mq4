@@ -1,3 +1,8 @@
+// D1 custom hour bar stream v1.0
+#include <ACustomBarStream.mq4>
+#ifndef D1CustomHourBarStream_IMP
+#define D1CustomHourBarStream_IMP
+
 class D1CustomHourBarStream : public ACustomBarStream
 {
    string _symbol;
@@ -41,3 +46,5 @@ public:
       }
    }
 };
+
+#endif

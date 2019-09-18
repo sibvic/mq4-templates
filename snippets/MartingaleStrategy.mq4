@@ -1,5 +1,5 @@
 // Martingale strategy v2.0
-#include <enums/OrderSide>
+#include <enums/OrderSide.mq4>
 
 interface IMartingaleStrategy
 {

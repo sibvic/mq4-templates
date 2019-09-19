@@ -1,4 +1,4 @@
-// Order builder v.1.4
+// Order builder v.1.5
 
 #ifndef OrderBuilder_IMP
 #define OrderBuilder_IMP
@@ -133,6 +133,18 @@ public:
                         errorMessage = "Invalid take profit in the request";
                   }
                }
+               break;
+            case ERR_INVALID_TRADE_PARAMETERS:
+               errorMessage = "Incorrect trade parameters. Symbol: " 
+                  + _instrument
+                  + " Order type: " + IntegerToString(orderType)
+                  + " Amount: " + DoubleToString(_amount)
+                  + " Rate: " + DoubleToString(rate)
+                  + " Slippage: " + DoubleToString(_slippage)
+                  + " SL: " + DoubleToString(sl)
+                  + " TP: " + DoubleToString(tp)
+                  + " Comment: " + _comment == NULL ? "" : _comment
+                  + " Magic number: " + IntegerToString(_magicNumber);
                break;
             default:
                errorMessage = "Failed to create order: " + IntegerToString(error);

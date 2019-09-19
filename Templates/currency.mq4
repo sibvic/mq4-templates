@@ -38,7 +38,7 @@ class SymbolData
 {
 public:
    string Symbol;
-   int Dide;
+   int Side;
 };
 SymbolData* Symbols[];
  
@@ -109,6 +109,7 @@ void CreateSymbolList()
 {
    string Currencies[] = {"AED", "AUD", "BHD", "BRL", "CAD", "CHF", "CNY", "CYP", "CZK", "DKK", "DZD", "EEK", "EGP", "EUR", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JOD", "JPY", "KRW", "KWD", "LBP", "LTL", "LVL", "LYD", "MAD", "MXN", "MYR", "NOK", "NZD", "OMR", "PHP", "PLN", "QAR", "RON", "RUB", "SAR", "SEK", "SGD", "SKK", "SYP", "THB", "TND", "TRY", "TWD", "USD", "VEB", "XAG", "XAU", "YER", "ZAR"};
    int CurrencyCount = ArrayRange(Currencies, 0);
+   int SymbolCount = 0;
    for (int Loop = 0; Loop < CurrencyCount; Loop++)
    {
       for (int SubLoop = 0; SubLoop < CurrencyCount; SubLoop++)

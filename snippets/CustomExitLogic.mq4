@@ -15,13 +15,6 @@ public:
    void Create(const int order) {}
 };
 
-interface IAction
-{
-public:
-   virtual void DoAction() = 0;
-   virtual bool SetOrder(const int order) = 0;
-};
-
 class CustomExitAction : public IAction
 {
    int _order;

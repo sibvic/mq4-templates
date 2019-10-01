@@ -1,4 +1,4 @@
-// Custom timeframe bar stream v1.0
+// Custom timeframe bar stream v1.1
 
 #include <ACustomBarStream.mq4>
 
@@ -24,10 +24,9 @@ public:
       if (_size > 0)
          start = iBarShift(_symbol, _timeframe, _dates[_size - 1]);
 
-      int periodLength = ((int)_timeframe * _timeframeMult * 60);
       for (int i = start; i >= 0; --i)
       {
-         datetime barStart = (iTime(_symbol, _timeframe, i) / periodLength) * periodLength;
+         datetime barStart = NormilizeDate(iTime(_symbol, _timeframe, i));
          if (_size == 0 || barStart != _dates[_size - 1])
          {
             ++_size;
@@ -48,6 +47,30 @@ public:
          }
          _close[_size - 1] = iClose(_symbol, _timeframe, i);
       }
+   }
+private:
+   datetime NormilizeDate(datetime dt)
+   {
+      switch (_timeframe)
+      {
+         case PERIOD_MN1:
+         {
+            MqlDateTime date;
+            TimeToStruct(dt, date);
+            int months = (date.year - 1970) * 12 + date.mon - 1;
+            int targetMonths = (months / _timeframeMult) * _timeframeMult;
+            int targetYears = targetMonths / 12;
+            date.year = 1970 + targetYears;
+            date.mon = targetMonths - targetYears * 12 + 1;
+            date.day = 1;
+            date.hour = 0;
+            date.min = 0;
+            date.sec = 0;
+            return StructToTime(date);
+         }
+      }
+      int periodLength = ((int)_timeframe * _timeframeMult * 60);
+      return (dt / periodLength) * periodLength;
    }
 };
 #endif

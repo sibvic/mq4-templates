@@ -99,3 +99,19 @@ Regular bullish divergence condition. indicator rise + low fall
 ## OrCondition
 
 Or condition.
+
+## ma_conditions
+
+Conditions for MA above/below price.
+
+## cci_conditions
+
+Conditions for CCI above/below value.
+
+## macd_conditions
+
+Conditions for MACD above/below signal.
+
+## stoch_conditions
+
+Conditions for Stochastic K above/below D.

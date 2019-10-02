@@ -1,6 +1,11 @@
 // RSI conditions v1.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
+#ifndef RSICondition_IMP
+#define RSICondition_IMP
+
+#include <ABaseCondition.mq4>
+
 class RSIAboveLevelCondition : public ABaseCondition
 {
    int _rsiPeriod;
@@ -38,3 +43,4 @@ public:
       return rsiValue < _level;
    }
 };
+#endif

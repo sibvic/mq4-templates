@@ -15,6 +15,8 @@ public:
    void Create(const int order) {}
 };
 
+#include <actions/IAction.mq4>
+
 class CustomExitAction : public IAction
 {
    int _order;
@@ -25,14 +27,14 @@ public:
       _finished = true;
    }
 
-   virtual void DoAction()
+   virtual bool DoAction()
    {
       if (_finished || !OrderSelect(_order, SELECT_BY_TICKET, MODE_TRADES))
       {
          _finished = true;
-         return;
+         return true;
       }
-      
+      return false;
    }
 
    virtual bool SetOrder(const int order)

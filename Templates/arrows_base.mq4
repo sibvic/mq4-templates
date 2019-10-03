@@ -1,4 +1,4 @@
-// Arrows base v1.6
+// Arrows base v1.7
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -47,6 +47,32 @@ string GenerateIndicatorName(const string target)
 
 AlertSignal* conditions[];
 Signaler* mainSignaler;
+
+int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
+{
+   int size = ArraySize(conditions);
+   ArrayResize(conditions, size + 2);
+   conditions[size] = new AlertSignal(upCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
+      
+   if (Type == Arrows)
+   {
+      PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+      highStream.SetShift(shift_arrows_pips);
+      PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
+      lowStream.SetShift(-shift_arrows_pips);
+      id = conditions[size].RegisterStreams(id, "Up", 217, up_color, highStream);
+      id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, lowStream);
+      lowStream.Release();
+      highStream.Release();
+   }
+   else
+   {
+      id = conditions[size].RegisterStreams(id, "Up", up_color);
+      id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
+   }
+   return id;
+}
 
 class UpAlertCondition : public ABaseCondition
 {
@@ -97,27 +123,7 @@ int init()
 
    ICondition* upCondition = new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   int size = ArraySize(conditions);
-   ArrayResize(conditions, size + 2);
-   conditions[size] = new AlertSignal(upCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
-   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
-      
-   if (Type == Arrows)
-   {
-      PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
-      highStream.SetShift(shift_arrows_pips);
-      PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
-      lowStream.SetShift(-shift_arrows_pips);
-      id = conditions[size].RegisterStreams(id, "Up", 217, up_color, highStream);
-      id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, lowStream);
-      lowStream.Release();
-      highStream.Release();
-   }
-   else
-   {
-      id = conditions[size].RegisterStreams(id, "Up", up_color);
-      id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
-   }
+   id = CreateAlert(upCondition, downCondition);
 
    return 0;
 }

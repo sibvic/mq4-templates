@@ -1,4 +1,4 @@
-// Trades monitor v.1.1
+// Trades monitor v.2.0
 
 #include <actions/IAction.mq4>
 #ifndef TradingMonitor_IMP
@@ -14,15 +14,21 @@ class TradingMonitor
    bool active_still_active[1000];
    int active_total;
    IAction* _closedTradeAction;
+   IAction* _tradeChangedAction;
+   IAction* _newTradeAction;
 public:
    TradingMonitor()
    {
       _closedTradeAction = NULL;
+      _tradeChangedAction = NULL;
+      _newTradeAction = NULL;
    }
 
    ~TradingMonitor()
    {
       _closedTradeAction.Release();
+      _tradeChangedAction.Release();
+      _newTradeAction.Release();
    }
 
    void SetClosedTradeAction(IAction* action)
@@ -34,13 +40,25 @@ public:
          _closedTradeAction.AddRef();
    }
 
-   /**
-   * find newly opened, changed or closed orders
-   * and send messages for every change. Additionally
-   * the function will return true if any changes were
-   * detected, false otherwise. 
-   */
-   void SendNotifications()
+   void SetOnTradeChanged(IAction* action)
+   {
+      if (_tradeChangedAction != NULL)
+         _tradeChangedAction.Release();
+      _tradeChangedAction = action;
+      if (_tradeChangedAction != NULL)
+         _tradeChangedAction.AddRef();
+   }
+
+   void SetOnNewTrade(IAction* action)
+   {
+      if (_newTradeAction != NULL)
+         _newTradeAction.Release();
+      _newTradeAction = action;
+      if (_newTradeAction != NULL)
+         _newTradeAction.AddRef();
+   }
+
+   void DoWork()
    {
       bool changed = false;
       int total = OrdersTotal();
@@ -52,9 +70,9 @@ public:
          int index = getOrderCacheIndex(ticket);
          if (index == -1)
          {
-            // new order
             changed = true;
-            OnNewOrder();
+            if (_newTradeAction != NULL)
+               _newTradeAction.DoAction();
          }
          else
          {
@@ -64,26 +82,22 @@ public:
                   OrderTakeProfit() != active_takeprofit[index] ||
                   OrderType() != active_type[index])
             {
-               // already active order was changed
                changed = true;
-               //messageChangedOrder(index);
+               if (_tradeChangedAction != NULL)
+                  _tradeChangedAction.DoAction();
             }
          }
       }
 
-      // find closed orders. Orders that are in our cached list 
-      // from the last tick but were not seen in the previous step.
       for (int index = 0; index < active_total; index++)
       {
          if (active_still_active[index] == false)
          {
-            // the order must have been closed.
             changed = true;
             if (_closedTradeAction != NULL && OrderSelect(active_ticket[index], MODE_HISTORY))
                _closedTradeAction.DoAction();
          }
          
-         // reset all these temporary flags again for the next tick
          active_still_active[index] = false;
       }
       if (changed)
@@ -118,11 +132,6 @@ private:
          active_takeprofit[i] = OrderTakeProfit();
          active_still_active[i] = false; // filled in the next tick
       }
-   }
-
-   void OnNewOrder()
-   {
-      
    }
 };
 

@@ -1,4 +1,4 @@
-// StDev stream v1.0
+// StDev stream v1.1
 
 #ifndef StDev_IMP
 
@@ -14,7 +14,13 @@ public:
    {
       _references = 1;
       _source = __source;
+      _source.AddRef();
       _period = period;
+   }
+   
+   ~StDevStream()
+   {
+      _source.Release();
    }
 
    bool GetValue(const int period, double &val)

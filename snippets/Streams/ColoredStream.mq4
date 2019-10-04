@@ -1,5 +1,8 @@
 // Colored stream v2.1
 
+#ifndef ColoredStream_IMP
+#define ColoredStream_IMP
+
 class ColoredStreamData
 {
 public:
@@ -55,3 +58,5 @@ public:
       }
    }
 };
+
+#endif

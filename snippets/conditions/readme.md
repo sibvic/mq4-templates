@@ -102,7 +102,7 @@ Or condition.
 
 ## ma_conditions
 
-Conditions for MA above/below price.
+Conditions for MA above/below price/another MA.
 
 ## cci_conditions
 
@@ -115,3 +115,11 @@ Conditions for MACD above/below signal.
 ## stoch_conditions
 
 Conditions for Stochastic K above/below D.
+
+## bar_conditions
+
+Bar conditions: ascending/descending.
+
+## TradingTimeCondition
+
+Trading time condition. Returns true only during the selected time.

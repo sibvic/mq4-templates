@@ -3,10 +3,10 @@
 
 #ifndef ABaseCondition_IMP
 #define ABaseCondition_IMP
-#include <ICondition.mq4>
+#include <ACondition.mq4>
 #include <../InstrumentInfo.mq4>
 
-class ABaseCondition : public ICondition
+class ABaseCondition : public ACondition
 {
 protected:
    ENUM_TIMEFRAMES _timeframe;

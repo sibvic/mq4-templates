@@ -1,4 +1,11 @@
-class HitProfitCondition : public ICondition
+// Hit profit condition v1.0
+
+#include <ACondition.mq4>
+
+#ifndef HitProfitCondition_IMP
+#define HitProfitCondition_IMP
+
+class HitProfitCondition : public ACondition
 {
    IOrder* _order;
    double _trigger;
@@ -46,3 +53,5 @@ public:
       return false;
    }
 };
+
+#endif

@@ -1,8 +1,8 @@
 // AAction v1.0
+#include <IAction.mq4>
 
 #ifndef AAction_IMP
-
-#include <IAction.mq4>
+#define AAction_IMP
 
 class AAction : public IAction
 {
@@ -25,7 +25,5 @@ public:
          delete &this;
    }
 };
-
-#define AAction_IMP
 
 #endif

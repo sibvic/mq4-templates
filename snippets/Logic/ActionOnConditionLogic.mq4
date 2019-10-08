@@ -1,3 +1,10 @@
+// Action on condition logic v1.0
+
+#include <ActionOnConditionController.mq4>
+
+#ifndef ActionOnConditionLogic_IMP
+#define ActionOnConditionLogic_IMP
+
 class ActionOnConditionLogic
 {
    ActionOnConditionController* _controllers[];
@@ -25,12 +32,14 @@ public:
       int count = ArraySize(_controllers);
       for (int i = 0; i < count; ++i)
       {
-         if (_controllers[i].SetOrder(action, condition))
+         if (_controllers[i].Set(action, condition))
             return true;
       }
 
       ArrayResize(_controllers, count + 1);
       _controllers[count] = new ActionOnConditionController();
-      return _controllers[count].SetOrder(action, condition);
+      return _controllers[count].Set(action, condition);
    }
 };
+
+#endif

@@ -1,3 +1,11 @@
+// Action on condition v1.0
+
+#include <../conditions/ICondition.mq4>
+#include <../actions/IAction.mq4>
+
+#ifndef ActionOnConditionController_IMP
+#define ActionOnConditionController_IMP
+
 class ActionOnConditionController
 {
    bool _finished;
@@ -17,7 +25,7 @@ public:
       delete _condition;
    }
    
-   bool SetOrder(IAction* action, ICondition *condition)
+   bool Set(IAction* action, ICondition *condition)
    {
       if (!_finished || action == NULL)
          return false;
@@ -44,3 +52,5 @@ public:
       }
    }
 };
+
+#endif

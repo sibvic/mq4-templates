@@ -1,3 +1,10 @@
+// Bar stream v2.0
+
+#include <IBarStream.mq4>
+
+#ifndef BarStream_IMP
+#define BarStream_IMP
+
 class BarStream : public IBarStream
 {
    string _symbol;
@@ -37,7 +44,7 @@ public:
       return true;
    }
 
-   virtual double GetOpen(const int period, double &open)
+   virtual bool GetOpen(const int period, double &open)
    {
       if (iBars(_symbol, _timeframe) <= period)
          return false;
@@ -45,7 +52,7 @@ public:
       return true;
    }
 
-   virtual double GetHigh(const int period, double &high)
+   virtual bool GetHigh(const int period, double &high)
    {
       if (iBars(_symbol, _timeframe) <= period)
          return false;
@@ -53,7 +60,7 @@ public:
       return true;
    }
 
-   virtual double GetLow(const int period, double &low)
+   virtual bool GetLow(const int period, double &low)
    {
       if (iBars(_symbol, _timeframe) <= period)
          return false;
@@ -61,7 +68,7 @@ public:
       return true;
    }
 
-   virtual double GetClose(const int period, double &close)
+   virtual bool GetClose(const int period, double &close)
    {
       if (iBars(_symbol, _timeframe) <= period)
          return false;
@@ -89,19 +96,12 @@ public:
       return true;
    }
 
-   virtual bool GetIsAscending(const int period, bool &res)
+   virtual bool GetOpenClose(const int period, double& open, double& close)
    {
       if (iBars(_symbol, _timeframe) <= period)
          return false;
-      res = iOpen(_symbol, _timeframe, period) < iClose(_symbol, _timeframe, period);
-      return true;
-   }
-
-   virtual bool GetIsDescending(const int period, bool &res)
-   {
-      if (iBars(_symbol, _timeframe) <= period)
-         return false;
-      res = iOpen(_symbol, _timeframe, period) > iClose(_symbol, _timeframe, period);
+      open = iOpen(_symbol, _timeframe, period);
+      close = iClose(_symbol, _timeframe, period);
       return true;
    }
 
@@ -112,3 +112,5 @@ public:
 
    virtual void Refresh() { }
 };
+
+#endif

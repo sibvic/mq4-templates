@@ -1,4 +1,4 @@
-// IBarStream v1.2
+// IBarStream v2.0
 
 #include <IStream.mq4>
 
@@ -18,10 +18,7 @@ public:
    virtual bool GetClose(const int period, double &close) = 0;
    
    virtual bool GetHighLow(const int period, double &high, double &low) = 0;
-
-   virtual bool GetIsAscending(const int period, bool &res) = 0;
-
-   virtual bool GetIsDescending(const int period, bool &res) = 0;
+   virtual bool GetOpenClose(const int period, double &open, double &close) = 0;
 
    virtual bool GetDate(const int period, datetime &dt) = 0;
 

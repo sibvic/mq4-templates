@@ -1,5 +1,10 @@
-// HA bar steam v1.0
+// HA bar steam v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+
+#include <IBarStream.mq4>
+
+#ifndef HABarStream_IMP
+#define HABarStream_IMP
 
 class HABarStream : public IBarStream
 {
@@ -32,6 +37,12 @@ public:
          delete &this;
    }
 
+   virtual bool FindDatePeriod(const datetime date, int& period)
+   {
+      period = iBarShift(_symbol, _timeframe, date);
+      return true;
+   }
+
    virtual bool GetValue(const int period, double &val)
    {
       int totalBars = Size();
@@ -49,7 +60,7 @@ public:
       return true;
    }
 
-   virtual double GetOpen(const int period, double &open)
+   virtual bool GetOpen(const int period, double &open)
    {
       int totalBars = Size();
       if (totalBars <= period)
@@ -58,7 +69,7 @@ public:
       return true;
    }
 
-   virtual double GetHigh(const int period, double &high)
+   virtual bool GetHigh(const int period, double &high)
    {
       int totalBars = Size();
       if (totalBars <= period)
@@ -67,7 +78,7 @@ public:
       return true;
    }
 
-   virtual double GetLow(const int period, double &low)
+   virtual bool GetLow(const int period, double &low)
    {
       int totalBars = Size();
       if (totalBars <= period)
@@ -76,7 +87,7 @@ public:
       return true;
    }
 
-   virtual double GetClose(const int period, double &close)
+   virtual bool GetClose(const int period, double &close)
    {
       int totalBars = Size();
       if (totalBars <= period)
@@ -107,21 +118,13 @@ public:
       return true;
    }
 
-   virtual bool GetIsAscending(const int period, bool &res)
+   virtual bool GetOpenClose(const int period, double& open, double& close)
    {
       int totalBars = Size();
       if (totalBars <= period)
          return false;
-      res = _open[totalBars - 1 - period] < _close[totalBars - 1 - period];
-      return true;
-   }
-
-   virtual bool GetIsDescending(const int period, bool &res)
-   {
-      int totalBars = Size();
-      if (totalBars <= period)
-         return false;
-      res = _open[totalBars - 1 - period] > _close[totalBars - 1 - period];
+      open = _open[totalBars - 1 - period];
+      close = _close[totalBars - 1 - period];
       return true;
    }
 
@@ -154,3 +157,5 @@ public:
       _lastCalculated = totalBars;
    }
 };
+
+#endif

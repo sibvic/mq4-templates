@@ -1,14 +1,26 @@
-// Act on switch condition v1.0
+// Act on switch condition v2.0
+
+#include <ACondition.mq4>
+
 #ifndef ActOnSwitchCondition_IMP
 #define ActOnSwitchCondition_IMP
 
-#include <ICondition.mq4>
-class ActOnSwitchCondition : public ICondition
+class ActOnSwitchCondition : public ACondition
 {
    ICondition* _condition;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
+   bool _current;
+   datetime _currentDate;
+   bool _last;
 public:
-   ActOnSwitchCondition(ICondition* condition)
+   ActOnSwitchCondition(string symbol, ENUM_TIMEFRAMES timeframe, ICondition* condition)
    {
+      _last = false;
+      _current = false;
+      _currentDate = 0;
+      _symbol = symbol;
+      _timeframe = timeframe;
       _condition = condition;
    }
 
@@ -19,7 +31,14 @@ public:
 
    virtual bool IsPass(const int period)
    {
-      return _condition.IsPass(period) && !_condition.IsPass(period + 1);
+      datetime time = iTime(_symbol, _timeframe, period);
+      if (time != _currentDate)
+      {
+         _last = _current;
+         _currentDate = time;
+      }
+      _current = _condition.IsPass(period);
+      return _current && _last;
    }
 };
 #endif

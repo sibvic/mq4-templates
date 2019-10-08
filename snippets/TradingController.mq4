@@ -13,7 +13,6 @@ class TradingController
    Signaler *_signaler;
    datetime _lastBarDate;
    TradingCalculator *_calculator;
-   TradingTime *_tradingTime;
    ICondition *_longCondition;
    ICondition *_shortCondition;
    ICondition *_exitAllCondition;
@@ -31,7 +30,6 @@ class TradingController
    IPositionCapStrategy *_shortPositionCap;
 #endif
    IEntryStrategy *_entryStrategy;
-   IMandatoryClosingLogic *_mandatoryClosing;
    string _algorithmId;
    ActionOnConditionLogic* _actions;
    AOrderAction* _orderHandlers[];
@@ -58,8 +56,6 @@ public:
       _exitAllCondition = NULL;
       _exitLongCondition = NULL;
       _exitShortCondition = NULL;
-      _tradingTime = NULL;
-      _mandatoryClosing = NULL;
    }
 
    ~TradingController()
@@ -69,7 +65,6 @@ public:
          delete _orderHandlers[i];
       }
       delete _actions;
-      delete _mandatoryClosing;
       delete _entryStrategy;
 #ifdef POSITION_CAP_FEATURE
       delete _longPositionCap;
@@ -96,7 +91,6 @@ public:
       delete _trailing;
       delete _longCondition;
       delete _shortCondition;
-      delete _tradingTime;
    }
 
    void AddOrderAction(AOrderAction* orderAction)
@@ -107,7 +101,6 @@ public:
       orderAction.AddRef();
    }
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
-   void SetTradingTime(TradingTime *tradingTime) { _tradingTime = tradingTime; }
    void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }
    void SetLongCondition(ICondition *condition) { _longCondition = condition; }
    void SetShortCondition(ICondition *condition) { _shortCondition = condition; }
@@ -136,7 +129,6 @@ public:
    void SetShortPositionCap(IPositionCapStrategy *positionCap) { _shortPositionCap = positionCap; }
 #endif
    void SetEntryStrategy(IEntryStrategy *entryStrategy) { _entryStrategy = entryStrategy; }
-   void SetMandatoryClosing(IMandatoryClosingLogic *mandatoryClosing) { _mandatoryClosing = mandatoryClosing; }
 
    void DoTrading()
    {
@@ -168,11 +160,6 @@ public:
             _signaler.SendNotifications("Exit Sell");
       }
 
-      if (_tradingTime != NULL && !_tradingTime.IsTradingTime(TimeCurrent()))
-      {
-         _mandatoryClosing.DoLogic();
-         return;
-      }
       if (current_time == _lastbartime)
          return;
 

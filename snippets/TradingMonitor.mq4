@@ -26,9 +26,12 @@ public:
 
    ~TradingMonitor()
    {
-      _closedTradeAction.Release();
-      _tradeChangedAction.Release();
-      _newTradeAction.Release();
+      if (_closedTradeAction != NULL)
+         _closedTradeAction.Release();
+      if (_tradeChangedAction != NULL)
+         _tradeChangedAction.Release();
+      if (_newTradeAction != NULL)
+         _newTradeAction.Release();
    }
 
    void SetClosedTradeAction(IAction* action)

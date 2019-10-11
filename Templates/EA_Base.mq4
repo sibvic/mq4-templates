@@ -33,7 +33,8 @@ enum TradingMode
 
 input string GeneralSection = ""; // == General ==
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
-input TradingMode trade_live = TradingModeLive; // Trade live?
+input TradingMode entry_logic = TradingModeLive; // Entry logic
+input TradingMode exit_logic = TradingModeLive; // Exit logic
 enum PositionSizeType
 {
    PositionSizeAmount, // $
@@ -486,17 +487,21 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       return NULL;
 #endif
 
-   TradingCalculator *tradingCalculator = TradingCalculator::Create(symbol);
+   TradingCalculator* tradingCalculator = TradingCalculator::Create(symbol);
    if (!tradingCalculator.IsLotsValid(lots_value, lots_type, error))
    {
       delete tradingCalculator;
       return NULL;
    }
-   Signaler *signaler = new Signaler(symbol, timeframe);
+
+   Signaler* signaler = new Signaler(symbol, timeframe);
    signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
+   
+   TradingController* controller = new TradingController(tradingCalculator, timeframe, signaler);
+   
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
-   TradingController *controller = new TradingController(tradingCalculator, timeframe, signaler);
    controller.SetActions(actions);
+   
    if (breakeven_type != StopLimitDoNotUse)
    {
       #ifdef USE_NET_BREAKEVEN
@@ -546,6 +551,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    shortCondition.Add(tradingTimeCondition, true);
 #endif
 
+   controller.SetExitLogic(exit_logic);
    ICondition *exitLongCondition = CreateExitLongCondition(symbol, timeframe);
    ICondition *exitShortCondition = CreateExitShortCondition(symbol, timeframe);
    switch (logic_direction)
@@ -569,7 +575,6 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    controller.AddLongMoneyManagement(longMoneyManagement);
    controller.AddShortMoneyManagement(shortMoneyManagement);
 
-   controller.SetExitAllCondition(new DisabledCondition());
 #ifdef NET_STOP_LOSS_FEATURE
    if (net_stop_loss_type != StopLimitDoNotUse)
    {
@@ -605,6 +610,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    }
 #endif
 
+   controller.SetEntryLogic(entry_logic);
 #ifdef USE_MARKET_ORDERS
    controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points));
 #else

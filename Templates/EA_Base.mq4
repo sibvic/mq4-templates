@@ -246,7 +246,7 @@ public:
 #include <TrailingController/StreamTrailingController.mq4>
 #include <TrailingController/IndicatorTrailingLogic.mq4>
 #else
-#include <TrailingController.mq4>
+#include <TrailingController/TrailingLogic.mq4>
 #endif
 #ifdef NET_STOP_LOSS_FEATURE
 #include <Actions/MoveNetStopLossAction.mq4>
@@ -282,6 +282,7 @@ AccountStatistics *stats;
 
 #include <conditions/ABaseCondition.mq4>
 #include <conditions/TradingTimeCondition.mq4>
+#include <conditions/AndCondition.mq4>
 
 class LongCondition : public ABaseCondition
 {

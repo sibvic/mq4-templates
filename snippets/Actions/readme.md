@@ -31,3 +31,7 @@ Creates MoveNetStopLossAction for orders.
 ## CloseOrderAction
 
 Closes order.
+
+## TrailingPipsAction
+
+Keeps stop loss distance to the orders to the defined amount of pips.

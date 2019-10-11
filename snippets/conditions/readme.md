@@ -123,3 +123,7 @@ Bar conditions: ascending/descending.
 ## TradingTimeCondition
 
 Trading time condition. Returns true only during the selected time.
+
+## ProfitInRangeCondition
+
+Returns true when profit of the order in the specified range.

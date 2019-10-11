@@ -121,9 +121,9 @@ int init()
 
    int id = 0;
 
-   ICondition* upCondition = new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   ICondition* downCondition = new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   id = CreateAlert(upCondition, downCondition);
+   ICondition* upCondition = (ICondition*) new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* downCondition = (ICondition*) new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   id = CreateAlert(id, upCondition, downCondition);
 
    return 0;
 }

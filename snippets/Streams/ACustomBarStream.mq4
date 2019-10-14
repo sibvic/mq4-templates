@@ -107,6 +107,15 @@ public:
       return true;
    }
 
+   virtual bool GetOpenClose(const int period, double& open, double& close)
+   {
+      if (period >= _size)
+         return false;
+      close = _close[_size - 1 - period];
+      open = _open[_size - 1 - period];
+      return true;
+   }
+
    virtual bool GetHighLow(const int period, double &high, double &low)
    {
       if (period >= _size)

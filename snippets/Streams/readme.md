@@ -113,6 +113,10 @@ SMA/MVA stream.
 
 Range stream.
 
+## RangeStreamOnStream
+
+Range stream based on IBarStream as a source.
+
 ## BoilingerBandStandardStream
 
 Boilinger bands using standard MT4 function.
@@ -120,3 +124,12 @@ Boilinger bands using standard MT4 function.
 ## MoveStream
 
 Calculates total move (open-close) on timeframe bar during another timeframe bar.
+
+## MoveStreamOnStream
+
+Move stream based on IBarStream as a source.
+
+## AStreamBase
+
+Abstract implemention of stream with reference counting.
+

@@ -1,8 +1,9 @@
 // Move stream v1.1
+#include <AStreamBase.mq4>
+
 #ifndef MoveStream_IMP
 #define MoveStream_IMP
-#include <IStream.mq4>
-class MoveStream : public IStream
+class MoveStream : public AStreamBase
 {
    string _symbol;
    ENUM_TIMEFRAMES _baseTimeframe;

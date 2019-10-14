@@ -1,8 +1,10 @@
 // Range stream v1.0
 
+#include <AStreamBase.mq4>
+
 #ifndef RangeStream_IMP
 #define RangeStream_IMP
-class RangeStream : public IStream
+class RangeStream : public AStreamBase
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;

@@ -1,4 +1,4 @@
-// Arrows base v1.7
+// Arrows base v1.8
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -17,7 +17,8 @@ enum SingalMode
 enum DisplayType
 {
    Arrows, // Arrows
-   Candles // Candles Color
+   ArrowsOnMainChart, // Arrows on main chart
+   Candles // Candles color
 };
 input SingalMode signal_mode = SingalModeLive; // Signal mode
 input DisplayType Type = Arrows; // Presentation Type
@@ -44,9 +45,11 @@ string GenerateIndicatorName(const string target)
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
 #include <Streams/CandleStreams.mq4>
+#include <Streams/CustomStream.mq4>
 
 AlertSignal* conditions[];
 Signaler* mainSignaler;
+CustomStream* customStream;
 
 int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
 {
@@ -55,21 +58,32 @@ int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
    conditions[size] = new AlertSignal(upCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
    conditions[size + 1] = new AlertSignal(downCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
       
-   if (Type == Arrows)
+   switch (Type)
    {
-      PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
-      highStream.SetShift(shift_arrows_pips);
-      PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
-      lowStream.SetShift(-shift_arrows_pips);
-      id = conditions[size].RegisterStreams(id, "Up", 217, up_color, highStream);
-      id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, lowStream);
-      lowStream.Release();
-      highStream.Release();
-   }
-   else
-   {
-      id = conditions[size].RegisterStreams(id, "Up", up_color);
-      id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
+      case Arrows:
+         {
+            id = conditions[size].RegisterStreams(id, "Up", 217, up_color, customStream);
+            id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, customStream);
+         }
+         break;
+      case ArrowsOnMainChart:
+         {
+            PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+            highStream.SetShift(shift_arrows_pips);
+            PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
+            lowStream.SetShift(-shift_arrows_pips);
+            id = conditions[size].RegisterArrows(id, "Up", IndicatorObjPrefix + "_up", 217, up_color, highStream);
+            id = conditions[size + 1].RegisterArrows(id, "Down", IndicatorObjPrefix + "_down", 218, down_color, lowStream);
+            lowStream.Release();
+            highStream.Release();
+         }
+         break;
+      case Candles:
+         {
+            id = conditions[size].RegisterStreams(id, "Up", up_color);
+            id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
+         }
+         break;
    }
    return id;
 }
@@ -124,12 +138,16 @@ int init()
    ICondition* upCondition = (ICondition*) new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = (ICondition*) new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    id = CreateAlert(id, upCondition, downCondition);
+   customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   id = customStream.RegisterInternalStream(id);
 
    return 0;
 }
 
 int deinit()
 {
+   customStream.Release();
+   customStream = NULL;
    delete mainSignaler;
    mainSignaler = NULL;
    for (int i = 0; i < ArraySize(conditions); ++i)

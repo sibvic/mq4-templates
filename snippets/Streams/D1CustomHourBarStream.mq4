@@ -1,4 +1,4 @@
-// D1 custom hour bar stream v1.0
+// D1 custom hour bar stream v1.1
 #include <ACustomBarStream.mq4>
 #ifndef D1CustomHourBarStream_IMP
 #define D1CustomHourBarStream_IMP
@@ -23,7 +23,10 @@ public:
       int periodLength = (int)PERIOD_H1 * 24 * 60;
       for (int i = start; i >= 0; --i)
       {
-         datetime barStart = (iTime(_symbol, PERIOD_H1, i) / periodLength) * periodLength + _hour * 3600;
+         datetime h1Time = iTime(_symbol, PERIOD_H1, i);
+         datetime barStart = (h1Time / periodLength) * periodLength + _hour * 3600;
+         if (barStart > h1Time)
+            barStart -= 24 * 3600;
          if (_size == 0 || barStart != _dates[_size - 1])
          {
             ++_size;

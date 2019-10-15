@@ -35,6 +35,9 @@ public:
          return true;
       
       string symbol = OrderSymbol();
+      if (_instrument == NULL)
+         _instrument = new InstrumentInfo(symbol);
+
       double closePrice = iClose(symbol, PERIOD_M1, 0);
       int orderType = OrderType();
       if (orderType == OP_BUY)

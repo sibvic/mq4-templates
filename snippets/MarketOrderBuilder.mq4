@@ -1,4 +1,4 @@
-// Market order builder v 1.5
+// Market order builder v 1.6
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
 class MarketOrderBuilder
@@ -12,13 +12,26 @@ class MarketOrderBuilder
    double _limit;
    int _magicNumber;
    string _comment;
+   bool _ecnBroker;
 public:
+   MarketOrderBuilder()
+   {
+      _ecnBroker = false;
+   }
+
    MarketOrderBuilder *SetSide(const OrderSide orderSide)
    {
       _orderSide = orderSide;
       return &this;
    }
    
+   // Sets ECN broker flag
+   MarketOrderBuilder* SetECNBroker(bool isEcn)
+   {
+      _ecnBroker = isEcn;
+      return &this;
+   }
+
    MarketOrderBuilder *SetInstrument(const string instrument)
    {
       _instrument = instrument;
@@ -67,7 +80,11 @@ public:
       double minstoplevel = MarketInfo(_instrument, MODE_STOPLEVEL); 
       
       double rate = _orderSide == BuySide ? MarketInfo(_instrument, MODE_ASK) : MarketInfo(_instrument, MODE_BID);
-      int order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stop, _limit, _comment, _magicNumber);
+      int order;
+      if (_ecnBroker)
+         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);
+      else
+         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stop, _limit, _comment, _magicNumber);
       if (order == -1)
       {
          int error = GetLastError();
@@ -111,17 +128,17 @@ public:
                      if (MathRound(MathAbs(rate - _stop) / point) < minStopDistancePoints)
                         errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
-                        errorMessage = "Invalid stop loss in the request";
+                        errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
                   }
                   else if (_limit != 0.0)
                   {
                      if (MathRound(MathAbs(rate - _limit) / point) < minStopDistancePoints)
                         errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
-                        errorMessage = "Invalid take profit in the request";
+                        errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
                   }
                   else
-                     errorMessage = "Invalid take profit in the request";
+                     errorMessage = "Invalid stop loss or take profit in the request. Do you have ECN broker and forget to enable ECN?";
                }
                return -1;
             case ERR_INVALID_PRICE:
@@ -132,6 +149,8 @@ public:
                return -1;
          }
       }
+      else if (_ecnBroker)
+         TradingCommands::MoveSLTP(order, _stop, _limit, errorMessage);
       return order;
    }
 };

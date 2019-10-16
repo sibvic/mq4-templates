@@ -1,4 +1,4 @@
-// Order builder v.1.5
+// Order builder v.1.6
 
 #ifndef OrderBuilder_IMP
 #define OrderBuilder_IMP
@@ -116,22 +116,23 @@ public:
             case ERR_INVALID_STOPS:
                {
                   double point = SymbolInfoDouble(_instrument, SYMBOL_POINT);
-                  int minStopDistancePoints = (int)MarketInfo(_instrument, MODE_STOPLEVEL);
-                  if (sl != 0.0 && MathRound(MathAbs(_rate - sl) / point) < minStopDistancePoints)
-                     errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
-                  else if (tp != 0.0 && MathRound(MathAbs(_rate - tp) / point) < minStopDistancePoints)
-                     errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
-                  else
+                  int minStopDistancePoints = (int)SymbolInfoInteger(_instrument, SYMBOL_TRADE_STOPS_LEVEL);
+                  if (_stop != 0.0)
                   {
-                     double rateDistance = _orderSide == BuySide
-                        ? MathAbs(rate - instrument.GetAsk()) / instrument.GetPointSize()
-                        : MathAbs(rate < instrument.GetBid()) / instrument.GetPointSize();
-                     if (rateDistance < minStopDistancePoints)
-                        errorMessage = "Distance to the pending order rate is too close: " + DoubleToStr(rateDistance, 1)
-                           + ". Min. allowed distance: " + IntegerToString(minStopDistancePoints);
+                     if (MathRound(MathAbs(rate - _stop) / point) < minStopDistancePoints)
+                        errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
-                        errorMessage = "Invalid take profit in the request";
+                        errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
                   }
+                  else if (_limit != 0.0)
+                  {
+                     if (MathRound(MathAbs(rate - _limit) / point) < minStopDistancePoints)
+                        errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+                     else
+                        errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
+                  }
+                  else
+                     errorMessage = "Invalid stop loss or take profit in the request. Do you have ECN broker and forget to enable ECN?";
                }
                break;
             case ERR_INVALID_TRADE_PARAMETERS:

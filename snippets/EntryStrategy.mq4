@@ -1,9 +1,9 @@
-// Entry strategy v.1.2
+// Entry strategy v2.0
 #include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
 public:
-   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, double &stopLoss) = 0;
+   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss) = 0;
 
    virtual int Exit(const OrderSide side) = 0;
 };
@@ -34,7 +34,7 @@ public:
       delete _shortEntryPrice;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, double &stopLoss)
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss)
    {
       double entryPrice;
       if (!GetEntryPrice(period, side, entryPrice))
@@ -48,6 +48,7 @@ public:
       OrderBuilder *orderBuilder = new OrderBuilder();
       int order = orderBuilder
          .SetRate(entryPrice)
+         .SetECNBroker(ecnBroker)
          .SetSide(side)
          .SetInstrument(_symbol)
          .SetAmount(amount)
@@ -93,7 +94,7 @@ public:
       _symbol = symbol;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, double &stopLoss)
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss)
    {
       double entryPrice = side == BuySide ? InstrumentInfo::GetAsk(_symbol) : InstrumentInfo::GetBid(_symbol);
       double amount;
@@ -105,6 +106,7 @@ public:
       MarketOrderBuilder *orderBuilder = new MarketOrderBuilder();
       int order = orderBuilder
          .SetSide(side)
+         .SetECNBroker(ecnBroker)
          .SetInstrument(_symbol)
          .SetAmount(amount)
          .SetSlippage(_slippagePoints)

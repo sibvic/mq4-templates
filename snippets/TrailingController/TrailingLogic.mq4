@@ -1,4 +1,4 @@
-// Trailing logic v1.0
+// Trailing logic v2.0
 
 #include <TrailingController.mq4>
 #include <ITrailingController.mq4>
@@ -11,22 +11,11 @@
 class TrailingLogic : public ITrailingLogic
 {
    ITrailingController *_trailing[];
-   TrailingType _trailingType;
-   double _trailingStep;
-   double _atrTrailingMultiplier;
-   double _trailingStart;
-   ENUM_TIMEFRAMES _timeframe;
    InstrumentInfo *_instrument;
 public:
-   TrailingLogic(TrailingType trailing, double trailingStep, double atrTrailingMultiplier
-      , double trailingStart, ENUM_TIMEFRAMES timeframe)
+   TrailingLogic()
    {
       _instrument = NULL;
-      _trailingStart = trailingStart;
-      _trailingType = trailing;
-      _trailingStep = trailingStep;
-      _atrTrailingMultiplier = atrTrailingMultiplier;
-      _timeframe = timeframe;
    }
 
    ~TrailingLogic()
@@ -48,8 +37,11 @@ public:
       }
    }
 
-   void Create(const int order, const double distancePips, const TrailingType trailingType, const double trailingStep
-      , const double trailingStart)
+   void Create(const int order, 
+               const double distancePips, 
+               const TrailingType trailingType, 
+               const double trailingStep, 
+               const double trailingStart)
    {
       if (!OrderSelect(order, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0.0)
          return;
@@ -75,11 +67,6 @@ public:
             break;
 #endif
       }
-   }
-
-   void Create(const int order, const double distancePips)
-   {
-      Create(order, distancePips, _trailingType, _trailingStep, _trailingStart);
    }
 private:
 #ifdef USE_ATR_TRAILLING

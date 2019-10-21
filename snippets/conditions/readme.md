@@ -120,6 +120,8 @@ Conditions for Stochastic K above/below D.
 
 Bar conditions: ascending/descending.
 
+Reference period is a main traiding period. 
+
 ## TradingTimeCondition
 
 Trading time condition. Returns true only during the selected time.

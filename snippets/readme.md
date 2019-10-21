@@ -198,6 +198,10 @@ Base streams.
 
 Iterates through orders.
 
+## ClosedOrdersIterator
+
+Iterates through closed orders.
+
 ### GetTicket
 
 Get ticket id of the current order.

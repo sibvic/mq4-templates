@@ -1,4 +1,4 @@
-// Orders iterator v 1.11
+// Orders iterator v 1.12
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef OrdersIterator_IMP
@@ -105,6 +105,9 @@ public:
    int GetTicket() { return OrderTicket(); }
    datetime GetOpenTime() { return OrderOpenTime(); }
    double GetOpenPrice() { return OrderOpenPrice(); }
+   double GetStopLoss() { return OrderStopLoss(); }
+   double GetTakeProfit() { return OrderTakeProfit(); }
+   string GetSymbol() { return OrderSymbol(); }
 
    int Count()
    {

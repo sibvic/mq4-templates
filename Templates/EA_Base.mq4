@@ -195,6 +195,7 @@ input DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
 input string week_stop_time = "235959"; // Stop time in hhmmss format
 //WEEKLY_TRADING_TIME_FEATURE bool mandatory_closing = false; // Mandatory closing for non-trading time TODO!!!
 #endif
+input bool PrintLog = false; // Print decisions into the log (On bar close only!)
 
 bool ecn_broker = false;
 
@@ -619,6 +620,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
    controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice));
 #endif
+   controller.SetPrintLog(PrintLog);
    // if (mandatory_closing)
    //    controller.SetMandatoryClosing(new DoMandatoryClosing(magic_number, slippage_points));
    // else

@@ -1,4 +1,4 @@
-// Or condition v2.0
+// Or condition v2.1
 
 #include <ACondition.mq4>
 
@@ -36,6 +36,21 @@ public:
             return true;
       }
       return false;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      string messages = "";
+      int size = ArraySize(_conditions);
+      for (int i = 0; i < size; ++i)
+      {
+         string logMessage = _conditions[i].GetLogMessage(period, date);
+         if (messages != "")
+            messages = messages + " or (" + logMessage + ")";
+         else
+            messages = "(" + logMessage + ")";
+      }
+      return messages;
    }
 };
 #endif

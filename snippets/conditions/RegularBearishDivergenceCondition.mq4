@@ -1,4 +1,4 @@
-// Regilar bearish divergence condition v1.0
+// Regilar bearish divergence condition v1.1
 
 #ifndef RegularBearishDivergenceCondition_IMP
 #define RegularBearishDivergenceCondition_IMP
@@ -29,6 +29,12 @@ public:
    virtual bool IsPass(const int period)
    {
       return _trough.IsPass(period) && _pricePeak.IsPass(period);
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Regular bearish divergence: " + (result ? "true" : "false");
    }
 };
 

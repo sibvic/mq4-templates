@@ -1,4 +1,4 @@
-// Disabled condition v1.0
+// Disabled condition v1.1
 
 #include <ACondition.mq4>
 
@@ -8,5 +8,10 @@ class DisabledCondition : public ACondition
 {
 public:
    bool IsPass(const int period) { return false; }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return "Disabled";
+   }
 };
 #endif

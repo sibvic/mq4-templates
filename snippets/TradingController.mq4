@@ -1,4 +1,4 @@
-// Trading controller v6.0
+// Trading controller v6.1
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -36,6 +36,7 @@ class TradingController
    AOrderAction* _orderHandlers[];
    TradingMode _entryLogic;
    TradingMode _exitLogic;
+   bool _printLog;
 public:
    TradingController(TradingCalculator *calculator, 
                      ENUM_TIMEFRAMES entryTimeframe, 
@@ -65,6 +66,7 @@ public:
       _lastLot = lots_value;
       _exitLongCondition = NULL;
       _exitShortCondition = NULL;
+      _printLog = false;
    }
 
    ~TradingController()
@@ -108,6 +110,7 @@ public:
       _orderHandlers[count] = orderAction;
       orderAction.AddRef();
    }
+   void SetPrintLog(bool print) { _printLog = print; }
    void SetEntryLogic(TradingMode logicType) { _entryLogic = logicType; }
    void SetExitLogic(TradingMode logicType) { _exitLogic = logicType; }
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
@@ -171,6 +174,13 @@ private:
 
    void DoExitLogic(int exitTradePeriod)
    {
+      if (_printLog && _exitLogic == TradingModeOnBarClose)
+      {
+         string logMessage = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
+         Print("Long exit: " + logMessage);
+         logMessage = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
+         Print("Short exit: " + logMessage);
+      }
       if (_exitLongCondition.IsPass(exitTradePeriod))
       {
          if (_entryStrategy.Exit(BuySide) > 0)
@@ -192,6 +202,11 @@ private:
 
    bool DoEntryLongLogic(int entryTradePeriod)
    {
+      if (_printLog && _entryLogic == TradingModeOnBarClose)
+      {
+         string logMessage = _longCondition.GetLogMessage(entryTradePeriod, date);
+         Print("Long entry: " + logMessage);
+      }
       if (!_longCondition.IsPass(entryTradePeriod))
          return false;
       _closeOnOpposite.DoClose(SellSide);
@@ -224,6 +239,11 @@ private:
 
    bool DoEntryShortLogic(int entryTradePeriod)
    {
+      if (_printLog && _entryLogic == TradingModeOnBarClose)
+      {
+         string logMessage = _shortCondition.GetLogMessage(entryTradePeriod, date);
+         Print("Short entry: " + logMessage);
+      }
       if (!_shortCondition.IsPass(entryTradePeriod))
          return false;
       _closeOnOpposite.DoClose(BuySide);

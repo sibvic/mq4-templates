@@ -1,4 +1,4 @@
-// Peak Condition v1.0
+// Peak Condition v1.1
 
 #include <conditions/ICondition.mq4>
 #include <..streams/IStream.mq4>
@@ -39,6 +39,12 @@ public:
             return false;
       }
       return true;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Peak: " + (result ? "true" : "false");
    }
 };
 

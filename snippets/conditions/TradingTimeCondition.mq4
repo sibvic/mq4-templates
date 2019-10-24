@@ -1,4 +1,4 @@
-// Trading time condition v1.0
+// Trading time condition v1.1
 
 #include <ACondition.mq4>
 #include <NoCondition.mq4>
@@ -185,6 +185,12 @@ public:
    {
 
    }
+   
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Tokyo TZ: " + (result ? "true" : "false");
+   }
 };
 
 class NewYorkTimezoneCondition : public TradingTimeCondition
@@ -195,6 +201,12 @@ public:
    {
 
    }
+   
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "NY TZ: " + (result ? "true" : "false");
+   }
 };
 
 class LondonTimezoneCondition : public TradingTimeCondition
@@ -204,6 +216,12 @@ public:
       : TradingTimeCondition(3 * 3600, (3 + 9) * 3600)
    {
 
+   }
+   
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "London TZ: " + (result ? "true" : "false");
    }
 };
 #endif

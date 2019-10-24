@@ -1,4 +1,4 @@
-// Abstract condition v1.0
+// Abstract condition v1.1
 
 #include <ICondition.mq4>
 
@@ -24,6 +24,11 @@ public:
       --_references;
       if (_references == 0)
          delete &this;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return "";
    }
 };
 

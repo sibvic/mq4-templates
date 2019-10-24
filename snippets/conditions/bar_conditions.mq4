@@ -1,4 +1,4 @@
-// Bar condnitions v2.0
+// Bar condnitions v2.1
 
 #ifndef BarConditions_IMP
 #define BarConditions_IMP
@@ -40,6 +40,12 @@ public:
       double open, close;
       return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open < close;
    }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Bar ascending: " + (result ? "true" : "false");
+   }
 };
 
 class BarDescendingCondition : public ACondition
@@ -75,6 +81,12 @@ public:
 
       double open, close;
       return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open > close;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Bar descending: " + (result ? "true" : "false");
    }
 };
 #endif

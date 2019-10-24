@@ -1,4 +1,4 @@
-// MA Conditions v1.0
+// MA Conditions v1.1
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
@@ -60,11 +60,17 @@ public:
       _period2 = period2;
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double ma1Value = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
       double ma2Value = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period);
       return ma1Value > ma2Value;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "MA above MA: " + (result ? "true" : "false");
    }
 };
 
@@ -90,6 +96,12 @@ public:
       double ma1Value = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
       double ma2Value = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period);
       return ma1Value < ma2Value;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "MA below MA: " + (result ? "true" : "false");
    }
 };
 #endif

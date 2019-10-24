@@ -1,4 +1,4 @@
-// Act on switch condition v2.0
+// Act on switch condition v2.1
 
 #include <ACondition.mq4>
 
@@ -39,6 +39,11 @@ public:
       }
       _current = _condition.IsPass(period);
       return _current && _last;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return _condition.GetLogMessage(period, date);
    }
 };
 #endif

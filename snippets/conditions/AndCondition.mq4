@@ -1,4 +1,4 @@
-// And condition v2.0
+// And condition v2.1
 #include <ACondition.mq4>
 #ifndef AndCondition_IMP
 #define AndCondition_IMP
@@ -33,6 +33,21 @@ public:
             return false;
       }
       return true;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      string messages = "";
+      int size = ArraySize(_conditions);
+      for (int i = 0; i < size; ++i)
+      {
+         string logMessage = _conditions[i].GetLogMessage(period, date);
+         if (messages != "")
+            messages = messages + " and (" + logMessage + ")";
+         else
+            messages = "(" + logMessage + ")";
+      }
+      return messages;
    }
 };
 #endif

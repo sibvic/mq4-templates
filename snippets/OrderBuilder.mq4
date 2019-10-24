@@ -1,4 +1,4 @@
-// Order builder v.1.6
+// Order builder v.1.7
 
 #ifndef OrderBuilder_IMP
 #define OrderBuilder_IMP
@@ -110,6 +110,9 @@ public:
             case ERR_OFF_QUOTES:
                errorMessage = "No quotes";
                return -1;
+            case ERR_NOT_ENOUGH_MONEY:
+               errorMessage = "Not enough money";
+               break;
             case ERR_TRADE_NOT_ALLOWED:
                errorMessage = "Trading is not allowed";
                break;

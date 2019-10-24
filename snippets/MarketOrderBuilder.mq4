@@ -1,4 +1,4 @@
-// Market order builder v 1.6
+// Market order builder v 1.7
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
 class MarketOrderBuilder
@@ -90,9 +90,6 @@ public:
          int error = GetLastError();
          switch (error)
          {
-            case ERR_NOT_ENOUGH_MONEY:
-               errorMessage = "Not enought money";
-               return -1;
             case ERR_INVALID_TRADE_VOLUME:
                {
                   double minVolume = SymbolInfoDouble(_instrument, SYMBOL_VOLUME_MIN);

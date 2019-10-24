@@ -1,4 +1,4 @@
-// Entry strategy v2.0
+// Entry strategy v2.1
 #include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
@@ -39,7 +39,7 @@ public:
       double entryPrice;
       if (!GetEntryPrice(period, side, entryPrice))
          return -1;
-      string error;
+      string error = "";
       double amount;
       double takeProfit;
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
@@ -59,7 +59,7 @@ public:
          .SetComment(comment)
          .Execute(error);
       delete orderBuilder;
-      if (order == -1)
+      if (error != "")
       {
          Print("Failed to open position: " + error);
       }
@@ -102,7 +102,7 @@ public:
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
          return -1;
-      string error;
+      string error = "";
       MarketOrderBuilder *orderBuilder = new MarketOrderBuilder();
       int order = orderBuilder
          .SetSide(side)
@@ -116,7 +116,7 @@ public:
          .SetComment(comment)
          .Execute(error);
       delete orderBuilder;
-      if (order == -1)
+      if (error != "")
       {
          Print("Failed to open position: " + error);
       }

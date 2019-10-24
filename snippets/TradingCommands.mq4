@@ -1,4 +1,4 @@
-// Trading commands v.2.8
+// Trading commands v.2.9
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef TradingCommands_IMP
@@ -17,19 +17,45 @@ public:
          return false;
       }
 
-      int res = OrderModify(ticketId, OrderOpenPrice(), newStopLoss, newTakeProfit, 0, CLR_NONE);
-      if (res == 0)
+      double rate = OrderOpenPrice();
+      ResetLastError();
+      int res = OrderModify(ticketId, rate, newStopLoss, newTakeProfit, 0, CLR_NONE);
+      int errorCode = GetLastError();
+      switch (errorCode)
       {
-         int errorCode = GetLastError();
-         switch (errorCode)
-         {
-            case ERR_INVALID_TICKET:
-               error = "Trade not found";
-               return false;
-            default:
-               error = "Last error: " + IntegerToString(errorCode);
-               break;
-         }
+         case ERR_NO_ERROR:
+            break;
+         case ERR_INVALID_TICKET:
+            error = "Trade not found";
+            return false;
+         case ERR_INVALID_STOPS:
+            {
+               string symbol = OrderSymbol();
+               InstrumentInfo instrument(symbol);
+               double point = instrument.GetPointSize();
+               int minStopDistancePoints = (int)MarketInfo(symbol, MODE_STOPLEVEL);
+               if (newStopLoss != 0.0 && MathRound(MathAbs(rate - newStopLoss) / point) < minStopDistancePoints)
+                  error = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+               else if (newTakeProfit != 0.0 && MathRound(MathAbs(rate - newTakeProfit) / point) < minStopDistancePoints)
+                  error = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+               else
+               {
+                  int orderType = OrderType();
+                  bool isBuyOrder = orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP;
+                  double rateDistance = orderType
+                     ? MathAbs(rate - instrument.GetAsk()) / point
+                     : MathAbs(rate < instrument.GetBid()) / point;
+                  if (rateDistance < minStopDistancePoints)
+                     error = "Distance to the pending order rate is too close: " + DoubleToStr(rateDistance, 1)
+                        + ". Min. allowed distance: " + IntegerToString(minStopDistancePoints);
+                  else
+                     error = "Invalid take profit in the request";
+               }
+            }
+            return false;
+         default:
+            error = "Last error: " + IntegerToString(errorCode);
+            return false;
       }
       return true;
    }
@@ -41,22 +67,7 @@ public:
          error = "Trade not found";
          return false;
       }
-
-      int res = OrderModify(ticketId, OrderOpenPrice(), newStopLoss, OrderTakeProfit(), 0, CLR_NONE);
-      if (res == 0)
-      {
-         int errorCode = GetLastError();
-         switch (errorCode)
-         {
-            case ERR_INVALID_TICKET:
-               error = "Trade not found";
-               return false;
-            default:
-               error = "Last error: " + IntegerToString(errorCode);
-               break;
-         }
-      }
-      return true;
+      return MoveSLTP(ticketId, newStopLoss, OrderTakeProfit(), error);
    }
 
    static void DeleteOrders(const int magicNumber)
@@ -111,6 +122,9 @@ public:
       int lastError = GetLastError();
       switch (lastError)
       {
+         case ERR_NOT_ENOUGH_MONEY:
+            error = "Not enough money";
+            break;
          case ERR_TRADE_NOT_ALLOWED:
             error = "Trading is not allowed";
             break;
@@ -122,6 +136,9 @@ public:
             break;
          case ERR_TRADE_PROHIBITED_BY_FIFO:
             error = "Prohibited by FIFO";
+            break;
+         case ERR_MARKET_CLOSED:
+            error = "The market is closed";
             break;
          default:
             error = "Last error: " + IntegerToString(lastError);

@@ -102,7 +102,7 @@ Or condition.
 
 ## ma_conditions
 
-Conditions for MA above/below price/another MA.
+Conditions for MA above/below price/another MA, MA cross over/under MA.
 
 ## cci_conditions
 

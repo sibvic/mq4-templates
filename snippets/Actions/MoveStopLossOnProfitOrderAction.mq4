@@ -1,4 +1,4 @@
-// Move stop loss on profit order action v1.0
+// Move stop loss on profit order action v1.1
 #ifndef MoveStopLossOnProfitOrderAction_IMP
 #define MoveStopLossOnProfitOrderAction_IMP
 
@@ -55,15 +55,16 @@ private:
    {
       if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES))
          return;
-      IOrder *order = new OrderByMagicNumber(OrderMagicNumber());
+      IOrder *order = new OrderByTicketId(ticketId);
       HitProfitCondition* condition = new HitProfitCondition();
       condition.Set(order, trigger);
       IAction* action = new MoveToBreakevenAction(trigger, target, name, order, _signaler);
+      order.Release();
       if (!_actions.AddActionOnCondition(action, condition))
       {
-         action.Release();
          delete condition;
       }
+      action.Release();
    }
 };
 

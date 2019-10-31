@@ -1,4 +1,4 @@
-// Action on condition v1.0
+// Action on condition v2.0
 
 #include <../conditions/ICondition.mq4>
 #include <../actions/IAction.mq4>
@@ -40,12 +40,12 @@ public:
       return true;
    }
 
-   void DoLogic(const int period)
+   void DoLogic(const int period, datetime date)
    {
       if (_finished)
          return;
 
-      if ( _condition.IsPass(period))
+      if ( _condition.IsPass(period, date))
       {
          if (_action.DoAction())
             _finished = true;

@@ -35,3 +35,7 @@ Closes order.
 ## TrailingPipsAction
 
 Keeps stop loss distance to the orders to the defined amount of pips.
+
+## CreateTrailingAction
+
+Creates trailing action for the order.

@@ -1,4 +1,4 @@
-// Hit profit condition v1.0
+// Hit profit condition v2.0
 
 #include <ACondition.mq4>
 
@@ -40,7 +40,7 @@ public:
       }
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       if (_order == NULL || !_order.Select())
          return false;

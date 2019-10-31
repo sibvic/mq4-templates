@@ -1,4 +1,4 @@
-// No condition v1.0
+// No condition v2.0
 
 #include <ACondition.mq4>
 
@@ -8,7 +8,7 @@
 class NoCondition : public ACondition
 {
 public:
-   bool IsPass(const int period) { return true; }
+   bool IsPass(const int period, const datetime date) { return true; }
 };
 
 #endif

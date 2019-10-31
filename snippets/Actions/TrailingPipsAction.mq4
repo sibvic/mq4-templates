@@ -1,4 +1,4 @@
-// Trailing action v1.0
+// Trailing action v2.0
 
 #include <AAction.mq4>
 #include <../Order.mq4>
@@ -12,15 +12,19 @@ class TrailingPipsAction : public AAction
 {
    IOrder* _order;
    InstrumentInfo* _instrument;
-   double _lastClose;
+   double _distancePips;
+   double _stepPips;
    double _distance;
+   double _step;
 public:
-   TrailingPipsAction(IOrder* order, double distance)
+   TrailingPipsAction(IOrder* order, double distancePips, double stepPips)
    {
-      _distance = distance;
+      _distancePips = distancePips;
+      _stepPips = stepPips;
+      _distance = 0;
+      _step = 0;
       _order = order;
       _order.AddRef();
-      _lastClose = 0;
       _instrument = NULL;
    }
 
@@ -34,34 +38,55 @@ public:
    {
       if (!_order.Select())
          return true;
+
       string symbol = OrderSymbol();
       double closePrice = iClose(symbol, PERIOD_M1, 0);
-      if (_lastClose == 0)
+      if (_step == 0)
       {
-         _lastClose = closePrice;
          _instrument = new InstrumentInfo(symbol);
+         _distance = _distancePips * _instrument.GetPipSize();
+         _step = _stepPips * _instrument.GetPipSize();
       }
 
-      double stopLoss = OrderStopLoss();
-      double stopDistance = MathAbs(closePrice - stopLoss) / _instrument.GetPipSize();
-      if (stopDistance <= _distance)
+      double newStop = GetNewStopLoss(closePrice);
+      if (newStop == 0.0)
          return false;
-
+      
+      string error;
+      TradingCommands::MoveSL(OrderTicket(), newStop, error);
+      
+      return false;
+   }
+private:
+   double GetNewStopLoss(double closePrice)
+   {
+      double stopLoss = OrderStopLoss();
+      if (stopLoss == 0.0)
+         return 0;
+         
+      double newStop = stopLoss;
       int orderType = OrderType();
       if (orderType == OP_BUY)
       {
-         string error;
-         TradingCommands::MoveSL(OrderTicket(), closePrice - _distance * _instrument.GetPipSize(), error);
-         _lastClose = closePrice;
+         while (_instrument.RoundRate(newStop + _step) < _instrument.RoundRate(closePrice - _distance))
+         {
+            newStop = _instrument.RoundRate(newStop + _step);
+         }
+         if (newStop == stopLoss) 
+            return 0;
       }
       else if (orderType == OP_SELL)
       {
-         string error;
-         TradingCommands::MoveSL(OrderTicket(), closePrice + _distance * _instrument.GetPipSize(), error);
-         _lastClose = closePrice;
+         while (_instrument.RoundRate(newStop - _step) < _instrument.RoundRate(closePrice - _distance))
+         {
+            newStop = _instrument.RoundRate(newStop - _step);
+         }
+         if (newStop == stopLoss) 
+            return 0;
       }
-      
-      return false;
+      else
+         return 0;
+      return newStop;
    }
 };
 #endif

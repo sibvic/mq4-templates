@@ -1,4 +1,4 @@
-// Trading time condition v1.1
+// Trading time condition v2.0
 
 #include <ACondition.mq4>
 #include <NoCondition.mq4>
@@ -111,7 +111,7 @@ public:
       _weekStopTime = weekEndTime;
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       MqlDateTime current_time;
       if (!TimeToStruct(TimeCurrent(), current_time))

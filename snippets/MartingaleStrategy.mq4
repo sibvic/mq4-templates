@@ -1,4 +1,4 @@
-// Martingale strategy v2.0
+// Martingale strategy v2.1
 #include <enums/OrderSide.mq4>
 
 interface IMartingaleStrategy
@@ -47,8 +47,55 @@ public:
    {
       double ask = rate;
       amount = _amount;
-      stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, stop_loss_type, amount, ask);
-      takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, take_profit_type, amount, ask);
+      switch (stop_loss_type)
+      {
+         case SLDoNotUse:
+            stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, StopLimitDoNotUse, amount, ask);
+            break;
+         case SLPercent:
+            stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, StopLimitPercent, amount, ask);
+            break;
+         case SLPips:
+            stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, StopLimitPips, amount, ask);
+            break;
+         case SLDollar:
+            stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, StopLimitDollar, amount, ask);
+            break;
+         case SLAbsolute:
+            stopLoss = _calculator.CalculateStopLoss(true, stop_loss_value, StopLimitAbsolute, amount, ask);
+            break;
+         case SLAtr:
+            Print("Not supported yet");
+            stopLoss = -1;
+            break;
+      }
+      
+      switch (take_profit_type)
+      {
+         case TPDoNotUse:
+            takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, StopLimitDoNotUse, amount, ask);
+            break;
+         case TPPercent:
+            takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, StopLimitPercent, amount, ask);
+            break;
+         case TPPips:
+            takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, StopLimitPips, amount, ask);
+            break;
+         case TPDollar:
+            takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, StopLimitDollar, amount, ask);
+            break;
+         case TPRiskReward:
+            Print("Not supported yet");
+            takeProfit = -1;
+            break;
+         case TPAbsolute:
+            takeProfit = _calculator.CalculateTakeProfit(true, take_profit_value, StopLimitAbsolute, amount, ask);
+            break;
+         case TPAtr:
+            Print("Not supported yet");
+            takeProfit = -1;
+            break;
+      }
    }
 };
 
@@ -64,8 +111,54 @@ public:
    {
       double bid = rate;
       amount = _amount;
-      stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, stop_loss_type, amount, bid);
-      takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, take_profit_type, amount, bid);
+      switch (stop_loss_type)
+      {
+         case SLDoNotUse:
+            stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, StopLimitDoNotUse, amount, bid);
+            break;
+         case SLPercent:
+            stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, StopLimitPercent, amount, bid);
+            break;
+         case SLPips:
+            stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, StopLimitPips, amount, bid);
+            break;
+         case SLDollar:
+            stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, StopLimitDollar, amount, bid);
+            break;
+         case SLAbsolute:
+            stopLoss = _calculator.CalculateStopLoss(false, stop_loss_value, StopLimitAbsolute, amount, bid);
+            break;
+         case SLAtr:
+            Print("Not supported yet");
+            stopLoss = -1;
+            break;
+      }
+      switch (take_profit_type)
+      {
+         case TPDoNotUse:
+            takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, StopLimitDoNotUse, amount, bid);
+            break;
+         case TPPercent:
+            takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, StopLimitPercent, amount, bid);
+            break;
+         case TPPips:
+            takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, StopLimitPips, amount, bid);
+            break;
+         case TPDollar:
+            takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, StopLimitDollar, amount, bid);
+            break;
+         case TPRiskReward:
+            Print("Not supported yet");
+            takeProfit = -1;
+            break;
+         case TPAbsolute:
+            takeProfit = _calculator.CalculateTakeProfit(false, take_profit_value, StopLimitAbsolute, amount, bid);
+            break;
+         case TPAtr:
+            Print("Not supported yet");
+            takeProfit = -1;
+            break;
+      }
    }
 };
 

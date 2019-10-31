@@ -1,9 +1,9 @@
-// Entry strategy v2.1
+// Entry strategy v3.0
 #include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
 public:
-   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss) = 0;
+   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker) = 0;
 
    virtual int Exit(const OrderSide side) = 0;
 };
@@ -34,7 +34,7 @@ public:
       delete _shortEntryPrice;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss)
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker)
    {
       double entryPrice;
       if (!GetEntryPrice(period, side, entryPrice))
@@ -42,6 +42,7 @@ public:
       string error = "";
       double amount;
       double takeProfit;
+      double stopLoss;
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
          return -1;
@@ -94,11 +95,12 @@ public:
       _symbol = symbol;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker, double &stopLoss)
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker)
    {
       double entryPrice = side == BuySide ? InstrumentInfo::GetAsk(_symbol) : InstrumentInfo::GetBid(_symbol);
       double amount;
       double takeProfit;
+      double stopLoss;
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
          return -1;

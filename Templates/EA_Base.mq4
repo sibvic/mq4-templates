@@ -9,10 +9,8 @@
 #define SHOW_ACCOUNT_STAT
 #define REVERSABLE_LOGIC_FEATURE
 #define STOP_LOSS_FEATURE input
-#define USE_ATR_TRAILLING
 #define NET_STOP_LOSS_FEATURE
 #define USE_NET_BREAKEVEN
-//#define INDICATOR_BASED_TRAILING
 #define TAKE_PROFIT_FEATURE input
 #define NET_TAKE_PROFIT_FEATURE
 #define MARTINGALE_FEATURE
@@ -33,6 +31,7 @@ enum TradingMode
 
 input string GeneralSection = ""; // == General ==
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
+input bool ecn_broker = false; // ECN Broker? 
 input TradingMode entry_logic = TradingModeLive; // Entry logic
 input TradingMode exit_logic = TradingModeLive; // Exit logic
 enum PositionSizeType
@@ -105,15 +104,7 @@ STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
 enum TrailingType
 {
    TrailingDontUse, // No trailing
-#ifdef INDICATOR_BASED_TRAILING
-   TrailingIndicator, // Based on indicator
-#else
-   TrailingPips, // Use trailing in pips
-   TrailingPercent // Use trailing in % of stop
-   #ifdef USE_ATR_TRAILLING
-   ,TrailingATR // Use ATR trailing
-   #endif
-#endif
+   TrailingPips // Use trailing in pips
 };
 enum StopLossType
 {
@@ -138,9 +129,6 @@ STOP_LOSS_FEATURE double stop_loss_value            = 10; // Stop loss value
 STOP_LOSS_FEATURE TrailingType trailing_type = TrailingDontUse; // Trailing type
 STOP_LOSS_FEATURE double trailing_step = 10; // Trailing step
 STOP_LOSS_FEATURE double trailing_start = 0; // Min distance to order to activate the trailing
-#ifdef USE_ATR_TRAILLING
-   STOP_LOSS_FEATURE double atr_trailing_multiplier = 0.1; // Multiplier for ATR trailing
-#endif
 STOP_LOSS_FEATURE StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
 STOP_LOSS_FEATURE double breakeven_value = 10; // Trigger for the breakeven
 STOP_LOSS_FEATURE double breakeven_level = 0; // Breakeven target
@@ -197,8 +185,6 @@ input string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
 input bool PrintLog = false; // Print decisions into the log (On bar close only!)
 
-bool ecn_broker = false;
-
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
 #include <conditions/ActOnSwitchCondition.mq4>
@@ -243,12 +229,6 @@ public:
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
-#ifdef INDICATOR_BASED_TRAILING
-#include <TrailingController/StreamTrailingController.mq4>
-#include <TrailingController/IndicatorTrailingLogic.mq4>
-#else
-#include <TrailingController/TrailingLogic.mq4>
-#endif
 #ifdef NET_STOP_LOSS_FEATURE
 #include <Actions/MoveNetStopLossAction.mq4>
 #endif
@@ -275,11 +255,14 @@ public:
 #include <Actions/MoveStopLossOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
+#include <AccountStatistics.mq4>
 
 TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
 AccountStatistics *stats;
 #endif
+
+#include <actions/CreateTrailingAction.mq4>
 
 #include <conditions/ABaseCondition.mq4>
 #include <conditions/TradingTimeCondition.mq4>
@@ -399,13 +382,6 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 #endif
 }
 
-#ifdef INDICATOR_BASED_TRAILING
-IStreamFactory* CreateTrailingStreamFactory(const string symbol, const ENUM_TIMEFRAMES timeframe)
-{
-   return NULL;
-}
-#endif
-
 MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
    ENUM_TIMEFRAMES timeframe, bool isBuy)
 {
@@ -481,17 +457,18 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
 {
-#ifdef TRADING_TIME_FEATURE
-   ICondition* tradingTimeCondition = CreateTradingTimeCondition(start_time, stop_time, use_weekly_timing,
-      week_start_day, week_start_time, week_stop_day, 
-      week_stop_time, error);
-   if (tradingTimeCondition == NULL)
-      return NULL;
-#endif
+   #ifdef TRADING_TIME_FEATURE
+      ICondition* tradingTimeCondition = CreateTradingTimeCondition(start_time, stop_time, use_weekly_timing,
+         week_start_day, week_start_time, week_stop_day, 
+         week_stop_time, error);
+      if (tradingTimeCondition == NULL)
+         return NULL;
+   #endif
 
    TradingCalculator* tradingCalculator = TradingCalculator::Create(symbol);
    if (!tradingCalculator.IsLotsValid(lots_value, lots_type, error))
    {
+      tradingTimeCondition.Release();
       delete tradingCalculator;
       return NULL;
    }
@@ -499,10 +476,11 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    Signaler* signaler = new Signaler(symbol, timeframe);
    signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
    
-   TradingController* controller = new TradingController(tradingCalculator, timeframe, signaler);
+   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, signaler);
    
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
    controller.SetActions(actions);
+   controller.SetECNBroker(ecn_broker);
    
    if (breakeven_type != StopLimitDoNotUse)
    {
@@ -515,43 +493,48 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       #endif
    }
 
-   if (trailing_type == TrailingDontUse)
-      controller.SetTrailing(new DisabledTrailingLogic());
-   else
-      #ifdef INDICATOR_BASED_TRAILING
-      controller.SetTrailing(new IndicatorTrailingLogic(CreateTrailingStreamFactory(symbol, timeframe), signaler));
-      #else
-         #ifdef USE_ATR_TRAILLING
-      controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, atr_trailing_multiplier, 0, timeframe, signaler));
-         #else
-      controller.SetTrailing(new TrailingLogic(trailing_type, trailing_step, 0, trailing_start, timeframe, signaler));
-         #endif
-      #endif
-
-#ifdef MARTINGALE_FEATURE
-   switch (martingale_type)
+   switch (trailing_type)
    {
-      case MartingaleDoNotUse:
-         controller.SetShortMartingaleStrategy(new NoMartingaleStrategy());
-         controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
+      case TrailingDontUse:
          break;
-      case MartingaleOnLoss:
-         controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
-         controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
+   #ifdef INDICATOR_BASED_TRAILING
+      case TrailingIndicator:
+         break;
+   #endif
+      case TrailingPips:
+         {
+            CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
+            controller.AddOrderAction(trailingAction);
+            trailingAction.Release();
+         }
          break;
    }
-#endif
+
+   #ifdef MARTINGALE_FEATURE
+      switch (martingale_type)
+      {
+         case MartingaleDoNotUse:
+            controller.SetShortMartingaleStrategy(new NoMartingaleStrategy());
+            controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
+            break;
+         case MartingaleOnLoss:
+            controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
+            controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
+            break;
+      }
+   #endif
 
    AndCondition* longCondition = new AndCondition();
    longCondition.Add(CreateLongCondition(symbol, timeframe), false);
-#ifdef TRADING_TIME_FEATURE
-   longCondition.Add(tradingTimeCondition, true);
-#endif
+   #ifdef TRADING_TIME_FEATURE
+      longCondition.Add(tradingTimeCondition, true);
+   #endif
    AndCondition* shortCondition = new AndCondition();
    shortCondition.Add(CreateShortCondition(symbol, timeframe), false);
-#ifdef TRADING_TIME_FEATURE
-   shortCondition.Add(tradingTimeCondition, true);
-#endif
+   #ifdef TRADING_TIME_FEATURE
+      shortCondition.Add(tradingTimeCondition, true);
+   #endif
+   tradingTimeCondition.Release();
 
    controller.SetExitLogic(exit_logic);
    ICondition *exitLongCondition = CreateExitLongCondition(symbol, timeframe);
@@ -581,7 +564,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    if (net_stop_loss_type != StopLimitDoNotUse)
    {
       IAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
-      actions.AddActionOnCondition(action, new NoCondition());
+      NoCondition* condition = new NoCondition();
+      actions.AddActionOnCondition(action, condition);
       action.Release();
    }
 #endif
@@ -589,7 +573,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    if (net_take_profit_type != StopLimitDoNotUse)
    {
       IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number);
-      actions.AddActionOnCondition(action, new NoCondition());
+      NoCondition* condition = new NoCondition();
+      actions.AddActionOnCondition(action, condition);
       action.Release();
    }
 #endif

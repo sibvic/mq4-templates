@@ -1,4 +1,4 @@
-// Act on switch condition v2.1
+// Act on switch condition v3.0
 
 #include <ACondition.mq4>
 
@@ -29,7 +29,7 @@ public:
       delete _condition;
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       datetime time = iTime(_symbol, _timeframe, period);
       if (time != _currentDate)
@@ -37,8 +37,8 @@ public:
          _last = _current;
          _currentDate = time;
       }
-      _current = _condition.IsPass(period);
-      return _current && _last;
+      _current = _condition.IsPass(period, date);
+      return _current && !_last;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)

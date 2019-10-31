@@ -1,4 +1,4 @@
-// Trading controller v6.1
+// Trading controller v7.0
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -10,7 +10,6 @@ class TradingController
    datetime _lastActionTime;
    double _lastLot;
    ActionOnConditionLogic* actions;
-   ITrailingLogic *_trailing;
    Signaler *_signaler;
    datetime _lastEntryTime;
    datetime _lastExitTime;
@@ -36,6 +35,7 @@ class TradingController
    AOrderAction* _orderHandlers[];
    TradingMode _entryLogic;
    TradingMode _exitLogic;
+   bool _ecnBroker;
    bool _printLog;
 public:
    TradingController(TradingCalculator *calculator, 
@@ -44,6 +44,7 @@ public:
                      Signaler *signaler, 
                      const string algorithmId = "")
    {
+      _ecnBroker = false;
       _entryLogic = TradingModeOnBarClose;
       _exitLogic = TradingModeLive;
       _actions = NULL;
@@ -98,7 +99,6 @@ public:
       delete _exitShortCondition;
       delete _calculator;
       delete _signaler;
-      delete _trailing;
       delete _longCondition;
       delete _shortCondition;
    }
@@ -110,11 +110,11 @@ public:
       _orderHandlers[count] = orderAction;
       orderAction.AddRef();
    }
+   void SetECNBroker(bool ecn) { _ecnBroker = ecn; }
    void SetPrintLog(bool print) { _printLog = print; }
    void SetEntryLogic(TradingMode logicType) { _entryLogic = logicType; }
    void SetExitLogic(TradingMode logicType) { _exitLogic = logicType; }
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
-   void SetTrailing(ITrailingLogic *trailing) { _trailing = trailing; }
    void SetLongCondition(ICondition *condition) { _longCondition = condition; }
    void SetShortCondition(ICondition *condition) { _shortCondition = condition; }
    void SetExitLongCondition(ICondition *condition) { _exitLongCondition = condition; }
@@ -145,16 +145,15 @@ public:
    void DoTrading()
    {
       int entryTradePeriod = _entryLogic == TradingModeLive ? 0 : 1;
-      _actions.DoLogic(entryTradePeriod);
-      _trailing.DoLogic();
+      datetime entryTime = iTime(_calculator.GetSymbol(), _entryTimeframe, entryTradePeriod);
+      _actions.DoLogic(entryTradePeriod, entryTime);
       #ifdef MARTINGALE_FEATURE
       DoMartingale(_shortMartingale);
       DoMartingale(_longMartingale);
       #endif
-      datetime entryTime = iTime(_calculator.GetSymbol(), _entryTimeframe, entryTradePeriod);
       if (EntryAllowed(entryTime))
       {
-         DoEntryLogic(entryTradePeriod);
+         DoEntryLogic(entryTradePeriod, entryTime);
          _lastEntryTime = entryTime;
       }
 
@@ -162,7 +161,7 @@ public:
       datetime exitTime = iTime(_calculator.GetSymbol(), _exitTimeframe, exitTradePeriod);
       if (ExitAllowed(exitTime))
       {
-         DoExitLogic(exitTradePeriod);
+         DoExitLogic(exitTradePeriod, exitTime);
          _lastExitTime = exitTime;
       }
    }
@@ -172,7 +171,7 @@ private:
       return _exitLogic != TradingModeOnBarClose || _lastExitTime != exitTime;
    }
 
-   void DoExitLogic(int exitTradePeriod)
+   void DoExitLogic(int exitTradePeriod, datetime date)
    {
       if (_printLog && _exitLogic == TradingModeOnBarClose)
       {
@@ -181,12 +180,12 @@ private:
          logMessage = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
          Print("Short exit: " + logMessage);
       }
-      if (_exitLongCondition.IsPass(exitTradePeriod))
+      if (_exitLongCondition.IsPass(exitTradePeriod, date))
       {
          if (_entryStrategy.Exit(BuySide) > 0)
             _signaler.SendNotifications("Exit Buy");
       }
-      if (_exitShortCondition.IsPass(exitTradePeriod))
+      if (_exitShortCondition.IsPass(exitTradePeriod, date))
       {
          if (_entryStrategy.Exit(SellSide) > 0)
             _signaler.SendNotifications("Exit Sell");
@@ -200,14 +199,14 @@ private:
       return _lastActionTime != entryTime;
    }
 
-   bool DoEntryLongLogic(int entryTradePeriod)
+   bool DoEntryLongLogic(int entryTradePeriod, datetime date)
    {
       if (_printLog && _entryLogic == TradingModeOnBarClose)
       {
          string logMessage = _longCondition.GetLogMessage(entryTradePeriod, date);
          Print("Long entry: " + logMessage);
       }
-      if (!_longCondition.IsPass(entryTradePeriod))
+      if (!_longCondition.IsPass(entryTradePeriod, date))
          return false;
       _closeOnOpposite.DoClose(SellSide);
       #ifdef POSITION_CAP_FEATURE
@@ -219,8 +218,7 @@ private:
       #endif
       for (int i = 0; i < ArraySize(_longMoneyManagement); ++i)
       {
-         double stopLoss = 0.0;
-         int order = _entryStrategy.OpenPosition(entryTradePeriod, BuySide, _longMoneyManagement[i], _algorithmId, stopLoss);
+         int order = _entryStrategy.OpenPosition(entryTradePeriod, BuySide, _longMoneyManagement[i], _algorithmId, _ecnBroker);
          if (order >= 0)
          {
             for (int orderHandlerIndex = 0; orderHandlerIndex < ArraySize(_orderHandlers); ++orderHandlerIndex)
@@ -230,21 +228,20 @@ private:
             #ifdef MARTINGALE_FEATURE
             _longMartingale.OnOrder(order);
             #endif
-            _trailing.Create(order, (_calculator.GetAsk() - stopLoss) / _calculator.GetPipSize());
          }
       }
       _signaler.SendNotifications("Buy");
       return true;
    }
 
-   bool DoEntryShortLogic(int entryTradePeriod)
+   bool DoEntryShortLogic(int entryTradePeriod, datetime date)
    {
       if (_printLog && _entryLogic == TradingModeOnBarClose)
       {
          string logMessage = _shortCondition.GetLogMessage(entryTradePeriod, date);
          Print("Short entry: " + logMessage);
       }
-      if (!_shortCondition.IsPass(entryTradePeriod))
+      if (!_shortCondition.IsPass(entryTradePeriod, date))
          return false;
       _closeOnOpposite.DoClose(BuySide);
       #ifdef POSITION_CAP_FEATURE
@@ -256,8 +253,7 @@ private:
       #endif
       for (int i = 0; i < ArraySize(_shortMoneyManagement); ++i)
       {
-         double stopLoss = 0.0;
-         int order = _entryStrategy.OpenPosition(entryTradePeriod, SellSide, _shortMoneyManagement[i], _algorithmId, stopLoss);
+         int order = _entryStrategy.OpenPosition(entryTradePeriod, SellSide, _shortMoneyManagement[i], _algorithmId, _ecnBroker);
          if (order >= 0)
          {
             for (int orderHandlerIndex = 0; orderHandlerIndex < ArraySize(_orderHandlers); ++orderHandlerIndex)
@@ -267,17 +263,16 @@ private:
             #ifdef MARTINGALE_FEATURE
             _shortMartingale.OnOrder(order);
             #endif
-            _trailing.Create(order, (stopLoss - _calculator.GetBid()) / _calculator.GetPipSize());
          }
       }
       _signaler.SendNotifications("Sell");
       return true;
    }
 
-   bool DoEntryLogic(int entryTradePeriod)
+   bool DoEntryLogic(int entryTradePeriod, datetime date)
    {
-      bool longOpened = DoEntryLongLogic(entryTradePeriod);
-      bool shortOpened = DoEntryShortLogic(entryTradePeriod);
+      bool longOpened = DoEntryLongLogic(entryTradePeriod, date);
+      bool shortOpened = DoEntryShortLogic(entryTradePeriod, date);
       return longOpened || shortOpened;
    }
 
@@ -287,8 +282,7 @@ private:
       OrderSide anotherSide;
       if (martingale.NeedAnotherPosition(anotherSide))
       {
-         double stopLoss;
-         int order = _entryStrategy.OpenPosition(0, anotherSide, martingale.GetMoneyManagement(), "Martingale position", stopLoss);
+         int order = _entryStrategy.OpenPosition(0, anotherSide, martingale.GetMoneyManagement(), "Martingale position", _ecnBroker);
          if (order >= 0)
             martingale.OnOrder(order);
          if (anotherSide == BuySide)

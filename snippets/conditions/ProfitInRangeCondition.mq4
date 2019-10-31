@@ -1,4 +1,4 @@
-// Profit in range condition v1.0
+// Profit in range condition v2.0
 
 #include <ACondition.mq4>
 #include <../Order.mq4>
@@ -29,7 +29,7 @@ public:
       delete _instrument;
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       if (!_order.Select())
          return true;

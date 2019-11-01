@@ -73,6 +73,63 @@ public:
          currentX += maxWidth[columnIndex] * _gap;
       }
    }
+
+   int GetTotalWidth()
+   {
+      int maxHeight[];
+      int maxWidth[];
+      ArrayResize(maxWidth, ArraySize(_columns));
+
+      for (int columnIndex = 0; columnIndex < ArraySize(_columns); ++columnIndex)
+      {
+         int rows = _columns[columnIndex].Size();
+         int currentRows = ArraySize(maxHeight);
+         if (rows > currentRows)
+         {
+            ArrayResize(maxHeight, rows);
+         }
+         for (int rowIndex = 0; rowIndex < rows; ++rowIndex)
+         {
+            maxHeight[rowIndex] = MathMax(maxHeight[rowIndex], _columns[columnIndex].Get(rowIndex).GetHeight());
+            maxWidth[columnIndex] = MathMax(maxWidth[columnIndex], _columns[columnIndex].Get(rowIndex).GetWidth());
+         }
+      }
+      int total = 0;
+      int count = ArraySize(maxWidth);
+      for (int i = 0; i < count; ++i)
+      {
+         total += (i < count - 1) ? maxWidth[i] * _gap : maxWidth[i];
+      }
+      return total;
+   }
+   int GetTotalHeight()
+   {
+      int maxHeight[];
+      int maxWidth[];
+      ArrayResize(maxWidth, ArraySize(_columns));
+
+      for (int columnIndex = 0; columnIndex < ArraySize(_columns); ++columnIndex)
+      {
+         int rows = _columns[columnIndex].Size();
+         int currentRows = ArraySize(maxHeight);
+         if (rows > currentRows)
+         {
+            ArrayResize(maxHeight, rows);
+         }
+         for (int rowIndex = 0; rowIndex < rows; ++rowIndex)
+         {
+            maxHeight[rowIndex] = MathMax(maxHeight[rowIndex], _columns[columnIndex].Get(rowIndex).GetHeight());
+            maxWidth[columnIndex] = MathMax(maxWidth[columnIndex], _columns[columnIndex].Get(rowIndex).GetWidth());
+         }
+      }
+      int total = 0;
+      int count = ArraySize(maxHeight);
+      for (int i = 0; i < count; ++i)
+      {
+         total += (i < count - 1) ? maxHeight[i] * _gap : maxHeight[i];
+      }
+      return total;
+   }
 private:
    void EnsureEnoughtColumns(int newSize)
    {

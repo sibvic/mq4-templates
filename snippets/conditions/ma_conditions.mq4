@@ -1,4 +1,4 @@
-// MA Conditions v1.2
+// MA Conditions v2.0
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
@@ -83,7 +83,7 @@ public:
       _period = period;
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double maValue = iMA(_symbol, _timeframe, _period, 0, _method, PRICE_CLOSE, period);
       return maValue > iClose(_symbol, _timeframe, period);
@@ -102,7 +102,7 @@ public:
       _period = period;
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double maValue = iMA(_symbol, _timeframe, _period, 0, _method, PRICE_CLOSE, period);
       return maValue < iClose(_symbol, _timeframe, period);
@@ -157,7 +157,7 @@ public:
       _period2 = period2;
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double ma1Value = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
       double ma2Value = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period);

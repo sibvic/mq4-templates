@@ -110,7 +110,7 @@ Conditions for CCI above/below value.
 
 ## macd_conditions
 
-Conditions for MACD above/below signal.
+Conditions for MACD above/below signal, MACD stream above/below level.
 
 ## stoch_conditions
 

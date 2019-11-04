@@ -1,4 +1,4 @@
-// Action on condition v2.0
+// Action on condition v2.1
 
 #include <../conditions/ICondition.mq4>
 #include <../actions/IAction.mq4>
@@ -21,8 +21,8 @@ public:
 
    ~ActionOnConditionController()
    {
-      delete _action;
-      delete _condition;
+      _action.Release();
+      _condition.Release();
    }
    
    bool Set(IAction* action, ICondition *condition)
@@ -35,8 +35,10 @@ public:
       _action = action;
       _action.AddRef();
       _finished = false;
-      delete _condition;
+      if (_condition != NULL)
+         _condition.Release();
       _condition = condition;
+      _condition.AddRef();
       return true;
    }
 
@@ -45,7 +47,7 @@ public:
       if (_finished)
          return;
 
-      if ( _condition.IsPass(period, date))
+      if (_condition.IsPass(period, date))
       {
          if (_action.DoAction())
             _finished = true;

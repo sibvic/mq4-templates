@@ -1,4 +1,4 @@
-// Order v1.0
+// Order v1.1
 
 interface IOrder
 {
@@ -11,12 +11,12 @@ public:
 
 class OrderByMagicNumber : public IOrder
 {
-   int _magicMumber;
+   int _magicNumber;
    int _references;
 public:
    OrderByMagicNumber(int magicNumber)
    {
-      _magicMumber = magicNumber;
+      _magicNumber = magicNumber;
       _references = 1;
    }
 
@@ -35,7 +35,7 @@ public:
    virtual bool Select()
    {
       OrdersIterator it();
-      it.WhenMagicNumber(_magicMumber);
+      it.WhenMagicNumber(_magicNumber);
       int ticketId = it.First();
       return OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES);
    }

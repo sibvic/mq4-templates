@@ -129,3 +129,7 @@ Trading time condition. Returns true only during the selected time.
 ## ProfitInRangeCondition
 
 Returns true when profit of the order in the specified range.
+
+## NotCondition
+
+Inverts result of the condition.

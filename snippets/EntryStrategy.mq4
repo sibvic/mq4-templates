@@ -1,4 +1,4 @@
-// Entry strategy v3.0
+// Entry strategy v3.1
 #include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
@@ -13,7 +13,7 @@ public:
 class PendingEntryStrategy : public IEntryStrategy
 {
    string _symbol;
-   int _magicMumber;
+   int _magicNumber;
    int _slippagePoints;
    IStream *_longEntryPrice;
    IStream *_shortEntryPrice;
@@ -21,7 +21,7 @@ public:
    PendingEntryStrategy(const string symbol, const int magicMumber, const int slippagePoints
       , IStream *longEntryPrice, IStream *shortEntryPrice)
    {
-      _magicMumber = magicMumber;
+      _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
       _longEntryPrice = longEntryPrice;
@@ -54,7 +54,7 @@ public:
          .SetInstrument(_symbol)
          .SetAmount(amount)
          .SetSlippage(_slippagePoints)
-         .SetMagicNumber(_magicMumber)
+         .SetMagicNumber(_magicNumber)
          .SetStopLoss(stopLoss)
          .SetTakeProfit(takeProfit)
          .SetComment(comment)
@@ -69,7 +69,7 @@ public:
 
    int Exit(const OrderSide side)
    {
-      TradingCommands::DeleteOrders(_magicMumber);
+      TradingCommands::DeleteOrders(_magicNumber);
       return 0;
    }
 private:
@@ -85,12 +85,12 @@ private:
 class MarketEntryStrategy : public IEntryStrategy
 {
    string _symbol;
-   int _magicMumber;
+   int _magicNumber;
    int _slippagePoints;
 public:
    MarketEntryStrategy(const string symbol, const int magicMumber, const int slippagePoints)
    {
-      _magicMumber = magicMumber;
+      _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
    }
@@ -112,7 +112,7 @@ public:
          .SetInstrument(_symbol)
          .SetAmount(amount)
          .SetSlippage(_slippagePoints)
-         .SetMagicNumber(_magicMumber)
+         .SetMagicNumber(_magicNumber)
          .SetStopLoss(stopLoss)
          .SetTakeProfit(takeProfit)
          .SetComment(comment)
@@ -128,7 +128,7 @@ public:
    int Exit(const OrderSide side)
    {
       OrdersIterator toClose();
-      toClose.WhenSide(side).WhenMagicNumber(_magicMumber).WhenTrade();
+      toClose.WhenSide(side).WhenMagicNumber(_magicNumber).WhenTrade();
       return TradingCommands::CloseTrades(toClose, _slippagePoints);
    }
 };

@@ -20,7 +20,7 @@
 #define POSITION_CAP_FEATURE 
 
 #ifdef SHOW_ACCOUNT_STAT
-string EA_NAME = "[EA NAME]";
+   string EA_NAME = "[EA NAME]";
 #endif
 
 enum TradingMode
@@ -57,9 +57,9 @@ input PositionSizeType lots_type = PositionSizeContract; // Position size type
 input int slippage_points = 3; // Slippage, points
 input TradingSide trading_side = BothSides; // What trades should be taken
 #ifdef REVERSABLE_LOGIC_FEATURE
-input LogicDirection logic_direction = DirectLogic; // Logic type
+   input LogicDirection logic_direction = DirectLogic; // Logic type
 #else
-LogicDirection logic_direction = DirectLogic;
+   LogicDirection logic_direction = DirectLogic;
 #endif
 #ifdef USE_MARKET_ORDERS
    input bool close_on_opposite = true; // Close on opposite signal
@@ -68,36 +68,36 @@ LogicDirection logic_direction = DirectLogic;
 #endif
 
 #ifdef POSITION_CAP_FEATURE
-input string CapSection = ""; // == Position cap ==
-input bool position_cap = false; // Position Cap
-input int no_of_positions = 1; // Max # of buy+sell positions
-input int no_of_buy_position = 1; // Max # of buy positions
-input int no_of_sell_position = 1; // Max # of sell positions
+   input string CapSection = ""; // == Position cap ==
+   input bool position_cap = false; // Position Cap
+   input int no_of_positions = 1; // Max # of buy+sell positions
+   input int no_of_buy_position = 1; // Max # of buy positions
+   input int no_of_sell_position = 1; // Max # of sell positions
 #endif
 
 #ifdef MARTINGALE_FEATURE
-input string MartingaleSection = ""; // == Martingale type ==
-enum MartingaleType
-{
-   MartingaleDoNotUse, // Do not use
-   MartingaleOnLoss // Open another position on loss
-};
-enum MartingaleLotSizingType
-{
-   MartingaleLotSizingNo, // No lot sizing
-   MartingaleLotSizingMultiplicator, // Using miltiplicator
-   MartingaleLotSizingAdd // Addition
-};
-enum MartingaleStepSizeType
-{
-   MartingaleStepSizePips, // Pips
-   MartingaleStepSizePercent, // %
-};
-input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
-input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
-input double martingale_lot_value = 1.5; // Matringale lot sizing value
-input MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
-input double martingale_step = 5; // Open matringale position step
+   input string MartingaleSection = ""; // == Martingale type ==
+   enum MartingaleType
+   {
+      MartingaleDoNotUse, // Do not use
+      MartingaleOnLoss // Open another position on loss
+   };
+   enum MartingaleLotSizingType
+   {
+      MartingaleLotSizingNo, // No lot sizing
+      MartingaleLotSizingMultiplicator, // Using miltiplicator
+      MartingaleLotSizingAdd // Addition
+   };
+   enum MartingaleStepSizeType
+   {
+      MartingaleStepSizePips, // Pips
+      MartingaleStepSizePercent, // %
+   };
+   input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
+   input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
+   input double martingale_lot_value = 1.5; // Matringale lot sizing value
+   input MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
+   input double martingale_step = 5; // Open matringale position step
 #endif
 
 STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
@@ -133,8 +133,8 @@ STOP_LOSS_FEATURE StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger t
 STOP_LOSS_FEATURE double breakeven_value = 10; // Trigger for the breakeven
 STOP_LOSS_FEATURE double breakeven_level = 0; // Breakeven target
 #ifdef NET_STOP_LOSS_FEATURE
-input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
-input double net_stop_loss_value = 10; // Net stop loss value
+   input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
+   input double net_stop_loss_value = 10; // Net stop loss value
 #endif
 
 enum TakeProfitType
@@ -151,37 +151,37 @@ TAKE_PROFIT_FEATURE string TakeProfitSection            = ""; // == Take Profit 
 TAKE_PROFIT_FEATURE TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
 TAKE_PROFIT_FEATURE double take_profit_value           = 10; // Take profit value
 #ifdef NET_TAKE_PROFIT_FEATURE
-input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
-input double net_take_profit_value = 10; // Net take profit value
+   input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
+   input double net_take_profit_value = 10; // Net take profit value
 #endif
 
 #ifndef DayOfWeek_IMP
-enum DayOfWeek
-{
-   DayOfWeekSunday = 0, // Sunday
-   DayOfWeekMonday = 1, // Monday
-   DayOfWeekTuesday = 2, // Tuesday
-   DayOfWeekWednesday = 3, // Wednesday
-   DayOfWeekThursday = 4, // Thursday
-   DayOfWeekFriday = 5, // Friday
-   DayOfWeekSaturday = 6 // Saturday
-};
-#define DayOfWeek_IMP
+   enum DayOfWeek
+   {
+      DayOfWeekSunday = 0, // Sunday
+      DayOfWeekMonday = 1, // Monday
+      DayOfWeekTuesday = 2, // Tuesday
+      DayOfWeekWednesday = 3, // Wednesday
+      DayOfWeekThursday = 4, // Thursday
+      DayOfWeekFriday = 5, // Friday
+      DayOfWeekSaturday = 6 // Saturday
+   };
+   #define DayOfWeek_IMP
 #endif
 
 input string OtherSection            = ""; // == Other ==
 input int magic_number        = 42; // Magic number
 #ifdef TRADING_TIME_FEATURE
-input string start_time = "000000"; // Start time in hhmmss format
-input string stop_time = "000000"; // Stop time in hhmmss format
+   input string start_time = "000000"; // Start time in hhmmss format
+   input string stop_time = "000000"; // Stop time in hhmmss format
+   input bool mandatory_closing = false; // Mandatory closing for non-trading time
 #endif
 #ifdef WEEKLY_TRADING_TIME_FEATURE
-input bool use_weekly_timing = false; // Weekly time
-input DayOfWeek week_start_day = DayOfWeekSunday; // Start day
-input string week_start_time = "000000"; // Start time in hhmmss format
-input DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
-input string week_stop_time = "235959"; // Stop time in hhmmss format
-//WEEKLY_TRADING_TIME_FEATURE bool mandatory_closing = false; // Mandatory closing for non-trading time TODO!!!
+   input bool use_weekly_timing = false; // Weekly time
+   input DayOfWeek week_start_day = DayOfWeekSunday; // Start day
+   input string week_start_time = "000000"; // Start time in hhmmss format
+   input DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
+   input string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
 input bool PrintLog = false; // Print decisions into the log (On bar close only!)
 
@@ -191,35 +191,35 @@ input bool PrintLog = false; // Print decisions into the log (On bar close only!
 #include <conditions/DisabledCondition.mq4>
 #include <Streams/AStream.mq4>
 #ifndef USE_MARKET_ORDERS
-class LongEntryStream : public AStream
-{
-public:
-   LongEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-      :AStream(symbol, timeframe)
+   class LongEntryStream : public AStream
    {
-   }
+   public:
+      LongEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+         :AStream(symbol, timeframe)
+      {
+      }
 
-   bool GetValue(const int period, double &val)
-   {
-      val = iHigh(_symbol, _timeframe, period);
-      return true;
-   }
-};
+      bool GetValue(const int period, double &val)
+      {
+         val = iHigh(_symbol, _timeframe, period);
+         return true;
+      }
+   };
 
-class ShortEntryStream : public AStream
-{
-public:
-   ShortEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-      :AStream(symbol, timeframe)
+   class ShortEntryStream : public AStream
    {
-   }
+   public:
+      ShortEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+         :AStream(symbol, timeframe)
+      {
+      }
 
-   bool GetValue(const int period, double &val)
-   {
-      val = iHigh(_symbol, _timeframe, period);
-      return true;
-   }
-};
+      bool GetValue(const int period, double &val)
+      {
+         val = iHigh(_symbol, _timeframe, period);
+         return true;
+      }
+   };
 #endif
 
 #include <OrdersIterator.mq4>
@@ -251,7 +251,6 @@ public:
 #include <OrderBuilder.mq4>
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
-#include <MandatoryClosing.mq4>
 #include <Actions/MoveStopLossOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
@@ -259,14 +258,17 @@ public:
 
 TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
-AccountStatistics *stats;
+   AccountStatistics *stats;
 #endif
 
 #include <actions/CreateTrailingAction.mq4>
+#include <actions/CloseAllAction.mq4>
 
 #include <conditions/ABaseCondition.mq4>
 #include <conditions/TradingTimeCondition.mq4>
 #include <conditions/AndCondition.mq4>
+#include <conditions/OrCondition.mq4>
+#include <conditions/NotCondition.mq4>
 
 class LongCondition : public ABaseCondition
 {
@@ -277,7 +279,7 @@ public:
 
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -293,7 +295,7 @@ public:
 
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -309,7 +311,7 @@ public:
 
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -325,7 +327,7 @@ public:
 
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -339,11 +341,11 @@ ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 
    AndCondition* condition = new AndCondition();
    condition.Add(new LongCondition(symbol, timeframe), false);
-#ifdef ACT_ON_SWITCH_CONDITION
-   return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
-#else 
-   return (ICondition*) condition;
-#endif
+   #ifdef ACT_ON_SWITCH_CONDITION
+      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+   #else 
+      return (ICondition*) condition;
+   #endif
 }
 
 ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
@@ -353,33 +355,33 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 
    AndCondition* condition = new AndCondition();
    condition.Add(new ShortCondition(symbol, timeframe), false);
-#ifdef ACT_ON_SWITCH_CONDITION
-   return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
-#else 
-   return (ICondition*) condition;
-#endif
+   #ifdef ACT_ON_SWITCH_CONDITION
+      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+   #else 
+      return (ICondition*) condition;
+   #endif
 }
 
 ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
    AndCondition* condition = new AndCondition();
    condition.Add(new ExitLongCondition(symbol, timeframe), false);
-#ifdef ACT_ON_SWITCH_CONDITION
-   return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
-#else
-   return (ICondition *)condition;
-#endif
+   #ifdef ACT_ON_SWITCH_CONDITION
+      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+   #else
+      return (ICondition *)condition;
+   #endif
 }
 
 ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
    AndCondition* condition = new AndCondition();
    condition.Add(new ExitShortCondition(symbol, timeframe), false);
-#ifdef ACT_ON_SWITCH_CONDITION
-   return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
-#else
-   return (ICondition *)condition;
-#endif
+   #ifdef ACT_ON_SWITCH_CONDITION
+      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+   #else
+      return (ICondition *)condition;
+   #endif
 }
 
 MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
@@ -526,19 +528,26 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
 
    AndCondition* longCondition = new AndCondition();
    longCondition.Add(CreateLongCondition(symbol, timeframe), false);
-   #ifdef TRADING_TIME_FEATURE
-      longCondition.Add(tradingTimeCondition, true);
-   #endif
    AndCondition* shortCondition = new AndCondition();
    shortCondition.Add(CreateShortCondition(symbol, timeframe), false);
    #ifdef TRADING_TIME_FEATURE
+      longCondition.Add(tradingTimeCondition, true);
       shortCondition.Add(tradingTimeCondition, true);
    #endif
    tradingTimeCondition.Release();
 
    controller.SetExitLogic(exit_logic);
-   ICondition *exitLongCondition = CreateExitLongCondition(symbol, timeframe);
-   ICondition *exitShortCondition = CreateExitShortCondition(symbol, timeframe);
+   ICondition* exitLongCondition = CreateExitLongCondition(symbol, timeframe);
+   ICondition* exitShortCondition = CreateExitShortCondition(symbol, timeframe);
+   if (mandatory_closing)
+   {
+      NotCondition* condition = new NotCondition(tradingTimeCondition);
+      IAction* action = new CloseAllAction(magic_number, slippage_points);
+      actions.AddActionOnCondition(action, condition);
+      action.Release();
+      condition.Release();
+   }
+
    switch (logic_direction)
    {
       case DirectLogic:
@@ -560,77 +569,73 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    controller.AddLongMoneyManagement(longMoneyManagement);
    controller.AddShortMoneyManagement(shortMoneyManagement);
 
-#ifdef NET_STOP_LOSS_FEATURE
-   if (net_stop_loss_type != StopLimitDoNotUse)
-   {
-      IAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
-      NoCondition* condition = new NoCondition();
-      actions.AddActionOnCondition(action, condition);
-      action.Release();
-   }
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-   if (net_take_profit_type != StopLimitDoNotUse)
-   {
-      IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number);
-      NoCondition* condition = new NoCondition();
-      actions.AddActionOnCondition(action, condition);
-      action.Release();
-   }
-#endif
+   #ifdef NET_STOP_LOSS_FEATURE
+      if (net_stop_loss_type != StopLimitDoNotUse)
+      {
+         IAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
+         NoCondition* condition = new NoCondition();
+         actions.AddActionOnCondition(action, condition);
+         action.Release();
+      }
+   #endif
+   #ifdef NET_TAKE_PROFIT_FEATURE
+      if (net_take_profit_type != StopLimitDoNotUse)
+      {
+         IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number);
+         NoCondition* condition = new NoCondition();
+         actions.AddActionOnCondition(action, condition);
+         action.Release();
+      }
+   #endif
 
    if (close_on_opposite)
       controller.SetCloseOnOpposite(new DoCloseOnOppositeStrategy(slippage_points, magic_number));
    else
       controller.SetCloseOnOpposite(new DontCloseOnOppositeStrategy());
 
-#ifdef POSITION_CAP_FEATURE
-   if (position_cap)
-   {
-      controller.SetLongPositionCap(new PositionCapStrategy(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol));
-      controller.SetShortPositionCap(new PositionCapStrategy(SellSide, magic_number, no_of_sell_position, no_of_positions, symbol));
-   }
-   else
-   {
-      controller.SetLongPositionCap(new NoPositionCapStrategy());
-      controller.SetShortPositionCap(new NoPositionCapStrategy());
-   }
-#endif
+   #ifdef POSITION_CAP_FEATURE
+      if (position_cap)
+      {
+         controller.SetLongPositionCap(new PositionCapStrategy(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol));
+         controller.SetShortPositionCap(new PositionCapStrategy(SellSide, magic_number, no_of_sell_position, no_of_positions, symbol));
+      }
+      else
+      {
+         controller.SetLongPositionCap(new NoPositionCapStrategy());
+         controller.SetShortPositionCap(new NoPositionCapStrategy());
+      }
+   #endif
 
    controller.SetEntryLogic(entry_logic);
-#ifdef USE_MARKET_ORDERS
-   controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points));
-#else
-   AStream *longPrice = new LongEntryStream(symbol, timeframe);
-   AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
-   controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice));
-#endif
+   #ifdef USE_MARKET_ORDERS
+      controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points));
+   #else
+      AStream *longPrice = new LongEntryStream(symbol, timeframe);
+      AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
+      controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice));
+   #endif
    controller.SetPrintLog(PrintLog);
-   // if (mandatory_closing)
-   //    controller.SetMandatoryClosing(new DoMandatoryClosing(magic_number, slippage_points));
-   // else
-   //    controller.SetMandatoryClosing(new NoMandatoryClosing());
 
    return controller;
 }
 
 int OnInit()
 {
-#ifdef SHOW_ACCOUNT_STAT
-   stats = NULL;
-#endif
+   #ifdef SHOW_ACCOUNT_STAT
+      stats = NULL;
+   #endif
    if (!IsDllsAllowed() && advanced_alert)
    {
       Print("Error: Dll calls must be allowed!");
       return INIT_FAILED;
    }
-#ifdef MARTINGALE_FEATURE
-   if (lots_type == PositionSizeRisk && martingale_type == MartingaleOnLoss)
-   {
-      Print("Error: martingale_type couldn't be used with this lot type!");
-      return INIT_FAILED;
-   }
-#endif
+   #ifdef MARTINGALE_FEATURE
+      if (lots_type == PositionSizeRisk && martingale_type == MartingaleOnLoss)
+      {
+         Print("Error: martingale_type couldn't be used with this lot type!");
+         return INIT_FAILED;
+      }
+   #endif
 
    string error;
    TradingController *controller = CreateController(_Symbol, (ENUM_TIMEFRAMES)_Period, error);
@@ -643,17 +648,17 @@ int OnInit()
    ArrayResize(controllers, controllersCount + 1);
    controllers[controllersCount++] = controller;
    
-#ifdef SHOW_ACCOUNT_STAT
-   stats = new AccountStatistics(EA_NAME);
-#endif
+   #ifdef SHOW_ACCOUNT_STAT
+      stats = new AccountStatistics(EA_NAME);
+   #endif
    return INIT_SUCCEEDED;
 }
 
 void OnDeinit(const int reason)
 {
-#ifdef SHOW_ACCOUNT_STAT
-   delete stats;
-#endif
+   #ifdef SHOW_ACCOUNT_STAT
+      delete stats;
+   #endif
    int i_count = ArraySize(controllers);
    for (int i = 0; i < i_count; ++i)
    {
@@ -668,7 +673,7 @@ void OnTick()
    {
       controllers[i].DoTrading();
    }
-#ifdef SHOW_ACCOUNT_STAT
-   stats.Update();
-#endif
+   #ifdef SHOW_ACCOUNT_STAT
+      stats.Update();
+   #endif
 }

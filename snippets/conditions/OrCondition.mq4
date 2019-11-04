@@ -1,4 +1,4 @@
-// Or condition v2.1
+// Or condition v3.0
 
 #include <ACondition.mq4>
 
@@ -27,12 +27,12 @@ public:
          condition.AddRef();
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       int size = ArraySize(_conditions);
       for (int i = 0; i < size; ++i)
       {
-         if (_conditions[i].IsPass(period))
+         if (_conditions[i].IsPass(period, date))
             return true;
       }
       return false;

@@ -1,4 +1,4 @@
-// Trading commands v.2.10
+// Trading commands v.2.11
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef TradingCommands_IMP
@@ -24,7 +24,9 @@ public:
       switch (errorCode)
       {
          case ERR_NO_ERROR:
+            break;
          case ERR_NO_RESULT:
+            error = "Broker returned no error but no confirmation as well";
             break;
          case ERR_INVALID_TICKET:
             error = "Trade not found";

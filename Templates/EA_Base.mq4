@@ -269,6 +269,9 @@ TradingController *controllers[];
 #include <conditions/AndCondition.mq4>
 #include <conditions/OrCondition.mq4>
 #include <conditions/NotCondition.mq4>
+#ifdef MARTINGALE_FEATURE
+   #include <conditions/PriceMovedFromTradeOpenCondition.mq4>
+#endif
 
 class LongCondition : public ABaseCondition
 {
@@ -520,8 +523,12 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
             controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
             break;
          case MartingaleOnLoss:
-            controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
-            controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_step_type, martingale_step, martingale_lot_value));
+            {
+               PriceMovedFromTradeOpenCondition* condition = new PriceMovedFromTradeOpenCondition(symbol, timeframe, martingale_step_type, martingale_step);
+               controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
+               controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
+               condition.Release();
+            }
             break;
       }
    #endif

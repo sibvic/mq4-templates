@@ -133,3 +133,7 @@ Returns true when profit of the order in the specified range.
 ## NotCondition
 
 Inverts result of the condition.
+
+## PriceMovedFromTradeOpenCondition
+
+Price moved from trade open. Checked for the current order.

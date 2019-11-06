@@ -1,5 +1,6 @@
 // Martingale strategy v2.1
 #include <enums/OrderSide.mq4>
+#include <conditions/ICondition.mq4>
 
 interface IMartingaleStrategy
 {
@@ -169,15 +170,17 @@ class ActiveMartingaleStrategy : public IMartingaleStrategy
    CustomAmountLongMoneyManagementStrategy *_longMoneyManagement;
    CustomAmountShortMoneyManagementStrategy *_shortMoneyManagement;
    double _lotValue;
-   double _step;
-   MartingaleStepSizeType _stepUnit;
    MartingaleLotSizingType _martingaleLotSizingType;
+   ICondition* _condition;
 public:
-   ActiveMartingaleStrategy(TradingCalculator *calculator, MartingaleLotSizingType martingaleLotSizingType, MartingaleStepSizeType stepUnit, const double step, const double lotValue)
+   ActiveMartingaleStrategy(TradingCalculator *calculator, 
+      MartingaleLotSizingType martingaleLotSizingType, 
+      const double lotValue,
+      ICondition* condition)
    {
+      _condition = condition;
+      _condition.AddRef();
       _martingaleLotSizingType = martingaleLotSizingType;
-      _step = step;
-      _stepUnit = stepUnit;
       _lotValue = lotValue;
       _order = -1;
       _calculator = calculator;
@@ -187,6 +190,7 @@ public:
 
    ~ActiveMartingaleStrategy()
    {
+      _condition.Release();
       delete _longMoneyManagement;
       delete _shortMoneyManagement;
    }
@@ -233,52 +237,13 @@ public:
          _order = -1;
          return false;
       }
+      if (!_condition.IsPass(0, 0))
+         return false;
       if (OrderType() == OP_BUY)
-      {
-         if (NeedAnotherBuy())
-         {
-            side = BuySide;
-            return true;
-         }
-      }
+         side = BuySide;
       else
-      {
-         if (NeedAnotherSell())
-         {
-            side = SellSide;
-            return true;
-         }         
-      }
-      return false;
-   }
-
-   bool NeedAnotherSell()
-   {
-      switch (_stepUnit)
-      {
-         case MartingaleStepSizePips:
-            return (_calculator.GetBid() - OrderOpenPrice()) / _calculator.GetPipSize() > _step;
-         case MartingaleStepSizePercent:
-            {
-               double openPrice = OrderOpenPrice();
-               return (_calculator.GetBid() - openPrice) / openPrice > _step / 100.0;
-            }
-      }
-      return false;
-   }
-
-   bool NeedAnotherBuy()
-   {
-      switch (_stepUnit)
-      {
-         case MartingaleStepSizePips:
-            return (OrderOpenPrice() - _calculator.GetAsk()) / _calculator.GetPipSize() > _step;
-         case MartingaleStepSizePercent:
-            {
-               double openPrice = OrderOpenPrice();
-               return (openPrice - _calculator.GetAsk()) / openPrice > _step / 100.0;
-            }
-      }
-      return false;
+         side = SellSide;
+      return true;
    }
 };
+

@@ -1,4 +1,4 @@
-// No condition v2.0
+// No condition v2.1
 
 #include <ACondition.mq4>
 
@@ -9,6 +9,11 @@ class NoCondition : public ACondition
 {
 public:
    bool IsPass(const int period, const datetime date) { return true; }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return "No condition";
+   }
 };
 
 #endif

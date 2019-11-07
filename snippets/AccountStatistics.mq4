@@ -1,10 +1,9 @@
-// Account statistics v1.0
+// Account statistics v1.4
 
 extern color equity_color = White; // Equity & profit color
 extern color color_text = Lime; // General text color
 extern color header_color = Yellow; // Headers color
 
-// Account statistics v.1.3
 class AccountStatistics
 {
    InstrumentInfo *_symbol;
@@ -30,7 +29,7 @@ public:
 
    ~AccountStatistics()
    {
-      ObjectsDeleteAll(ChartID(), eaName);
+      ObjectsDeleteAll(ChartID(), _eaName);
       delete _symbol;
    }
 
@@ -72,38 +71,38 @@ public:
             currentDate = "SUNDAY";
             break;
       }
-      string_window(eaName + "currentDate", 5, 18, 0);
-      ObjectSetText(eaName + "currentDate", currentDate + ", " + DoubleToStr(Day(), 0) + " - " + DoubleToStr(Month(), 0) + " - " + DoubleToStr(Year(), 0), _fontSize+ 1 , _headersFontName, header_color);
-      ObjectSet(eaName + "currentDate", OBJPROP_CORNER, _textCorner);
+      string_window(_eaName + "currentDate", 5, 18, 0);
+      ObjectSetText(_eaName + "currentDate", currentDate + ", " + DoubleToStr(Day(), 0) + " - " + DoubleToStr(Month(), 0) + " - " + DoubleToStr(Year(), 0), _fontSize+ 1 , _headersFontName, header_color);
+      ObjectSet(_eaName + "currentDate", OBJPROP_CORNER, _textCorner);
 
-      string_window(eaName + "Balance", 5, 15 + 20, 0);
-      ObjectSetText(eaName + "Balance"," Balance: " + DoubleToStr(AccountBalance(), 2), _fontSize, _fontName, color_text);
-      ObjectSet(eaName + "Balance", OBJPROP_CORNER,_textCorner);  
+      string_window(_eaName + "Balance", 5, 15 + 20, 0);
+      ObjectSetText(_eaName + "Balance"," Balance: " + DoubleToStr(AccountBalance(), 2), _fontSize, _fontName, color_text);
+      ObjectSet(_eaName + "Balance", OBJPROP_CORNER,_textCorner);  
 
-      string_window(eaName + "Equity", 5, 30 + 20, 0);
-      ObjectSetText(eaName + "Equity", "Equity: " + DoubleToStr(AccountEquity(),2), _fontSize, _fontName, equity_color); 
-      ObjectSet(eaName + "Equity", OBJPROP_CORNER, _textCorner);  
+      string_window(_eaName + "Equity", 5, 30 + 20, 0);
+      ObjectSetText(_eaName + "Equity", "Equity: " + DoubleToStr(AccountEquity(),2), _fontSize, _fontName, equity_color); 
+      ObjectSet(_eaName + "Equity", OBJPROP_CORNER, _textCorner);  
       
-      string_window(eaName + "Profit", 5, 45 + 20, 0); 
-      ObjectSetText(eaName + "Profit", "Profit: " + DoubleToStr(profitWithCommissions, 2) , _fontSize, _fontName, equity_color); 
-      ObjectSet(eaName + "Profit", OBJPROP_CORNER, _textCorner);
+      string_window(_eaName + "Profit", 5, 45 + 20, 0); 
+      ObjectSetText(_eaName + "Profit", "Profit: " + DoubleToStr(profitWithCommissions, 2) , _fontSize, _fontName, equity_color); 
+      ObjectSet(_eaName + "Profit", OBJPROP_CORNER, _textCorner);
       
-      string_window(eaName + "Leverage", 5, 60 + 20, 0);
-      ObjectSetText(eaName + "Leverage", "Leverage: " + DoubleToStr(AccountLeverage(), 0), _fontSize, _fontName, color_text);
-      ObjectSet(eaName + "Leverage", OBJPROP_CORNER, _textCorner);
+      string_window(_eaName + "Leverage", 5, 60 + 20, 0);
+      ObjectSetText(_eaName + "Leverage", "Leverage: " + DoubleToStr(AccountLeverage(), 0), _fontSize, _fontName, color_text);
+      ObjectSet(_eaName + "Leverage", OBJPROP_CORNER, _textCorner);
 
-      string_window(eaName + "Spread", 5,75 + 20, 0);
-      ObjectSetText(eaName + "Spread", "Spread: " + DoubleToStr(_symbol.GetSpread(), 1), _fontSize, _fontName, color_text);
-      ObjectSet(eaName + "Spread", OBJPROP_CORNER, _textCorner);
+      string_window(_eaName + "Spread", 5,75 + 20, 0);
+      ObjectSetText(_eaName + "Spread", "Spread: " + DoubleToStr(_symbol.GetSpread(), 1), _fontSize, _fontName, color_text);
+      ObjectSet(_eaName + "Spread", OBJPROP_CORNER, _textCorner);
       
       double Range = (iHigh(_symbol.GetSymbol(), 1440, 0) - iLow(_symbol.GetSymbol(), 1440, 0)) / _symbol.GetPipSize();
-      string_window(eaName + "Range", 5, 90 + 20, 0);
-      ObjectSetText(eaName + "Range","Range: " + DoubleToStr(Range, 1) , _fontSize, _fontName, color_text); 
-      ObjectSet(eaName + "Range", OBJPROP_CORNER, _textCorner); 
+      string_window(_eaName + "Range", 5, 90 + 20, 0);
+      ObjectSetText(_eaName + "Range","Range: " + DoubleToStr(Range, 1) , _fontSize, _fontName, color_text); 
+      ObjectSet(_eaName + "Range", OBJPROP_CORNER, _textCorner); 
       
-      string_window(eaName + "Price", 5, 125, 0);
-      ObjectSetText(eaName + "Price", "Bid Price: " + DoubleToStr(_symbol.GetBid(), _symbol.GetDigits()), _fontSize, _fontName, GetPriceColor());
-      ObjectSet(eaName + "eaName + Price", OBJPROP_CORNER, _textCorner); 
+      string_window(_eaName + "Price", 5, 125, 0);
+      ObjectSetText(_eaName + "Price", "Bid Price: " + DoubleToStr(_symbol.GetBid(), _symbol.GetDigits()), _fontSize, _fontName, GetPriceColor());
+      ObjectSet(_eaName + "Price", OBJPROP_CORNER, _textCorner); 
    }
 private:
    color GetPriceColor()

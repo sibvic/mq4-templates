@@ -37,3 +37,13 @@ int deinit()
    ObjectsDeleteAll(ChartID(), IndicatorObjPrefix);
    return 0;
 }
+
+int start()
+{
+   int counted_bars = IndicatorCounted();
+   int limit = Bars - counted_bars - 1;
+   for (int i = limit; i >= 0; i--)
+   {
+   }
+   return 0;
+}

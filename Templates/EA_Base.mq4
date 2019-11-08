@@ -150,6 +150,7 @@ enum TakeProfitType
 TAKE_PROFIT_FEATURE string TakeProfitSection            = ""; // == Take Profit ==
 TAKE_PROFIT_FEATURE TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
 TAKE_PROFIT_FEATURE double take_profit_value           = 10; // Take profit value
+input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
 #ifdef NET_TAKE_PROFIT_FEATURE
    input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
    input double net_take_profit_value = 10; // Net take profit value
@@ -239,6 +240,7 @@ input bool PrintLog = false; // Print decisions into the log (On bar close only!
 #include <MoneyManagement/RiskToRewardTakeProfitStrategy.mq4>
 #include <MoneyManagement/PositionSizeRiskStopLossAndAmountStrategy.mq4>
 #include <MoneyManagement/DefaultTakeProfitStrategy.mq4>
+#include <MoneyManagement/ATRTakeProfitStrategy.mq4>
 #include <MoneyManagement/DefaultStopLossAndAmountStrategy.mq4>
 #ifdef MARTINGALE_FEATURE
 #include <MartingaleStrategy.mq4>
@@ -434,7 +436,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
          }
          break;
    }
-   ITakeProfitStrategy* tp = NULL;;
+   ITakeProfitStrategy* tp = NULL;
    switch (take_profit_type)
    {
       case TPDoNotUse:
@@ -454,6 +456,9 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
          break;
       case TPAbsolute:
          tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, take_profit_value, isBuy);
+         break;
+      case TPAtr:
+         tp = new ATRTakeProfitStrategy(symbol, timeframe, take_profit_value, take_profit_atr_multiplicator, isBuy);
          break;
    }
    

@@ -1,4 +1,4 @@
-// Trading commands v.2.11
+// Trading commands v.2.12
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef TradingCommands_IMP
@@ -47,12 +47,12 @@ public:
                   bool isBuyOrder = orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP;
                   double rateDistance = orderType
                      ? MathAbs(rate - instrument.GetAsk()) / point
-                     : MathAbs(rate < instrument.GetBid()) / point;
+                     : MathAbs(rate - instrument.GetBid()) / point;
                   if (rateDistance < minStopDistancePoints)
                      error = "Distance to the pending order rate is too close: " + DoubleToStr(rateDistance, 1)
                         + ". Min. allowed distance: " + IntegerToString(minStopDistancePoints);
                   else
-                     error = "Invalid take profit in the request";
+                     error = "Invalid stop loss or take profit in the request";
                }
             }
             return false;

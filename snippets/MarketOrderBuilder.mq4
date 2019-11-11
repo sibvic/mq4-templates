@@ -1,6 +1,13 @@
-// Market order builder v 1.7
+// Market order builder v 2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
+#include <logic/ActionOnConditionLogic.mq4>
+#include <confitions/NoStopLossOrTakeProfitCondition.mq4>
+#include <actions/SetStopLossAndTakeProfitAction.mq4>
+
+#ifndef MarketOrderBuilder_IMP
+#define MarketOrderBuilder_IMP
+
 class MarketOrderBuilder
 {
    OrderSide _orderSide;
@@ -8,14 +15,16 @@ class MarketOrderBuilder
    double _amount;
    double _rate;
    int _slippage;
-   double _stop;
-   double _limit;
+   double _stopLoss;
+   double _takeProfit;
    int _magicNumber;
    string _comment;
    bool _ecnBroker;
+   ActionOnConditionLogic* _actions;
 public:
-   MarketOrderBuilder()
+   MarketOrderBuilder(ActionOnConditionLogic* actions)
    {
+      _actions = actions;
       _ecnBroker = false;
    }
 
@@ -52,13 +61,13 @@ public:
    
    MarketOrderBuilder *SetStopLoss(const double stop)
    {
-      _stop = NormalizeDouble(stop, Digits);
+      _stopLoss = NormalizeDouble(stop, Digits);
       return &this;
    }
    
    MarketOrderBuilder *SetTakeProfit(const double limit)
    {
-      _limit = NormalizeDouble(limit, Digits);
+      _takeProfit = NormalizeDouble(limit, Digits);
       return &this;
    }
    
@@ -84,7 +93,7 @@ public:
       if (_ecnBroker)
          order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);
       else
-         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stop, _limit, _comment, _magicNumber);
+         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stopLoss, _takeProfit, _comment, _magicNumber);
       if (order == -1)
       {
          int error = GetLastError();
@@ -120,16 +129,16 @@ public:
                {
                   double point = SymbolInfoDouble(_instrument, SYMBOL_POINT);
                   int minStopDistancePoints = (int)SymbolInfoInteger(_instrument, SYMBOL_TRADE_STOPS_LEVEL);
-                  if (_stop != 0.0)
+                  if (_stopLoss != 0.0)
                   {
-                     if (MathRound(MathAbs(rate - _stop) / point) < minStopDistancePoints)
+                     if (MathRound(MathAbs(rate - _stopLoss) / point) < minStopDistancePoints)
                         errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
                         errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
                   }
-                  else if (_limit != 0.0)
+                  else if (_takeProfit != 0.0)
                   {
-                     if (MathRound(MathAbs(rate - _limit) / point) < minStopDistancePoints)
+                     if (MathRound(MathAbs(rate - _takeProfit) / point) < minStopDistancePoints)
                         errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
                         errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
@@ -146,8 +155,16 @@ public:
                return -1;
          }
       }
-      else if (_ecnBroker)
-         TradingCommands::MoveSLTP(order, _stop, _limit, errorMessage);
+      else if (_ecnBroker && (_stopLoss != 0 || _takeProfit != 0))
+      {
+         NoStopLossOrTakeProfitCondition* condition = new NoStopLossOrTakeProfitCondition(order);
+         SetStopLossAndTakeProfitAction* action = new SetStopLossAndTakeProfitAction(_stopLoss, _takeProfit, order);
+         _actions.AddActionOnCondition(action, condition);
+         condition.Release();
+         action.Release();
+      }
       return order;
    }
 };
+
+#endif

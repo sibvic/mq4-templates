@@ -1,4 +1,4 @@
-// Entry strategy v3.1
+// Entry strategy v4.0
 #include <enums/OrderSide.mq4>
 interface IEntryStrategy
 {
@@ -15,12 +15,18 @@ class PendingEntryStrategy : public IEntryStrategy
    string _symbol;
    int _magicNumber;
    int _slippagePoints;
-   IStream *_longEntryPrice;
-   IStream *_shortEntryPrice;
+   IStream* _longEntryPrice;
+   IStream* _shortEntryPrice;
+   ActionOnConditionLogic* _actions;
 public:
-   PendingEntryStrategy(const string symbol, const int magicMumber, const int slippagePoints
-      , IStream *longEntryPrice, IStream *shortEntryPrice)
+   PendingEntryStrategy(const string symbol, 
+      const int magicMumber, 
+      const int slippagePoints, 
+      IStream* longEntryPrice, 
+      IStream* shortEntryPrice,
+      ActionOnConditionLogic* actions)
    {
+      _actions = actions;
       _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
@@ -46,7 +52,7 @@ public:
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
          return -1;
-      OrderBuilder *orderBuilder = new OrderBuilder();
+      OrderBuilder *orderBuilder = new OrderBuilder(_actions);
       int order = orderBuilder
          .SetRate(entryPrice)
          .SetECNBroker(ecnBroker)
@@ -87,9 +93,14 @@ class MarketEntryStrategy : public IEntryStrategy
    string _symbol;
    int _magicNumber;
    int _slippagePoints;
+   ActionOnConditionLogic* _actions;
 public:
-   MarketEntryStrategy(const string symbol, const int magicMumber, const int slippagePoints)
+   MarketEntryStrategy(const string symbol, 
+      const int magicMumber, 
+      const int slippagePoints,
+      ActionOnConditionLogic* actions)
    {
+      _actions = actions;
       _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
@@ -105,7 +116,7 @@ public:
       if (amount == 0.0)
          return -1;
       string error = "";
-      MarketOrderBuilder *orderBuilder = new MarketOrderBuilder();
+      MarketOrderBuilder *orderBuilder = new MarketOrderBuilder(_actions);
       int order = orderBuilder
          .SetSide(side)
          .SetECNBroker(ecnBroker)

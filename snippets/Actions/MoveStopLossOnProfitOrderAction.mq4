@@ -1,4 +1,4 @@
-// Move stop loss on profit order action v1.1
+// Move stop loss on profit order action v1.2
 #ifndef MoveStopLossOnProfitOrderAction_IMP
 #define MoveStopLossOnProfitOrderAction_IMP
 
@@ -60,10 +60,8 @@ private:
       condition.Set(order, trigger);
       IAction* action = new MoveToBreakevenAction(trigger, target, name, order, _signaler);
       order.Release();
-      if (!_actions.AddActionOnCondition(action, condition))
-      {
-         delete condition;
-      }
+      _actions.AddActionOnCondition(action, condition);
+      condition.Release();
       action.Release();
    }
 };

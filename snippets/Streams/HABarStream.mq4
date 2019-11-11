@@ -1,4 +1,4 @@
-// HA bar steam v2.0
+// HA bar steam v2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <IBarStream.mq4>
@@ -143,7 +143,7 @@ public:
          ArrayResize(_low, totalBars);
          ArrayResize(_close, totalBars);
       }
-      for (int i = _lastCalculated; i < totalBars; ++i)
+      for (int i = MathMax(0, _lastCalculated - 1); i < totalBars; ++i)
       {
          double open = iOpen(_symbol, _timeframe, totalBars - 1 - i);
          double high = iHigh(_symbol, _timeframe, totalBars - 1 - i);

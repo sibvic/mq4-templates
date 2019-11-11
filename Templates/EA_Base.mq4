@@ -620,11 +620,11 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
 
    controller.SetEntryLogic(entry_logic);
    #ifdef USE_MARKET_ORDERS
-      controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points));
+      controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points, actions));
    #else
       AStream *longPrice = new LongEntryStream(symbol, timeframe);
       AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
-      controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice));
+      controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice, actions));
    #endif
    controller.SetPrintLog(PrintLog);
 

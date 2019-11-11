@@ -43,3 +43,7 @@ Creates trailing action for the order.
 ## CloseAllAction
 
 Closes all trades.
+
+## SetStopLossAndTakeProfitAction
+
+Sets stop loss and/or take profit.

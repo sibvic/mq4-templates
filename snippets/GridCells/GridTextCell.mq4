@@ -1,4 +1,4 @@
-// Grid text cell v1.0
+// Grid text cell v1.1
 
 #ifndef GridTextCell_IMP
 #define GridTextCell_IMP
@@ -35,14 +35,14 @@ public:
             Print(__FUNCTION__, ". Error: ", GetLastError());
             return ;
          }
-         ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x);
-         ObjectSetInteger(0, id, OBJPROP_YDISTANCE, __y);
          ObjectSetInteger(0, id, OBJPROP_CORNER, CORNER_LEFT_UPPER);
          ObjectSetString(0, id, OBJPROP_FONT, "Arial");
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, 12);
-         ObjectSetInteger(0, id, OBJPROP_COLOR, _clr);
          ObjectSetInteger(0, id, OBJPROP_ANCHOR, ANCHOR_LEFT_UPPER);
       }
+      ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x);
+      ObjectSetInteger(0, id, OBJPROP_YDISTANCE, __y);
+      ObjectSetInteger(0, id, OBJPROP_COLOR, _clr);
       ObjectSetString(0, id, OBJPROP_TEXT, _text);
    }
 

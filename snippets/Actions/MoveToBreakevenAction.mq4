@@ -1,3 +1,5 @@
+//Move to breakeven action v1.0
+
 class MoveToBreakevenAction : public AAction
 {
    Signaler* _signaler;
@@ -33,7 +35,7 @@ public:
 
    virtual bool DoAction()
    {
-      if (!_order.Select())
+      if (!_order.Select() || OrderCloseTime() != 0)
          return false;
       int ticket = OrderTicket();
       string error;

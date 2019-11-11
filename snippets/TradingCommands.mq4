@@ -1,4 +1,4 @@
-// Trading commands v.2.12
+// Trading commands v.2.13
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef TradingCommands_IMP
@@ -11,7 +11,7 @@ class TradingCommands
 public:
    static bool MoveSLTP(const int ticketId, const double newStopLoss, const double newTakeProfit, string &error)
    {
-      if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES))
+      if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0)
       {
          error = "Trade not found";
          return false;
@@ -65,7 +65,7 @@ public:
 
    static bool MoveSL(const int ticketId, const double newStopLoss, string &error)
    {
-      if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES))
+      if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0)
       {
          error = "Trade not found";
          return false;

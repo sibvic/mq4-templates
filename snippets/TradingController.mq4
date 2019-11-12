@@ -1,4 +1,4 @@
-// Trading controller v7.0
+// Trading controller v7.1
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -137,8 +137,8 @@ public:
    }
    void SetCloseOnOpposite(ICloseOnOppositeStrategy *closeOnOpposite) { _closeOnOpposite = closeOnOpposite; }
    #ifdef POSITION_CAP_FEATURE
-   void SetLongPositionCap(IPositionCapStrategy *positionCap) { _longPositionCap = positionCap; }
-   void SetShortPositionCap(IPositionCapStrategy *positionCap) { _shortPositionCap = positionCap; }
+      void SetLongPositionCap(IPositionCapStrategy *positionCap) { _longPositionCap = positionCap; }
+      void SetShortPositionCap(IPositionCapStrategy *positionCap) { _shortPositionCap = positionCap; }
    #endif
    void SetEntryStrategy(IEntryStrategy *entryStrategy) { _entryStrategy = entryStrategy; }
 
@@ -148,12 +148,13 @@ public:
       datetime entryTime = iTime(_calculator.GetSymbol(), _entryTimeframe, entryTradePeriod);
       _actions.DoLogic(entryTradePeriod, entryTime);
       #ifdef MARTINGALE_FEATURE
-      DoMartingale(_shortMartingale);
-      DoMartingale(_longMartingale);
+         DoMartingale(_shortMartingale);
+         DoMartingale(_longMartingale);
       #endif
       if (EntryAllowed(entryTime))
       {
-         DoEntryLogic(entryTradePeriod, entryTime);
+         if (DoEntryLogic(entryTradePeriod, entryTime))
+            _lastActionTime = entryTime;
          _lastEntryTime = entryTime;
       }
 

@@ -1,5 +1,7 @@
 // No stop loss or take profit condition v1.0
 
+#include <ACondition.mq4>
+
 #ifndef NoStopLossOrTakeProfitCondition_IMP
 #define NoStopLossOrTakeProfitCondition_IMP
 

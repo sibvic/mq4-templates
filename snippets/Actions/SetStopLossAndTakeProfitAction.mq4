@@ -1,5 +1,7 @@
 // Set stop loss and/or take profit action v1.0
 
+#include <AAction.mq4>
+
 #ifndef SetStopLossAndTakeProfitAction_IMP
 #define SetStopLossAndTakeProfitAction_IMP
 

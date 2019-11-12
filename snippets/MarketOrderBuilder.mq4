@@ -2,7 +2,7 @@
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
 #include <logic/ActionOnConditionLogic.mq4>
-#include <confitions/NoStopLossOrTakeProfitCondition.mq4>
+#include <conditions/NoStopLossOrTakeProfitCondition.mq4>
 #include <actions/SetStopLossAndTakeProfitAction.mq4>
 
 #ifndef MarketOrderBuilder_IMP

@@ -1,5 +1,7 @@
 // Trade trigger logic v1.0
 
+#include <TradeTriggerController.mq4>
+
 #ifndef TradeTriggerLogic_IMP
 #define TradeTriggerLogic_IMP
 

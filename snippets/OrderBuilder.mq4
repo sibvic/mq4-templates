@@ -4,7 +4,7 @@
 #include <TradingCommands.mq4>
 #include <enums/OrderSide.mq4>
 #include <logic/ActionOnConditionLogic.mq4>
-#include <confitions/NoStopLossOrTakeProfitCondition.mq4>
+#include <conditions/NoStopLossOrTakeProfitCondition.mq4>
 #include <actions/SetStopLossAndTakeProfitAction.mq4>
 
 #ifndef OrderBuilder_IMP

@@ -1,4 +1,4 @@
-// Order builder v2.0
+// Order builder v2.1
 
 #include <InstrumentInfo.mq4>
 #include <TradingCommands.mq4>
@@ -120,6 +120,9 @@ public:
                break;
             case ERR_TRADE_NOT_ALLOWED:
                errorMessage = "Trading is not allowed";
+               break;
+            case ERR_TRADE_TOO_MANY_ORDERS:
+               errorMessage = "Too many orders opened";
                break;
             case ERR_INVALID_STOPS:
                {

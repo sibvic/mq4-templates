@@ -1,4 +1,4 @@
-// Market order builder v 2.0
+// Market order builder v 2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
 #include <logic/ActionOnConditionLogic.mq4>
@@ -124,6 +124,9 @@ public:
                return -1;
             case ERR_TRADE_HEDGE_PROHIBITED:
                errorMessage = "Trade hedge prohibited";
+               return -1;
+            case ERR_TRADE_TOO_MANY_ORDERS:
+               errorMessage = "Too many orders opened";
                return -1;
             case ERR_INVALID_STOPS:
                {

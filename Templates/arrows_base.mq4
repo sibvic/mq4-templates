@@ -1,4 +1,4 @@
-// Arrows base v1.8
+// Arrows base v2.0
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -97,7 +97,7 @@ public:
 
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -113,7 +113,7 @@ public:
 
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       //TODO: implement
       return false;
@@ -135,10 +135,10 @@ int init()
 
    int id = 0;
 
+   customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* upCondition = (ICondition*) new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = (ICondition*) new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    id = CreateAlert(id, upCondition, downCondition);
-   customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
    id = customStream.RegisterInternalStream(id);
 
    return 0;

@@ -1,4 +1,4 @@
-// Alert signal v.2.3
+// Alert signal v2.4
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AlertSignal_IMP
@@ -200,7 +200,10 @@ public:
 
    void Update(int period)
    {
-      if (!_condition.IsPass(_onBarClose ? period + 1 : period))
+      string symbol = _signaler.GetSymbol();
+      datetime dt = iTime(symbol, _signaler.GetTimeframe(), _onBarClose ? period + 1 : period);
+
+      if (!_condition.IsPass(_onBarClose ? period + 1 : period, dt))
       {
          _signalOutput.Clear(period);
          return;
@@ -208,8 +211,7 @@ public:
 
       if (period == 0)
       {
-         string symbol = _signaler.GetSymbol();
-         datetime dt = iTime(symbol, _signaler.GetTimeframe(), 0);
+         dt = iTime(symbol, _signaler.GetTimeframe(), 0);
          if (_lastSignal != dt)
          {
             _signaler.SendNotifications(symbol + "/" + _signaler.GetTimeframeStr() + ": " + _message);

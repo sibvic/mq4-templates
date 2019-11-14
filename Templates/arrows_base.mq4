@@ -1,4 +1,4 @@
-// Arrows base v2.0
+// Arrows base v2.1
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -23,7 +23,7 @@ enum DisplayType
 input SingalMode signal_mode = SingalModeLive; // Signal mode
 input DisplayType Type = Arrows; // Presentation Type
 input double shift_arrows_pips = 0.1; // Shift arrows
-input color up_color = Green; // Up color
+input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
 
 string IndicatorName;
@@ -169,6 +169,7 @@ int start()
    int limit = ExtCountedBars > 1 ? Bars - ExtCountedBars - 1 : Bars - 1;
    for (int pos = limit; pos >= 0; --pos)
    {
+      customStream._stream[pos] = Close[pos];
       for (int i = 0; i < ArraySize(conditions); ++i)
       {
          AlertSignal* item = conditions[i];

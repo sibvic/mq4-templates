@@ -321,3 +321,7 @@ Usage:
 ## TradingMonitor
 
 Trading monitor
+
+## Pivot
+
+Pivot

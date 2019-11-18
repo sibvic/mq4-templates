@@ -1,4 +1,4 @@
-// Trading controller v7.1
+// Trading controller v7.2
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -95,12 +95,16 @@ public:
       delete _shortMartingale;
       delete _longMartingale;
       #endif
-      delete _exitLongCondition;
-      delete _exitShortCondition;
+      if (_exitLongCondition != NULL)
+         _exitLongCondition.Release();
+      if (_exitShortCondition != NULL)
+         _exitShortCondition.Release();
       delete _calculator;
       delete _signaler;
-      delete _longCondition;
-      delete _shortCondition;
+      if (_longCondition != NULL)
+         _longCondition.Release();
+      if (_shortCondition != NULL)
+         _shortCondition.Release();
    }
 
    void AddOrderAction(AOrderAction* orderAction)

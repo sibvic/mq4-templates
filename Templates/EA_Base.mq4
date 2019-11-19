@@ -31,6 +31,7 @@ enum TradingMode
 
 input string GeneralSection = ""; // == General ==
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
+input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
 input bool ecn_broker = false; // ECN Broker? 
 input TradingMode entry_logic = TradingModeLive; // Entry logic
 input TradingMode exit_logic = TradingModeLive; // Exit logic
@@ -650,7 +651,7 @@ int OnInit()
    #endif
 
    string error;
-   TradingController *controller = CreateController(_Symbol, (ENUM_TIMEFRAMES)_Period, error);
+   TradingController *controller = CreateController(_Symbol, trading_timeframe, error);
    if (controller == NULL)
    {
       Print(error);

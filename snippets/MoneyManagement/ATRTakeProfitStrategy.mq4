@@ -3,7 +3,7 @@
 #include <ITakeProfitStrategy.mq4>
 
 #ifndef ATRTakeProfitStrategy_IMP
-#define ATRTakeProfitStrategy
+#define ATRTakeProfitStrategy_IMP
 
 class ATRTakeProfitStrategy : public ITakeProfitStrategy
 {

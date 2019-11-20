@@ -1,4 +1,4 @@
-// Trading controller v7.2
+// Trading controller v7.3
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -287,9 +287,23 @@ private:
       OrderSide anotherSide;
       if (martingale.NeedAnotherPosition(anotherSide))
       {
-         int order = _entryStrategy.OpenPosition(0, anotherSide, martingale.GetMoneyManagement(), "Martingale position", _ecnBroker);
+         double initialLots = OrderLots();
+         IMoneyManagementStrategy* moneyManagement = martingale.GetMoneyManagement();
+         int order = _entryStrategy.OpenPosition(0, anotherSide, moneyManagement, "Martingale position", _ecnBroker);
          if (order >= 0)
+         {
+            if (_printLog)
+            {
+               double newLots = 0;
+               if (OrderSelect(order, SELECT_BY_TICKET, MODE_TRADES))
+               {
+                  newLots = OrderLots();
+               }
+               Print("Opening martingale position. Initial lots: " + DoubleToString(initialLots) 
+                  + ". New martingale lots: " + DoubleToString(newLots));
+            }
             martingale.OnOrder(order);
+         }
          if (anotherSide == BuySide)
             _signaler.SendNotifications("Opening martingale long position");
          else

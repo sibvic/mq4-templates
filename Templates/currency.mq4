@@ -19,15 +19,15 @@ extern int Length = 20;
 
 enum CurrencyPairs
 { 
-    USD = 1,
-    EUR = 2,
-    GBP = 3,
-    JPY = 4,
-    CHF = 5,
-    AUD = 6,
-    NZD = 7,
-    CAD = 8,
-    ANY = 9
+   USD = 1,
+   EUR = 2,
+   GBP = 3,
+   JPY = 4,
+   CHF = 5,
+   AUD = 6,
+   NZD = 7,
+   CAD = 8,
+   ANY = 9
 };
 string Default[] = { "USD", "EUR", "GBP","JPY", "CHF",  "AUD", "NZD", "CAD", "Any" };
  

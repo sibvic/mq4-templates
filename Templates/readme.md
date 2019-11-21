@@ -4,19 +4,9 @@
 
 Dashboard/scanner template. You need to implement IsPass for the UpCondition and DownCondition.
 
-It has two modes to show data
+## Dashboard_text
 
-### BarsBackValueCell
-
-Show number of bars when the last condition accured.
-
-### TrendValueCell
-
-Show the current trand (Up or Down Condition).
-
-### TextValueCell
-
-Shows custom formatted text.
+Dashboard/scanner template. Shows text in the cells. You need to implement TextValueCell.
 
 ## EA_Base
 

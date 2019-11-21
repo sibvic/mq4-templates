@@ -1,7 +1,10 @@
 // Grid builder v1.3
 
+#include <ICellFactory.mq4>
+
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
+
 class GridBuilder
 {
    string _symbols[];
@@ -12,14 +15,20 @@ class GridBuilder
    Iterator _xIterator;
    Iterator _yIterator;
    bool _verticalMode;
+   ICellFactory* _cellFactory;
 public:
-   GridBuilder(int x, int y, bool verticalMode)
+   GridBuilder(int x, int y, bool verticalMode, ICellFactory* cellFactory)
       :_xIterator(x, -cell_width), _yIterator(y, cell_height)
    {
+      _cellFactory = cellFactory;
       _verticalMode = verticalMode;
       _originalY = y;
       _originalX = x;
       grid = new Grid();
+   }
+   ~GridBuilder()
+   {
+      delete _cellFactory;
    }
 
    void SetSymbols(const string symbols)
@@ -62,7 +71,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
-            row.Add(new TrendValueCell(id, x, yIterator.GetNext(), _symbols[i], timeframe));
+            row.Add(_cellFactory.Create(id, x, yIterator.GetNext(), _symbols[i], timeframe));
          }
       }
       else
@@ -74,7 +83,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
-            row.Add(new TrendValueCell(id, xIterator.GetNext(), y, _symbols[i], timeframe));
+            row.Add(_cellFactory.Create(id, xIterator.GetNext(), y, _symbols[i], timeframe));
          }
       }
    }

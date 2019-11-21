@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.3
+// ProfitRobots Dashboard template v.1.4
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -11,16 +11,16 @@ enum DisplayMode
 };
 
 input string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
-input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD,GBPJPY,EURGBP,AUDUSD,NZDUSD";
-input bool     Include_M1               = true;
-input bool     Include_M5               = true;
-input bool     Include_M15              = true;
-input bool     Include_M30              = true;
+input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD";
+input bool     Include_M1               = false;
+input bool     Include_M5               = false;
+input bool     Include_M15              = false;
+input bool     Include_M30              = false;
 input bool     Include_H1               = true;
-input bool     Include_H4               = true;
+input bool     Include_H4               = false;
 input bool     Include_D1               = true;
 input bool     Include_W1               = true;
-input bool     Include_MN1              = true;
+input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
 input color    Up_Color                 = clrLime;
 input color    Dn_Color                 = clrRed;
@@ -87,142 +87,10 @@ public:
    int GetNext() { _current += _shift; return _current; }
 };
 
-class ICell
-{
-public:
-   virtual void Draw() = 0;
-protected:
-   void ObjectMakeLabel( string nm, int xoff, int yoff, string LabelTexto, color LabelColor, int LabelCorner=1, int Window = 0, string Font = "Arial", int FSize = 8 )
-   { ObjectDelete(nm); ObjectCreate(nm, OBJ_LABEL, Window, 0, 0); ObjectSet(nm, OBJPROP_CORNER, LabelCorner); ObjectSet(nm, OBJPROP_XDISTANCE, xoff); ObjectSet(nm, OBJPROP_YDISTANCE, yoff); ObjectSet(nm, OBJPROP_BACK, false); ObjectSetText(nm, LabelTexto, FSize, Font, LabelColor); }
-};
-
-class Row
-{
-   ICell *_cells[];
-public:
-   ~Row() { int count = ArraySize(_cells); for (int i = 0; i < count; ++i) { delete _cells[i]; } }
-   void Draw() { int count = ArraySize(_cells); for (int i = 0; i < count; ++i) { _cells[i].Draw(); } }
-   void Add(ICell *cell) { int count = ArraySize(_cells); ArrayResize(_cells, count + 1); _cells[count] = cell; } 
-};
-
-//draws nothing
-class EmptyCell : public ICell
-{
-public:
-   virtual void Draw() { }
-};
-
-//draws a label
-class LabelCell : public ICell
-{
-   string _id; string _text; int _x; int _y;
-public:
-   LabelCell(const string id, const string text, const int x, const int y) { _id = id; _text = text; _x = x; _y = y; } 
-   virtual void Draw() { ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, 1, WindowNumber, "Arial", font_size); }
-};
-
-#define ENTER_BUY_SIGNAL 1
-#define ENTER_SELL_SIGNAL -1
-#define EXIT_BUY_SIGNAL 2
-#define EXIT_SELL_SIGNAL -2
-class BarsBackValueCell : public ICell
-{
-   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
-   ICondition* _upCondition;
-   ICondition* _downCondition;
-public:
-   BarsBackValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
-   { 
-      _id = id; 
-      _x = x; 
-      _y = y; 
-      _symbol = symbol; 
-      _timeframe = timeframe; 
-      _upCondition = CreateUpCondition(_symbol, _timeframe);
-      _downCondition = CreateDownCondition(_symbol, _timeframe);
-   }
-
-   ~BarsBackValueCell()
-   {
-      delete _upCondition;
-      delete _downCondition;
-   }
-
-   virtual void Draw()
-   { 
-      int barsBack;
-      int direction = GetDirection(barsBack); 
-      string label = direction != 0 ? IntegerToString(barsBack) : "-";
-      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size);
-   }
-
-private:
-   int GetDirection(int& barsBack)
-   {
-      for (barsBack = 0; barsBack < MathMin(MAX_LOOPBACK, iBars(_symbol, _timeframe) - 1); ++barsBack)
-      {
-         if (_upCondition.IsPass(barsBack))
-            return ENTER_BUY_SIGNAL;
-         if (_downCondition.IsPass(barsBack))
-            return ENTER_SELL_SIGNAL;
-      }
-      barsBack = -1;
-      return 0;
-   }
-
-   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
-};
-
-class TextValueCell : public ICell
-{
-   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
-   ICondition* _upCondition;
-   ICondition* _downCondition;
-public:
-   TextValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
-   { 
-      _id = id; 
-      _x = x; 
-      _y = y; 
-      _symbol = symbol; 
-      _timeframe = timeframe; 
-      _upCondition = CreateUpCondition(_symbol, _timeframe);
-      _downCondition = CreateDownCondition(_symbol, _timeframe);
-   }
-
-   ~TextValueCell()
-   {
-      delete _upCondition;
-      delete _downCondition;
-   }
-
-   virtual void Draw()
-   { 
-      string label;
-      int direction = GetDirection(label); 
-      ObjectMakeLabel(_id, _x, _y, label, GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
-   }
-
-private:
-   int GetDirection(string& text)
-   {
-      if (_upCondition.IsPass(0))
-      {
-         text = "";
-         return ENTER_BUY_SIGNAL;
-      }
-      if (_downCondition.IsPass(0))
-      {
-         text = "";
-         return ENTER_SELL_SIGNAL;
-      }
-      return 0;
-   }
-
-   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
-};
-
-#include <Grid/TrendValueCell.mq4>
+#include <Grid/EmptyCell.mq4>
+#include <Grid/LabelCell.mq4>
+#include <Grid/Grid.mq4>
+#include <Grid/TrendValueCellFactory.mq4>
 
 string IndicatorName;
 string IndicatorObjPrefix;
@@ -237,42 +105,6 @@ string GenerateIndicatorName(const string target)
    }
    return name;
 }
-
-class Grid
-{
-   Row *_rows[];
-public:
-   ~Grid()
-   {
-      int count = ArraySize(_rows);
-      for (int i = 0; i < count; ++i)
-      {
-         delete _rows[i];
-      }
-   }
-
-   Row *AddRow()
-   {
-      int count = ArraySize(_rows);
-      ArrayResize(_rows, count + 1);
-      _rows[count] = new Row();
-      return _rows[count];
-   }
-   
-   Row *GetRow(const int index)
-   {
-      return _rows[index];
-   }
-   
-   void Draw()
-   {
-      int count = ArraySize(_rows);
-      for (int i = 0; i < count; ++i)
-      {
-         _rows[i].Draw();
-      }
-   }
-};
 
 Grid *grid;
 
@@ -362,7 +194,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, display_mode == Vertical);
+   GridBuilder builder(x_shift, 50, display_mode == Vertical, new TrendValueCellFactory());
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

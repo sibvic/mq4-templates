@@ -141,3 +141,7 @@ Price moved from trade open. Checked for the current order.
 ## NoStopLossOrTakeProfitCondition
 
 No stop loss or take profit.
+
+## MinDistanceSinceLastTradeCondition
+
+Min distance since last trade.

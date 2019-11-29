@@ -133,3 +133,6 @@ Move stream based on IBarStream as a source.
 
 Abstract implemention of stream with reference counting.
 
+## ValueWhenStream
+
+Sets value to a stream when condition is passed.

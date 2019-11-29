@@ -1,35 +1,27 @@
-// Abstract condition v1.1
-
-#include <ICondition.mq4>
+// ABaseCondition v2.0
+// More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef ACondition_IMP
 #define ACondition_IMP
+#include <AConditionBase.mq4>
+#include <../InstrumentInfo.mq4>
 
-class ACondition : public ICondition
+class ACondition : public AConditionBase
 {
-   int _references;
+protected:
+   ENUM_TIMEFRAMES _timeframe;
+   InstrumentInfo *_instrument;
+   string _symbol;
 public:
-   ACondition()
+   ACondition(const string symbol, ENUM_TIMEFRAMES timeframe)
    {
-      _references = 1;
+      _instrument = new InstrumentInfo(symbol);
+      _timeframe = timeframe;
+      _symbol = symbol;
    }
-
-   virtual void AddRef()
+   ~ACondition()
    {
-      ++_references;
-   }
-
-   virtual void Release()
-   {
-      --_references;
-      if (_references == 0)
-         delete &this;
-   }
-
-   virtual string GetLogMessage(const int period, const datetime date)
-   {
-      return "";
+      delete _instrument;
    }
 };
-
 #endif

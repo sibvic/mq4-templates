@@ -4,7 +4,11 @@
 
 Condition interface.
 
-## ABaseCondition
+## ACondition
+
+Condition based on symbol/timeframe data.
+
+## AConditionBase
 
 Base condition implementation.
 

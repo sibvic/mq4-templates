@@ -2,8 +2,8 @@
 
 #include <ICondition.mq4>
 
-#ifndef ACondition_IMP
-#define ACondition_IMP
+#ifndef AConditionBase_IMP
+#define AConditionBase_IMP
 
 class AConditionBase : public ICondition
 {

@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard text template v.1.0
+// ProfitRobots Dashboard text template v.1.1
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -32,8 +32,6 @@ input int cell_height = 30; // Cell height
 
 string   WindowName;
 int      WindowNumber;
-
-#include <conditions/ABaseCondition.mq4>
 
 class Iterator
 {

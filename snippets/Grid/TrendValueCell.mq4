@@ -6,6 +6,13 @@
 #include <../conditions/ICondition.mq4>
 #include <../Signaler.mq4>
 
+#ifndef ENTER_BUY_SIGNAL
+#define ENTER_BUY_SIGNAL 1
+#endif
+#ifndef ENTER_SELL_SIGNAL
+#define ENTER_SELL_SIGNAL -1
+#endif
+
 class TrendValueCell : public ICell
 {
    string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
@@ -57,9 +64,10 @@ public:
 private:
    int GetDirection()
    {
-      if (_upCondition.IsPass(0))
+      datetime date = iTime(_symbol, _timeframe, 0);
+      if (_upCondition.IsPass(0, date))
          return ENTER_BUY_SIGNAL;
-      if (_downCondition.IsPass(0))
+      if (_downCondition.IsPass(0, date))
          return ENTER_SELL_SIGNAL;
       return 0;
    }

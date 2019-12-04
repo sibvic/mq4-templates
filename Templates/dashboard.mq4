@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.4
+// ProfitRobots Dashboard template v.1.5
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -38,31 +38,31 @@ input int cell_height = 30; // Cell height
 string   WindowName;
 int      WindowNumber;
 
-#include <conditions/ABaseCondition.mq4>
+#include <conditions/ACondition.mq4>
 
-class UpCondition : public ABaseCondition
+class UpCondition : public ACondition
 {
 public:
    UpCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       return false;
    }
 };
 
-class DownCondition : public ABaseCondition
+class DownCondition : public ACondition
 {
 public:
    DownCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       return false;
    }

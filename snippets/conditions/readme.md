@@ -149,3 +149,7 @@ No stop loss or take profit.
 ## MinDistanceSinceLastTradeCondition
 
 Min distance since last trade.
+
+## wpr_conditions
+
+Larry Williams' Percent Range conditions: above/below level.

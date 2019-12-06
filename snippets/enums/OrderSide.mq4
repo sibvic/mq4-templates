@@ -5,8 +5,8 @@
 
 enum OrderSide
 {
-   BuySide,
-   SellSide
+   BuySide, // Buy/long
+   SellSide // Sell/short
 };
 
 #endif

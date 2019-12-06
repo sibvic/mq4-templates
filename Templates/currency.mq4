@@ -1,4 +1,4 @@
-// Forex currency template v1.0
+// Forex currency template v1.1
 
 #property copyright ""
 #property link      ""
@@ -30,8 +30,19 @@ enum CurrencyPairs
    ANY = 9
 };
 string Default[] = { "USD", "EUR", "GBP","JPY", "CHF",  "AUD", "NZD", "CAD", "Any" };
+string currencies[] = 
+{
+   //majors
+   "AUD", "CAD", "CHF", "EUR", "GBP", "JPY", "NZD", "USD", 
+   // minors
+   "AED", "BHD", "BRL", "CNY", "CYP", "CZK", "DKK", "DZD", "EEK", "EGP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JOD", 
+   "KRW", "KWD", "LBP", "LTL", "LVL", "LYD", "MAD", "MXN", "MYR", "NOK", "OMR", "PHP", "PLN", "QAR", "RON", "RUB", "SAR", "SEK", "SGD", "SKK", 
+   "SYP", "THB", "TND", "TRY", "TWD", "VEB", "XAG", "XAU", "YER", "ZAR"
+};
+#define majorsCount 8
  
 input  CurrencyPairs Selected = USD; // Currency
+input bool UseMajorsOnly = true; // Use majors only
  
 double Line[];
 class SymbolData
@@ -107,31 +118,28 @@ int start()
 
 void CreateSymbolList()
 {
-   string Currencies[] = {"AED", "AUD", "BHD", "BRL", "CAD", "CHF", "CNY", "CYP", "CZK", "DKK", "DZD", "EEK", "EGP", "EUR", "GBP", "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JOD", "JPY", "KRW", "KWD", "LBP", "LTL", "LVL", "LYD", "MAD", "MXN", "MYR", "NOK", "NZD", "OMR", "PHP", "PLN", "QAR", "RON", "RUB", "SAR", "SEK", "SGD", "SKK", "SYP", "THB", "TND", "TRY", "TWD", "USD", "VEB", "XAG", "XAU", "YER", "ZAR"};
-   int CurrencyCount = ArrayRange(Currencies, 0);
-   int SymbolCount = 0;
-   for (int Loop = 0; Loop < CurrencyCount; Loop++)
+   int currencyCount = UseMajorsOnly ? majorsCount : ArrayRange(currencies, 0);
+   int symbolCount = 0;
+   for (int i = 0; i < currencyCount; i++)
    {
-      for (int SubLoop = 0; SubLoop < CurrencyCount; SubLoop++)
+      for (int ii = 0; ii < currencyCount; ii++)
       {
-         if (Currencies[Loop] == Default[Selected - 1] 
-            || Currencies[SubLoop] == Default[Selected - 1] 
+         if (currencies[i] == Default[Selected - 1] 
+            || currencies[ii] == Default[Selected - 1] 
             || Default[Selected - 1] == "Any")
          {
-            string symbol = Currencies[Loop] + Currencies[SubLoop];
+            string symbol = currencies[i] + currencies[ii];
             if(MarketInfo(symbol, MODE_BID) > 0)
             {
-               ArrayResize(Symbols, SymbolCount + 1);
-               Symbols[SymbolCount] = new SymbolData();
-               Symbols[SymbolCount].Symbol = symbol;
-               Symbols[SymbolCount].Side = Currencies[Loop] == Default[Selected - 1] ? 1 : -1;
-               SymbolCount++;
+               ArrayResize(Symbols, symbolCount + 1);
+               Symbols[symbolCount] = new SymbolData();
+               Symbols[symbolCount].Symbol = symbol;
+               Symbols[symbolCount].Side = currencies[i] == Default[Selected - 1] ? 1 : -1;
+               symbolCount++;
             }
-            
 			}
       }
    }
  
    return;
 }
-   

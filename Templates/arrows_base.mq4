@@ -1,4 +1,4 @@
-// Arrows base v2.1
+// Arrows base v3.0
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -40,7 +40,7 @@ string GenerateIndicatorName(const string target)
    return name;
 }
 
-#include <conditions/ABaseCondition.mq4>
+#include <conditions/ACondition.mq4>
 #include <Streams/PriceStream.mq4>
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
@@ -88,11 +88,11 @@ int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
    return id;
 }
 
-class UpAlertCondition : public ABaseCondition
+class UpAlertCondition : public ACondition
 {
 public:
    UpAlertCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }
@@ -104,11 +104,11 @@ public:
    }
 };
 
-class DownAlertCondition : public ABaseCondition
+class DownAlertCondition : public ACondition
 {
 public:
    DownAlertCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }

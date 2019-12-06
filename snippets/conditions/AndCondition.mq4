@@ -1,8 +1,8 @@
-// And condition v3.0
-#include <ACondition.mq4>
+// And condition v4.0
+#include <AConditionBase.mq4>
 #ifndef AndCondition_IMP
 #define AndCondition_IMP
-class AndCondition : public ACondition
+class AndCondition : public AConditionBase
 {
    ICondition *_conditions[];
 public:

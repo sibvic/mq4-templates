@@ -3,6 +3,7 @@
 #include <../conditions/ProfitInRangeCondition.mq4>
 #include <TrailingPipsAction.mq4>
 #include <../Logic/ActionOnConditionLogic.mq4>
+#include <AOrderAction.mq4>
 
 #ifndef CreateTrailingAction_IMP
 #define CreateTrailingAction_IMP

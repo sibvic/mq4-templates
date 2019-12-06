@@ -1,11 +1,11 @@
 // No stop loss or take profit condition v1.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef NoStopLossOrTakeProfitCondition_IMP
 #define NoStopLossOrTakeProfitCondition_IMP
 
-class NoStopLossOrTakeProfitCondition : public ACondition
+class NoStopLossOrTakeProfitCondition : public AConditionBase
 {
    int _currentTicket;
 public:

@@ -1,13 +1,13 @@
 // Profit in range condition v2.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 #include <../Order.mq4>
 #include <../InstrumentInfo.mq4>
 
 #ifndef ProfitInRangeCondition_IMP
 #define ProfitInRangeCondition_IMP
 
-class ProfitInRangeCondition : public ACondition
+class ProfitInRangeCondition : public AConditionBase
 {
    IOrder* _order;
    InstrumentInfo* _instrument;

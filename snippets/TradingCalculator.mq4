@@ -1,6 +1,10 @@
 // Trade calculator v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+#ifndef TradingCalculator_IMP
+#define TradingCalculator_IMP
+
 #include <enums/OrderSide.mq4>
+#include <OrdersIterator.mq4>
 class TradingCalculator
 {
    InstrumentInfo *_symbol;
@@ -209,3 +213,5 @@ private:
       return (money / (unitCost / tickSize)) / amount;
    }
 };
+
+#endif

@@ -1,11 +1,11 @@
-// Not condition v1.0
+// Not condition v2.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef NotCondition_IMP
 #define NotCondition_IMP
 
-class NotCondition : public ACondition
+class NotCondition : public AConditionBase
 {
    ICondition* _condition;
 public:

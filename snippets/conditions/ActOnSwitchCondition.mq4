@@ -1,4 +1,4 @@
-// Act on switch condition v3.0
+// Act on switch condition v4.0
 
 #include <ACondition.mq4>
 
@@ -8,19 +8,16 @@
 class ActOnSwitchCondition : public ACondition
 {
    ICondition* _condition;
-   string _symbol;
-   ENUM_TIMEFRAMES _timeframe;
    bool _current;
    datetime _currentDate;
    bool _last;
 public:
    ActOnSwitchCondition(string symbol, ENUM_TIMEFRAMES timeframe, ICondition* condition)
+      :ACondition(symbol, timeframe)
    {
       _last = false;
       _current = false;
       _currentDate = 0;
-      _symbol = symbol;
-      _timeframe = timeframe;
       _condition = condition;
    }
 

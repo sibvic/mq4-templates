@@ -1,10 +1,10 @@
-// Disabled condition v2.0
+// Disabled condition v3.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef DisabledCondition_IMP
 #define DisabledCondition_IMP
-class DisabledCondition : public ACondition
+class DisabledCondition : public AConditionBase
 {
 public:
    bool IsPass(const int period, const datetime date) { return false; }

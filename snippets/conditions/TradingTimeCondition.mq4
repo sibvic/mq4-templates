@@ -1,6 +1,6 @@
-// Trading time condition v2.0
+// Trading time condition v3.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 #include <NoCondition.mq4>
 
 #ifndef TradingTimeCondition_IMP
@@ -82,7 +82,7 @@ ICondition* CreateTradingTimeCondition(const string startTime, const string endT
    return new TradingTimeCondition(_startTime, _endTime, startDay, _weekStartTime, stopDay, _weekEndTime);
 }
 
-class TradingTimeCondition : public ACondition
+class TradingTimeCondition : public AConditionBase
 {
    int _startTime;
    int _endTime;

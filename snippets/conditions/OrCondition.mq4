@@ -1,11 +1,11 @@
-// Or condition v3.0
+// Or condition v4.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef OrCondition_IMP
 #define OrCondition_IMP
 
-class OrCondition : public ACondition
+class OrCondition : public AConditionBase
 {
    ICondition *_conditions[];
 public:

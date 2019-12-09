@@ -1,11 +1,11 @@
-// Hit profit condition v2.0
+// Hit profit condition v3.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef HitProfitCondition_IMP
 #define HitProfitCondition_IMP
 
-class HitProfitCondition : public ACondition
+class HitProfitCondition : public AConditionBase
 {
    IOrder* _order;
    double _trigger;

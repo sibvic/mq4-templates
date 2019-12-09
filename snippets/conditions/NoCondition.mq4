@@ -1,11 +1,11 @@
-// No condition v2.1
+// No condition v3.0
 
-#include <ACondition.mq4>
+#include <AConditionBase.mq4>
 
 #ifndef NoCondition_IMP
 #define NoCondition_IMP
 
-class NoCondition : public ACondition
+class NoCondition : public AConditionBase
 {
 public:
    bool IsPass(const int period, const datetime date) { return true; }

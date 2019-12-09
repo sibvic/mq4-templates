@@ -1,4 +1,4 @@
-// Default take profit strategy v1.0
+// Default take profit strategy v1.1
 
 #include <ITakeProfitStrategy.mq4>
 #include <../TradingCalculator.mq4>

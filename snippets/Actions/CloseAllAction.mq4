@@ -1,4 +1,4 @@
-// Close all action v1.0
+// Close all action v1.1
 
 #include <AAction.mq4>
 #include <../OrdersIterator.mq4>
@@ -22,7 +22,7 @@ public:
    {
       OrdersIterator toClose();
       toClose.WhenMagicNumber(_magicNumber).WhenTrade();
-      return TradingCommands::CloseTrades(toClose, _slippagePoints);
+      return TradingCommands::CloseTrades(toClose, (int)_slippagePoints) > 0;
    }
 };
 #endif

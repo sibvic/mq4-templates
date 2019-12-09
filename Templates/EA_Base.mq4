@@ -18,6 +18,7 @@
 #define WEEKLY_TRADING_TIME_FEATURE
 #define TRADING_TIME_FEATURE
 #define POSITION_CAP_FEATURE 
+#define WITH_EXIT_LOGIC
 
 #ifdef SHOW_ACCOUNT_STAT
    string EA_NAME = "[EA NAME]";
@@ -34,7 +35,9 @@ input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
 input bool ecn_broker = false; // ECN Broker? 
 input TradingMode entry_logic = TradingModeLive; // Entry logic
-input TradingMode exit_logic = TradingModeLive; // Exit logic
+#ifdef WITH_EXIT_LOGIC
+   input TradingMode exit_logic = TradingModeLive; // Exit logic
+#endif
 enum PositionSizeType
 {
    PositionSizeAmount, // $
@@ -559,17 +562,14 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #endif
    tradingTimeCondition.Release();
 
-   controller.SetExitLogic(exit_logic);
-   ICondition* exitLongCondition = CreateExitLongCondition(symbol, timeframe);
-   ICondition* exitShortCondition = CreateExitShortCondition(symbol, timeframe);
-   if (mandatory_closing)
-   {
-      NotCondition* condition = new NotCondition(tradingTimeCondition);
-      IAction* action = new CloseAllAction(magic_number, slippage_points);
-      actions.AddActionOnCondition(action, condition);
-      action.Release();
-      condition.Release();
-   }
+   #ifdef WITH_EXIT_LOGIC
+      controller.SetExitLogic(exit_logic);
+      ICondition* exitLongCondition = CreateExitLongCondition(symbol, timeframe);
+      ICondition* exitShortCondition = CreateExitShortCondition(symbol, timeframe);
+   #else
+      ICondition* exitLongCondition = new DisabledCondition();
+      ICondition* exitShortCondition = new DisabledCondition();
+   #endif
 
    switch (logic_direction)
    {
@@ -585,6 +585,14 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          controller.SetExitLongCondition(exitShortCondition);
          controller.SetExitShortCondition(exitLongCondition);
          break;
+   }
+   if (mandatory_closing)
+   {
+      NotCondition* condition = new NotCondition(tradingTimeCondition);
+      IAction* action = new CloseAllAction(magic_number, slippage_points);
+      actions.AddActionOnCondition(action, condition);
+      action.Release();
+      condition.Release();
    }
    
    IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true);

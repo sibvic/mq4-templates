@@ -18,7 +18,7 @@ public:
       _calculator = calculator;
       _takeProfitType = takeProfitType;
       _takeProfit = takeProfit;
-      _isBuy = true;
+      _isBuy = isBuy;
    }
 
    virtual void GetTakeProfit(const int period, const double entryPrice, double stopLoss, double amount, double& takeProfit)

@@ -125,14 +125,16 @@ enum StopLimitType
    StopLimitRiskReward, // Set in % of stop loss (take profit only)
    StopLimitAbsolute // Set in absolite value (rate)
 };
-STOP_LOSS_FEATURE StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
-STOP_LOSS_FEATURE double stop_loss_value            = 10; // Stop loss value
-STOP_LOSS_FEATURE TrailingType trailing_type = TrailingDontUse; // Trailing type
-STOP_LOSS_FEATURE double trailing_step = 10; // Trailing step
-STOP_LOSS_FEATURE double trailing_start = 0; // Min distance to order to activate the trailing
-STOP_LOSS_FEATURE StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
-STOP_LOSS_FEATURE double breakeven_value = 10; // Trigger for the breakeven
-STOP_LOSS_FEATURE double breakeven_level = 0; // Breakeven target
+#ifdef STOP_LOSS_FEATURE
+   input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
+   input double stop_loss_value            = 10; // Stop loss value
+   input TrailingType trailing_type = TrailingDontUse; // Trailing type
+   input double trailing_step = 10; // Trailing step
+   input double trailing_start = 0; // Min distance to order to activate the trailing
+   input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
+   input double breakeven_value = 10; // Trigger for the breakeven
+   input double breakeven_level = 0; // Breakeven target
+#endif
 #ifdef NET_STOP_LOSS_FEATURE
    input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
    input double net_stop_loss_value = 10; // Net stop loss value
@@ -148,10 +150,12 @@ enum TakeProfitType
    TPAbsolute, // Set in absolite value (rate),
    TPAtr // Set in ATR(value) * mult
 };
-TAKE_PROFIT_FEATURE string TakeProfitSection            = ""; // == Take Profit ==
-TAKE_PROFIT_FEATURE TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
-TAKE_PROFIT_FEATURE double take_profit_value           = 10; // Take profit value
-input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
+#ifdef TAKE_PROFIT_FEATURE
+   input string TakeProfitSection            = ""; // == Take Profit ==
+   input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
+   input double take_profit_value           = 10; // Take profit value
+   input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
+#endif
 #ifdef NET_TAKE_PROFIT_FEATURE
    input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
    input double net_take_profit_value = 10; // Net take profit value
@@ -184,6 +188,12 @@ input int magic_number        = 42; // Magic number
    input string week_start_time = "000000"; // Start time in hhmmss format
    input DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
    input string week_stop_time = "235959"; // Stop time in hhmmss format
+#else
+   bool use_weekly_timing = false; // Weekly time
+   DayOfWeek week_start_day = DayOfWeekSunday; // Start day
+   string week_start_time = "000000"; // Start time in hhmmss format
+   DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
+   string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
 input bool PrintLog = false; // Print decisions into the log (On bar close only!)
 
@@ -459,7 +469,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
          tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, take_profit_value, isBuy);
          break;
       case TPAtr:
-         tp = new ATRTakeProfitStrategy(symbol, timeframe, take_profit_value, take_profit_atr_multiplicator, isBuy);
+         tp = new ATRTakeProfitStrategy(symbol, timeframe, (int)take_profit_value, take_profit_atr_multiplicator, isBuy);
          break;
    }
    

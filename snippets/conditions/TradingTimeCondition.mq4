@@ -2,6 +2,7 @@
 
 #include <AConditionBase.mq4>
 #include <NoCondition.mq4>
+#include <../enums/DayOfWeek.mq4>
 
 #ifndef TradingTimeCondition_IMP
 #define TradingTimeCondition_IMP

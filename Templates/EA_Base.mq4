@@ -343,7 +343,9 @@ public:
 ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
    if (trading_side == ShortSideOnly)
+   {
       return (ICondition *)new DisabledCondition();
+   }
 
    AndCondition* condition = new AndCondition();
    condition.Add(new LongCondition(symbol, timeframe), false);
@@ -354,10 +356,21 @@ ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
-ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+ICondition* CreateLongFilterCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 {
    if (trading_side == ShortSideOnly)
+   {
       return (ICondition *)new DisabledCondition();
+   }
+   return new NoCondition();
+}
+
+ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   if (trading_side == LongSideOnly)
+   {
+      return (ICondition *)new DisabledCondition();
+   }
 
    AndCondition* condition = new AndCondition();
    condition.Add(new ShortCondition(symbol, timeframe), false);
@@ -366,6 +379,15 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #else 
       return (ICondition*) condition;
    #endif
+}
+
+ICondition* CreateShortFilterCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+{
+   if (trading_side == LongSideOnly)
+   {
+      return (ICondition *)new DisabledCondition();
+   }
+   return new NoCondition();
 }
 
 ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
@@ -549,6 +571,9 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #endif
    tradingTimeCondition.Release();
 
+   ICondition* longFilterCondition = CreateLongFilterCondition(symbol, timeframe);
+   ICondition* shortFilterCondition = CreateShortFilterCondition(symbol, timeframe);
+
    #ifdef WITH_EXIT_LOGIC
       controller.SetExitLogic(exit_logic);
       ICondition* exitLongCondition = CreateExitLongCondition(symbol, timeframe);
@@ -562,13 +587,17 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    {
       case DirectLogic:
          controller.SetLongCondition(longCondition);
+         controller.SetLongFilterCondition(longFilterCondition);
          controller.SetShortCondition(shortCondition);
+         controller.SetShortFilterCondition(shortFilterCondition);
          controller.SetExitLongCondition(exitLongCondition);
          controller.SetExitShortCondition(exitShortCondition);
          break;
       case ReversalLogic:
          controller.SetLongCondition(shortCondition);
+         controller.SetLongFilterCondition(shortFilterCondition);
          controller.SetShortCondition(longCondition);
+         controller.SetShortFilterCondition(longFilterCondition);
          controller.SetExitLongCondition(exitShortCondition);
          controller.SetExitShortCondition(exitLongCondition);
          break;

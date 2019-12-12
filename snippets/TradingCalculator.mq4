@@ -1,4 +1,4 @@
-// Trade calculator v2.0
+// Trade calculator v2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #ifndef TradingCalculator_IMP
 #define TradingCalculator_IMP
@@ -120,7 +120,7 @@ public:
          case PositionSizeAmount:
             return GetLotsForMoney(lotsValue);
          case PositionSizeContract:
-            return LimitLots(RoundLots(lotsValue));
+            return _symbol.NormalizeLots(lotsValue);
          case PositionSizeEquity:
             return GetLotsForMoney(AccountEquity() * lotsValue / 100.0);
          case PositionSizeRisk:
@@ -131,7 +131,7 @@ public:
             double possibleLoss = unitCost * stopDistance / tickSize;
             if (possibleLoss <= 0.01)
                return 0;
-            return LimitLots(RoundLots(affordableLoss / possibleLoss));
+            return _symbol.NormalizeLots(affordableLoss / possibleLoss);
          }
       }
       return lotsValue;
@@ -149,7 +149,7 @@ public:
 
    double NormalizeLots(const double lots)
    {
-      return LimitLots(RoundLots(lots));
+      return _symbol.NormalizeLots(lots);
    }
 
    double RoundRate(const double rate)
@@ -183,27 +183,7 @@ private:
          Print("Margin is 0. Server misconfiguration?");
          return 0.0;
       }
-      double lots = RoundLots(money / marginRequired);
-      return LimitLots(lots);
-   }
-
-   double RoundLots(const double lots)
-   {
-      double lotStep = SymbolInfoDouble(_symbol.GetSymbol(), SYMBOL_VOLUME_STEP);
-      if (lotStep == 0)
-         return 0.0;
-      return floor(lots / lotStep) * lotStep;
-   }
-
-   double LimitLots(const double lots)
-   {
-      double minVolume = _symbol.GetMinLots();
-      if (minVolume > lots)
-         return 0.0;
-      double maxVolume = SymbolInfoDouble(_symbol.GetSymbol(), SYMBOL_VOLUME_MAX);
-      if (maxVolume < lots)
-         return maxVolume;
-      return lots;
+      return _symbol.NormalizeLots(money / marginRequired);
    }
 
    double CalculateSLShift(const double amount, const double money)

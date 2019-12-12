@@ -1,5 +1,8 @@
-// Instrument info v.1.4
+// Instrument info v.1.5
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+
+#ifndef InstrumentInfo_IMP
+#define InstrumentInfo_IMP
 
 class InstrumentInfo
 {
@@ -43,4 +46,36 @@ public:
    {
       return NormalizeDouble(MathFloor(rate / _tickSize + 0.5) * _tickSize, _digits);
    }
+
+   double RoundLots(const double lots)
+   {
+      double lotStep = SymbolInfoDouble(_symbol, SYMBOL_VOLUME_STEP);
+      if (lotStep == 0)
+      {
+         return 0.0;
+      }
+      return floor(lots / lotStep) * lotStep;
+   }
+
+   double LimitLots(const double lots)
+   {
+      double minVolume = GetMinLots();
+      if (minVolume > lots)
+      {
+         return 0.0;
+      }
+      double maxVolume = SymbolInfoDouble(_symbol, SYMBOL_VOLUME_MAX);
+      if (maxVolume < lots)
+      {
+         return maxVolume;
+      }
+      return lots;
+   }
+
+   double NormalizeLots(const double lots)
+   {
+      return LimitLots(RoundLots(lots));
+   }
 };
+
+#endif

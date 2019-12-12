@@ -1,5 +1,8 @@
 //Move to breakeven action v1.0
 
+#ifndef MoveToBreakevenAction_IMP
+#define MoveToBreakevenAction_IMP
+
 class MoveToBreakevenAction : public AAction
 {
    Signaler* _signaler;
@@ -60,3 +63,5 @@ private:
       return _name + ". ";
    }
 };
+
+#endif

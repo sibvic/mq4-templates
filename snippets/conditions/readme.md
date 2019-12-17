@@ -108,6 +108,30 @@ Or condition.
 
 Conditions for MA above/below price/another MA, MA cross over/under MA.
 
+### MACrossOverMACondition
+
+MA crosses over MA condition.
+
+### MACrossUnderMACondition
+
+MA crosses under MA condition.
+
+### MAAbovePriceCondition
+
+MA above price condition. Can check max distance to price.
+
+### MABelowPriceCondition
+
+MA below price condition. Can check max distance to price.
+
+### MAAboveMACondition
+
+MA above MA condition.
+
+### MABelowMACondition
+
+MA below MA conditon.
+
 ## cci_conditions
 
 Conditions for CCI above/below value.

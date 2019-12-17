@@ -1,9 +1,9 @@
 // Volume fall condition v1.0
-class VolumeFallCondition : public ABaseCondition
+class VolumeFallCondition : public ACondition
 {
 public:
    VolumeFallCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }

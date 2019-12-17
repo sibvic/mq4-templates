@@ -2,15 +2,15 @@
 #ifndef BandCrossUnderCondition_IMP
 #define BandCrossUnderCondition_IMP
 
-#include <ABaseCondition.mq4>
+#include <ACondition.mq4>
 
-class BandCrossUnderCondition : public ABaseCondition
+class BandCrossUnderCondition : public ACondition
 {
    int _period;
    double _dev;
 public:
    BandCrossUnderCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int period, double dev)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }

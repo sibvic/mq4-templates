@@ -1,14 +1,14 @@
 // Price outside band condition v1.1
 #ifndef PriceOutsideBandCondition_IMP
 #define PriceOutsideBandCondition_IMP
-#include <ABaseCondition.mq4>
-class PriceOutsideBandCondition : public ABaseCondition
+#include <ACondition.mq4>
+class PriceOutsideBandCondition : public ACondition
 {
    int _period;
    double _dev;
 public:
    PriceOutsideBandCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int period, double dev)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _period = period;
       _dev = dev;

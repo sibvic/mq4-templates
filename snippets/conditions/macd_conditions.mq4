@@ -2,15 +2,15 @@
 
 #ifndef MACDConditions_IMP
 #define MACDConditions_IMP
-#include <ABaseCondition.mq4>
-class MACDAboveSignalCondition : public ABaseCondition
+#include <ACondition.mq4>
+class MACDAboveSignalCondition : public ACondition
 {
    int _shortPeriod;
    int _longPeriod;
    int _signalPeriod;
 public:
    MACDAboveSignalCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int shortPeriod, int longPeriod, int signalPeriod)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _shortPeriod = shortPeriod;
       _longPeriod = longPeriod;
@@ -25,14 +25,14 @@ public:
    }
 };
 
-class MACDBelowSignalCondition : public ABaseCondition
+class MACDBelowSignalCondition : public ACondition
 {
    int _shortPeriod;
    int _longPeriod;
    int _signalPeriod;
 public:
    MACDBelowSignalCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int shortPeriod, int longPeriod, int signalPeriod)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _shortPeriod = shortPeriod;
       _longPeriod = longPeriod;
@@ -47,7 +47,7 @@ public:
    }
 };
 
-class MACDAboveLevelCondition : public ABaseCondition
+class MACDAboveLevelCondition : public ACondition
 {
    int _shortPeriod;
    int _longPeriod;
@@ -57,7 +57,7 @@ class MACDAboveLevelCondition : public ABaseCondition
 public:
    MACDAboveLevelCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int shortPeriod, int longPeriod, int signalPeriod,
       int stream, double level)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _shortPeriod = shortPeriod;
       _longPeriod = longPeriod;
@@ -73,8 +73,7 @@ public:
    }
 };
 
-
-class MACDBelowLevelCondition : public ABaseCondition
+class MACDBelowLevelCondition : public ACondition
 {
    int _shortPeriod;
    int _longPeriod;
@@ -84,7 +83,7 @@ class MACDBelowLevelCondition : public ABaseCondition
 public:
    MACDBelowLevelCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int shortPeriod, int longPeriod, int signalPeriod,
       int stream, double level)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _shortPeriod = shortPeriod;
       _longPeriod = longPeriod;

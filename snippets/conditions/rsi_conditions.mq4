@@ -4,15 +4,15 @@
 #ifndef RSICondition_IMP
 #define RSICondition_IMP
 
-#include <ABaseCondition.mq4>
+#include <ACondition.mq4>
 
-class RSIAboveLevelCondition : public ABaseCondition
+class RSIAboveLevelCondition : public ACondition
 {
    int _rsiPeriod;
    double _level;
 public:
    RSIAboveLevelCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int rsiPeriod, double level)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _rsiPeriod = rsiPeriod;
       _level = level;
@@ -25,13 +25,13 @@ public:
    }
 };
 
-class RSIBelowLevelCondition : public ABaseCondition
+class RSIBelowLevelCondition : public ACondition
 {
    int _rsiPeriod;
    double _level;
 public:
    RSIBelowLevelCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int rsiPeriod, double level)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _rsiPeriod = rsiPeriod;
       _level = level;

@@ -1,9 +1,9 @@
 // Volume rise condition v1.0
-class VolumeRiseCondition : public ABaseCondition
+class VolumeRiseCondition : public ACondition
 {
 public:
    VolumeRiseCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }

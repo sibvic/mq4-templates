@@ -1,14 +1,14 @@
 // Parabolic SAR conditions v1.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
-class PSARBelowPriceCondition : public ABaseCondition
+class PSARBelowPriceCondition : public ACondition
 {
    double _step;
    double _max;
    double _level;
 public:
    PSARBelowPriceCondition(const string symbol, ENUM_TIMEFRAMES timeframe, double step, double max)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _step = step;
       _max = max;
@@ -22,14 +22,14 @@ public:
    }
 };
 
-class PSARAbovePriceCondition : public ABaseCondition
+class PSARAbovePriceCondition : public ACondition
 {
    double _step;
    double _max;
    double _level;
 public:
    PSARAbovePriceCondition(const string symbol, ENUM_TIMEFRAMES timeframe, double step, double max)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _step = step;
       _max = max;

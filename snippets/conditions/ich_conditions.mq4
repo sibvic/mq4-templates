@@ -1,12 +1,12 @@
 // Ichimoku conditions v2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
-#include <ABaseCondition.mq4>
+#include <ACondition.mq4>
 
 #ifndef ICH_Conditions_IMP
 #define ICH_Conditions_IMP
 
-class PriceAboveKumhoCondition : public ABaseCondition
+class PriceAboveKumhoCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -20,7 +20,7 @@ public:
       int senkoiSpanB,
       int streamPeriodShift = 0)
 
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _streamPeriodShift = streamPeriodShift;
       _tenkanSen = tenkanSen;
@@ -42,7 +42,7 @@ public:
    }
 };
 
-class PriceBelowKumhoCondition : public ABaseCondition
+class PriceBelowKumhoCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -55,8 +55,7 @@ public:
       int kijunSen, 
       int senkoiSpanB,
       int streamPeriodShift = 0)
-
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _streamPeriodShift = streamPeriodShift;
       _tenkanSen = tenkanSen;
@@ -96,7 +95,7 @@ string GetIchimokuStreamName(int streamIndex)
    return "";
 }
 
-class PriceAboveIchimokuStreamCondition : public ABaseCondition
+class PriceAboveIchimokuStreamCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -111,8 +110,7 @@ public:
       int senkoiSpanB, 
       int streamIndex, 
       int streamPeriodShift = 0)
-
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _streamPeriodShift = streamPeriodShift;
       _streamIndex = streamIndex;
@@ -134,7 +132,7 @@ public:
    }
 };
 
-class PriceBelowIchimokuStreamCondition : public ABaseCondition
+class PriceBelowIchimokuStreamCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -149,7 +147,7 @@ public:
       int senkoiSpanB, 
       int streamIndex, 
       int streamPeriodShift = 0)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _streamPeriodShift = streamPeriodShift;
       _streamIndex = streamIndex;
@@ -171,7 +169,7 @@ public:
    }
 };
 
-class IchimokeStreamAboveIchimokuStreamCondition : public ABaseCondition
+class IchimokeStreamAboveIchimokuStreamCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -190,7 +188,7 @@ public:
       int secondStreamIndex,
       int firstStreamPeriodShift = 0,
       int secondStreamPeriodShift = 0)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _firstStreamPeriodShift = firstStreamPeriodShift;
       _secondStreamPeriodShift = secondStreamPeriodShift;
@@ -214,7 +212,7 @@ public:
    }
 };
 
-class IchimokeStreamBelowIchimokuStreamCondition : public ABaseCondition
+class IchimokeStreamBelowIchimokuStreamCondition : public ACondition
 {
    int _tenkanSen;
    int _kijunSen;
@@ -233,7 +231,7 @@ public:
       int secondStreamIndex,
       int firstStreamPeriodShift = 0,
       int secondStreamPeriodShift = 0)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _firstStreamPeriodShift = firstStreamPeriodShift;
       _secondStreamPeriodShift = secondStreamPeriodShift;

@@ -1,14 +1,14 @@
 // Band cross over condition v1.1
 #ifndef BandCrossOverCondition_IMP
 #define BandCrossOverCondition_IMP
-#include <ABaseCondition.mq4>
-class BandCrossOverCondition : public ABaseCondition
+#include <ACondition.mq4>
+class BandCrossOverCondition : public ACondition
 {
    int _period;
    double _dev;
 public:
    BandCrossOverCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int period, double dev)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _period = period;
       _dev = dev;

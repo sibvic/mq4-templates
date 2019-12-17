@@ -104,7 +104,6 @@ input TradingSide trading_side = BothSides; // What trades should be taken
    input double martingale_step = 5; // Open matringale position step
 #endif
 
-STOP_LOSS_FEATURE string StopLossSection            = ""; // == Stop loss ==
 enum TrailingType
 {
    TrailingDontUse, // No trailing
@@ -129,15 +128,19 @@ enum StopLimitType
    StopLimitAbsolute // Set in absolite value (rate)
 };
 #ifdef STOP_LOSS_FEATURE
+   string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
-   input double stop_loss_value            = 10; // Stop loss value
+   input double stop_loss_value = 10; // Stop loss value
    input TrailingType trailing_type = TrailingDontUse; // Trailing type
    input double trailing_step = 10; // Trailing step
    input double trailing_start = 0; // Min distance to order to activate the trailing
-   input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
-   input double breakeven_value = 10; // Trigger for the breakeven
-   input double breakeven_level = 0; // Breakeven target
+#else
+   StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
+   double stop_loss_value = 10;
 #endif
+input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
+input double breakeven_value = 10; // Trigger for the breakeven
+input double breakeven_level = 0; // Breakeven target
 #ifdef NET_STOP_LOSS_FEATURE
    input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
    input double net_stop_loss_value = 10; // Net stop loss value
@@ -156,8 +159,11 @@ enum TakeProfitType
 #ifdef TAKE_PROFIT_FEATURE
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
-   input double take_profit_value           = 10; // Take profit value
+   input double take_profit_value = 10; // Take profit value
    input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
+#else
+   TakeProfitType take_profit_type = TPDoNotUse;
+   double take_profit_value = 10;
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
    input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
@@ -267,7 +273,7 @@ TradingController *controllers[];
 #include <actions/CreateTrailingAction.mq4>
 #include <actions/CloseAllAction.mq4>
 
-#include <conditions/ABaseCondition.mq4>
+#include <conditions/ACondition.mq4>
 #include <conditions/TradingTimeCondition.mq4>
 #include <conditions/AndCondition.mq4>
 #include <conditions/OrCondition.mq4>
@@ -276,11 +282,11 @@ TradingController *controllers[];
    #include <conditions/PriceMovedFromTradeOpenCondition.mq4>
 #endif
 
-class LongCondition : public ABaseCondition
+class LongCondition : public ACondition
 {
 public:
    LongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }
@@ -292,11 +298,11 @@ public:
    }
 };
 
-class ShortCondition : public ABaseCondition
+class ShortCondition : public ACondition
 {
 public:
    ShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }
@@ -308,11 +314,11 @@ public:
    }
 };
 
-class ExitLongCondition : public ABaseCondition
+class ExitLongCondition : public ACondition
 {
 public:
    ExitLongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }
@@ -324,11 +330,11 @@ public:
    }
 };
 
-class ExitShortCondition : public ABaseCondition
+class ExitShortCondition : public ACondition
 {
 public:
    ExitShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
 
    }
@@ -465,24 +471,26 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
       case TPDoNotUse:
          tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDoNotUse, take_profit_value, isBuy);
          break;
-      case TPPercent:
-         tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPercent, take_profit_value, isBuy);
-         break;
-      case TPPips:
-         tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPips, take_profit_value, isBuy);
-         break;
-      case TPDollar:
-         tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDollar, take_profit_value, isBuy);
-         break;
-      case TPRiskReward:
-         tp = new RiskToRewardTakeProfitStrategy(take_profit_value, isBuy);
-         break;
-      case TPAbsolute:
-         tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, take_profit_value, isBuy);
-         break;
-      case TPAtr:
-         tp = new ATRTakeProfitStrategy(symbol, timeframe, (int)take_profit_value, take_profit_atr_multiplicator, isBuy);
-         break;
+      #ifdef TAKE_PROFIT_FEATURE
+         case TPPercent:
+            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPercent, take_profit_value, isBuy);
+            break;
+         case TPPips:
+            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPips, take_profit_value, isBuy);
+            break;
+         case TPDollar:
+            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDollar, take_profit_value, isBuy);
+            break;
+         case TPRiskReward:
+            tp = new RiskToRewardTakeProfitStrategy(take_profit_value, isBuy);
+            break;
+         case TPAbsolute:
+            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, take_profit_value, isBuy);
+            break;
+         case TPAtr:
+            tp = new ATRTakeProfitStrategy(symbol, timeframe, (int)take_profit_value, take_profit_atr_multiplicator, isBuy);
+            break;
+      #endif
    }
    
    return new MoneyManagementStrategy(sl, tp);
@@ -517,31 +525,31 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    
    if (breakeven_type != StopLimitDoNotUse)
    {
-      #ifdef USE_NET_BREAKEVEN
-      //TODO:controller.SetBreakeven(new NetBreakevenLogic(tradingCalculator, breakeven_type, breakeven_value, breakeven_level, signaler));
-      #else
-      MoveStopLossOnProfitOrderAction* orderAction = new MoveStopLossOnProfitOrderAction(breakeven_type, breakeven_value, breakeven_level, signaler, actions);
-      controller.AddOrderAction(orderAction);
-      orderAction.Release();
+      #ifndef USE_NET_BREAKEVEN
+         MoveStopLossOnProfitOrderAction* orderAction = new MoveStopLossOnProfitOrderAction(breakeven_type, breakeven_value, breakeven_level, signaler, actions);
+         controller.AddOrderAction(orderAction);
+         orderAction.Release();
       #endif
    }
 
-   switch (trailing_type)
-   {
-      case TrailingDontUse:
-         break;
-   #ifdef INDICATOR_BASED_TRAILING
-      case TrailingIndicator:
-         break;
+   #ifdef STOP_LOSS_FEATURE
+      switch (trailing_type)
+      {
+         case TrailingDontUse:
+            break;
+      #ifdef INDICATOR_BASED_TRAILING
+         case TrailingIndicator:
+            break;
+      #endif
+         case TrailingPips:
+            {
+               CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
+               controller.AddOrderAction(trailingAction);
+               trailingAction.Release();
+            }
+            break;
+      }
    #endif
-      case TrailingPips:
-         {
-            CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
-            controller.AddOrderAction(trailingAction);
-            trailingAction.Release();
-         }
-         break;
-   }
 
    #ifdef MARTINGALE_FEATURE
       switch (martingale_type)
@@ -619,7 +627,15 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #ifdef NET_STOP_LOSS_FEATURE
       if (net_stop_loss_type != StopLimitDoNotUse)
       {
-         IAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
+         MoveNetStopLossAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
+         #ifdef USE_NET_BREAKEVEN
+            if (breakeven_type != StopLimitDoNotUse)
+            {
+               //TODO: use breakeven_type as well
+               action.SetBreakeven(breakeven_value, breakeven_level);
+            }
+         #endif
+
          NoCondition* condition = new NoCondition();
          actions.AddActionOnCondition(action, condition);
          action.Release();

@@ -1,19 +1,19 @@
 // Price moved from trade open condition v1.0
 
-#include <ABaseCondition.mq4>
+#include <ACondition.mq4>
 #include <../TradingCalculator.mq4>
 
 #ifndef PriceMovedFromTradeOpenCondition_IMP
 #define PriceMovedFromTradeOpenCondition_IMP
 
-class PriceMovedFromTradeOpenCondition : public ABaseCondition
+class PriceMovedFromTradeOpenCondition : public ACondition
 {
    MartingaleStepSizeType _stepUnit;
    double _step;
    TradingCalculator *_calculator;
 public:
    PriceMovedFromTradeOpenCondition(string symbol, ENUM_TIMEFRAMES timeframe, MartingaleStepSizeType stepUnit, double step)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _stepUnit = stepUnit;
       _step = step;

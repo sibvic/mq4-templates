@@ -3,14 +3,14 @@
 #ifndef SecondsBeforeCandleCloseCondition_IMP
 #define SecondsBeforeCandleCloseCondition_IMP
 
-#include <ABaseCondition.mq4>
+#include <ACondition.mq4>
 
-class SecondsBeforeCandleCloseCondition : public ABaseCondition
+class SecondsBeforeCandleCloseCondition : public ACondition
 {
    int _seconds;
 public:
    SecondsBeforeCandleCloseCondition(const string symbol, ENUM_TIMEFRAMES timeframe, int seconds)
-      :ABaseCondition(symbol, timeframe)
+      :ACondition(symbol, timeframe)
    {
       _seconds = seconds;
    }

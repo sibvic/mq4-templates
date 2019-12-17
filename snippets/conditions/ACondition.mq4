@@ -1,4 +1,4 @@
-// ABaseCondition v2.0
+// ACondition v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef ACondition_IMP

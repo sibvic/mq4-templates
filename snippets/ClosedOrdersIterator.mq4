@@ -1,7 +1,7 @@
 // Closed orders iterator v1.0
 
-#ifndef ClosedOrdersIterator
-#define ClosedOrdersIterator
+#ifndef ClosedOrdersIterator_IMP
+#define ClosedOrdersIterator_IMP
 
 #include <enums/OrderSide.mq4>
 

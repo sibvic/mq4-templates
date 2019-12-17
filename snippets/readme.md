@@ -131,6 +131,41 @@ Set of averages.
 
 Shows alerts.
 
+How to use:
+
+    int OnInit()
+    {
+        if (!IsDllsAllowed() && advanced_alert)
+        {
+            Print("Error: Dll calls must be allowed!");
+            return INIT_FAILED;
+        }
+        //...
+        Signaler *signaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
+        signaler.SetMessagePrefix(_Symbol + "/" + signaler.GetTimeframeStr() + ": ");
+        //...
+    }
+    
+    void OnDeinit(const int reason)
+    {
+        delete signaler;
+        signaler = NULL;
+    }
+
+    datetime last_alert;
+    int start()
+    {
+        ...
+        if (last_alert != Time[0])
+        {
+            if (IsSignal())
+            {
+                signaler.SendNotifications("Signal detected");
+                last_alert = Time[0];
+            }
+        }
+    }
+
 ## CloseOnOpposite
 
 Close on oppisite logic.

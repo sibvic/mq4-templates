@@ -91,12 +91,3 @@ public:
          AdvancedAlert(advanced_key, message, symbol, timeframe);
    }
 };
-
-// int OnInit()
-// {
-//    if (!IsDllsAllowed() && advanced_alert)
-//    {
-//       Print("Error: Dll calls must be allowed!");
-//       return INIT_FAILED;
-//    }
-// }

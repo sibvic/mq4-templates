@@ -1,4 +1,4 @@
-// Act on switch condition v4.0
+// Act on switch condition v4.1
 
 #include <ACondition.mq4>
 
@@ -19,11 +19,12 @@ public:
       _current = false;
       _currentDate = 0;
       _condition = condition;
+      _condition.AddRef();
    }
 
    ~ActOnSwitchCondition()
    {
-      delete _condition;
+      _condition.Release();
    }
 
    virtual bool IsPass(const int period, const datetime date)

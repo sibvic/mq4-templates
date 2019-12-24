@@ -356,7 +356,9 @@ ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    AndCondition* condition = new AndCondition();
    condition.Add(new LongCondition(symbol, timeframe), false);
    #ifdef ACT_ON_SWITCH_CONDITION
-      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      condition.Release();
+      return switchCondition;
    #else 
       return (ICondition*) condition;
    #endif
@@ -381,7 +383,9 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    AndCondition* condition = new AndCondition();
    condition.Add(new ShortCondition(symbol, timeframe), false);
    #ifdef ACT_ON_SWITCH_CONDITION
-      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      condition.Release();
+      return switchCondition;
    #else 
       return (ICondition*) condition;
    #endif
@@ -401,7 +405,9 @@ ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    AndCondition* condition = new AndCondition();
    condition.Add(new ExitLongCondition(symbol, timeframe), false);
    #ifdef ACT_ON_SWITCH_CONDITION
-      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      condition.Release();
+      return switchCondition;
    #else
       return (ICondition *)condition;
    #endif
@@ -412,7 +418,9 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    AndCondition* condition = new AndCondition();
    condition.Add(new ExitShortCondition(symbol, timeframe), false);
    #ifdef ACT_ON_SWITCH_CONDITION
-      return (ICondition*) new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
+      condition.Release();
+      return switchCondition;
    #else
       return (ICondition *)condition;
    #endif

@@ -14,7 +14,7 @@ public:
       _max = max;
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double close = iClose(_symbol, _timeframe, period);
       double sarValue = iSAR(_symbol, _timeframe, _step, _max, period);
@@ -35,7 +35,7 @@ public:
       _max = max;
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
       double close = iClose(_symbol, _timeframe, period);
       double sarValue = iSAR(_symbol, _timeframe, _step, _max, period);

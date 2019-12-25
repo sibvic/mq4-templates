@@ -1,6 +1,5 @@
 // Text value cell factory v1.0
 
-#include <TextValueCell.mq4>
 #include <ICellFactory.mq4>
 
 #ifndef TextValueCellFactory_IMP

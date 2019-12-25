@@ -1,4 +1,4 @@
-// Grid builder v1.3
+// Grid builder v2.0
 
 #include <ICellFactory.mq4>
 
@@ -15,17 +15,22 @@ class GridBuilder
    Iterator _xIterator;
    Iterator _yIterator;
    bool _verticalMode;
+   int _cellHeight;
+   int _headerHeight;
    ICellFactory* _cellFactory;
 public:
-   GridBuilder(int x, int y, bool verticalMode, ICellFactory* cellFactory)
-      :_xIterator(x, -cell_width), _yIterator(y, cell_height)
+   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ICellFactory* cellFactory)
+      :_xIterator(x, -cell_width), _yIterator(y, cellHeight)
    {
+      _cellHeight = cellHeight;
+      _headerHeight = headerHeight;
       _cellFactory = cellFactory;
       _verticalMode = verticalMode;
       _originalY = y;
       _originalX = x;
       grid = new Grid();
    }
+
    ~GridBuilder()
    {
       delete _cellFactory;
@@ -38,7 +43,7 @@ public:
 
       if (_verticalMode)
       {
-         Iterator yIterator(_originalY, cell_height);
+         Iterator yIterator(_originalY, _cellHeight);
          Row *row = grid.AddRow();
          row.Add(new EmptyCell());
          for (int i = 0; i < _symbolsCount; i++)
@@ -55,7 +60,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], xIterator.GetNext(), _originalY - cell_height));
+            row.Add(new LabelCell(id, _symbols[i], xIterator.GetNext(), _originalY - _headerHeight));
          }
       }
    }
@@ -66,8 +71,8 @@ public:
       {
          int x = _xIterator.GetNext();
          Row *row = grid.AddRow();
-         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, cell_height));
-         Iterator yIterator(_originalY, cell_height);
+         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, x, _headerHeight));
+         Iterator yIterator(_originalY, _cellHeight);
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
@@ -88,7 +93,7 @@ public:
       }
    }
 
-   Grid *Build()
+   Grid* Build()
    {
       return grid;
    }

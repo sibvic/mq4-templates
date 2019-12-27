@@ -177,3 +177,21 @@ Min distance since last trade.
 ## wpr_conditions
 
 Larry Williams' Percent Range conditions: above/below level.
+
+## ADXDMIConditions
+
+### ADXOverADXCondition
+
+ADX/DMI stream over ADX/DMI stream condition.
+
+### ADXUnderADXCondition
+
+ADX/DMI stream under ADX/DMI stream condition.
+
+### ADXCrossOverADXCondition
+
+ADX/DMI stream cross over ADX/DMI stream condition.
+
+### ADXCrossUnderADXCondition
+
+ADX/DMI stream cross under ADX/DMI stream condition.

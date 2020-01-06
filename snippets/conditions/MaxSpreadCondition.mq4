@@ -1,4 +1,4 @@
-// Max spead condition v1.0
+// Max spead condition v2.0
 class MaxSpreadCondition : public ACondition
 {
    double _maxSpread;
@@ -9,8 +9,8 @@ public:
       _maxSpread = maxSpread;
    }
 
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
-      return _instrument.GetSpread() < maxSpread;
+      return _instrument.GetSpread() < _maxSpread;
    }
 };

@@ -1,4 +1,4 @@
-// Trading time condition v3.0
+// Trading time condition v3.1
 
 #include <AConditionBase.mq4>
 #include <NoCondition.mq4>
@@ -137,7 +137,7 @@ public:
       end = referece + _endTime;
       if (_startTime > _endTime)
       {
-         start -= 86400;
+         start += 86400;
       }
    }
 private:

@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.5
+// ProfitRobots Dashboard template v.1.6
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -194,7 +194,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, display_mode == Vertical, new TrendValueCellFactory());
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory());
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

@@ -1,5 +1,7 @@
 // Lowest low stream v1.0
 
+#include <IStream.mq4>
+
 class LowestLowStream : public IStream
 {
    int _loopback;

@@ -50,7 +50,6 @@ public:
       if (orderDate == 0)
          return true;
       int index = iBarShift(_symbol, _timeframe, orderDate);
-      Print(index);
       return _minBars <= index;
    }
 };

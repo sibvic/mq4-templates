@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.6
+// ProfitRobots Dashboard template v.1.7
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -30,6 +30,7 @@ input DisplayMode display_mode = Vertical; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
+input bool alert_on_close = false; // Alert of bar close
 
 #include <Signaler.mq4>
 
@@ -194,7 +195,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory());
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory(alert_on_close ? 1 : 0));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

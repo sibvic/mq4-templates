@@ -1,4 +1,4 @@
-// Trend value cell v1.2
+// Trend value cell v1.3
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -20,9 +20,11 @@ class TrendValueCell : public ICell
    ICondition* _downCondition;
    Signaler* _signaler;
    datetime _lastSignalDate;
+   int _alertShift;
 public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, int alertShift)
    { 
+      _alertShift = alertShift;
       _signaler = new Signaler(symbol, timeframe);
       _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
       _id = id; 
@@ -64,10 +66,10 @@ public:
 private:
    int GetDirection()
    {
-      datetime date = iTime(_symbol, _timeframe, 0);
-      if (_upCondition.IsPass(0, date))
+      datetime date = iTime(_symbol, _timeframe, _alertShift);
+      if (_upCondition.IsPass(_alertShift, date))
          return ENTER_BUY_SIGNAL;
-      if (_downCondition.IsPass(0, date))
+      if (_downCondition.IsPass(_alertShift, date))
          return ENTER_SELL_SIGNAL;
       return 0;
    }

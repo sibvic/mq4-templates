@@ -1,4 +1,4 @@
-// RSI conditions v1.0
+// RSI conditions v1.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef RSICondition_IMP
@@ -18,9 +18,9 @@ public:
       _level = level;
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
-      double rsiValue = iRSI(_symbol, _timeframe, _rsiPeriod, MODE_CLOSE, period);
+      double rsiValue = iRSI(_symbol, _timeframe, _rsiPeriod, PRICE_CLOSE, period);
       return rsiValue > _level;
    }
 };
@@ -37,9 +37,9 @@ public:
       _level = level;
    }
    
-   bool IsPass(const int period)
+   bool IsPass(const int period, const datetime date)
    {
-      double rsiValue = iRSI(_symbol, _timeframe, _rsiPeriod, MODE_CLOSE, period);
+      double rsiValue = iRSI(_symbol, _timeframe, _rsiPeriod, PRICE_CLOSE, period);
       return rsiValue < _level;
    }
 };

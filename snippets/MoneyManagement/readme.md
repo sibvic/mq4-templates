@@ -33,3 +33,11 @@ Risk based stop loss strategy.
 ## RiskToRewardTakeProfitStrategy
 
 Risk to reward take profit strategy.
+
+## ILotsProvider
+
+Lots provider interface.
+
+## DefaultLotsProvider
+
+Default lots provider.

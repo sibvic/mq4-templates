@@ -243,6 +243,7 @@ input bool PrintLog = false; // Print decisions into the log (On bar close only!
 #ifdef NET_TAKE_PROFIT_FEATURE
 #include <Actions/MoveNetTakeProfitAction.mq4>
 #endif
+#include <MoneyManagement/DefaultLotsProvider.mq4>
 #include <MoneyManagement/MoneyManagementStrategy.mq4>
 #include <MoneyManagement/RiskToRewardTakeProfitStrategy.mq4>
 #include <MoneyManagement/PositionSizeRiskStopLossAndAmountStrategy.mq4>
@@ -429,6 +430,15 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
 MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
    ENUM_TIMEFRAMES timeframe, bool isBuy)
 {
+   ILotsProvider* lots = NULL;
+   switch (lots_type)
+   {
+      case PositionSizeRisk:
+         break;
+      default:
+         lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);
+         break;
+   }
    IStopLossAndAmountStrategy* sl = NULL;
    switch (stop_loss_type)
    {
@@ -437,7 +447,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
             if (lots_type == PositionSizeRisk)
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitDoNotUse, stop_loss_value, isBuy);
             else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots_type, lots_value, StopLimitDoNotUse, stop_loss_value, isBuy);
+               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitDoNotUse, stop_loss_value, isBuy);
          }
          break;
       case SLPercent:
@@ -445,7 +455,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
             if (lots_type == PositionSizeRisk)
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitPercent, stop_loss_value, isBuy);
             else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots_type, lots_value, StopLimitPercent, stop_loss_value, isBuy);
+               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitPercent, stop_loss_value, isBuy);
          }
          break;
       case SLPips:
@@ -453,7 +463,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
             if (lots_type == PositionSizeRisk)
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitPips, stop_loss_value, isBuy);
             else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots_type, lots_value, StopLimitPips, stop_loss_value, isBuy);
+               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitPips, stop_loss_value, isBuy);
          }
          break;
       case SLDollar:
@@ -461,7 +471,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
             if (lots_type == PositionSizeRisk)
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitDollar, stop_loss_value, isBuy);
             else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots_type, lots_value, StopLimitDollar, stop_loss_value, isBuy);
+               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitDollar, stop_loss_value, isBuy);
          }
          break;
       case SLAbsolute:
@@ -469,7 +479,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
             if (lots_type == PositionSizeRisk)
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitAbsolute, stop_loss_value, isBuy);
             else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots_type, lots_value, StopLimitAbsolute, stop_loss_value, isBuy);
+               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitAbsolute, stop_loss_value, isBuy);
          }
          break;
    }

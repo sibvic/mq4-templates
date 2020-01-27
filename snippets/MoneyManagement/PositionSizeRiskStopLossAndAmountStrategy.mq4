@@ -1,4 +1,4 @@
-// Stop loss and amount strategy for position size risk v1.0
+// Stop loss and amount strategy for position size risk v1.1
 
 #include <IStopLossAndAmountStrategy.mq4>
 #include <../TradingCalculator.mq4>
@@ -21,6 +21,7 @@ public:
       _lots = lots;
       _stopLossType = stopLossType;
       _stopLoss = stopLoss;
+      _isBuy = isBuy;
    }
    
    void GetStopLossAndAmount(const int period, const double entryPrice, double &amount, double &stopLoss)

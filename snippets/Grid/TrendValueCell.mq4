@@ -20,10 +20,12 @@ class TrendValueCell : public ICell
    ICondition* _downCondition;
    Signaler* _signaler;
    datetime _lastSignalDate;
+   int _lastSignal;
    int _alertShift;
 public:
    TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, int alertShift)
    { 
+      _lastSignal = 0;
       _alertShift = alertShift;
       _signaler = new Signaler(symbol, timeframe);
       _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
@@ -47,7 +49,7 @@ public:
    { 
       int direction = GetDirection(); 
       ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
-      if (Time[0] != _lastSignalDate)
+      if (Time[0] != _lastSignalDate && _lastSignal != direction)
       {
          switch (direction)
          {
@@ -60,6 +62,7 @@ public:
                _lastSignalDate = Time[0];
                break;
          }
+         _lastSignal = direction;
       }
    }
 

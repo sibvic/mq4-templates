@@ -43,7 +43,9 @@ public:
    virtual bool IsPass(const int period, const datetime date)
    {
       if (_order == NULL || !_order.Select())
-         return false;
+      {
+         return true;
+      }
 
       int type = OrderType();
       if (type == OP_BUY)

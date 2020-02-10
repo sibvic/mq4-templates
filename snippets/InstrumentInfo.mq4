@@ -1,4 +1,4 @@
-// Instrument info v.1.5
+// Instrument info v.1.6
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef InstrumentInfo_IMP
@@ -21,6 +21,20 @@ public:
       _mult = _digits == 3 || _digits == 5 ? 10 : 1;
       _pipSize = _point * _mult;
       _tickSize = MarketInfo(_symbol, MODE_TICKSIZE);
+   }
+
+   // Return < 0 when lot1 < lot2, > 0 when lot1 > lot2 and 0 owtherwise
+   int CompareLots(double lot1, double lot2)
+   {
+      double lotStep = SymbolInfoDouble(_symbol, SYMBOL_VOLUME_STEP);
+      if (lotStep == 0)
+      {
+         return lot1 < lot2 ? -1 : (lot1 > lot2 ? 1 : 0);
+      }
+      int lotSteps1 = (int)floor(lot1 / lotStep + 0.5);
+      int lotSteps2 = (int)floor(lot2 / lotStep + 0.5);
+      int res = lotSteps1 - lotSteps2;
+      return res;
    }
    
    static double GetBid(const string symbol) { return MarketInfo(symbol, MODE_BID); }

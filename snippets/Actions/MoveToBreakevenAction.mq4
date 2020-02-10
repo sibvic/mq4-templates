@@ -1,4 +1,4 @@
-//Move to breakeven action v1.0
+//Move to breakeven action v1.1
 
 #ifndef MoveToBreakevenAction_IMP
 #define MoveToBreakevenAction_IMP
@@ -11,8 +11,9 @@ class MoveToBreakevenAction : public AAction
    InstrumentInfo *_instrument;
    IOrder* _order;
    string _name;
+   double _refLots;
 public:
-   MoveToBreakevenAction(double trigger, double target, string name, IOrder* order, Signaler *signaler)
+   MoveToBreakevenAction(double trigger, double target, string name, IOrder* order, Signaler *signaler, double refLots = 0)
    {
       _signaler = signaler;
       _trigger = trigger;
@@ -23,11 +24,8 @@ public:
       _order.AddRef();
       _order.Select();
       string symbol = OrderSymbol();
-      if (_instrument == NULL || symbol != _instrument.GetSymbol())
-      {
-         delete _instrument;
-         _instrument = new InstrumentInfo(symbol);
-      }
+      _instrument = new InstrumentInfo(symbol);
+      _refLots = refLots;
    }
 
    ~MoveToBreakevenAction()
@@ -38,8 +36,10 @@ public:
 
    virtual bool DoAction()
    {
-      if (!_order.Select() || OrderCloseTime() != 0)
+      if (!_order.Select() || OrderCloseTime() != 0 || (_refLots != 0 && _instrument.CompareLots(OrderLots(), _refLots) != 0))
+      {
          return false;
+      }
       int ticket = OrderTicket();
       string error;
       if (!TradingCommands::MoveSL(ticket, _target, error))

@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard text template v.1.1
+// ProfitRobots Dashboard text template v.1.2
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -23,6 +23,7 @@ input bool     Include_W1               = true;
 input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
 input int x_shift = 900; // X coordinate
+input int y_shift = 50; // Y coordinate
 input DisplayMode display_mode = Horizontal; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
@@ -107,7 +108,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, display_mode == Vertical, new TextValueCellFactory());
+   GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical, new TextValueCellFactory());
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

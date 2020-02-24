@@ -161,12 +161,9 @@ int deinit()
 
 int start()
 {
-   if (Bars <= 1) 
-      return 0;
-   int ExtCountedBars = IndicatorCounted();
-   if (ExtCountedBars < 0) 
-      return -1;
-   int limit = ExtCountedBars > 1 ? Bars - ExtCountedBars - 1 : Bars - 1;
+   int counted_bars = IndicatorCounted();
+   int minBars = 1;
+   int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
    for (int pos = limit; pos >= 0; --pos)
    {
       customStream._stream[pos] = Close[pos];

@@ -1,4 +1,4 @@
-// Colored stream v2.1
+// Colored stream v2.2
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -9,15 +9,23 @@ public:
    double Stream[];
 };
 
-class ColoredStream
+#include <AStream.mq4>
+
+class ColoredStream : public AStream
 {
 public:
    ColoredStreamData _streams[];
    double _data[];
 
+   ColoredStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+      :AStream(symbol, timeframe)
+   {
+   }
+
    int RegisterInternal(int id)
    {
       SetIndexBuffer(id + 0, _data);
+      SetIndexStyle(id + 0, DRAW_NONE);
       return id + 1;
    }
 
@@ -50,12 +58,22 @@ public:
          if (colorIndex == i)
          {
             _streams[i].Stream[period] = value;
-            if (_streams[i].Stream[period + 1] == EMPTY_VALUE)
+            if (period + 1 < iBars(_symbol, _timeframe) && _streams[i].Stream[period + 1] == EMPTY_VALUE)
                _streams[i].Stream[period + 1] = _data[period + 1];   
          }
          else
             _streams[i].Stream[period] = EMPTY_VALUE;
       }
+   }
+
+   bool GetValue(const int period, double &val)
+   {
+      if (period >= iBars(_symbol, _timeframe))
+      {
+         return false;
+      }
+      val = _data[period];
+      return _data[period] != EMPTY_VALUE;
    }
 };
 

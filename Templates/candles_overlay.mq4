@@ -1,4 +1,4 @@
-// Bar overlay template v1.0
+// Bar overlay template v1.1
 
 #property copyright "Copyright © 2019, ProfitRobots"
 #property link      "https://github.com/sibvic/mq4-templates"
@@ -6,10 +6,10 @@
 
 #property indicator_chart_window
 #property indicator_buffers 8
-extern color Top_color = Green; // Top Color
-extern color Bottom_color = Red; // Bottom Color
+input color Top_color = Green; // Top Color
+input color Bottom_color = Red; // Bottom Color
 
-#include "CandleStreams.mq4"
+#include <streams/CandleStreams.mq4>
 
 CandleStreams Top;
 CandleStreams Bottom;
@@ -32,17 +32,10 @@ int deinit()
 
 int start()
 {
-   if (Bars <= 3) 
-      return 0;
-   int ExtCountedBars = IndicatorCounted();
-   if (ExtCountedBars < 0) 
-      return -1;
-   int limit = Bars - 2;
-   if (ExtCountedBars > 2)
-      limit = Bars - ExtCountedBars - 1;
-
-   int pos = limit;
-   while (pos >= 0)
+   int counted_bars = IndicatorCounted();
+   int minBars = 1;
+   int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
+   for (int pos = limit; pos >= 0; pos--)
    {
       Top.Clear(pos);
       Bottom.Clear(pos);

@@ -322,3 +322,7 @@ Trading monitor
 ## Pivot
 
 Pivot
+
+## TextMaxSizeCalculator
+
+Calculates max width/height for the bunch of strings.

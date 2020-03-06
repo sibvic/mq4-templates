@@ -135,19 +135,28 @@ int init()
 
    int id = 0;
 
-   customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   if (Type == Arrows)
+   {
+      customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   }
    ICondition* upCondition = (ICondition*) new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = (ICondition*) new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    id = CreateAlert(id, upCondition, downCondition);
-   id = customStream.RegisterInternalStream(id);
+   if (customStream != NULL)
+   {
+      id = customStream.RegisterInternalStream(id);
+   }
 
    return 0;
 }
 
 int deinit()
 {
-   customStream.Release();
-   customStream = NULL;
+   if (customStream != NULL)
+   {
+      customStream.Release();
+      customStream = NULL;
+   }
    delete mainSignaler;
    mainSignaler = NULL;
    for (int i = 0; i < ArraySize(conditions); ++i)
@@ -166,7 +175,10 @@ int start()
    int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
    for (int pos = limit; pos >= 0; --pos)
    {
-      customStream._stream[pos] = Close[pos];
+      if (customStream != NULL)
+      {
+         customStream._stream[pos] = Close[pos];
+      }
       for (int i = 0; i < ArraySize(conditions); ++i)
       {
          AlertSignal* item = conditions[i];

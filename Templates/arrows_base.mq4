@@ -88,10 +88,10 @@ int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
    return id;
 }
 
-class UpAlertCondition : public ACondition
+class UpCondition : public ACondition
 {
 public:
-   UpAlertCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+   UpCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
       :ACondition(symbol, timeframe)
    {
 
@@ -104,10 +104,10 @@ public:
    }
 };
 
-class DownAlertCondition : public ACondition
+class DownCondition : public ACondition
 {
 public:
-   DownAlertCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+   DownCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
       :ACondition(symbol, timeframe)
    {
 
@@ -139,8 +139,8 @@ int init()
    {
       customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
    }
-   ICondition* upCondition = (ICondition*) new UpAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   ICondition* downCondition = (ICondition*) new DownAlertCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+   ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    id = CreateAlert(id, upCondition, downCondition);
    if (customStream != NULL)
    {

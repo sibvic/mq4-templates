@@ -1,4 +1,4 @@
-// EA condition display v1.0
+// EA condition display v1.1
 
 #property version   "1.0"
 #property indicator_separate_window
@@ -26,6 +26,40 @@ string GenerateIndicatorName(const string target)
    }
    return name;
 }
+
+#include <Conditions/ACondition.mq4>
+
+class LongCondition : public ACondition
+{
+public:
+   LongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ACondition(symbol, timeframe)
+   {
+
+   }
+
+   bool IsPass(const int period, const datetime date)
+   {
+      //TODO: implement
+      return false;
+   }
+};
+
+class ShortCondition : public ACondition
+{
+public:
+   ShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+      :ACondition(symbol, timeframe)
+   {
+
+   }
+
+   bool IsPass(const int period, const datetime date)
+   {
+      //TODO: implement
+      return false;
+   }
+};
 
 int init()
 {

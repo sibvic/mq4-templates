@@ -1,4 +1,4 @@
-// Heatmap value calculator v1.0
+// Heatmap value calculator v2.0
 
 #include <Conditions/ICondition.mq4>
 
@@ -52,9 +52,9 @@ public:
       up[period] = EMPTY_VALUE;
       dn[period] = EMPTY_VALUE;
       nt[period] = EMPTY_VALUE;
-      if (_upCondition.IsPass(period))
+      if (_upCondition.IsPass(period, Time[period]))
          up[period] = _value;
-      else if (_downCondition.IsPass(period))
+      else if (_downCondition.IsPass(period, Time[period]))
          dn[period] = _value;
       else
          nt[period] = _value;

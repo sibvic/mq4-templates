@@ -1,4 +1,4 @@
-// Colored stream v2.2
+// Colored stream v3.0
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -22,7 +22,7 @@ public:
    {
    }
 
-   int RegisterInternal(int id)
+   int RegisterInternalStream(int id)
    {
       SetIndexBuffer(id + 0, _data);
       SetIndexStyle(id + 0, DRAW_NONE);

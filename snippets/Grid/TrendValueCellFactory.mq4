@@ -1,4 +1,4 @@
-// Trend value cell factory v1.1
+// Trend value cell factory v2.0
 
 #include <ICellFactory.mq4>
 #include <TrendValueCell.mq4>
@@ -8,16 +8,16 @@
 
 class TrendValueCellFactory : public ICellFactory
 {
-   int _alertShift;
+   bool _alertUnconfirmed;
 public:
-   TrendValueCellFactory(int alertShift = 0)
+   TrendValueCellFactory(bool alertUnconfirmed = false)
    {
-      _alertShift = alertShift;
+      _alertUnconfirmed = alertUnconfirmed;
    }
 
    virtual ICell* Create(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
    {
-      return new TrendValueCell(id, x, y, symbol, timeframe, _alertShift);
+      return new TrendValueCell(id, x, y, symbol, timeframe, _alertUnconfirmed);
    }
 };
 #endif

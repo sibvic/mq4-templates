@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.1.7
+// ProfitRobots Dashboard template v.2.0
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -22,8 +22,10 @@ input bool     Include_D1               = true;
 input bool     Include_W1               = true;
 input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
-input color    Up_Color                 = clrLime;
-input color    Dn_Color                 = clrRed;
+input color    Confirmed_Up_Color       = Green; // Confirmed up color
+input color    Unconfirmed_Up_Color     = Lime; // Unconfirmed up color
+input color    Confirmed_Dn_Color       = Red; // Confirmed down color
+input color    Unconfirmed_Dn_Color     = Pink; // Unconfirmed down color
 input color    Neutral_Color            = clrDarkGray;
 input int x_shift = 900; // X coordinate
 input DisplayMode display_mode = Vertical; // Display mode
@@ -195,7 +197,7 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory(alert_on_close ? 1 : 0));
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory(!alert_on_close));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

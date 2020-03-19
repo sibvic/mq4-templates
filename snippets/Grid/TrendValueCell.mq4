@@ -1,4 +1,4 @@
-// Trend value cell v1.3
+// Trend value cell v2.0
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -8,9 +8,11 @@
 
 #ifndef ENTER_BUY_SIGNAL
 #define ENTER_BUY_SIGNAL 1
+#define CONFIRMED_ENTER_BUY_SIGNAL 2
 #endif
 #ifndef ENTER_SELL_SIGNAL
 #define ENTER_SELL_SIGNAL -1
+#define CONFIRMED_ENTER_SELL_SIGNAL -2
 #endif
 
 class TrendValueCell : public ICell
@@ -21,12 +23,12 @@ class TrendValueCell : public ICell
    Signaler* _signaler;
    datetime _lastSignalDate;
    int _lastSignal;
-   int _alertShift;
+   bool _alertUnconfermed;
 public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, int alertShift)
+   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, bool alertUnconfermed)
    { 
       _lastSignal = 0;
-      _alertShift = alertShift;
+      _alertUnconfermed = alertUnconfermed;
       _signaler = new Signaler(symbol, timeframe);
       _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
       _id = id; 
@@ -54,12 +56,32 @@ public:
          switch (direction)
          {
             case ENTER_BUY_SIGNAL:
-               _signaler.SendNotifications("Buy");
-               _lastSignalDate = Time[0];
+               if (_alertUnconfermed)
+               {
+                  _signaler.SendNotifications("Buy");
+                  _lastSignalDate = Time[0];
+               }
                break;
             case ENTER_SELL_SIGNAL:
-               _signaler.SendNotifications("Sell");
-               _lastSignalDate = Time[0];
+               if (_alertUnconfermed)
+               {
+                  _signaler.SendNotifications("Sell");
+                  _lastSignalDate = Time[0];
+               }
+               break;
+            case CONFIRMED_ENTER_BUY_SIGNAL:
+               if (!_alertUnconfermed)
+               {
+                  _signaler.SendNotifications("Buy");
+                  _lastSignalDate = Time[0];
+               }
+               break;
+            case CONFIRMED_ENTER_SELL_SIGNAL:
+               if (!_alertUnconfermed)
+               {
+                  _signaler.SendNotifications("Sell");
+                  _lastSignalDate = Time[0];
+               }
                break;
          }
          _lastSignal = direction;
@@ -69,21 +91,60 @@ public:
 private:
    int GetDirection()
    {
-      datetime date = iTime(_symbol, _timeframe, _alertShift);
-      if (_upCondition.IsPass(_alertShift, date))
+      datetime date = iTime(_symbol, _timeframe, 0);
+      if (_upCondition.IsPass(0, date))
+      {
          return ENTER_BUY_SIGNAL;
-      if (_downCondition.IsPass(_alertShift, date))
+      }
+      if (_downCondition.IsPass(0, date))
+      {
          return ENTER_SELL_SIGNAL;
+      }
+      date = iTime(_symbol, _timeframe, 1);
+      if (_upCondition.IsPass(1, date))
+      {
+         return CONFIRMED_ENTER_BUY_SIGNAL;
+      }
+      if (_downCondition.IsPass(1, date))
+      {
+         return CONFIRMED_ENTER_SELL_SIGNAL;
+      }
       return 0;
    }
 
-   color GetDirectionColor(const int direction) { if (direction >= 1) { return Up_Color; } else if (direction <= -1) { return Dn_Color; } return Neutral_Color; }
+   color GetDirectionColor(const int direction)
+   { 
+      switch (direction)
+      {
+         case CONFIRMED_ENTER_BUY_SIGNAL:
+            return Confirmed_Up_Color;
+         case CONFIRMED_ENTER_SELL_SIGNAL:
+            return Confirmed_Dn_Color;
+         case ENTER_BUY_SIGNAL:
+            return Unconfirmed_Up_Color;
+         case ENTER_SELL_SIGNAL:
+            return Unconfirmed_Dn_Color;
+      }
+      return Neutral_Color;
+   }
    string GetDirectionSymbol(const int direction)
    {
       if (direction == ENTER_BUY_SIGNAL)
-         return "BUY";
+      {
+         return "BUY*";
+      }
       else if (direction == ENTER_SELL_SIGNAL)
+      {
+         return "SELL*";
+      }
+      if (direction == CONFIRMED_ENTER_BUY_SIGNAL)
+      {
+         return "BUY";
+      }
+      else if (direction == CONFIRMED_ENTER_SELL_SIGNAL)
+      {
          return "SELL";
+      }
       return "-";
    }
 };

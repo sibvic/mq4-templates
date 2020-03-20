@@ -1,4 +1,4 @@
-// Row v1.0
+// Row v1.1
 
 #ifndef Row_IMP
 #define Row_IMP
@@ -23,6 +23,16 @@ public:
          _cells[i].Draw(); 
       } 
    }
+
+   void Draw() 
+   { 
+      int count = ArraySize(_cells); 
+      for (int i = 0; i < count; ++i) 
+      { 
+         _cells[i].Draw(); 
+      } 
+   }
+
    void Add(ICell *cell) 
    {
       int count = ArraySize(_cells); 

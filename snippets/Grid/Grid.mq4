@@ -1,4 +1,4 @@
-// Grid v1.0
+// Grid v1.1
 
 #include <Row.mq4>
 
@@ -37,6 +37,15 @@ public:
       for (int i = 0; i < count; ++i)
       {
          _rows[i].Draw();
+      }
+   }
+
+   void HandleButtonClicks()
+   {
+      int count = ArraySize(_rows);
+      for (int i = 0; i < count; ++i)
+      {
+         _rows[i].HandleButtonClicks();
       }
    }
 };

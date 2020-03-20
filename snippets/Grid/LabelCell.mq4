@@ -1,4 +1,4 @@
-// Label cell v1.0
+// Label cell v1.1
 
 #include <ICell.mq4>
 
@@ -22,6 +22,11 @@ public:
    virtual void Draw() 
    { 
       ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, 1, WindowNumber, "Arial", font_size); 
+   }
+
+   virtual void HandleButtonClicks()
+   {
+      
    }
 };
 

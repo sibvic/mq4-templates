@@ -1,4 +1,4 @@
-// Empty cell v1.0
+// Empty cell v1.1
 
 #include <ICell.mq4>
 
@@ -9,6 +9,7 @@ class EmptyCell : public ICell
 {
 public:
    virtual void Draw() { }
+   virtual void HandleButtonClicks() {}
 };
 
 #endif

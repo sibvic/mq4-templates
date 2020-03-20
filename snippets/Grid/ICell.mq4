@@ -1,4 +1,4 @@
-// Interface for a cell v1.0
+// Interface for a cell v1.1
 
 #ifndef ICell_IMP
 #define ICell_IMP
@@ -7,6 +7,7 @@ class ICell
 {
 public:
    virtual void Draw() = 0;
+   virtual void HandleButtonClicks() = 0;
 protected:
    void ObjectMakeLabel( string nm, int xoff, int yoff, string LabelTexto, color LabelColor, int LabelCorner=1, int Window = 0, string Font = "Arial", int FSize = 8 )
    { 

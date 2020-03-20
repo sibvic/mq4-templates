@@ -1,4 +1,4 @@
-// Trend value cell v2.0
+// Trend value cell v2.1
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -47,10 +47,44 @@ public:
       delete _downCondition;
    }
 
+   virtual void HandleButtonClicks()
+   {
+      if (ObjectGetInteger(0, _id + "B", OBJPROP_STATE))
+      {
+         ObjectSetInteger(0, _id + "B", OBJPROP_STATE, false);
+         ChartSetSymbolPeriod(0, _symbol, _timeframe);
+      }
+   }
+
    virtual void Draw()
    { 
       int direction = GetDirection(); 
-      ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
+      string text = GetDirectionSymbol(direction);
+      if (direction == 0)
+      {
+         ObjectDelete(_id + "B");
+         ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
+      }
+      else
+      {
+         ObjectDelete(_id);
+         if (ObjectFind(_id + "B") < 0)
+         {
+            ObjectCreate(_id + "B", OBJ_BUTTON, WindowNumber, 0, 0);
+         }
+         ObjectSet(_id + "B", OBJPROP_XDISTANCE, _x);
+         ObjectSet(_id + "B", OBJPROP_YDISTANCE, _y);
+         ObjectSet(_id + "B", OBJPROP_CORNER, 1); 
+         ObjectSetString(0, _id + "B", OBJPROP_FONT, "Arial");
+         ObjectSetString(0, _id + "B", OBJPROP_TEXT, text);
+         ObjectSetInteger(0, _id + "B", OBJPROP_COLOR, GetDirectionColor(direction));
+         ObjectSetInteger(0, _id + "B", OBJPROP_FONTSIZE, font_size);
+         TextSetFont("Arial", -font_size * 10);
+         int width, height;
+         TextGetSize(text, width, height);
+         ObjectSetInteger(0, _id + "B", OBJPROP_XSIZE, width + 5);
+         ObjectSetInteger(0, _id + "B", OBJPROP_YSIZE, height + 5);
+      }
       if (Time[0] != _lastSignalDate && _lastSignal != direction)
       {
          switch (direction)

@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.2.0
+// ProfitRobots Dashboard template v.2.1
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -113,13 +113,13 @@ Grid *grid;
 
 #include <Grid/GridBuilder.mq4>
 
-// void OnChartEvent(const int id,
-//                   const long &lparam,
-//                   const double &dparam,
-//                   const string &sparam)
-// {
-//    handleButtonClicks();
-// }
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+{
+   grid.HandleButtonClicks();
+}
 
 // void handleButtonClicks()
 // {
@@ -166,24 +166,6 @@ Grid *grid;
 //    ObjectSetInteger(0, name, OBJPROP_YSIZE, height);
 //    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
 // }
- 
-// void DrawButton(string name, int corn, int x, int y, int code=0, color Clr=Green, int Win=0, int FSize=10)
-// {
-//    int Error = ObjectFind(name);
-//    if (Error != Win)
-//       ObjectCreate(name, OBJ_BUTTON, Win, 0, 0);
-     
-//    ObjectSet(name, OBJPROP_CORNER, corn);
-//    ObjectSet(name, OBJPROP_XDISTANCE, x);
-//    ObjectSet(name, OBJPROP_YDISTANCE, y);
-//    ObjectSetString(0, name, OBJPROP_FONT, "Wingdings");
-//    ObjectSetString(0, name, OBJPROP_TEXT, CharToStr(code));
-//    ObjectSetInteger(0, name, OBJPROP_COLOR, Clr);
-//    ObjectSetInteger(0, name, OBJPROP_XSIZE, 13);
-//    ObjectSetInteger(0, name, OBJPROP_YSIZE, 13);
-//    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
-// }
-
 
 int init()
 {
@@ -238,6 +220,7 @@ int start()
 {
    //handleButtonClicks();
    WindowNumber = MathMax(0, WindowFind(IndicatorName));
+   grid.HandleButtonClicks();
    grid.Draw();
    
    return 0;

@@ -6,7 +6,8 @@
 
 enum CompareType
 {
-   CompareLessThan
+   CompareLessThan,
+   CompareMoreThan
 };
 
 #include <enums/OrderSide.mq4>
@@ -179,7 +180,15 @@ private:
          {
             case CompareLessThan:
                if (OrderProfit() >= _profit)
+               {
                   return false;
+               }
+               break;
+            case CompareMoreThan:
+               if (OrderProfit() <= _profit)
+               {
+                  return false;
+               }
                break;
          }
       }

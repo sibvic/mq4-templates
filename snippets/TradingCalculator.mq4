@@ -5,6 +5,7 @@
 
 #include <enums/OrderSide.mq4>
 #include <OrdersIterator.mq4>
+#include <InstrumentInfo.mq4>
 class TradingCalculator
 {
    InstrumentInfo *_symbol;

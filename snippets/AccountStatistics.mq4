@@ -1,8 +1,8 @@
 // Account statistics v1.4
 
-extern color equity_color = White; // Equity & profit color
-extern color color_text = Lime; // General text color
-extern color header_color = Yellow; // Headers color
+input color equity_color = White; // Equity & profit color
+input color color_text = Lime; // General text color
+input color header_color = Yellow; // Headers color
 
 class AccountStatistics
 {

@@ -1,4 +1,4 @@
-//Visibility controller v1.1
+//Visibility controller v1.2
 class VisibilityCotroller
 {
    string buttonId;
@@ -19,6 +19,11 @@ public:
       createButton(buttonId, caption, 65, 20, "Impact", 8, clrDarkRed, clrBlack, clrWhite);
       ObjectSetInteger(0, buttonId, OBJPROP_YDISTANCE, x);
       ObjectSetInteger(0, buttonId, OBJPROP_XDISTANCE, y);
+   }
+
+   void DeInit()
+   {
+      ObjectDelete(ChartID(), buttonId);
    }
 
    bool HandleButtonClicks()

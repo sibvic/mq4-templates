@@ -1,4 +1,4 @@
-// Bar overlay template v1.1
+// Bar overlay template v1.2
 
 #property copyright "Copyright © 2019, ProfitRobots"
 #property link      "https://github.com/sibvic/mq4-templates"
@@ -43,8 +43,6 @@ int start()
          Top.Set(pos, Open[pos], High[pos], Low[pos], Close[pos]);
       else
          Bottom.Set(pos, Open[pos], High[pos], Low[pos], Close[pos]);
-   
-      pos--;
    }
    return 0;
 }

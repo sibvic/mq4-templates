@@ -43,7 +43,8 @@ enum PositionSizeType
    PositionSizeAmount, // $
    PositionSizeContract, // In contracts
    PositionSizeEquity, // % of equity
-   PositionSizeRisk // Risk in % of equity
+   PositionSizeRisk, // Risk in % of equity
+   PositionSizeRiskCurrency // Risk in $
 };
 enum LogicDirection
 {
@@ -434,6 +435,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
    switch (lots_type)
    {
       case PositionSizeRisk:
+      case PositionSizeRiskCurrency:
          break;
       default:
          lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);

@@ -1,4 +1,4 @@
-// Trade calculator v2.1
+// Trade calculator v2.2
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #ifndef TradingCalculator_IMP
 #define TradingCalculator_IMP
@@ -133,6 +133,15 @@ public:
             if (possibleLoss <= 0.01)
                return 0;
             return _symbol.NormalizeLots(affordableLoss / possibleLoss);
+         }
+         case PositionSizeRiskCurrency:
+         {
+            double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
+            double tickSize = _symbol.GetTickSize();
+            double possibleLoss = unitCost * stopDistance / tickSize;
+            if (possibleLoss <= 0.01)
+               return 0;
+            return _symbol.NormalizeLots(lotsValue / possibleLoss);
          }
       }
       return lotsValue;

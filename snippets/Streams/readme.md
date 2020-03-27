@@ -89,6 +89,10 @@ Standard deviation stream
 
 Builds bar stream and multi-color stream.
 
+## ConditionCandleStreams
+
+CandeStreams with condition. Sets the values when condition returns true.
+
 ## IStreamFactory
 
 Stream factory.

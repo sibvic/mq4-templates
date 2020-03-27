@@ -12,6 +12,10 @@ Condition based on symbol/timeframe data.
 
 Base condition implementation.
 
+## ACandleCondition
+
+Abstract base for a candle condition. 
+
 ## RSI conditions
 
 ### RSIAboveLevelCondition

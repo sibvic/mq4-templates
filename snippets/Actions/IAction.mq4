@@ -1,4 +1,4 @@
-// Action v1.0
+// Action v2.0
 
 #ifndef IAction_IMP
 #define IAction_IMP
@@ -9,7 +9,7 @@ public:
    virtual void AddRef() = 0;
    virtual void Release() = 0;
    
-   virtual bool DoAction() = 0;
+   virtual bool DoAction(const int period, const datetime date) = 0;
 };
 
 #endif

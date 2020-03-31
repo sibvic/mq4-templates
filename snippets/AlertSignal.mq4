@@ -1,4 +1,4 @@
-// Alert signal v2.4
+// Alert signal v3.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AlertSignal_IMP
@@ -153,6 +153,7 @@ public:
 
 class AlertSignal
 {
+   IAction* _actionOnCondition;
    ICondition* _condition;
    Signaler* _signaler;
    string _message;
@@ -160,8 +161,13 @@ class AlertSignal
    bool _onBarClose;
    IAlertSignalOutput* _signalOutput;
 public:
-   AlertSignal(ICondition* condition, Signaler* signaler, bool onBarClose = false)
+   AlertSignal(ICondition* condition, IAction* actionOnCondition, Signaler* signaler, bool onBarClose = false)
    {
+      _actionOnCondition = actionOnCondition;
+      if (_actionOnCondition != NULL)
+      {
+         _actionOnCondition.AddRef();
+      }
       _signalOutput = NULL;
       _condition = condition;
       _signaler = signaler;
@@ -170,6 +176,10 @@ public:
 
    ~AlertSignal()
    {
+      if (_actionOnCondition != NULL)
+      {
+         _actionOnCondition.Release();
+      }
       delete _signalOutput;
       delete _condition;
    }
@@ -207,6 +217,10 @@ public:
       {
          _signalOutput.Clear(period);
          return;
+      }
+      if (_actionOnCondition != NULL)
+      {
+         _actionOnCondition.DoAction(period, dt);
       }
 
       if (period == 0)

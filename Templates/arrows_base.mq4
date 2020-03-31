@@ -1,4 +1,4 @@
-// Arrows base v3.0
+// Arrows base v4.0
 
 #property copyright "Copyright © 2019, "
 #property link      ""
@@ -51,12 +51,12 @@ AlertSignal* conditions[];
 Signaler* mainSignaler;
 CustomStream* customStream;
 
-int CreateAlert(int id, ICondition* upCondition, ICondition* downCondition)
+int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction)
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
-   conditions[size] = new AlertSignal(upCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
-   conditions[size + 1] = new AlertSignal(downCondition, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size] = new AlertSignal(upCondition, upAction, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size + 1] = new AlertSignal(downCondition, downAction, mainSignaler, signal_mode == SingalModeOnBarClose);
       
    switch (Type)
    {
@@ -141,7 +141,7 @@ int init()
    }
    ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   id = CreateAlert(id, upCondition, downCondition);
+   id = CreateAlert(id, upCondition, NULL, downCondition, NULL);
    if (customStream != NULL)
    {
       id = customStream.RegisterInternalStream(id);

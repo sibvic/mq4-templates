@@ -40,9 +40,8 @@ int deinit()
 
 int start()
 {
-   int counted_bars = IndicatorCounted();
    int minBars = 1;
-   int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
+   int limit = MathMin(Bars - 1 - minBars, Bars - IndicatorCounted() - 1);
    for (int i = limit; i >= 0; i--)
    {
    }

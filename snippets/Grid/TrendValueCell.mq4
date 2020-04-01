@@ -5,181 +5,148 @@
 
 #include <../conditions/ICondition.mq4>
 #include <../Signaler.mq4>
-
-#ifndef ENTER_BUY_SIGNAL
-#define ENTER_BUY_SIGNAL 1
-#define CONFIRMED_ENTER_BUY_SIGNAL 2
-#endif
-#ifndef ENTER_SELL_SIGNAL
-#define ENTER_SELL_SIGNAL -1
-#define CONFIRMED_ENTER_SELL_SIGNAL -2
-#endif
+#include <IValueFormatter.mq4>
+#include <ICell.mq4>
 
 class TrendValueCell : public ICell
 {
-   string _id; int _x; int _y; string _symbol; ENUM_TIMEFRAMES _timeframe; datetime _lastDatetime;
-   ICondition* _upCondition;
-   ICondition* _downCondition;
+   string _id;
+   int _x;
+   int _y;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
+   datetime _lastDatetime;
+   ICondition* _conditions[];
+   IValueFormatter* _valueFormatters[];
    Signaler* _signaler;
    datetime _lastSignalDate;
    int _lastSignal;
-   bool _alertUnconfermed;
+   int _alertShift;
+   IValueFormatter* _defaultValue;
 public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe, bool alertUnconfermed)
+   TrendValueCell(const string id, const int x, const int y, const string symbol, 
+      const ENUM_TIMEFRAMES timeframe, int alertShift, 
+      IValueFormatter* defaultValue)
    { 
       _lastSignal = 0;
-      _alertUnconfermed = alertUnconfermed;
+      _alertShift = alertShift;
       _signaler = new Signaler(symbol, timeframe);
       _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
       _id = id; 
       _x = x; 
       _y = y; 
-      _symbol = symbol; 
-      _timeframe = timeframe; 
-      _upCondition = CreateUpCondition(_symbol, _timeframe);
-      _downCondition = CreateDownCondition(_symbol, _timeframe);
+      _symbol = symbol;
+      _timeframe = timeframe;
+      _defaultValue = defaultValue;
+      _defaultValue.AddRef();
    }
 
    ~TrendValueCell()
    {
       delete _signaler;
-      delete _upCondition;
-      delete _downCondition;
+      _defaultValue.Release();
+      for (int i = 0; i < ArraySize(_conditions); ++i)
+      {
+         _conditions[i].Release();
+         _valueFormatters[i].Release();
+      }
+      ArrayResize(_conditions, 0);
+      ArrayResize(_valueFormatters, 0);
+   }
+
+   void AddCondition(ICondition* condition, IValueFormatter* value)
+   {
+      int size = ArraySize(_conditions);
+      ArrayResize(_conditions, size + 1);
+      ArrayResize(_valueFormatters, size + 1);
+      _conditions[size] = condition;
+      condition.AddRef();
+      _valueFormatters[size] = value;
+      value.AddRef();
    }
 
    virtual void HandleButtonClicks()
    {
-      if (ObjectGetInteger(0, _id + "B", OBJPROP_STATE))
+      for (int i = 0; i < ArraySize(_conditions); ++i)
       {
-         ObjectSetInteger(0, _id + "B", OBJPROP_STATE, false);
-         ChartSetSymbolPeriod(0, _symbol, _timeframe);
+         string id = _id + "B" + IntegerToString(i);
+         if (ObjectGetInteger(0, id, OBJPROP_STATE))
+         {
+            ObjectSetInteger(0, id, OBJPROP_STATE, false);
+            ChartOpen(_symbol, _timeframe);
+         }
       }
    }
 
    virtual void Draw()
-   { 
-      int direction = GetDirection(); 
-      string text = GetDirectionSymbol(direction);
-      if (direction == 0)
+   {
+      datetime date = iTime(_symbol, _timeframe, _alertShift);
+      for (int i = 0; i < ArraySize(_conditions); ++i)
       {
-         ObjectDelete(_id + "B");
-         ObjectMakeLabel(_id, _x, _y, GetDirectionSymbol(direction), GetDirectionColor(direction), 1, WindowNumber, "Arial", font_size); 
-      }
-      else
-      {
-         ObjectDelete(_id);
-         if (ObjectFind(_id + "B") < 0)
+         if (_conditions[i].IsPass(_alertShift, date))
          {
-            ObjectCreate(_id + "B", OBJ_BUTTON, WindowNumber, 0, 0);
+            color clr;
+            string text = _valueFormatters[i].FormatItem(_alertShift, date, clr);
+            DrawItem(text, clr, TimeCurrent() - _lastSignalDate >= expiration_min * 60, i);
+            SendAlert(text, i);
+            return;
          }
-         ObjectSet(_id + "B", OBJPROP_XDISTANCE, _x);
-         ObjectSet(_id + "B", OBJPROP_YDISTANCE, _y);
-         ObjectSet(_id + "B", OBJPROP_CORNER, 1); 
-         ObjectSetString(0, _id + "B", OBJPROP_FONT, "Arial");
-         ObjectSetString(0, _id + "B", OBJPROP_TEXT, text);
-         ObjectSetInteger(0, _id + "B", OBJPROP_COLOR, GetDirectionColor(direction));
-         ObjectSetInteger(0, _id + "B", OBJPROP_FONTSIZE, font_size);
-         TextSetFont("Arial", -font_size * 10);
-         int width, height;
-         TextGetSize(text, width, height);
-         ObjectSetInteger(0, _id + "B", OBJPROP_XSIZE, width + 5);
-         ObjectSetInteger(0, _id + "B", OBJPROP_YSIZE, height + 5);
       }
-      if (Time[0] != _lastSignalDate && _lastSignal != direction)
+      for (int i = _alertShift + 1; i < 1000; ++i)
       {
-         switch (direction)
+         date = iTime(_symbol, _timeframe, i);
+         for (int ii = 0; ii < ArraySize(_conditions); ++ii)
          {
-            case ENTER_BUY_SIGNAL:
-               if (_alertUnconfermed)
-               {
-                  _signaler.SendNotifications("Buy");
-                  _lastSignalDate = Time[0];
-               }
-               break;
-            case ENTER_SELL_SIGNAL:
-               if (_alertUnconfermed)
-               {
-                  _signaler.SendNotifications("Sell");
-                  _lastSignalDate = Time[0];
-               }
-               break;
-            case CONFIRMED_ENTER_BUY_SIGNAL:
-               if (!_alertUnconfermed)
-               {
-                  _signaler.SendNotifications("Buy");
-                  _lastSignalDate = Time[0];
-               }
-               break;
-            case CONFIRMED_ENTER_SELL_SIGNAL:
-               if (!_alertUnconfermed)
-               {
-                  _signaler.SendNotifications("Sell");
-                  _lastSignalDate = Time[0];
-               }
-               break;
+            if (_conditions[ii].IsPass(i, date))
+            {
+               color clr;
+               string text = _valueFormatters[ii].FormatItem(_alertShift, date, clr);
+               DrawItem(text, clr, true, ii);
+               return;
+            }
          }
-         _lastSignal = direction;
       }
    }
 
 private:
-   int GetDirection()
+   void DrawItem(string text, color clr, bool simpleLabel, int i)
    {
-      datetime date = iTime(_symbol, _timeframe, 0);
-      if (_upCondition.IsPass(0, date))
+      string id = _id + "B" + IntegerToString(i);
+      if (simpleLabel)
       {
-         return ENTER_BUY_SIGNAL;
+         ObjectDelete(id);
+         ObjectMakeLabel(id, _x, _y, text, clr, 1, WindowNumber, "Arial", font_size); 
       }
-      if (_downCondition.IsPass(0, date))
+      else
       {
-         return ENTER_SELL_SIGNAL;
+         ObjectDelete(id);
+         if (ObjectFind(id) < 0)
+         {
+            ObjectCreate(id, OBJ_BUTTON, WindowNumber, 0, 0);
+         }
+         ObjectSet(id, OBJPROP_XDISTANCE, _x);
+         ObjectSet(id, OBJPROP_YDISTANCE, _y);
+         ObjectSet(id, OBJPROP_CORNER, 1); 
+         ObjectSetString(0, id, OBJPROP_FONT, "Arial");
+         ObjectSetString(0, id, OBJPROP_TEXT, text);
+         ObjectSetInteger(0, id, OBJPROP_COLOR, clr);
+         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, font_size);
+         TextSetFont("Arial", -font_size * 10);
+         int width, height;
+         TextGetSize(text, width, height);
+         ObjectSetInteger(0, id, OBJPROP_XSIZE, width + 5);
+         ObjectSetInteger(0, id, OBJPROP_YSIZE, height + 5);
       }
-      date = iTime(_symbol, _timeframe, 1);
-      if (_upCondition.IsPass(1, date))
-      {
-         return CONFIRMED_ENTER_BUY_SIGNAL;
-      }
-      if (_downCondition.IsPass(1, date))
-      {
-         return CONFIRMED_ENTER_SELL_SIGNAL;
-      }
-      return 0;
    }
 
-   color GetDirectionColor(const int direction)
-   { 
-      switch (direction)
-      {
-         case CONFIRMED_ENTER_BUY_SIGNAL:
-            return Confirmed_Up_Color;
-         case CONFIRMED_ENTER_SELL_SIGNAL:
-            return Confirmed_Dn_Color;
-         case ENTER_BUY_SIGNAL:
-            return Unconfirmed_Up_Color;
-         case ENTER_SELL_SIGNAL:
-            return Unconfirmed_Dn_Color;
-      }
-      return Neutral_Color;
-   }
-   string GetDirectionSymbol(const int direction)
+   void SendAlert(string text, int direction)
    {
-      if (direction == ENTER_BUY_SIGNAL)
+      if (iTime(_symbol, _timeframe, 0) != _lastSignalDate && _lastSignal != direction)
       {
-         return "BUY*";
+         _signaler.SendNotifications(text);
+         _lastSignalDate = iTime(_symbol, _timeframe, 0);
+         _lastSignal = direction;
       }
-      else if (direction == ENTER_SELL_SIGNAL)
-      {
-         return "SELL*";
-      }
-      if (direction == CONFIRMED_ENTER_BUY_SIGNAL)
-      {
-         return "BUY";
-      }
-      else if (direction == CONFIRMED_ENTER_SELL_SIGNAL)
-      {
-         return "SELL";
-      }
-      return "-";
    }
 };
 #endif

@@ -22,3 +22,16 @@ Example:
 ## GridTextCell
 
 ## GridRow
+
+## IValueFormatter
+
+Interface for a value formatter.
+
+## AValueFormatter
+
+Abstract value formatter. Implements reference counting. Should be used as a parent most of the times.
+
+## FixedTextFormatter
+
+Returns fixed strign and color.
+

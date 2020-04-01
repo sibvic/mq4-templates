@@ -1,4 +1,4 @@
-//Move to breakeven action v1.1
+//Move to breakeven action v2.0
 
 #ifndef MoveToBreakevenAction_IMP
 #define MoveToBreakevenAction_IMP
@@ -34,7 +34,7 @@ public:
       _order.Release();
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       if (!_order.Select() || OrderCloseTime() != 0 || (_refLots != 0 && _instrument.CompareLots(OrderLots(), _refLots) != 0))
       {

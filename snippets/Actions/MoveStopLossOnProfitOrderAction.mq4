@@ -1,4 +1,4 @@
-// Move stop loss on profit order action v1.2
+// Move stop loss on profit order action v2.0
 #ifndef MoveStopLossOnProfitOrderAction_IMP
 #define MoveStopLossOnProfitOrderAction_IMP
 
@@ -30,7 +30,7 @@ public:
       delete _calculator;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       if (!OrderSelect(_currentTicket, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0.0)
          return false;

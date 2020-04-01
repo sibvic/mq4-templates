@@ -1,4 +1,4 @@
-// Close all action v1.1
+// Close all action v2.0
 
 #include <AAction.mq4>
 #include <../OrdersIterator.mq4>
@@ -18,7 +18,7 @@ public:
       _slippagePoints = slippagePoints;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       OrdersIterator toClose();
       toClose.WhenMagicNumber(_magicNumber).WhenTrade();

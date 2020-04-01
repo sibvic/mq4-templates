@@ -1,4 +1,4 @@
-// Set stop loss and/or take profit action v1.0
+// Set stop loss and/or take profit action v2.0
 
 #include <AAction.mq4>
 #include <../TradingCommands.mq4>
@@ -23,7 +23,7 @@ public:
    {
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       if (!OrderSelect(_currentTicket, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0.0)
          return true;

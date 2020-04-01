@@ -1,4 +1,4 @@
-// Order action (abstract) v1.0
+// Order action (abstract) v2.0
 // Used to execute action on orders
 
 #ifndef AOrderAction_IMP
@@ -11,7 +11,7 @@ public:
    virtual bool DoAction(int ticket)
    {
       _currentTicket = ticket;
-      return DoAction();
+      return DoAction(0, 0);
    }
 };
 

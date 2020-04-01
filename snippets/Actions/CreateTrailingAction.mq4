@@ -1,4 +1,4 @@
-// Create trailing action v1.0
+// Create trailing action v2.0
 
 #include <../conditions/ProfitInRangeCondition.mq4>
 #include <TrailingPipsAction.mq4>
@@ -21,7 +21,7 @@ public:
       _actions = actions;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       OrderByTicketId* order = new OrderByTicketId(_currentTicket);
       if (!order.Select() || OrderStopLoss() == 0)

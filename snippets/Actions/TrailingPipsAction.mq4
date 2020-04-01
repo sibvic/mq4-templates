@@ -1,4 +1,4 @@
-// Trailing action v2.0
+// Trailing action v3.0
 
 #include <AAction.mq4>
 #include <../Order.mq4>
@@ -34,7 +34,7 @@ public:
       delete _instrument;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       if (!_order.Select())
          return true;

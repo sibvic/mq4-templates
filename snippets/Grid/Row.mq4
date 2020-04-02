@@ -15,6 +15,7 @@ public:
          delete _cells[i]; 
       } 
    }
+
    void Draw() 
    { 
       int count = ArraySize(_cells); 
@@ -24,12 +25,12 @@ public:
       } 
    }
 
-   void Draw() 
+   void HandleButtonClicks() 
    { 
       int count = ArraySize(_cells); 
       for (int i = 0; i < count; ++i) 
       { 
-         _cells[i].Draw(); 
+         _cells[i].HandleButtonClicks(); 
       } 
    }
 
@@ -40,5 +41,6 @@ public:
       _cells[count] = cell; 
    } 
 };
+
 
 #endif

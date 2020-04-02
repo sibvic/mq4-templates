@@ -108,7 +108,8 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical, new TextValueCellFactory());
+   GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical);
+   builder.AddCell(new TrendValueCellFactory(alert_on_close ? 1 : 0));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

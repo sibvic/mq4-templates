@@ -87,23 +87,9 @@ public:
          {
             color clr;
             string text = _valueFormatters[i].FormatItem(_alertShift, date, clr);
-            DrawItem(text, clr, TimeCurrent() - _lastSignalDate >= expiration_min * 60, i);
+            DrawItem(text, clr, true, i);
             SendAlert(text, i);
             return;
-         }
-      }
-      for (int i = _alertShift + 1; i < 1000; ++i)
-      {
-         date = iTime(_symbol, _timeframe, i);
-         for (int ii = 0; ii < ArraySize(_conditions); ++ii)
-         {
-            if (_conditions[ii].IsPass(i, date))
-            {
-               color clr;
-               string text = _valueFormatters[ii].FormatItem(_alertShift, date, clr);
-               DrawItem(text, clr, true, ii);
-               return;
-            }
          }
       }
    }

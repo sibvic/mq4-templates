@@ -2,6 +2,7 @@
 
 #include <ICellFactory.mq4>
 #include <TrendValueCell.mq4>
+#include <FixedTextFormatter.mq4>
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -9,10 +10,14 @@
 class TrendValueCellFactory : public ICellFactory
 {
    int _alertShift;
+   color _upColor;
+   color _downColor;
 public:
-   TrendValueCellFactory(int alertShift = 0)
+   TrendValueCellFactory(int alertShift = 0, color upColor = Green, color downColor = Red)
    {
       _alertShift = alertShift;
+      _upColor = upColor;
+      _downColor = downColor;
    }
 
    virtual string GetHeader()
@@ -27,17 +32,18 @@ public:
       defaultValue.Release();
 
       ICondition* upCondition = new UpCondition(symbol, timeframe);
-      IValueFormatter* upValue = new FixedTextFormatter("Buy", Up_Color);
+      IValueFormatter* upValue = new FixedTextFormatter("Buy", _upColor);
       cell.AddCondition(upCondition, upValue);
       upCondition.Release();
       upValue.Release();
 
       ICondition* downCondition = new DownCondition(symbol, timeframe);
-      IValueFormatter* downValue = new FixedTextFormatter("Sell", Dn_Color);
+      IValueFormatter* downValue = new FixedTextFormatter("Sell", _downColor);
       cell.AddCondition(downCondition, downValue);
       downCondition.Release();
       downValue.Release();
 
       return cell;
    }
+};
 #endif

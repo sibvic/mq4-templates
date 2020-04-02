@@ -23,9 +23,9 @@ input bool     Include_W1               = true;
 input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
 input color    Confirmed_Up_Color       = Green; // Confirmed up color
-input color    Unconfirmed_Up_Color     = Lime; // Unconfirmed up color
+//input color    Unconfirmed_Up_Color     = Lime; // Unconfirmed up color
 input color    Confirmed_Dn_Color       = Red; // Confirmed down color
-input color    Unconfirmed_Dn_Color     = Pink; // Unconfirmed down color
+//input color    Unconfirmed_Dn_Color     = Pink; // Unconfirmed down color
 input color    Neutral_Color            = clrDarkGray;
 input int x_shift = 900; // X coordinate
 input DisplayMode display_mode = Vertical; // Display mode
@@ -70,16 +70,6 @@ public:
       return false;
    }
 };
-
-ICondition* CreateUpCondition(string symbol, ENUM_TIMEFRAMES timeframe)
-{
-   return new UpCondition(symbol, timeframe);
-}
-
-ICondition* CreateDownCondition(string symbol, ENUM_TIMEFRAMES timeframe)
-{
-   return new DownCondition(symbol, timeframe);
-}
 
 // Dashboard v.1.2
 class Iterator
@@ -179,7 +169,8 @@ int init()
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, new TrendValueCellFactory(!alert_on_close));
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical);
+   builder.AddCell(new TrendValueCellFactory(alert_on_close ? 1 : 0, Confirmed_Up_Color, Confirmed_Dn_Color));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

@@ -1,11 +1,15 @@
 // Trade calculator v2.2
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+
+#include <enums/OrderSide.mq4>
+#include <enums/StopLimitType.mq4>
+#include <enums/PositionSizeType.mq4>
+#include <OrdersIterator.mq4>
+#include <InstrumentInfo.mq4>
+
 #ifndef TradingCalculator_IMP
 #define TradingCalculator_IMP
 
-#include <enums/OrderSide.mq4>
-#include <OrdersIterator.mq4>
-#include <InstrumentInfo.mq4>
 class TradingCalculator
 {
    InstrumentInfo *_symbol;

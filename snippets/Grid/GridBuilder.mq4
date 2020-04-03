@@ -1,4 +1,4 @@
-// Grid builder v2.0
+// Grid builder v2.1
 
 #include <ICellFactory.mq4>
 
@@ -121,10 +121,10 @@ public:
 
          for (int i = 0; i < _symbolsCount; i++)
          {
-            string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
             int y = yIterator.GetNext();
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
+               string id = IndicatorObjPrefix + _symbols[i] + "_" + label + IntegerToString(ii);
                column[ii].Add(_cellFactory[ii].Create(id, x[ii], y, _symbols[i], timeframe));
             }
          }

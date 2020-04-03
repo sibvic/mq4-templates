@@ -1,4 +1,4 @@
-// Trend value cell v2.1
+// Trend value cell v2.2
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -69,7 +69,7 @@ public:
    {
       for (int i = 0; i < ArraySize(_conditions); ++i)
       {
-         string id = _id + "B" + IntegerToString(i);
+         string id = _id + "B";
          if (ObjectGetInteger(0, id, OBJPROP_STATE))
          {
             ObjectSetInteger(0, id, OBJPROP_STATE, false);
@@ -87,7 +87,7 @@ public:
          {
             color clr;
             string text = _valueFormatters[i].FormatItem(_alertShift, date, clr);
-            DrawItem(text, clr, true, i);
+            DrawItem(text, clr, true);
             SendAlert(text, i);
             return;
          }
@@ -95,9 +95,9 @@ public:
    }
 
 private:
-   void DrawItem(string text, color clr, bool simpleLabel, int i)
+   void DrawItem(string text, color clr, bool simpleLabel)
    {
-      string id = _id + "B" + IntegerToString(i);
+      string id = _id + "B";
       if (simpleLabel)
       {
          ObjectDelete(id);

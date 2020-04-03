@@ -38,14 +38,7 @@ input TradingMode entry_logic = TradingModeLive; // Entry logic
 #ifdef WITH_EXIT_LOGIC
    input TradingMode exit_logic = TradingModeLive; // Exit logic
 #endif
-enum PositionSizeType
-{
-   PositionSizeAmount, // $
-   PositionSizeContract, // In contracts
-   PositionSizeEquity, // % of equity
-   PositionSizeRisk, // Risk in % of equity
-   PositionSizeRiskCurrency // Risk in $
-};
+#include <Enums/PositionSizeType.mq4>
 enum LogicDirection
 {
    DirectLogic, // Direct
@@ -110,24 +103,8 @@ enum TrailingType
    TrailingDontUse, // No trailing
    TrailingPips // Use trailing in pips
 };
-enum StopLossType
-{
-   SLDoNotUse, // Do not use
-   SLPercent, // Set in %
-   SLPips, // Set in Pips
-   SLDollar, // Set in $,
-   SLAbsolute, // Set in absolite value (rate),
-   SLAtr // Set in ATR(value) * mult
-};
-enum StopLimitType
-{
-   StopLimitDoNotUse, // Do not use
-   StopLimitPercent, // Set in %
-   StopLimitPips, // Set in Pips
-   StopLimitDollar, // Set in $,
-   StopLimitRiskReward, // Set in % of stop loss (take profit only)
-   StopLimitAbsolute // Set in absolite value (rate)
-};
+#include <Enums/StopLossType.mq4>
+#include <Enums/StopLimitType.mq4>
 #ifdef STOP_LOSS_FEATURE
    string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
@@ -659,6 +636,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          NoCondition* condition = new NoCondition();
          actions.AddActionOnCondition(action, condition);
          action.Release();
+         condition.Release();
       }
    #endif
    #ifdef NET_TAKE_PROFIT_FEATURE
@@ -668,6 +646,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          NoCondition* condition = new NoCondition();
          actions.AddActionOnCondition(action, condition);
          action.Release();
+         condition.Release();
       }
    #endif
 

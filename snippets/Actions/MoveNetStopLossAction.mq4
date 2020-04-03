@@ -1,4 +1,6 @@
-// Move net stop loss action v 1.1
+// Move net stop loss action v 2.0
+#include <../TradingCalculator.mq4>
+#include <../TradingCommands.mq4>
 
 #ifndef MoveNetStopLossAction_IMP
 #define MoveNetStopLossAction_IMP
@@ -12,23 +14,20 @@ class MoveNetStopLossAction : public AAction
    double _breakevenTarget;
    bool _useBreakeven;
    StopLimitType _type;
-   Signaler *_signaler;
 public:
    MoveNetStopLossAction(TradingCalculator *calculator, 
       StopLimitType type, 
       const double stopLoss, 
-      Signaler *signaler, 
       const int magicNumber)
    {
       _useBreakeven = false;
       _type = type;
       _calculator = calculator;
       _stopLoss = stopLoss;
-      _signaler = signaler;
       _magicNumber = magicNumber;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       MoveStopLoss(OP_BUY);
       MoveStopLoss(OP_SELL);
@@ -102,24 +101,17 @@ private:
       {
          if (OrderStopLoss() != stopLoss)
          {
-            int res = OrderModify(OrderTicket(), OrderOpenPrice(), stopLoss, OrderTakeProfit(), 0, CLR_NONE);
-            if (res == 0)
+            string error;
+            if (!TradingCommands::MoveSL(OrderTicket(), stopLoss, error))
             {
-               int error = GetLastError();
-               switch (error)
-               {
-                  case ERR_NO_RESULT:
-                     break;
-                  case ERR_INVALID_TICKET:
-                     break;
-               }
+               Print(error);
             }
             else
+            {
                ++count;
+            }
          }
       }
-      if (_signaler != NULL && count > 0)
-         _signaler.SendNotifications("Moving net stop loss to " + DoubleToStr(stopLoss));
    }
 };
 

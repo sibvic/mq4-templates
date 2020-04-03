@@ -1,4 +1,5 @@
-// Move net take profit action v 1.1
+// Move net take profit action v 2.0
+#include <../TradingCalculator.mq4>
 
 #ifndef MoveNetTakeProfitAction_IMP
 
@@ -8,18 +9,16 @@ class MoveNetTakeProfitAction : public AAction
    int _magicNumber;
    double _takeProfit;
    StopLimitType _type;
-   Signaler *_signaler;
 public:
-   MoveNetTakeProfitAction(TradingCalculator *calculator, StopLimitType type, const double takeProfit, Signaler *signaler, const int magicNumber)
+   MoveNetTakeProfitAction(TradingCalculator *calculator, StopLimitType type, const double takeProfit, const int magicNumber)
    {
       _type = type;
       _calculator = calculator;
       _takeProfit = takeProfit;
-      _signaler = signaler;
       _magicNumber = magicNumber;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       MoveTakeProfit(OP_BUY);
       MoveTakeProfit(OP_SELL);
@@ -67,8 +66,6 @@ private:
                ++count;
          }
       }
-      if (_signaler != NULL && count > 0)
-         _signaler.SendNotifications("Moving net take profit to " + DoubleToStr(takeProfit));
    }
 };
 

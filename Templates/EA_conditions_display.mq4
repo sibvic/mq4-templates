@@ -1,4 +1,4 @@
-// EA condition display v1.1
+// EA condition display v1.2
 
 #property version   "1.0"
 #property indicator_separate_window
@@ -63,21 +63,25 @@ public:
 
 int init()
 {
-   IndicatorBuffers(21);
-
    IndicatorName = GenerateIndicatorName("...");
    IndicatorObjPrefix = "__" + IndicatorName + "__";
    IndicatorShortName(IndicatorName);
 
+   int rows = 3;
    int size = ArraySize(conditions);
-   ArrayResize(conditions, size + 3);
+   ArrayResize(conditions, size + rows);
+   IndicatorBuffers(3 * rows);
 
    int id = 0;
+   int index = 0;
 
-   LongCondition* longCondition1 = new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   ShortCondition* shortCondition1 = new ShortCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   conditions[0] = new HeatMapValueCalculator(1, longCondition1, shortCondition1);
-   id = conditions[0].RegisterStreams(id, up_color, dn_color, ne_color, "...");
+   {
+      ICondition* longCondition1 = new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      ICondition* shortCondition1 = new ShortCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      conditions[index] = new HeatMapValueCalculator(index + 1, longCondition1, shortCondition1);
+      id = conditions[index].RegisterStreams(id, up_color, dn_color, ne_color, "...");
+      ++index;
+   }
 
    return 0;
 }
@@ -94,8 +98,8 @@ int deinit()
 
 int start()
 {
-   int counted_bars = IndicatorCounted();
-   int limit = Bars - counted_bars - 1;
+   int minBars = 1;
+   int limit = MathMin(Bars - 1 - minBars, Bars - IndicatorCounted() - 1);
    for (int i = limit; i >= 0; i--)
    {
       for (int conditionIndex = 0; conditionIndex < ArraySize(conditions); ++conditionIndex)

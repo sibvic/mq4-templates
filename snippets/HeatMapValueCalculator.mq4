@@ -1,4 +1,4 @@
-// Heatmap value calculator v2.0
+// Heatmap value calculator v2.1
 
 #include <Conditions/ICondition.mq4>
 
@@ -27,19 +27,19 @@ public:
    int RegisterStreams(int id, color upClor, color downColor, color neutralColor, string name)
    {
       SetIndexBuffer(id, nt);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, neutralColor);
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, neutralColor + " N");
       SetIndexArrow(id, 110);
       SetIndexLabel(id, name);
       ++id;
 
       SetIndexBuffer(id, up);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, upClor);
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, upClor + " U");
       SetIndexArrow(id, 110);
       SetIndexLabel(id, name);
       ++id;
 
       SetIndexBuffer(id, dn);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, downColor);
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, downColor + " D");
       SetIndexArrow(id, 110);
       SetIndexLabel(id, name);
       ++id;

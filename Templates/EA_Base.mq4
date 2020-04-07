@@ -215,12 +215,8 @@ input bool PrintLog = false; // Print decisions into the log (On bar close only!
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
-#ifdef NET_STOP_LOSS_FEATURE
 #include <Actions/MoveNetStopLossAction.mq4>
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
 #include <Actions/MoveNetTakeProfitAction.mq4>
-#endif
 #include <MoneyManagement/DefaultLotsProvider.mq4>
 #include <MoneyManagement/MoneyManagementStrategy.mq4>
 #include <MoneyManagement/RiskToRewardTakeProfitStrategy.mq4>
@@ -228,14 +224,10 @@ input bool PrintLog = false; // Print decisions into the log (On bar close only!
 #include <MoneyManagement/DefaultTakeProfitStrategy.mq4>
 #include <MoneyManagement/ATRTakeProfitStrategy.mq4>
 #include <MoneyManagement/DefaultStopLossAndAmountStrategy.mq4>
-#ifdef MARTINGALE_FEATURE
 #include <MartingaleStrategy.mq4>
-#endif
 #include <TradingCommands.mq4>
 #include <CloseOnOpposite.mq4>
-#ifdef POSITION_CAP_FEATURE
 #include <PositionCap.mq4>
-#endif
 #include <OrderBuilder.mq4>
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
@@ -257,9 +249,7 @@ TradingController *controllers[];
 #include <conditions/AndCondition.mq4>
 #include <conditions/OrCondition.mq4>
 #include <conditions/NotCondition.mq4>
-#ifdef MARTINGALE_FEATURE
-   #include <conditions/PriceMovedFromTradeOpenCondition.mq4>
-#endif
+#include <conditions/PriceMovedFromTradeOpenCondition.mq4>
 
 class LongCondition : public ACondition
 {

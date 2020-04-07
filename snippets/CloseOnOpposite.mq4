@@ -1,5 +1,6 @@
 // Close on opposite v.1.1
 #include <enums/OrderSide.mq4>
+#include <TradingCommands.mq4>
 interface ICloseOnOppositeStrategy
 {
 public:

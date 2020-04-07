@@ -73,24 +73,24 @@ input TradingSide trading_side = BothSides; // What trades should be taken
    input int no_of_sell_position = 1; // Max # of sell positions
 #endif
 
+enum MartingaleType
+{
+   MartingaleDoNotUse, // Do not use
+   MartingaleOnLoss // Open another position on loss
+};
+enum MartingaleLotSizingType
+{
+   MartingaleLotSizingNo, // No lot sizing
+   MartingaleLotSizingMultiplicator, // Using miltiplicator
+   MartingaleLotSizingAdd // Addition
+};
+enum MartingaleStepSizeType
+{
+   MartingaleStepSizePips, // Pips
+   MartingaleStepSizePercent, // %
+};
 #ifdef MARTINGALE_FEATURE
    input string MartingaleSection = ""; // == Martingale type ==
-   enum MartingaleType
-   {
-      MartingaleDoNotUse, // Do not use
-      MartingaleOnLoss // Open another position on loss
-   };
-   enum MartingaleLotSizingType
-   {
-      MartingaleLotSizingNo, // No lot sizing
-      MartingaleLotSizingMultiplicator, // Using miltiplicator
-      MartingaleLotSizingAdd // Addition
-   };
-   enum MartingaleStepSizeType
-   {
-      MartingaleStepSizePips, // Pips
-      MartingaleStepSizePercent, // %
-   };
    input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
    input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
    input double martingale_lot_value = 1.5; // Matringale lot sizing value

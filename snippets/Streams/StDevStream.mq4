@@ -1,8 +1,8 @@
 // StDev stream v1.1
 
-#ifndef StDev_IMP
-
 #include <IStream.mq4>
+
+#ifndef StDev_IMP
 
 class StDevStream : public IStream
 {

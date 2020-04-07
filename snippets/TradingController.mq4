@@ -1,4 +1,4 @@
-// Trading controller v7.4
+// Trading controller v7.5
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -11,6 +11,7 @@ class TradingController
    double _lastLot;
    ActionOnConditionLogic* actions;
    Signaler *_signaler;
+   datetime _lastLimitPositionMessage;
    datetime _lastEntryTime;
    datetime _lastExitTime;
    TradingCalculator *_calculator;
@@ -46,6 +47,7 @@ public:
                      Signaler *signaler, 
                      const string algorithmId = "")
    {
+      _lastLimitPositionMessage = 0;
       _ecnBroker = false;
       _entryLogic = TradingModeOnBarClose;
       _exitLogic = TradingModeLive;
@@ -231,8 +233,9 @@ private:
       }
       _closeOnOpposite.DoClose(SellSide);
       #ifdef POSITION_CAP_FEATURE
-         if (_longPositionCap.IsLimitHit())
+         if (_longPositionCap.IsLimitHit() && _lastLimitPositionMessage != date)
          {
+            _lastLimitPositionMessage = date;
             _signaler.SendNotifications("Positions limit has been reached");
             return false;
          }
@@ -272,8 +275,9 @@ private:
       }
       _closeOnOpposite.DoClose(BuySide);
       #ifdef POSITION_CAP_FEATURE
-         if (_shortPositionCap.IsLimitHit())
+         if (_shortPositionCap.IsLimitHit() && _lastLimitPositionMessage != date)
          {
+            _lastLimitPositionMessage = date;
             _signaler.SendNotifications("Positions limit has been reached");
             return false;
          }

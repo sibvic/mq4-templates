@@ -47,3 +47,7 @@ Closes all trades.
 ## SetStopLossAndTakeProfitAction
 
 Sets stop loss and/or take profit.
+
+## PartialCloseOrderAction
+
+Partially closes the trade.

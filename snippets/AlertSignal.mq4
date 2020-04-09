@@ -1,10 +1,11 @@
 // Alert signal v3.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
+#include <Streams/CandleStreams.mq4>
+#include <Actions/IAction.mq4>
+
 #ifndef AlertSignal_IMP
 #define AlertSignal_IMP
-
-#include <Streams/CandleStreams.mq4>
 
 class IAlertSignalOutput
 {

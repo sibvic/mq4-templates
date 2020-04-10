@@ -1,4 +1,4 @@
-// Trade calculator v2.2
+// Trade calculator v2.3
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <enums/OrderSide.mq4>
@@ -40,6 +40,7 @@ public:
    double GetAsk() { return _symbol.GetAsk(); }
    int GetDigits() { return _symbol.GetDigits(); }
    double GetSpread() { return _symbol.GetSpread(); }
+   double GetMinLots() { return _symbol.GetMinLots(); }
 
    static bool IsBuyOrder()
    {

@@ -1,4 +1,4 @@
-// Trading commands v.2.13
+// Trading commands v.2.14
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <InstrumentInfo.mq4>
@@ -72,6 +72,16 @@ public:
          return false;
       }
       return MoveSLTP(ticketId, newStopLoss, OrderTakeProfit(), error);
+   }
+
+   static bool MoveTP(const int ticketId, const double newTakeProfit, string &error)
+   {
+      if (!OrderSelect(ticketId, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0)
+      {
+         error = "Trade not found";
+         return false;
+      }
+      return MoveSLTP(ticketId, OrderStopLoss(), newTakeProfit, error);
    }
 
    static void DeleteOrders(const int magicNumber)

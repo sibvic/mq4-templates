@@ -194,7 +194,7 @@ public:
          DoExitLogic(exitTradePeriod, exitTime, exitLongLog, exitShortLog);
          _lastExitTime = exitTime;
       }
-      if (_logFile != -1)
+      if (_logFile != -1 && (entryLongLog != "" || entryShortLog != "" || exitLongLog != "" || exitShortLog != ""))
       {
          FileWrite(_logFile, TimeToString(TimeCurrent()), 
             "Entry long: " + entryLongLog, 

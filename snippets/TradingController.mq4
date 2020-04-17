@@ -1,4 +1,4 @@
-// Trading controller v7.5
+// Trading controller v7.6
 
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
@@ -174,10 +174,16 @@ public:
          DoMartingale(_shortMartingale);
          DoMartingale(_longMartingale);
       #endif
+      string entryLongLog = "";
+      string entryShortLog = "";
+      string exitLongLog = "";
+      string exitShortLog = "";
       if (EntryAllowed(entryTime))
       {
-         if (DoEntryLogic(entryTradePeriod, entryTime))
+         if (DoEntryLogic(entryTradePeriod, entryTime, entryLongLog, entryShortLog))
+         {
             _lastActionTime = entryTime;
+         }
          _lastEntryTime = entryTime;
       }
 
@@ -185,8 +191,16 @@ public:
       datetime exitTime = iTime(_calculator.GetSymbol(), _exitTimeframe, exitTradePeriod);
       if (ExitAllowed(exitTime))
       {
-         DoExitLogic(exitTradePeriod, exitTime);
+         DoExitLogic(exitTradePeriod, exitTime, exitLongLog, exitShortLog);
          _lastExitTime = exitTime;
+      }
+      if (_logFile != -1)
+      {
+         FileWrite(_logFile, TimeToString(TimeCurrent()), 
+            "Entry long: " + entryLongLog, 
+            "Entry short: " + entryShortLog, 
+            "Exit long: " + exitLongLog, 
+            "Exit short: " + exitShortLog);
       }
    }
 private:
@@ -195,13 +209,12 @@ private:
       return _exitLogic != TradingModeOnBarClose || _lastExitTime != exitTime;
    }
 
-   void DoExitLogic(int exitTradePeriod, datetime date)
+   void DoExitLogic(int exitTradePeriod, datetime date, string& longLog, string& shortLog)
    {
       if (_logFileHandle != -1)
       {
-         string exitLongLogMessage = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
-         string exitShortLogMessage = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
-         FileWrite(_logFileHandle, TimeToString(TimeCurrent()), "Exit long: " + exitLongLogMessage, "Exit short: " + exitShortLogMessage);
+         longLog = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
+         shortLog = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
       }
       if (_exitLongCondition.IsPass(exitTradePeriod, date))
       {
@@ -310,16 +323,10 @@ private:
       return true;
    }
 
-   bool DoEntryLogic(int entryTradePeriod, datetime date)
+   bool DoEntryLogic(int entryTradePeriod, datetime date, string& longLog, string& shortLog)
    {
-      string entryLongLogMessage;
-      string entryShortLogMessage;
-      bool longOpened = DoEntryLongLogic(entryTradePeriod, date, entryLongLogMessage);
-      bool shortOpened = DoEntryShortLogic(entryTradePeriod, date, entryShortLogMessage);
-      if (_logFile != -1)
-      {
-         FileWrite(_logFileHandle, TimeToString(TimeCurrent()), "Entry long: " + entryLongLogMessage, "Entry short: " + entryShortLogMessage);
-      }
+      bool longOpened = DoEntryLongLogic(entryTradePeriod, date, longLog);
+      bool shortOpened = DoEntryShortLogic(entryTradePeriod, date, shortLog);
       return longOpened || shortOpened;
    }
 

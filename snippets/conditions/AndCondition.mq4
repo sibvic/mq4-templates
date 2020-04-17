@@ -1,4 +1,4 @@
-// And condition v4.0
+// And condition v4.1
 #include <AConditionBase.mq4>
 #ifndef AndCondition_IMP
 #define AndCondition_IMP
@@ -47,7 +47,7 @@ public:
          else
             messages = "(" + logMessage + ")";
       }
-      return messages;
+      return messages + (IsPass(period, date) ? "=true" : "=false");
    }
 };
 #endif

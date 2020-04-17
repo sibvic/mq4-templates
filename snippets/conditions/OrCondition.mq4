@@ -1,4 +1,4 @@
-// Or condition v4.0
+// Or condition v4.1
 
 #include <AConditionBase.mq4>
 
@@ -50,7 +50,7 @@ public:
          else
             messages = "(" + logMessage + ")";
       }
-      return messages;
+      return messages + (IsPass(period, date) ? "=true" : "=false");
    }
 };
 #endif

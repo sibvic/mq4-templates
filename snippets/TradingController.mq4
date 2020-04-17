@@ -233,10 +233,13 @@ private:
       }
       _closeOnOpposite.DoClose(SellSide);
       #ifdef POSITION_CAP_FEATURE
-         if (_longPositionCap.IsLimitHit() && _lastLimitPositionMessage != date)
+         if (_longPositionCap.IsLimitHit())
          {
+            if (_lastLimitPositionMessage != date)
+            {
+               _signaler.SendNotifications("Positions limit has been reached");
+            }
             _lastLimitPositionMessage = date;
-            _signaler.SendNotifications("Positions limit has been reached");
             return false;
          }
       #endif
@@ -275,10 +278,13 @@ private:
       }
       _closeOnOpposite.DoClose(BuySide);
       #ifdef POSITION_CAP_FEATURE
-         if (_shortPositionCap.IsLimitHit() && _lastLimitPositionMessage != date)
+         if (_shortPositionCap.IsLimitHit())
          {
+            if (_lastLimitPositionMessage != date)
+            {
+               _signaler.SendNotifications("Positions limit has been reached");
+            }
             _lastLimitPositionMessage = date;
-            _signaler.SendNotifications("Positions limit has been reached");
             return false;
          }
       #endif

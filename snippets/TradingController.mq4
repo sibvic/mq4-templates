@@ -211,7 +211,7 @@ private:
 
    void DoExitLogic(int exitTradePeriod, datetime date, string& longLog, string& shortLog)
    {
-      if (_logFileHandle != -1)
+      if (_logFile != -1)
       {
          longLog = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
          shortLog = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
@@ -281,7 +281,7 @@ private:
 
    bool DoEntryShortLogic(int period, datetime date, string& logMessage)
    {
-      if (_logFileHandle)
+      if (_logFile)
       {
          logMessage = _shortCondition.GetLogMessage(period, date);
       }

@@ -169,7 +169,8 @@ input int magic_number        = 42; // Magic number
    DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
    string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
-input bool PrintLog = false; // Print decisions into the log (On bar close only!)
+input bool print_log = false; // Print decisions into the log
+input string log_file = "log.csv"; // Log file name
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
@@ -666,7 +667,10 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
       controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice, actions));
    #endif
-   controller.SetPrintLog(PrintLog);
+   if (print_log)
+   {
+      controller.SetPrintLog(log_file);
+   }
 
    return controller;
 }

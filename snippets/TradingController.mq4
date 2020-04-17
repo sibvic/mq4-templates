@@ -39,7 +39,7 @@ class TradingController
    TradingMode _entryLogic;
    TradingMode _exitLogic;
    bool _ecnBroker;
-   bool _printLog;
+   int _logFile;
 public:
    TradingController(TradingCalculator *calculator, 
                      ENUM_TIMEFRAMES entryTimeframe, 
@@ -73,11 +73,15 @@ public:
       _lastLot = lots_value;
       _exitLongCondition = NULL;
       _exitShortCondition = NULL;
-      _printLog = false;
+      _logFile = -1;
    }
 
    ~TradingController()
    {
+      if (_logFile != -1)
+      {
+         FileClose(_logFile);
+      }
       for (int i = 0; i < ArraySize(_orderHandlers); ++i)
       {
          delete _orderHandlers[i];
@@ -125,7 +129,10 @@ public:
       orderAction.AddRef();
    }
    void SetECNBroker(bool ecn) { _ecnBroker = ecn; }
-   void SetPrintLog(bool print) { _printLog = print; }
+   void SetPrintLog(string logFile)
+   {
+      _logFile = FileOpen(logFile, FILE_WRITE | FILE_CSV, ",");
+   }
    void SetEntryLogic(TradingMode logicType) { _entryLogic = logicType; }
    void SetExitLogic(TradingMode logicType) { _exitLogic = logicType; }
    void SetActions(ActionOnConditionLogic* __actions) { _actions = __actions; }
@@ -190,12 +197,11 @@ private:
 
    void DoExitLogic(int exitTradePeriod, datetime date)
    {
-      if (_printLog && _exitLogic == TradingModeOnBarClose)
+      if (_logFileHandle != -1)
       {
-         string logMessage = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
-         Print("Long exit: " + logMessage);
-         logMessage = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
-         Print("Short exit: " + logMessage);
+         string exitLongLogMessage = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
+         string exitShortLogMessage = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
+         FileWrite(_logFileHandle, TimeToString(TimeCurrent()), "Exit long: " + exitLongLogMessage, "Exit short: " + exitShortLogMessage);
       }
       if (_exitLongCondition.IsPass(exitTradePeriod, date))
       {
@@ -216,12 +222,11 @@ private:
       return _lastActionTime != entryTime;
    }
 
-   bool DoEntryLongLogic(int period, datetime date)
+   bool DoEntryLongLogic(int period, datetime date, string& logMessage)
    {
-      if (_printLog && _entryLogic == TradingModeOnBarClose)
+      if (_logFile != -1)
       {
-         string logMessage = _longCondition.GetLogMessage(period, date);
-         Print("Long entry: " + logMessage);
+         logMessage = _longCondition.GetLogMessage(period, date);
       }
       if (!_longCondition.IsPass(period, date))
       {
@@ -261,12 +266,11 @@ private:
       return true;
    }
 
-   bool DoEntryShortLogic(int period, datetime date)
+   bool DoEntryShortLogic(int period, datetime date, string& logMessage)
    {
-      if (_printLog && _entryLogic == TradingModeOnBarClose)
+      if (_logFileHandle)
       {
-         string logMessage = _shortCondition.GetLogMessage(period, date);
-         Print("Short entry: " + logMessage);
+         logMessage = _shortCondition.GetLogMessage(period, date);
       }
       if (!_shortCondition.IsPass(period, date))
       {
@@ -308,8 +312,14 @@ private:
 
    bool DoEntryLogic(int entryTradePeriod, datetime date)
    {
-      bool longOpened = DoEntryLongLogic(entryTradePeriod, date);
-      bool shortOpened = DoEntryShortLogic(entryTradePeriod, date);
+      string entryLongLogMessage;
+      string entryShortLogMessage;
+      bool longOpened = DoEntryLongLogic(entryTradePeriod, date, entryLongLogMessage);
+      bool shortOpened = DoEntryShortLogic(entryTradePeriod, date, entryShortLogMessage);
+      if (_logFile != -1)
+      {
+         FileWrite(_logFileHandle, TimeToString(TimeCurrent()), "Entry long: " + entryLongLogMessage, "Entry short: " + entryShortLogMessage);
+      }
       return longOpened || shortOpened;
    }
 
@@ -324,16 +334,16 @@ private:
          int order = _entryStrategy.OpenPosition(0, anotherSide, moneyManagement, "Martingale position", _ecnBroker);
          if (order >= 0)
          {
-            if (_printLog)
-            {
-               double newLots = 0;
-               if (OrderSelect(order, SELECT_BY_TICKET, MODE_TRADES))
-               {
-                  newLots = OrderLots();
-               }
-               Print("Opening martingale position. Initial lots: " + DoubleToString(initialLots) 
-                  + ". New martingale lots: " + DoubleToString(newLots));
-            }
+            // if (_printLog)
+            // {
+            //    double newLots = 0;
+            //    if (OrderSelect(order, SELECT_BY_TICKET, MODE_TRADES))
+            //    {
+            //       newLots = OrderLots();
+            //    }
+            //    Print("Opening martingale position. Initial lots: " + DoubleToString(initialLots) 
+            //       + ". New martingale lots: " + DoubleToString(newLots));
+            // }
             martingale.OnOrder(order);
          }
          if (anotherSide == BuySide)

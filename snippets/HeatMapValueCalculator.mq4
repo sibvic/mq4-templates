@@ -27,21 +27,21 @@ public:
    int RegisterStreams(int id, color upClor, color downColor, color neutralColor, string name)
    {
       SetIndexBuffer(id, nt);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, neutralColor + " N");
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, neutralColor);
       SetIndexArrow(id, 110);
-      SetIndexLabel(id, name);
+      SetIndexLabel(id, name + " N");
       ++id;
 
       SetIndexBuffer(id, up);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, upClor + " U");
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, upClor);
       SetIndexArrow(id, 110);
-      SetIndexLabel(id, name);
+      SetIndexLabel(id, name + " U");
       ++id;
 
       SetIndexBuffer(id, dn);
-      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, downColor + " D");
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, downColor);
       SetIndexArrow(id, 110);
-      SetIndexLabel(id, name);
+      SetIndexLabel(id, name + " D");
       ++id;
 
       return id;

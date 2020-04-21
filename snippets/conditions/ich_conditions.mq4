@@ -255,4 +255,91 @@ public:
    }
 };
 
+
+class IchimokeStreamAboveOrEqualIchimokuStreamCondition : public ACondition
+{
+   int _tenkanSen;
+   int _kijunSen;
+   int _senkoiSpanB;
+   int _firstStreamIndex;
+   int _firstStreamPeriodShift;
+   int _secondStreamIndex;
+   int _secondStreamPeriodShift;
+public:
+   IchimokeStreamAboveOrEqualIchimokuStreamCondition(const string symbol, 
+      ENUM_TIMEFRAMES timeframe, 
+      int tenkanSen, 
+      int kijunSen, 
+      int senkoiSpanB, 
+      int firstStreamIndex, 
+      int secondStreamIndex,
+      int firstStreamPeriodShift = 0,
+      int secondStreamPeriodShift = 0)
+      :ACondition(symbol, timeframe)
+   {
+      _firstStreamPeriodShift = firstStreamPeriodShift;
+      _secondStreamPeriodShift = secondStreamPeriodShift;
+      _firstStreamIndex = firstStreamIndex;
+      _secondStreamIndex = secondStreamIndex;
+      _tenkanSen = tenkanSen;
+      _kijunSen = kijunSen;
+      _senkoiSpanB = senkoiSpanB;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return GetIchimokuStreamName(_firstStreamIndex) + " > " + GetIchimokuStreamName(_secondStreamIndex) + ": " + (IsPass(period, date) ? "true" : "false");
+   }
+   
+   bool IsPass(const int period, const datetime date)
+   {
+      double value1 = iIchimoku(_symbol, _timeframe, _tenkanSen, _kijunSen, _senkoiSpanB, _firstStreamIndex, period + _firstStreamPeriodShift);
+      double value2 = iIchimoku(_symbol, _timeframe, _tenkanSen, _kijunSen, _senkoiSpanB, _secondStreamIndex, period + _secondStreamPeriodShift);
+      return value1 >= value2;
+   }
+};
+
+class IchimokeStreamBelowOrEqualIchimokuStreamCondition : public ACondition
+{
+   int _tenkanSen;
+   int _kijunSen;
+   int _senkoiSpanB;
+   int _firstStreamIndex;
+   int _firstStreamPeriodShift;
+   int _secondStreamIndex;
+   int _secondStreamPeriodShift;
+public:
+   IchimokeStreamBelowOrEqualIchimokuStreamCondition(const string symbol, 
+      ENUM_TIMEFRAMES timeframe, 
+      int tenkanSen, 
+      int kijunSen, 
+      int senkoiSpanB, 
+      int firstStreamIndex, 
+      int secondStreamIndex,
+      int firstStreamPeriodShift = 0,
+      int secondStreamPeriodShift = 0)
+      :ACondition(symbol, timeframe)
+   {
+      _firstStreamPeriodShift = firstStreamPeriodShift;
+      _secondStreamPeriodShift = secondStreamPeriodShift;
+      _firstStreamIndex = firstStreamIndex;
+      _secondStreamIndex = secondStreamIndex;
+      _tenkanSen = tenkanSen;
+      _kijunSen = kijunSen;
+      _senkoiSpanB = senkoiSpanB;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      return GetIchimokuStreamName(_firstStreamIndex) + " < " + GetIchimokuStreamName(_secondStreamIndex) + ": " + (IsPass(period, date) ? "true" : "false");
+   }
+   
+   bool IsPass(const int period, const datetime date)
+   {
+      double value1 = iIchimoku(_symbol, _timeframe, _tenkanSen, _kijunSen, _senkoiSpanB, _firstStreamIndex, period + _firstStreamPeriodShift);
+      double value2 = iIchimoku(_symbol, _timeframe, _tenkanSen, _kijunSen, _senkoiSpanB, _secondStreamIndex, period + _secondStreamPeriodShift);
+      return value1 <= value2;
+   }
+};
+
 #endif

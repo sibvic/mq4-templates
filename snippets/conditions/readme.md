@@ -36,6 +36,10 @@ Close above Senkou Span A and B.
 
 Close below Senkou Span A and B.
 
+### IchimokeStreamAboveOrEqualIchimokuStreamCondition/IchimokeStreamBelowOrEqualIchimokuStreamCondition
+
+Ichimoku stream >=/<= than another Ichimoku stream.
+
 ## Parabolic SAR conditions
 
 ### PSARBelowPriceCondition

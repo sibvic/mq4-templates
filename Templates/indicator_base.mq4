@@ -29,7 +29,7 @@ int init()
 
    IndicatorBuffers(1);
 
-   return 0;
+   return INIT_SUCCEEDED;
 }
 
 int deinit()

@@ -1,4 +1,4 @@
-// Instrument info v.1.6
+// Instrument info v.1.7
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef InstrumentInfo_IMP
@@ -55,6 +55,11 @@ public:
    int GetDigits() { return _digits; }
    double GetTickSize() { return _tickSize; }
    double GetMinLots() { return SymbolInfoDouble(_symbol, SYMBOL_VOLUME_MIN); };
+
+   double AddPips(const double rate, const double pips)
+   {
+      return RoundRate(rate + pips * _pipSize);
+   }
 
    double RoundRate(const double rate)
    {

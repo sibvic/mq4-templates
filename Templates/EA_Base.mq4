@@ -340,7 +340,9 @@ ICondition* CreateLongFilterCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    {
       return (ICondition *)new DisabledCondition();
    }
-   return new NoCondition();
+   AndCondition* condition = new AndCondition();
+   condition.Add(new NoCondition(), false);
+   return condition;
 }
 
 ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
@@ -367,7 +369,9 @@ ICondition* CreateShortFilterCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    {
       return (ICondition *)new DisabledCondition();
    }
-   return new NoCondition();
+   AndCondition* condition = new AndCondition();
+   condition.Add(new NoCondition(), false);
+   return condition;
 }
 
 ICondition* CreateExitLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)

@@ -27,7 +27,7 @@ Usage:
 
 ## MarketOrderBuilder
 
-Builds and executes market order
+Builds and executes market order.
 
 Usage:
 
@@ -44,6 +44,10 @@ Usage:
         .SetComment("Test")
         .Execute(error);
     delete orderBuilder;
+
+### SetRetries
+
+Sets number of attemps to send the order.
 
 ## Breakeven
 

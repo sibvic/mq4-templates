@@ -1,4 +1,4 @@
-// Market order builder v 2.2
+// Market order builder v 2.3
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 #include <enums/OrderSide.mq4>
 #include <logic/ActionOnConditionLogic.mq4>
@@ -21,11 +21,19 @@ class MarketOrderBuilder
    string _comment;
    bool _ecnBroker;
    ActionOnConditionLogic* _actions;
+   int _retries;
 public:
    MarketOrderBuilder(ActionOnConditionLogic* actions)
    {
+      _retries = 1;
       _actions = actions;
       _ecnBroker = false;
+   }
+
+   MarketOrderBuilder* SetRetries(int retries)
+   {
+      _retries = retries;
+      return &this;
    }
 
    MarketOrderBuilder *SetSide(const OrderSide orderSide)
@@ -89,87 +97,95 @@ public:
       double minstoplevel = MarketInfo(_instrument, MODE_STOPLEVEL); 
       
       double rate = _orderSide == BuySide ? MarketInfo(_instrument, MODE_ASK) : MarketInfo(_instrument, MODE_BID);
-      int order;
-      if (_ecnBroker)
-         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);
-      else
-         order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stopLoss, _takeProfit, _comment, _magicNumber);
-      if (order == -1)
+      for (int i = 0; i < _retries; ++i)
       {
-         int error = GetLastError();
-         switch (error)
+         int order;
+         if (_ecnBroker)
+            order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);
+         else
+            order = OrderSend(_instrument, orderType, _amount, rate, _slippage, _stopLoss, _takeProfit, _comment, _magicNumber);
+         if (order == -1)
          {
-            case ERR_NOT_ENOUGH_MONEY:
-               errorMessage = "Not enougth money";
-               return -1;
-            case ERR_INVALID_TRADE_VOLUME:
-               {
-                  double minVolume = SymbolInfoDouble(_instrument, SYMBOL_VOLUME_MIN);
-                  if (_amount < minVolume)
+            int error = GetLastError();
+            switch (error)
+            {
+               case ERR_REQUOTE:
+                  RefreshRates();
+                  continue;
+               case ERR_NOT_ENOUGH_MONEY:
+                  errorMessage = "Not enougth money";
+                  return -1;
+               case ERR_INVALID_TRADE_VOLUME:
                   {
-                     errorMessage = "Volume of the lot is too low: " + DoubleToStr(_amount) + " Min lot is: " + DoubleToStr(minVolume);
-                     return -1;
+                     double minVolume = SymbolInfoDouble(_instrument, SYMBOL_VOLUME_MIN);
+                     if (_amount < minVolume)
+                     {
+                        errorMessage = "Volume of the lot is too low: " + DoubleToStr(_amount) + " Min lot is: " + DoubleToStr(minVolume);
+                        return -1;
+                     }
+                     double maxVolume = SymbolInfoDouble(_instrument, SYMBOL_VOLUME_MAX);
+                     if (_amount > maxVolume)
+                     {
+                        errorMessage = "Volume of the lot is too high: " + DoubleToStr(_amount) + " Max lot is: " + DoubleToStr(maxVolume);
+                        return -1;
+                     }
+                     errorMessage = "Invalid volume: " + DoubleToStr(_amount);
                   }
-                  double maxVolume = SymbolInfoDouble(_instrument, SYMBOL_VOLUME_MAX);
-                  if (_amount > maxVolume)
+                  return -1;
+               case ERR_OFF_QUOTES:
+                  errorMessage = "No quotes";
+                  return -1;
+               case ERR_TRADE_NOT_ALLOWED:
+                  errorMessage = "Trading is not allowed";
+                  return -1;
+               case ERR_TRADE_HEDGE_PROHIBITED:
+                  errorMessage = "Trade hedge prohibited";
+                  return -1;
+               case ERR_TRADE_TOO_MANY_ORDERS:
+                  errorMessage = "Too many orders opened";
+                  return -1;
+               case ERR_INVALID_STOPS:
                   {
-                     errorMessage = "Volume of the lot is too high: " + DoubleToStr(_amount) + " Max lot is: " + DoubleToStr(maxVolume);
-                     return -1;
-                  }
-                  errorMessage = "Invalid volume: " + DoubleToStr(_amount);
-               }
-               return -1;
-            case ERR_OFF_QUOTES:
-               errorMessage = "No quotes";
-               return -1;
-            case ERR_TRADE_NOT_ALLOWED:
-               errorMessage = "Trading is not allowed";
-               return -1;
-            case ERR_TRADE_HEDGE_PROHIBITED:
-               errorMessage = "Trade hedge prohibited";
-               return -1;
-            case ERR_TRADE_TOO_MANY_ORDERS:
-               errorMessage = "Too many orders opened";
-               return -1;
-            case ERR_INVALID_STOPS:
-               {
-                  double point = SymbolInfoDouble(_instrument, SYMBOL_POINT);
-                  int minStopDistancePoints = (int)SymbolInfoInteger(_instrument, SYMBOL_TRADE_STOPS_LEVEL);
-                  if (_stopLoss != 0.0)
-                  {
-                     if (MathRound(MathAbs(rate - _stopLoss) / point) < minStopDistancePoints)
-                        errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+                     double point = SymbolInfoDouble(_instrument, SYMBOL_POINT);
+                     int minStopDistancePoints = (int)SymbolInfoInteger(_instrument, SYMBOL_TRADE_STOPS_LEVEL);
+                     if (_stopLoss != 0.0)
+                     {
+                        if (MathRound(MathAbs(rate - _stopLoss) / point) < minStopDistancePoints)
+                           errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+                        else
+                           errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
+                     }
+                     else if (_takeProfit != 0.0)
+                     {
+                        if (MathRound(MathAbs(rate - _takeProfit) / point) < minStopDistancePoints)
+                           errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
+                        else
+                           errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
+                     }
                      else
-                        errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
+                        errorMessage = "Invalid stop loss or take profit in the request. Do you have ECN broker and forget to enable ECN?";
                   }
-                  else if (_takeProfit != 0.0)
-                  {
-                     if (MathRound(MathAbs(rate - _takeProfit) / point) < minStopDistancePoints)
-                        errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
-                     else
-                        errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
-                  }
-                  else
-                     errorMessage = "Invalid stop loss or take profit in the request. Do you have ECN broker and forget to enable ECN?";
-               }
-               return -1;
-            case ERR_INVALID_PRICE:
-               errorMessage = "Invalid price";
-               return -1;
-            default:
-               errorMessage = "Failed to create order: " + IntegerToString(error);
-               return -1;
+                  return -1;
+               case ERR_INVALID_PRICE:
+                  errorMessage = "Invalid price";
+                  return -1;
+               default:
+                  errorMessage = "Failed to create order: " + IntegerToString(error);
+                  return -1;
+            }
          }
+         else if (_ecnBroker && (_stopLoss != 0 || _takeProfit != 0))
+         {
+            NoStopLossOrTakeProfitCondition* condition = new NoStopLossOrTakeProfitCondition(order);
+            SetStopLossAndTakeProfitAction* action = new SetStopLossAndTakeProfitAction(_stopLoss, _takeProfit, order);
+            _actions.AddActionOnCondition(action, condition);
+            condition.Release();
+            action.Release();
+         }
+         return order;
       }
-      else if (_ecnBroker && (_stopLoss != 0 || _takeProfit != 0))
-      {
-         NoStopLossOrTakeProfitCondition* condition = new NoStopLossOrTakeProfitCondition(order);
-         SetStopLossAndTakeProfitAction* action = new SetStopLossAndTakeProfitAction(_stopLoss, _takeProfit, order);
-         _actions.AddActionOnCondition(action, condition);
-         condition.Release();
-         action.Release();
-      }
-      return order;
+      errorMessage = "Requote";
+      return -1;
    }
 };
 

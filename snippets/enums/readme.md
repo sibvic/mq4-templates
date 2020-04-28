@@ -23,3 +23,7 @@ Supported stop loss/take profit types. (outdated)
 ## PositionSizeType
 
 Supported position size types.
+
+## TwoStreamsConditionType
+
+Conditions between two streams.

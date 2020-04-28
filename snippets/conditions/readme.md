@@ -114,7 +114,7 @@ Or condition.
 
 ## ma_conditions
 
-Conditions for MA above/below price/another MA, MA cross over/under MA.
+Conditions for MA-MA and MA-price.
 
 ### MACrossOverMACondition
 

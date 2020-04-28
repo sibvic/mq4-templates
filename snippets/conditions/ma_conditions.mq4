@@ -1,73 +1,71 @@
-// MA Conditions v2.0
+// MA Conditions v3.0
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
 
 #include <ACondition.mq4>
+#include <../enums/TwoStreamsConditionType.mq4>
 
-class MACrossOverMACondition : public ACondition
+class MAMACondition : public ACondition
 {
    ENUM_MA_METHOD _method1;
    int _period1;
    ENUM_MA_METHOD _method2;
    int _period2;
+   TwoStreamsConditionType _condition;
+   int _shift1;
+   int _shift2;
 public:
-   MACrossOverMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, ENUM_MA_METHOD method1, int period1
-      , ENUM_MA_METHOD method2, int period2)
+   MAMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, TwoStreamsConditionType condition
+      , ENUM_MA_METHOD method1, int period1
+      , ENUM_MA_METHOD method2, int period2
+      , int shift1 = 0, int shift2 = 0)
       :ACondition(symbol, timeframe)
    {
+      _condition = condition;
       _method1 = method1;
       _period1 = period1;
       _method2 = method2;
       _period2 = period2;
+      _shift1 = shift1;
+      _shift2 = shift2;
    }
 
    bool IsPass(const int period, const datetime date)
    {
-      double ma1Value0 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
-      double ma1Value1 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1);
-      double ma2Value0 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period);
-      double ma2Value1 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1);
+      double ma1Value0 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + _shift1);
+      double ma1Value1 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1 + _shift1);
+      double ma2Value0 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + _shift2);
+      double ma2Value1 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1 + _shift2);
+      switch (_condition)
+      {
+         case FirstAboveSecond:
+            return ma1Value0 > ma2Value0;
+         case FirstBelowSecond:
+            return ma1Value0 < ma2Value0;
+         case FirstCrossOverSecond:
+            return ma1Value0 >= ma2Value0 && ma1Value1 < ma2Value1;
+         case FirstCrossUnderSecond:
+            return ma1Value0 <= ma2Value0 && ma1Value1 > ma2Value1;
+      }
       return ma1Value0 >= ma2Value0 && ma1Value1 < ma2Value1;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)
    {
       bool result = IsPass(period, date);
-      return "MA cross over MA: " + (result ? "true" : "false");
-   }
-};
-
-class MACrossUnderMACondition : public ACondition
-{
-   ENUM_MA_METHOD _method1;
-   int _period1;
-   ENUM_MA_METHOD _method2;
-   int _period2;
-public:
-   MACrossUnderMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, ENUM_MA_METHOD method1, int period1
-      , ENUM_MA_METHOD method2, int period2)
-      :ACondition(symbol, timeframe)
-   {
-      _method1 = method1;
-      _period1 = period1;
-      _method2 = method2;
-      _period2 = period2;
-   }
-
-   bool IsPass(const int period, const datetime date)
-   {
-      double ma1Value0 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
-      double ma1Value1 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1);
-      double ma2Value0 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period);
-      double ma2Value1 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1);
-      return ma1Value0 <= ma2Value0 && ma1Value1 > ma2Value1;
-   }
-
-   virtual string GetLogMessage(const int period, const datetime date)
-   {
-      bool result = IsPass(period, date);
-      return "MA cross under MA: " + (result ? "true" : "false");
+      switch (_condition)
+      {
+         case FirstAboveSecond:
+            return "MA > MA: " + (result ? "true" : "false");
+         case FirstBelowSecond:
+            return "MA < MA: " + (result ? "true" : "false");
+         case FirstCrossOverSecond:
+            return "MA co MA: " + (result ? "true" : "false");
+         case FirstCrossUnderSecond:
+            return "MA cu MA: " + (result ? "true" : "false");
+      }
+      return "MA-MA: " + (result ? "true" : "false");
    }
 };
 
@@ -123,87 +121,4 @@ public:
    }
 };
 
-class MAAboveMACondition : public ACondition
-{
-   ENUM_MA_METHOD _method1;
-   int _period1;
-   ENUM_MA_METHOD _method2;
-   int _period2;
-   ENUM_TIMEFRAMES _timeframe2;
-public:
-   MAAboveMACondition(const string symbol, ENUM_TIMEFRAMES timeframe1, ENUM_MA_METHOD method1, int period1,
-      ENUM_TIMEFRAMES timeframe2, ENUM_MA_METHOD method2, int period2)
-      :ACondition(symbol, timeframe1)
-   {
-      _method1 = method1;
-      _period1 = period1;
-      _method2 = method2;
-      _period2 = period2;
-      _timeframe2 = timeframe2;
-   }
-
-   bool IsPass(const int period, const datetime date)
-   {
-      double ma1Value = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
-      int secondPeriod = period;
-      if (_timeframe2 != _timeframe)
-      {
-         secondPeriod = iBarShift(_symbol, _timeframe2, date);
-         if (secondPeriod < 0)
-         {
-            return false;
-         }
-      }
-      double ma2Value = iMA(_symbol, _timeframe2, _period2, 0, _method2, PRICE_CLOSE, secondPeriod);
-      return ma1Value > ma2Value;
-   }
-
-   virtual string GetLogMessage(const int period, const datetime date)
-   {
-      bool result = IsPass(period, date);
-      return "MA above MA: " + (result ? "true" : "false");
-   }
-};
-
-class MABelowMACondition : public ACondition
-{
-   ENUM_MA_METHOD _method1;
-   int _period1;
-   ENUM_MA_METHOD _method2;
-   int _period2;
-   ENUM_TIMEFRAMES _timeframe2;
-public:
-   MABelowMACondition(const string symbol, ENUM_TIMEFRAMES timeframe1, ENUM_MA_METHOD method1, int period1,
-      ENUM_TIMEFRAMES timeframe2, ENUM_MA_METHOD method2, int period2)
-      :ACondition(symbol, timeframe1)
-   {
-      _method1 = method1;
-      _period1 = period1;
-      _method2 = method2;
-      _period2 = period2;
-      _timeframe2 = timeframe2;
-   }
-
-   bool IsPass(const int period, const datetime date)
-   {
-      double ma1Value = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period);
-      int secondPeriod = period;
-      if (_timeframe2 != _timeframe)
-      {
-         secondPeriod = iBarShift(_symbol, _timeframe2, date);
-         if (secondPeriod < 0)
-         {
-            return false;
-         }
-      }
-      double ma2Value = iMA(_symbol, _timeframe2, _period2, 0, _method2, PRICE_CLOSE, secondPeriod);
-      return ma1Value < ma2Value;
-   }
-
-   virtual string GetLogMessage(const int period, const datetime date)
-   {
-      bool result = IsPass(period, date);
-      return "MA below MA: " + (result ? "true" : "false");
-   }
-};
 #endif

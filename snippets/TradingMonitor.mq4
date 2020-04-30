@@ -75,7 +75,7 @@ public:
          {
             changed = true;
             if (_newTradeAction != NULL)
-               _newTradeAction.DoAction();
+               _newTradeAction.DoAction(0, 0);
          }
          else
          {
@@ -87,7 +87,7 @@ public:
             {
                changed = true;
                if (_tradeChangedAction != NULL)
-                  _tradeChangedAction.DoAction();
+                  _tradeChangedAction.DoAction(0, 0);
             }
          }
       }
@@ -98,7 +98,7 @@ public:
          {
             changed = true;
             if (_closedTradeAction != NULL && OrderSelect(active_ticket[index], MODE_HISTORY))
-               _closedTradeAction.DoAction();
+               _closedTradeAction.DoAction(0, 0);
          }
          
          active_still_active[index] = false;

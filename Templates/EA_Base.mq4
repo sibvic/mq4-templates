@@ -407,7 +407,6 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
    switch (lots_type)
    {
       case PositionSizeRisk:
-      case PositionSizeRiskCurrency:
          break;
       default:
          lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);
@@ -454,6 +453,14 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
                sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitAbsolute, stop_loss_value, isBuy);
             else
                sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitAbsolute, stop_loss_value, isBuy);
+         }
+         break;
+      case SLHighLow:
+         {
+            if (lots_type == PositionSizeRisk)
+               sl = new HighLowPositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, (int)stop_loss_value, isBuy, symbol, timeframe);
+            else
+               sl = new HighLowStopLossAndAmountStrategy(lots, (int)stop_loss_value, isBuy, symbol, timeframe);
          }
          break;
    }

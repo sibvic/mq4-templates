@@ -55,3 +55,7 @@ Partially closes the trade.
 ## MoveTakeProfitAction
 
 Move take profit action.
+
+## LossTradesCounterAction
+
+Used with TradingMonitor. Counts trades with a loss in a raw.

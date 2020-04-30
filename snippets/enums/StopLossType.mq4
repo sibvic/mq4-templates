@@ -10,7 +10,8 @@ enum StopLossType
    SLPips, // Set in Pips
    SLDollar, // Set in $,
    SLAbsolute, // Set in absolite value (rate),
-   SLAtr // Set in ATR(value) * mult
+   SLAtr, // Set in ATR(value) * mult,
+   SLHighLow // High/low of X bars
 };
 
 #endif

@@ -36,4 +36,40 @@ public:
    }
 };
 
+class HighLowStopLossAndAmountStrategy : public IStopLossAndAmountStrategy
+{
+   int _bars;
+   bool _isBuy;
+   ILotsProvider* _lotsProvider;
+   ENUM_TIMEFRAMES _timeframe;
+   string _symbol;
+public:
+   HighLowStopLossAndAmountStrategy(ILotsProvider* lotsProvider, int bars, bool isBuy, string symbol, ENUM_TIMEFRAMES timeframe)
+   {
+      _lotsProvider = lotsProvider;
+      _isBuy = isBuy;
+      _bars = bars;
+      _timeframe = timeframe;
+      _symbol = symbol;
+   }
+
+   ~HighLowStopLossAndAmountStrategy()
+   {
+      delete _lotsProvider;
+   }
+   
+   void GetStopLossAndAmount(const int period, const double entryPrice, double &amount, double &stopLoss)
+   {
+      amount = _lotsProvider.GetLots(0.0);
+      if (_isBuy)
+      {
+         int lowestIndex = iLowest(_symbol, _timeframe, MODE_LOW, _bars, period);
+         stopLoss = iLow(_symbol, _timeframe, lowestIndex);
+         return;
+      }
+      int highestIndex = iHighest(_symbol, _timeframe, MODE_HIGH, _bars, period);
+      stopLoss = iHigh(_symbol, _timeframe, highestIndex);
+   }
+};
+
 #endif

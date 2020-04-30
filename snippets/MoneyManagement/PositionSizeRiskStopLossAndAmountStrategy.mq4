@@ -31,4 +31,40 @@ public:
    }
 };
 
+class HighLowPositionSizeRiskStopLossAndAmountStrategy : public IStopLossAndAmountStrategy
+{
+   double _lots;
+   TradingCalculator *_calculator;
+   int _bars;
+   bool _isBuy;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
+public:
+   HighLowPositionSizeRiskStopLossAndAmountStrategy(TradingCalculator *calculator, double lots,
+      int bars, bool isBuy, string symbol, ENUM_TIMEFRAMES timeframe)
+   {
+      _symbol = symbol;
+      _timeframe = timeframe;
+      _calculator = calculator;
+      _lots = lots;
+      _bars = bars;
+      _isBuy = isBuy;
+   }
+   
+   void GetStopLossAndAmount(const int period, const double entryPrice, double &amount, double &stopLoss)
+   {
+      if (_isBuy)
+      {
+         int lowestIndex = iLowest(_symbol, _timeframe, MODE_LOW, _bars, period);
+         stopLoss = iLow(_symbol, _timeframe, lowestIndex);
+      }
+      else
+      {
+         int highestIndex = iHighest(_symbol, _timeframe, MODE_HIGH, _bars, period);
+         stopLoss = iHigh(_symbol, _timeframe, highestIndex);
+      }
+      amount = _calculator.GetLots(PositionSizeRisk, _lots, _isBuy ? (entryPrice - stopLoss) : (stopLoss - entryPrice));
+   }
+};
+
 #endif

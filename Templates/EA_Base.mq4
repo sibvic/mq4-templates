@@ -400,67 +400,49 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
+IStopLossStrategy* CreateStopLossStrategy()
+{
+   switch (stop_loss_type)
+   {
+      case SLDoNotUse:
+         return new DefaultStopLossStrategy(tradingCalculator, StopLimitDoNotUse, stop_loss_value, isBuy);
+      case SLPercent:
+         return new DefaultStopLossStrategy(tradingCalculator, StopLimitPercent, stop_loss_value, isBuy);
+      case SLPips:
+         return new DefaultStopLossStrategy(tradingCalculator, StopLimitPips, stop_loss_value, isBuy);
+      case SLAbsolute:
+         return new DefaultStopLossStrategy(tradingCalculator, StopLimitAbsolute, stop_loss_value, isBuy);
+      case SLHighLow:
+         return new HighLowStopLossAndAmountStrategy((int)stop_loss_value, isBuy, symbol, timeframe);
+      case SLAtr:
+         return NULL; // Not supported yet
+      case SLDollar:
+         return NULL; // Not supported at all
+   }
+   return NULL;
+}
+
 MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
    ENUM_TIMEFRAMES timeframe, bool isBuy)
 {
    ILotsProvider* lots = NULL;
+   IStopLossStrategy* stopLoss = NULL;
    switch (lots_type)
    {
       case PositionSizeRisk:
+         stopLoss = CreateStopLossStrategy();
+         lots = new RiskLotsProvider(tradingCalculator, lots_type, lots_value, stopLoss);
          break;
       default:
          lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);
-         break;
-   }
-   IStopLossAndAmountStrategy* sl = NULL;
-   switch (stop_loss_type)
-   {
-      case SLDoNotUse:
+         switch (stop_loss_type)
          {
-            if (lots_type == PositionSizeRisk)
-               sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitDoNotUse, stop_loss_value, isBuy);
-            else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitDoNotUse, stop_loss_value, isBuy);
-         }
-         break;
-      case SLPercent:
-         {
-            if (lots_type == PositionSizeRisk)
-               sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitPercent, stop_loss_value, isBuy);
-            else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitPercent, stop_loss_value, isBuy);
-         }
-         break;
-      case SLPips:
-         {
-            if (lots_type == PositionSizeRisk)
-               sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitPips, stop_loss_value, isBuy);
-            else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitPips, stop_loss_value, isBuy);
-         }
-         break;
-      case SLDollar:
-         {
-            if (lots_type == PositionSizeRisk)
-               sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitDollar, stop_loss_value, isBuy);
-            else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitDollar, stop_loss_value, isBuy);
-         }
-         break;
-      case SLAbsolute:
-         {
-            if (lots_type == PositionSizeRisk)
-               sl = new PositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, StopLimitAbsolute, stop_loss_value, isBuy);
-            else
-               sl = new DefaultStopLossAndAmountStrategy(tradingCalculator, lots, StopLimitAbsolute, stop_loss_value, isBuy);
-         }
-         break;
-      case SLHighLow:
-         {
-            if (lots_type == PositionSizeRisk)
-               sl = new HighLowPositionSizeRiskStopLossAndAmountStrategy(tradingCalculator, lots_value, (int)stop_loss_value, isBuy, symbol, timeframe);
-            else
-               sl = new HighLowStopLossAndAmountStrategy(lots, (int)stop_loss_value, isBuy, symbol, timeframe);
+            case SLDollar:
+               stopLoss = new DollarStopLossStrategy(tradingCalculator, StopLimitDollar, stop_loss_value, isBuy, lots);
+               break;
+            default:
+               stopLoss = CreateStopLossStrategy();
+               break;
          }
          break;
    }
@@ -492,7 +474,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
       #endif
    }
    
-   return new MoneyManagementStrategy(sl, tp);
+   return new MoneyManagementStrategy(lots, sl, tp);
 }
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)

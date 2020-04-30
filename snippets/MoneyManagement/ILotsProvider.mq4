@@ -5,7 +5,7 @@
 class ILotsProvider
 {
 public:
-   virtual double GetLots(double stopLoss) = 0;
+   virtual double GetValue(int period, double entryPrice) = 0;
 };
 #endif
 

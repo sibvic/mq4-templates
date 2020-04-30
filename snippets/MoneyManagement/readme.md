@@ -2,10 +2,6 @@
 
 ATR take profit strategy.
 
-## DefaultStopLossAndAmountStrategy
-
-Default stop loss and amount strategy.
-
 ## DefaultTakeProfitStrategy
 
 Default take profit strategy.
@@ -14,10 +10,6 @@ Default take profit strategy.
 
 Money management strategy interface.
 
-## IStopLossAndAmountStrategy
-
-Stop loss and amount strategy interface.
-
 ## ITakeProfitStrategy
 
 Take profit strategy interface.
@@ -25,10 +17,6 @@ Take profit strategy interface.
 ## MoneyManagementStrategy
 
 Money management strategy.
-
-## PositionSizeRiskStopLossAndAmountStrategy
-
-Risk based stop loss strategy.
 
 ## RiskToRewardTakeProfitStrategy
 
@@ -41,3 +29,23 @@ Lots provider interface.
 ## DefaultLotsProvider
 
 Default lots provider.
+
+## RiskLotsProvider
+
+Calculates lots according to a stop loss (risk of losing n amount of money).
+
+## IStopLossStrategy
+
+Stop loss strategy interface.
+
+## DefaultStopLossProvider
+
+Calculates all simple stop losses.
+
+## DollarStopLossProvider
+
+Calculates stop loss based n amount of money to lose (with fixed amount).
+
+## HighLowStopLossProvider
+
+Uses highest/lowest price of n last bars.

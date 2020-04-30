@@ -1,7 +1,8 @@
 // Money management strategy v1.0
 
 #include <IMoneyManagementStrategy.mq4>
-#include <IStopLossAndAmountStrategy.mq4>
+#include <IStopLossStrategy.mq4>
+#include <ILotsProvider.mq4>
 #include <ITakeProfitStrategy.mq4>
 
 #ifndef MoneyManagementStrategy_IMP
@@ -10,24 +11,28 @@
 class MoneyManagementStrategy : public IMoneyManagementStrategy
 {
 public:
-   IStopLossAndAmountStrategy* _stopLossAndAmount;
+   ILotsProvider* _lots;
    ITakeProfitStrategy* _takeProfit;
+   IStopLossStrategy* _stopLoss;
 
-   MoneyManagementStrategy(IStopLossAndAmountStrategy* stopLossAndAmount, ITakeProfitStrategy* takeProfit)
+   MoneyManagementStrategy(ILotsProvider* lots, IStopLossStrategy* stopLoss, ITakeProfitStrategy* takeProfit)
    {
-      _stopLossAndAmount = stopLossAndAmount;
+      _lots = lots;
+      _stopLoss = stopLoss;
       _takeProfit = takeProfit;
    }
 
    ~MoneyManagementStrategy()
    {
       delete _stopLossAndAmount;
+      delete _stopLoss;
       delete _takeProfit;
    }
 
    void Get(const int period, const double entryPrice, double &amount, double &stopLoss, double &takeProfit)
    {
-      _stopLossAndAmount.GetStopLossAndAmount(period, entryPrice, amount, stopLoss);
+      amount = _lots.GetValue(period, entryPrice);
+      stopLoss = _stopLoss.GetValue(period, entryPrice);
       _takeProfit.GetTakeProfit(period, entryPrice, stopLoss, amount, takeProfit);
    }
 };

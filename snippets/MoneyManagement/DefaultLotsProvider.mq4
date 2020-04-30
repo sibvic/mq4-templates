@@ -1,7 +1,5 @@
 // Default lots provider v1.0
 
-#include <ILotsProvider.mq4>
-
 #ifndef DefaultLotsProvider_IMP
 #define DefaultLotsProvider_IMP
 class DefaultLotsProvider : public ILotsProvider
@@ -17,9 +15,10 @@ public:
       _lots = lots;
    }
 
-   virtual double GetLots(double stopLoss)
+   virtual double GetLots(int period, double entryPrice)
    {
       return _calculator.GetLots(_lotsType, _lots, 0.0);
    }
 };
+
 #endif

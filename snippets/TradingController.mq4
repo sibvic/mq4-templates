@@ -8,7 +8,6 @@ class TradingController
    ENUM_TIMEFRAMES _entryTimeframe;
    ENUM_TIMEFRAMES _exitTimeframe;
    datetime _lastActionTime;
-   double _lastLot;
    ActionOnConditionLogic* actions;
    Signaler *_signaler;
    datetime _lastLimitPositionMessage;
@@ -70,7 +69,6 @@ public:
       _signaler = signaler;
       _entryTimeframe = entryTimeframe;
       _exitTimeframe = exitTimeframe;
-      _lastLot = lots_value;
       _exitLongCondition = NULL;
       _exitShortCondition = NULL;
       _logFile = -1;

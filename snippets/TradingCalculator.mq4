@@ -136,7 +136,9 @@ public:
             double tickSize = _symbol.GetTickSize();
             double possibleLoss = unitCost * stopDistance / tickSize;
             if (possibleLoss <= 0.01)
+            {
                return 0;
+            }
             return _symbol.NormalizeLots(affordableLoss / possibleLoss);
          }
          case PositionSizeRiskCurrency:
@@ -145,7 +147,9 @@ public:
             double tickSize = _symbol.GetTickSize();
             double possibleLoss = unitCost * stopDistance / tickSize;
             if (possibleLoss <= 0.01)
+            {
                return 0;
+            }
             return _symbol.NormalizeLots(lotsValue / possibleLoss);
          }
       }

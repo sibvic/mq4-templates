@@ -33,22 +33,22 @@ public:
 
    bool IsPass(const int period, const datetime date)
    {
-      double ma1Value0 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + _shift1);
-      double ma1Value1 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1 + _shift1);
-      double ma2Value0 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + _shift2);
-      double ma2Value1 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1 + _shift2);
+      double value10 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + _shift1);
+      double value11 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1 + _shift1);
+      double value20 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + _shift2);
+      double value21 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1 + _shift2);
       switch (_condition)
       {
          case FirstAboveSecond:
-            return ma1Value0 > ma2Value0;
+            return value10 > value20;
          case FirstBelowSecond:
-            return ma1Value0 < ma2Value0;
+            return value10 < value20;
          case FirstCrossOverSecond:
-            return ma1Value0 >= ma2Value0 && ma1Value1 < ma2Value1;
+            return value10 >= value20 && value11 < value21;
          case FirstCrossUnderSecond:
-            return ma1Value0 <= ma2Value0 && ma1Value1 > ma2Value1;
+            return value10 <= value20 && value11 > value21;
       }
-      return ma1Value0 >= ma2Value0 && ma1Value1 < ma2Value1;
+      return value10 >= value20 && value11 < value21;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)

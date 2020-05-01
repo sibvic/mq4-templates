@@ -2,7 +2,11 @@
 
 ## ActionOnConditionController
 
-Executes action when condition is met.
+Executes action when condition is met. It'll be deactivated as soon as the action returns true.
+
+## MultiActionOnConditionController
+
+Executes action when condition is met. Can be executed multiple times.
 
 ## ActionOnConditionLogic
 

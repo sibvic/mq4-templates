@@ -1,13 +1,14 @@
 // Action on condition logic v2.0
 
 #include <ActionOnConditionController.mq4>
+#include <MultiActionOnConditionController.mq4>
 
 #ifndef ActionOnConditionLogic_IMP
 #define ActionOnConditionLogic_IMP
 
 class ActionOnConditionLogic
 {
-   ActionOnConditionController* _controllers[];
+   IActionOnConditionController* _controllers[];
 public:
    ~ActionOnConditionLogic()
    {
@@ -38,6 +39,20 @@ public:
 
       ArrayResize(_controllers, count + 1);
       _controllers[count] = new ActionOnConditionController();
+      return _controllers[count].Set(action, condition);
+   }
+
+   bool AddMultiActionOnCondition(IAction* action, ICondition* condition)
+   {
+      int count = ArraySize(_controllers);
+      for (int i = 0; i < count; ++i)
+      {
+         if (_controllers[i].Set(action, condition))
+            return true;
+      }
+
+      ArrayResize(_controllers, count + 1);
+      _controllers[count] = new MultiActionOnConditionController();
       return _controllers[count].Set(action, condition);
    }
 };

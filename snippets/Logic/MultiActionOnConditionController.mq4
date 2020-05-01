@@ -1,26 +1,24 @@
-// Action on condition v3.0
+// Multi action on condition v1.0
 
 #include <../conditions/ICondition.mq4>
 #include <../actions/IAction.mq4>
 #include <IActionOnConditionController.mq4>
 
-#ifndef ActionOnConditionController_IMP
-#define ActionOnConditionController_IMP
+#ifndef MultiActionOnConditionController_IMP
+#define MultiActionOnConditionController_IMP
 
-class ActionOnConditionController : public IActionOnConditionController
+class MultiActionOnConditionController : public IActionOnConditionController
 {
-   bool _finished;
    ICondition *_condition;
    IAction* _action;
 public:
-   ActionOnConditionController()
+   MultiActionOnConditionController()
    {
       _action = NULL;
       _condition = NULL;
-      _finished = true;
    }
 
-   ~ActionOnConditionController()
+   ~MultiActionOnConditionController()
    {
       _action.Release();
       _condition.Release();
@@ -28,16 +26,21 @@ public:
    
    bool Set(IAction* action, ICondition *condition)
    {
-      if (!_finished || action == NULL)
+      if (action == NULL)
+      {
          return false;
+      }
 
       if (_action != NULL)
+      {
          _action.Release();
+      }
       _action = action;
       _action.AddRef();
-      _finished = false;
       if (_condition != NULL)
+      {
          _condition.Release();
+      }
       _condition = condition;
       _condition.AddRef();
       return true;
@@ -45,12 +48,9 @@ public:
 
    void DoLogic(const int period, datetime date)
    {
-      if (_finished)
-         return;
-
-      if (_condition.IsPass(period, date) && _action.DoAction(period, date))
+      if (_condition.IsPass(period, date))
       {
-         _finished = true;
+         _action.DoAction(period, date);
       }
    }
 };

@@ -1,4 +1,4 @@
-// Trading time condition v3.1
+// Trading time condition v3.2
 
 #include <AConditionBase.mq4>
 #include <NoCondition.mq4>
@@ -9,29 +9,33 @@
 
 int ParseTime(const string time, string &error)
 {
+   string items[];
+   StringSplit(time, ':', items);
    int hours;
    int minutes;
    int seconds;
-   if (StringFind(time, ":") == -1)
+   if (ArraySize(items) > 1)
    {
+      if (ArraySize(items) != 3)
+      {
+         error = "Bad format for " + time;
+         return -1;
+      }
       //hh:mm:ss
-      int time_parsed = (int)StringToInteger(time);
-      seconds = time_parsed % 100;
-      time_parsed /= 100;
-      minutes = time_parsed % 100;
-      time_parsed /= 100;
-      hours = time_parsed % 100;
+      seconds = (int)StringToInteger(items[2]);
+      minutes = (int)StringToInteger(items[1]);
+      hours = (int)StringToInteger(items[0]);
    }
    else
    {
       //hhmmss
       int time_parsed = (int)StringToInteger(time);
-      hours = time_parsed % 100;
+      seconds = time_parsed % 100;
       
       time_parsed /= 100;
       minutes = time_parsed % 100;
       time_parsed /= 100;
-      seconds = time_parsed % 100;
+      hours = time_parsed % 100;
    }
    if (hours > 24)
    {

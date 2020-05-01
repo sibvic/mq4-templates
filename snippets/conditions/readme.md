@@ -203,3 +203,11 @@ ADX/DMI stream cross over ADX/DMI stream condition.
 ### ADXCrossUnderADXCondition
 
 ADX/DMI stream cross under ADX/DMI stream condition.
+
+## ActOnSwitchCondition
+
+Returns true when the given condition starts to return true (true on the current bar and false on the previous bar). Timeframe sensitive.
+
+## ActOnSwitchInstantCondition
+
+Returns true when the given condition return true after the false on the previous call. Timeframe insensitive.

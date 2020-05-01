@@ -1,40 +1,32 @@
-// Act on switch condition v4.1
+// Act on switch instant condition v1.0
 
 #include <ACondition.mq4>
 
-#ifndef ActOnSwitchCondition_IMP
-#define ActOnSwitchCondition_IMP
+#ifndef ActOnSwitchInstantCondition_IMP
+#define ActOnSwitchInstantCondition_IMP
 
-class ActOnSwitchCondition : public ACondition
+class ActOnSwitchInstantCondition : public AConditionBase
 {
    ICondition* _condition;
    bool _current;
-   datetime _currentDate;
    bool _last;
 public:
-   ActOnSwitchCondition(string symbol, ENUM_TIMEFRAMES timeframe, ICondition* condition)
-      :ACondition(symbol, timeframe)
+   ActOnSwitchInstantCondition(ICondition* condition)
    {
       _last = false;
       _current = false;
-      _currentDate = 0;
       _condition = condition;
       _condition.AddRef();
    }
 
-   ~ActOnSwitchCondition()
+   ~ActOnSwitchInstantCondition()
    {
       _condition.Release();
    }
 
    virtual bool IsPass(const int period, const datetime date)
    {
-      datetime time = iTime(_symbol, _timeframe, period);
-      if (time != _currentDate)
-      {
-         _last = _current;
-         _currentDate = time;
-      }
+      _last = _current;
       _current = _condition.IsPass(period, date);
       return _current && !_last;
    }

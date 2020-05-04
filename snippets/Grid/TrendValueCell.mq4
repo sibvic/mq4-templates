@@ -1,4 +1,4 @@
-// Trend value cell v2.2
+// Trend value cell v2.3
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -92,6 +92,9 @@ public:
             return;
          }
       }
+      color clr;
+      string text = _defaultValue.FormatItem(_alertShift, date, clr);
+      DrawItem(text, clr, true);
    }
 
 private:

@@ -1,31 +1,40 @@
-#property copyright "Copyright © 2019, "
-#property link      ""
-#property version   "1.0"
 #property strict
 #property indicator_chart_window
 //#property indicator_separate_window
 #property indicator_buffers 1
 #property indicator_color1 Red
 
-string IndicatorName;
 string IndicatorObjPrefix;
 
-string GenerateIndicatorName(const string target)
+bool NamesCollision(const string name)
 {
-   string name = target;
-   int try = 2;
-   while (WindowFind(name) != -1)
+   for (int k = ObjectsTotal(); k >= 0; k--)
    {
-      name = target + " #" + IntegerToString(try++);
+      if (StringFind(ObjectName(0, k), name) == 0)
+      {
+         return true;
+      }
    }
-   return name;
+   return false;
+}
+
+string GenerateIndicatorPrefix(const string target)
+{
+   for (int i = 0; i < 1000; ++i)
+   {
+      string prefix = target + "_" + IntegerToString(i);
+      if (!NamesCollision(prefix))
+      {
+         return prefix;
+      }
+   }
+   return target;
 }
 
 int init()
 {
-   IndicatorName = GenerateIndicatorName("...");
-   IndicatorObjPrefix = "__" + IndicatorName + "__";
-   IndicatorShortName(IndicatorName);
+   IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
+   IndicatorShortName("...");
 
    IndicatorBuffers(1);
 

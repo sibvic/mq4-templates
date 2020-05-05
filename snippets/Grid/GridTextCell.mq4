@@ -1,4 +1,4 @@
-// Grid text cell v1.1
+// Grid text cell v2.0
 
 #ifndef GridTextCell_IMP
 #define GridTextCell_IMP
@@ -10,15 +10,19 @@ class GridTextCell
    uint _width;
    uint _height;
    string _id;
+   string _fontName;
+   int _fontSize;
 public:
-   GridTextCell(string id)
+   GridTextCell(string id, string fontName, int fontSize)
    {
+      _fontName = fontName;
+      _fontSize = fontSize;
       _id = id;
    }
 
    void SetData(string text, color clr)
    {
-      TextSetFont("Arial", -120);
+      TextSetFont(_fontName, _fontSize * (-10));
       TextGetSize(text, _width, _height);
       _text = text;
       _clr = clr;
@@ -36,8 +40,8 @@ public:
             return ;
          }
          ObjectSetInteger(0, id, OBJPROP_CORNER, CORNER_LEFT_UPPER);
-         ObjectSetString(0, id, OBJPROP_FONT, "Arial");
-         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, 12);
+         ObjectSetString(0, id, OBJPROP_FONT, _fontName);
+         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, _fontSize);
          ObjectSetInteger(0, id, OBJPROP_ANCHOR, ANCHOR_LEFT_UPPER);
       }
       ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x);

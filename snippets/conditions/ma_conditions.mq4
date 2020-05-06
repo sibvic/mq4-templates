@@ -1,4 +1,4 @@
-// MA Conditions v3.1
+// MA Conditions v3.2
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
@@ -159,7 +159,7 @@ class PriceMACondition : public ACondition
    int _shift1;
 public:
    PriceMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, TwoStreamsConditionType condition
-      , ENUM_APPLIED_PRICE price,
+      , ENUM_APPLIED_PRICE price
       , ENUM_MA_METHOD method1, int period1
       , int shift1 = 0)
       :ACondition(symbol, timeframe)

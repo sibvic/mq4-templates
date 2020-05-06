@@ -1,4 +1,4 @@
-// Money management strategy v1.0
+// Money management strategy v1.1
 
 #include <IMoneyManagementStrategy.mq4>
 #include <IStopLossStrategy.mq4>
@@ -24,7 +24,7 @@ public:
 
    ~MoneyManagementStrategy()
    {
-      delete _stopLossAndAmount;
+      delete _lots;
       delete _stopLoss;
       delete _takeProfit;
    }

@@ -3,14 +3,14 @@
 #ifndef HighLowStopLossProvider_IMP
 #define HighLowStopLossProvider_IMP
 
-class HighLowStopLossProvider : public IStopLossProvider
+class HighLowStopLossStrategy : public IStopLossStrategy
 {
    int _bars;
    bool _isBuy;
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
 public:
-   HighLowStopLossProvider(int bars, bool isBuy, string symbol, ENUM_TIMEFRAMES timeframe)
+   HighLowStopLossStrategy(int bars, bool isBuy, string symbol, ENUM_TIMEFRAMES timeframe)
    {
       _symbol = symbol;
       _timeframe = timeframe;

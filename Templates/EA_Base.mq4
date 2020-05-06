@@ -218,13 +218,13 @@ input string log_file = "log.csv"; // Log file name
 #include <Conditions/HitProfitCondition.mq4>
 #include <Actions/MoveNetStopLossAction.mq4>
 #include <Actions/MoveNetTakeProfitAction.mq4>
+#include <MoneyManagement/ILotsProvider.mq4>
+#include <MoneyManagement/DefaultStopLossStrategy.mq4>
 #include <MoneyManagement/DefaultLotsProvider.mq4>
 #include <MoneyManagement/MoneyManagementStrategy.mq4>
 #include <MoneyManagement/RiskToRewardTakeProfitStrategy.mq4>
-#include <MoneyManagement/PositionSizeRiskStopLossAndAmountStrategy.mq4>
 #include <MoneyManagement/DefaultTakeProfitStrategy.mq4>
 #include <MoneyManagement/ATRTakeProfitStrategy.mq4>
-#include <MoneyManagement/DefaultStopLossAndAmountStrategy.mq4>
 #include <MartingaleStrategy.mq4>
 #include <TradingCommands.mq4>
 #include <CloseOnOpposite.mq4>
@@ -400,7 +400,8 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
-IStopLossStrategy* CreateStopLossStrategy()
+IStopLossStrategy* CreateStopLossStrategy(TradingCalculator* tradingCalculator, string symbol,
+   ENUM_TIMEFRAMES timeframe, bool isBuy)
 {
    switch (stop_loss_type)
    {
@@ -413,7 +414,7 @@ IStopLossStrategy* CreateStopLossStrategy()
       case SLAbsolute:
          return new DefaultStopLossStrategy(tradingCalculator, StopLimitAbsolute, stop_loss_value, isBuy);
       case SLHighLow:
-         return new HighLowStopLossAndAmountStrategy((int)stop_loss_value, isBuy, symbol, timeframe);
+         return new HighLowStopLossStrategy((int)stop_loss_value, isBuy, symbol, timeframe);
       case SLAtr:
          return NULL; // Not supported yet
       case SLDollar:
@@ -430,7 +431,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
    switch (lots_type)
    {
       case PositionSizeRisk:
-         stopLoss = CreateStopLossStrategy();
+         stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy);
          lots = new RiskLotsProvider(tradingCalculator, lots_type, lots_value, stopLoss);
          break;
       default:
@@ -441,7 +442,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
                stopLoss = new DollarStopLossStrategy(tradingCalculator, StopLimitDollar, stop_loss_value, isBuy, lots);
                break;
             default:
-               stopLoss = CreateStopLossStrategy();
+               stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy);
                break;
          }
          break;
@@ -474,7 +475,7 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
       #endif
    }
    
-   return new MoneyManagementStrategy(lots, sl, tp);
+   return new MoneyManagementStrategy(lots, stopLoss, tp);
 }
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
@@ -608,7 +609,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #ifdef NET_STOP_LOSS_FEATURE
       if (net_stop_loss_type != StopLimitDoNotUse)
       {
-         MoveNetStopLossAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, signaler, magic_number);
+         MoveNetStopLossAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, magic_number);
          #ifdef USE_NET_BREAKEVEN
             if (breakeven_type != StopLimitDoNotUse)
             {
@@ -626,7 +627,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #ifdef NET_TAKE_PROFIT_FEATURE
       if (net_take_profit_type != StopLimitDoNotUse)
       {
-         IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, signaler, magic_number);
+         IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, magic_number);
          NoCondition* condition = new NoCondition();
          actions.AddActionOnCondition(action, condition);
          action.Release();

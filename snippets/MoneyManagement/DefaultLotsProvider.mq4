@@ -1,4 +1,4 @@
-// Default lots provider v1.0
+// Default lots provider v2.0
 
 #ifndef DefaultLotsProvider_IMP
 #define DefaultLotsProvider_IMP
@@ -15,7 +15,7 @@ public:
       _lots = lots;
    }
 
-   virtual double GetLots(int period, double entryPrice)
+   virtual double GetValue(int period, double entryPrice)
    {
       return _calculator.GetLots(_lotsType, _lots, 0.0);
    }

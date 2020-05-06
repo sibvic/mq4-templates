@@ -38,14 +38,14 @@ Calculates lots according to a stop loss (risk of losing n amount of money).
 
 Stop loss strategy interface.
 
-## DefaultStopLossProvider
+## DefaultStopLossStrategy
 
 Calculates all simple stop losses.
 
-## DollarStopLossProvider
+## DollarStopLossStrategy
 
 Calculates stop loss based n amount of money to lose (with fixed amount).
 
-## HighLowStopLossProvider
+## HighLowStopLossStrategy
 
 Uses highest/lowest price of n last bars.

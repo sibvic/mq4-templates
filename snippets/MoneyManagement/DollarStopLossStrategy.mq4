@@ -1,19 +1,19 @@
 // Dollar stop loss stream v1.0
 
-#ifndef DollarStopLossProvider_IMP
-#define DollarStopLossProvider_IMP
+#ifndef DollarStopLossStrategy_IMP
+#define DollarStopLossStrategy_IMP
 
-class DollarStopLossProvider : public IStopLossProvider
+class DollarStopLossStrategy : public IStopLossStrategy
 {
    TradingCalculator* _calculator;
    StopLimitType _stopLossType;
    double _stopLoss;
    bool _isBuy;
-   ILotsProvider* _lotsProvider;
+   ILotsProvider* _lotsStrategy;
 public:
-   DollarStopLossProvider(TradingCalculator* calculator, StopLimitType stopLossType, double stopLoss, bool isBuy, ILotsProvider* lotsProvider)
+   DollarStopLossStrategy(TradingCalculator* calculator, StopLimitType stopLossType, double stopLoss, bool isBuy, ILotsProvider* lotsStrategy)
    {
-      _lotsProvider = lotsProvider;
+      _lotsStrategy = lotsStrategy;
       _isBuy = isBuy;
       _stopLoss = stopLoss;
       _stopLossType = stopLossType;
@@ -22,7 +22,7 @@ public:
 
    virtual double GetValue(const int period, double entryPrice)
    {
-      double amount = _lotsProvider.GetLots();
+      double amount = _lotsStrategy.GetValue(period, entryPrice);
       return _calculator.CalculateStopLoss(_isBuy, _stopLoss, _stopLossType, amount, entryPrice);
    }
 };

@@ -1,16 +1,16 @@
-// Default stop loss stream v1.0
+// Default stop loss stream v2.0
 
-#ifndef DefaultStopLossStream_IMP
-#define DefaultStopLossStream_IMP
+#ifndef DefaultStopLossStrategy_IMP
+#define DefaultStopLossStrategy_IMP
 
-class DefaultStopLossProvider : public IStopLossProvider
+class DefaultStopLossStrategy : public IStopLossStrategy
 {
    TradingCalculator* _calculator;
    StopLimitType _stopLossType;
    double _stopLoss;
    bool _isBuy;
 public:
-   DefaultStopLossProvider(TradingCalculator* calculator, StopLimitType stopLossType, double stopLoss, bool isBuy)
+   DefaultStopLossStrategy(TradingCalculator* calculator, StopLimitType stopLossType, double stopLoss, bool isBuy)
    {
       _isBuy = isBuy;
       _stopLoss = stopLoss;

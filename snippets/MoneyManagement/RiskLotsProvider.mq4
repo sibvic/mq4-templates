@@ -1,4 +1,4 @@
-// Risk lots provider v1.0
+// Risk lots provider v2.0
 
 #ifndef RiskLotsProvider_IMP
 #define RiskLotsProvider_IMP
@@ -8,6 +8,7 @@ class RiskLotsProvider : public ILotsProvider
    PositionSizeType _lotsType;
    double _lots;
    TradingCalculator *_calculator;
+   IStopLossStrategy* _stopLoss;
 public:
    RiskLotsProvider(TradingCalculator *calculator, PositionSizeType lotsType, double lots, IStopLossStrategy* stopLoss)
    {
@@ -17,10 +18,10 @@ public:
       _lots = lots;
    }
 
-   virtual double GetLots(int period, double entryPrice)
+   virtual double GetValue(int period, double entryPrice)
    {
-      double stopLoss = stopLoss.GetValue(period, entryPrice);
-      return _calculator.GetLots(_lotsType, _lots, stopLoss);
+      double sl = stopLoss.GetValue(period, entryPrice);
+      return _calculator.GetLots(_lotsType, _lots, sl);
    }
 };
 

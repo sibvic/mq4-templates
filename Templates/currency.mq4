@@ -53,25 +53,37 @@ public:
 };
 SymbolData* Symbols[];
  
-string IndicatorName;
 string IndicatorObjPrefix;
 
-string GenerateIndicatorName(const string target)
+bool NamesCollision(const string name)
 {
-   string name = target;
-   int try = 2;
-   while (WindowFind(name) != -1)
+   for (int k = ObjectsTotal(); k >= 0; k--)
    {
-      name = target + " #" + IntegerToString(try++);
+      if (StringFind(ObjectName(0, k), name) == 0)
+      {
+         return true;
+      }
    }
-   return name;
+   return false;
+}
+
+string GenerateIndicatorPrefix(const string target)
+{
+   for (int i = 0; i < 1000; ++i)
+   {
+      string prefix = target + "_" + IntegerToString(i);
+      if (!NamesCollision(prefix))
+      {
+         return prefix;
+      }
+   }
+   return target;
 }
 
 int init()
 {
-   IndicatorName = GenerateIndicatorName("...");
-   IndicatorObjPrefix = "__" + IndicatorName + "__";
-   IndicatorShortName(IndicatorName);
+   IndicatorObjPrefix = GenerateIndicatorPrefix("...");
+   IndicatorShortName("...");
    
    IndicatorBuffers(1);
    
@@ -129,7 +141,7 @@ void CreateSymbolList()
             || Default[Selected - 1] == "Any")
          {
             string symbol = currencies[i] + currencies[ii];
-            if(MarketInfo(symbol, MODE_BID) > 0)
+            if (MarketInfo(symbol, MODE_BID) > 0)
             {
                ArrayResize(Symbols, symbolCount + 1);
                Symbols[symbolCount] = new SymbolData();

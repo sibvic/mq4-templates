@@ -1,4 +1,4 @@
-// Grid text cell v2.0
+// Grid text cell v3.0
 
 #ifndef GridTextCell_IMP
 #define GridTextCell_IMP
@@ -10,22 +10,25 @@ class GridTextCell
    uint _width;
    uint _height;
    string _id;
-   string _fontName;
    int _fontSize;
+   string _fontName;
+   ENUM_ANCHOR_POINT _anchor;
+   int _cellWidth;
 public:
-   GridTextCell(string id, string fontName, int fontSize)
+   GridTextCell(string id)
    {
-      _fontName = fontName;
-      _fontSize = fontSize;
       _id = id;
    }
 
-   void SetData(string text, color clr)
+   void SetData(string text, color clr, string fontName, int fontSize, ENUM_ANCHOR_POINT anchor = ANCHOR_LEFT)
    {
-      TextSetFont(_fontName, _fontSize * (-10));
+      TextSetFont(fontName, fontSize * (-10));
       TextGetSize(text, _width, _height);
+      _fontName = fontName;
+      _fontSize = fontSize;
       _text = text;
       _clr = clr;
+      _anchor = anchor;
    }
 
    void Draw(int __x, int __y)
@@ -42,12 +45,24 @@ public:
          ObjectSetInteger(0, id, OBJPROP_CORNER, CORNER_LEFT_UPPER);
          ObjectSetString(0, id, OBJPROP_FONT, _fontName);
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, _fontSize);
-         ObjectSetInteger(0, id, OBJPROP_ANCHOR, ANCHOR_LEFT_UPPER);
+         ObjectSetInteger(0, id, OBJPROP_ANCHOR, _anchor);
       }
-      ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x);
+      if (_anchor == ANCHOR_CENTER)
+      {
+         ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x + _cellWidth / 2);
+      }
+      else
+      {
+         ObjectSetInteger(0, id, OBJPROP_XDISTANCE, __x);
+      }
       ObjectSetInteger(0, id, OBJPROP_YDISTANCE, __y);
       ObjectSetInteger(0, id, OBJPROP_COLOR, _clr);
       ObjectSetString(0, id, OBJPROP_TEXT, _text);
+   }
+
+   void SetMinWidth(int width)
+   {
+      _cellWidth = width;
    }
 
    int GetWidth()

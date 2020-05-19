@@ -1,4 +1,4 @@
-// Grid cells v2.0
+// Grid cells v3.0
 
 #include <GridRow.mq4>
 
@@ -10,13 +10,9 @@ class GridCells
    string _id;
    GridRow* _columns[];
    double _gap;
-   string _fontName;
-   int _fontSize;
 public:
-   GridCells(string id, double gap, string fontName, int fontSize)
+   GridCells(string id, double gap)
    {
-      _fontName = fontName;
-      _fontSize = fontSize;
       _gap = gap;
       _id = id;
    }
@@ -35,11 +31,11 @@ public:
 
    }
 
-   void Add(string text, color clr, int column, int row)
+   void Add(string text, color clr, string fontName, int fontSize, int column, int row, ENUM_ANCHOR_POINT anchor = ANCHOR_LEFT)
    {
       EnsureEnoughtColumns(column + 1);
       _columns[column].EnsureEnoughtCells(row + 1);
-      _columns[column].Get(row).SetData(text, clr);
+      _columns[column].Get(row).SetData(text, clr, fontName, fontSize, anchor);
    }
 
    void Draw(int __x, int __y)
@@ -75,6 +71,18 @@ public:
             currentY += maxHeight[rowIndex] * _gap;
          }
          currentX += maxWidth[columnIndex] * _gap;
+      }
+   }
+
+   void SetMinWidth(int width)
+   {
+      for (int columnIndex = 0; columnIndex < ArraySize(_columns); ++columnIndex)
+      {
+         int rows = _columns[columnIndex].Size();
+         for (int rowIndex = 0; rowIndex < rows; ++rowIndex)
+         {
+            _columns[columnIndex].Get(rowIndex).SetMinWidth(width);
+         }
       }
    }
 
@@ -143,7 +151,7 @@ private:
          ArrayResize(_columns, newSize);
          for (int i = oldSize; i < newSize; ++i)
          {
-            _columns[i] = new GridRow(_id + "-" + IntegerToString(i), _fontName, _fontSize);
+            _columns[i] = new GridRow(_id + "-" + IntegerToString(i));
          }
       }
    }

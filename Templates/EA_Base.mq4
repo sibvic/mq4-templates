@@ -219,6 +219,7 @@ input string log_file = "log.csv"; // Log file name
 #include <Actions/MoveNetStopLossAction.mq4>
 #include <Actions/MoveNetTakeProfitAction.mq4>
 #include <MoneyManagement/ILotsProvider.mq4>
+#include <MoneyManagement/IStopLossStrategy.mq4>
 #include <MoneyManagement/DefaultStopLossStrategy.mq4>
 #include <MoneyManagement/DefaultLotsProvider.mq4>
 #include <MoneyManagement/MoneyManagementStrategy.mq4>

@@ -1,5 +1,8 @@
 // Base EA template
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+// You need:
+// 1. To implement LongCondition, ShortCondition, ExitLongCondition and ExitShortCondition
+// 2. To replace all includes with code from the snippets folder. You can use https://github.com/sibvic/MQ4Inject for that.
 
 #property version   "1.0"
 #property description "Developed by Victor Tereschenko: sibvic@gmail.com"

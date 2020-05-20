@@ -20,7 +20,7 @@ public:
 
    virtual double GetValue(int period, double entryPrice)
    {
-      double sl = stopLoss.GetValue(period, entryPrice);
+      double sl = _stopLoss.GetValue(period, entryPrice);
       return _calculator.GetLots(_lotsType, _lots, sl);
    }
 };

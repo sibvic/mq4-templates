@@ -1,4 +1,4 @@
-// Trailing action v3.0
+// Trailing action v3.1
 
 #include <AAction.mq4>
 #include <../Order.mq4>
@@ -77,7 +77,7 @@ private:
       }
       else if (orderType == OP_SELL)
       {
-         while (_instrument.RoundRate(newStop - _step) < _instrument.RoundRate(closePrice - _distance))
+         while (_instrument.RoundRate(newStop - _step) > _instrument.RoundRate(closePrice + _distance))
          {
             newStop = _instrument.RoundRate(newStop - _step);
          }

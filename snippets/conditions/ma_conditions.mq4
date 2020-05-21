@@ -157,11 +157,13 @@ class PriceMACondition : public ACondition
    TwoStreamsConditionType _condition;
    ENUM_APPLIED_PRICE _price;
    int _shift1;
+   int _shift2;
 public:
    PriceMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, TwoStreamsConditionType condition
       , ENUM_APPLIED_PRICE price
       , ENUM_MA_METHOD method1, int period1
-      , int shift1 = 0)
+      , int shift1 = 0
+      , int shift2 = 0)
       :ACondition(symbol, timeframe)
    {
       _price = price;
@@ -169,14 +171,15 @@ public:
       _method1 = method1;
       _period1 = period1;
       _shift1 = shift1;
+      _shift2 = shift2;
    }
 
    bool IsPass(const int period, const datetime date)
    {
       double value20 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + _shift1);
       double value21 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1 + _shift1);
-      double value10 = GetPrice(period);
-      double value11 = GetPrice(period + 1);
+      double value10 = GetPrice(period + _shift2);
+      double value11 = GetPrice(period + 1 + _shift2);
       switch (_condition)
       {
          case FirstAboveSecond:

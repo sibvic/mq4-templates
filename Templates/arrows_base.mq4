@@ -26,20 +26,6 @@ input double shift_arrows_pips = 0.1; // Shift arrows
 input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
 
-string IndicatorName;
-string IndicatorObjPrefix;
-
-string GenerateIndicatorName(const string target)
-{
-   string name = target;
-   int try = 2;
-   while (WindowFind(name) != -1)
-   {
-      name = target + " #" + IntegerToString(try++);
-   }
-   return name;
-}
-
 #include <conditions/ACondition.mq4>
 #include <Streams/PriceStream.mq4>
 #include <signaler.mq4>
@@ -119,6 +105,32 @@ public:
       return false;
    }
 };
+string IndicatorObjPrefix;
+
+bool NamesCollision(const string name)
+{
+   for (int k = ObjectsTotal(); k >= 0; k--)
+   {
+      if (StringFind(ObjectName(0, k), name) == 0)
+      {
+         return true;
+      }
+   }
+   return false;
+}
+
+string GenerateIndicatorPrefix(const string target)
+{
+   for (int i = 0; i < 1000; ++i)
+   {
+      string prefix = target + "_" + IntegerToString(i);
+      if (!NamesCollision(prefix))
+      {
+         return prefix;
+      }
+   }
+   return target;
+}
 
 int init()
 {
@@ -127,9 +139,8 @@ int init()
       Print("Error: Dll calls must be allowed!");
       return INIT_FAILED;
    }
-   IndicatorName = GenerateIndicatorName("...");
-   IndicatorObjPrefix = "__" + IndicatorName + "__";
-   IndicatorShortName(IndicatorName);
+   IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
+   IndicatorShortName("...");
    mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
    mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
 

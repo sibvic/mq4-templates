@@ -47,12 +47,25 @@ int deinit()
    return 0;
 }
 
-int start()
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
 {
-   int minBars = 1;
-   int limit = MathMin(Bars - 1 - minBars, Bars - IndicatorCounted() - 1);
-   for (int i = limit; i >= 0; i--)
+   if (prev_calculated <= 0 || prev_calculated > rates_total)
    {
+      ArrayInitialize(out, EMPTY_VALUE);
+   }
+   int first = 0;
+   for (int pos = MathMax(first, prev_calculated - 1); pos < rates_total; ++pos)
+   {
+      int oldPos = rates_total - pos - 1;
    }
    return 0;
 }

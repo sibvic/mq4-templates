@@ -62,10 +62,29 @@ int OnCalculate(const int rates_total,
    {
       ArrayInitialize(out, EMPTY_VALUE);
    }
-   int first = 0;
-   for (int pos = MathMax(first, prev_calculated - 1); pos < rates_total; ++pos)
+   bool timeSeries = ArrayGetAsSeries(time); 
+   bool openSeries = ArrayGetAsSeries(open); 
+   bool highSeries = ArrayGetAsSeries(high); 
+   bool lowSeries = ArrayGetAsSeries(low); 
+   bool closeSeries = ArrayGetAsSeries(close); 
+   bool tickVolumeSeries = ArrayGetAsSeries(tick_volume); 
+   ArraySetAsSeries(time, true);
+   ArraySetAsSeries(open, true);
+   ArraySetAsSeries(high, true);
+   ArraySetAsSeries(low, true);
+   ArraySetAsSeries(close, true);
+   ArraySetAsSeries(tick_volume, true);
+
+   int toSkip = fpPeriod;
+   for (int pos = rates_total - 1 - toSkip; pos >= 0; --pos)
    {
-      int oldPos = rates_total - pos - 1;
    }
+   
+   ArraySetAsSeries(time, timeSeries);
+   ArraySetAsSeries(open, openSeries);
+   ArraySetAsSeries(high, highSeries);
+   ArraySetAsSeries(low, lowSeries);
+   ArraySetAsSeries(close, closeSeries);
+   ArraySetAsSeries(tick_volume, tickVolumeSeries);
    return 0;
 }

@@ -1,4 +1,4 @@
-// Bar condnitions v2.1
+// Bar condnitions v2.2
 
 #ifndef BarConditions_IMP
 #define BarConditions_IMP
@@ -30,15 +30,8 @@ public:
 
    virtual bool IsPass(const int period, const datetime date)
    {
-      datetime streamDate;
-      if (!_stream.GetDate(period, streamDate))
-         return false;
-      int streamPeriod = period;
-      if (streamDate != date && !_stream.FindDatePeriod(date, streamPeriod))
-         return false;
-
       double open, close;
-      return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open < close;
+      return _stream.GetOpenClose(period + _periodShift, open, close) && open < close;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)
@@ -72,15 +65,8 @@ public:
 
    virtual bool IsPass(const int period, const datetime date)
    {
-      datetime streamDate;
-      if (!_stream.GetDate(period, streamDate))
-         return false;
-      int streamPeriod = period;
-      if (streamDate != date && !_stream.FindDatePeriod(date, streamPeriod))
-         return false;
-
       double open, close;
-      return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open > close;
+      return _stream.GetOpenClose(period + _periodShift, open, close) && open > close;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)

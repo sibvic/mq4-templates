@@ -38,7 +38,7 @@ public:
       double distance = (OrderOpenPrice() - OrderStopLoss()) / pipSize;
 
       TrailingPipsAction* action = new TrailingPipsAction(order, distance, _step);
-      ProfitInRangeCondition* condition = new ProfitInRangeCondition(order, 0, _start);
+      ProfitInRangeCondition* condition = new ProfitInRangeCondition(order, _start, 100000);
       _actions.AddActionOnCondition(action, condition);
       condition.Release();
       action.Release();

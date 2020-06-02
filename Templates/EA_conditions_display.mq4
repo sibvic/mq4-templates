@@ -7,24 +7,38 @@
 
 input color up_color = Green; // Up color
 input color dn_color = Red; // Down color
+input color pos_color = Blue; // Positive color
 input color ne_color = Gray; // Neutral color
 
 #include <HeatMapValueCalculator.mq4>
 
-HeatMapValueCalculator* conditions[];
+IHeatMapValueCalculator* conditions[];
 
-string IndicatorName;
 string IndicatorObjPrefix;
 
-string GenerateIndicatorName(const string target)
+bool NamesCollision(const string name)
 {
-   string name = target;
-   int try = 2;
-   while (WindowFind(name) != -1)
+   for (int k = ObjectsTotal(); k >= 0; k--)
    {
-      name = target + " #" + IntegerToString(try++);
+      if (StringFind(ObjectName(0, k), name) == 0)
+      {
+         return true;
+      }
    }
-   return name;
+   return false;
+}
+
+string GenerateIndicatorPrefix(const string target)
+{
+   for (int i = 0; i < 1000; ++i)
+   {
+      string prefix = target + "_" + IntegerToString(i);
+      if (!NamesCollision(prefix))
+      {
+         return prefix;
+      }
+   }
+   return target;
 }
 
 #include <Conditions/ACondition.mq4>
@@ -61,11 +75,27 @@ public:
    }
 };
 
+int CreateHeatmap(int id, int index, string name, ICondition* longCondition, ICondition* shortCondition)
+{
+   HeatMapValueCalculator* calc = new HeatMapValueCalculator(index + 1, longCondition, shortCondition);
+   longCondition.Release();
+   shortCondition.Release();
+   conditions[index] = calc;
+   return calc.RegisterStreams(id, up_color, dn_color, ne_color, name);
+}
+
+int CreateHeatmap(int id, int index, string name, ICondition* condition)
+{
+   SingleHeatMapValueCalculator* calc = new SingleHeatMapValueCalculator(index + 1, condition);
+   condition.Release();
+   conditions[index] = calc;
+   return calc.RegisterStreams(id, pos_color, ne_color, name);
+}
+
 int init()
 {
-   IndicatorName = GenerateIndicatorName("...");
-   IndicatorObjPrefix = "__" + IndicatorName + "__";
-   IndicatorShortName(IndicatorName);
+   IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
+   IndicatorShortName("...");
 
    int rows = 3;
    int size = ArraySize(conditions);
@@ -73,14 +103,15 @@ int init()
    IndicatorBuffers(3 * rows);
 
    int id = 0;
-   int index = 0;
+   int index = rows - 1;
 
    {
-      ICondition* longCondition1 = new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-      ICondition* shortCondition1 = new ShortCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-      conditions[index] = new HeatMapValueCalculator(index + 1, longCondition1, shortCondition1);
-      id = conditions[index].RegisterStreams(id, up_color, dn_color, ne_color, "...");
-      ++index;
+      id = CreateHeatmap(id, index--, "...", 
+         new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), 
+         new ShortCondition(_Symbol, (ENUM_TIMEFRAMES)_Period));
+   }
+   {
+      id = CreateHeatmap(id, index--, "...", new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period));
    }
 
    return 0;
@@ -104,8 +135,7 @@ int start()
    {
       for (int conditionIndex = 0; conditionIndex < ArraySize(conditions); ++conditionIndex)
       {
-         HeatMapValueCalculator* condition = conditions[conditionIndex];
-         condition.UpdateValue(i);
+         conditions[conditionIndex].UpdateValue(i);
       }
    }
    return 0;

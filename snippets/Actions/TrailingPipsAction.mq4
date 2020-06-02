@@ -1,9 +1,9 @@
-// Trailing action v3.1
-
 #include <AAction.mq4>
 #include <../Order.mq4>
 #include <../TradingCommands.mq4>
 #include <../InstrumentInfo.mq4>
+
+// Trailing action v3.1
 
 #ifndef TrailingAction_IMP
 #define TrailingAction_IMP

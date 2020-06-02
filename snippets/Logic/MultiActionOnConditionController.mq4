@@ -1,8 +1,8 @@
-// Multi action on condition v1.0
-
 #include <../conditions/ICondition.mq4>
 #include <../actions/IAction.mq4>
 #include <IActionOnConditionController.mq4>
+
+// Multi action on condition v1.0
 
 #ifndef MultiActionOnConditionController_IMP
 #define MultiActionOnConditionController_IMP

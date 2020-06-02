@@ -1,8 +1,8 @@
-// Profit in range condition v2.0
-
 #include <AConditionBase.mq4>
 #include <../Order.mq4>
 #include <../InstrumentInfo.mq4>
+
+// Profit in range condition v2.0
 
 #ifndef ProfitInRangeCondition_IMP
 #define ProfitInRangeCondition_IMP

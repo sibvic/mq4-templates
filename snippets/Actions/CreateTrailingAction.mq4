@@ -1,9 +1,9 @@
-// Create trailing action v2.0
-
 #include <../conditions/ProfitInRangeCondition.mq4>
 #include <TrailingPipsAction.mq4>
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
+
+// Create trailing action v2.0
 
 #ifndef CreateTrailingAction_IMP
 #define CreateTrailingAction_IMP

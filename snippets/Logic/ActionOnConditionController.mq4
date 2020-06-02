@@ -1,8 +1,8 @@
-// Action on condition v3.0
-
 #include <../conditions/ICondition.mq4>
 #include <../actions/IAction.mq4>
 #include <IActionOnConditionController.mq4>
+
+// Action on condition v3.0
 
 #ifndef ActionOnConditionController_IMP
 #define ActionOnConditionController_IMP

@@ -3,6 +3,9 @@
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
 
+#ifndef TradingController_IMP
+#define TradingController_IMP
+
 class TradingController
 {
    ENUM_TIMEFRAMES _entryTimeframe;
@@ -359,3 +362,4 @@ private:
    }
    #endif
 };
+#endif

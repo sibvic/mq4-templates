@@ -11,6 +11,7 @@ class IAlertSignalOutput
 {
 public:
    virtual void Clear(int period) = 0;
+   virtual void Init() = 0;
    virtual void Set(int period) = 0;
 };
 
@@ -31,6 +32,11 @@ public:
    int Register(int id, color clr)
    {
       return _candleStreams.RegisterStreams(id, clr);
+   }
+
+   void Init()
+   {
+      _candleStreams.Init();
    }
 
    virtual void Clear(int period)
@@ -72,6 +78,11 @@ public:
       SetIndexLabel(id, name);
       SetIndexArrow(id, code);
       return id + 1;
+   }
+
+   void Init()
+   {
+      ArrayInitialize(_signals, EMPTY_VALUE);
    }
 
    virtual void Clear(int period)
@@ -118,6 +129,10 @@ public:
       _code = code;
       
       return id;
+   }
+
+   void Init()
+   {
    }
 
    virtual void Clear(int period)
@@ -207,6 +222,11 @@ public:
       AlertSignalCandleColor* signalOutput = new AlertSignalCandleColor();
       _signalOutput = signalOutput;
       return signalOutput.Register(id, clr);
+   }
+
+   void Init()
+   {
+      _signalOutput.Init();
    }
 
    void Update(int period)

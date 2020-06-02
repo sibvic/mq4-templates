@@ -1,4 +1,4 @@
-// Candles stream v.1.2
+// Candles stream v.1.3
 class CandleStreams
 {
 public:
@@ -6,6 +6,14 @@ public:
    double CloseStream[];
    double HighStream[];
    double LowStream[];
+
+   void Init()
+   {
+      ArrayInitialize(OpenStream, EMPTY_VALUE);
+      ArrayInitialize(CloseStream, EMPTY_VALUE);
+      ArrayInitialize(HighStream, EMPTY_VALUE);
+      ArrayInitialize(LowStream, EMPTY_VALUE);
+   }
 
    void Clear(const int index)
    {

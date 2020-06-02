@@ -1,6 +1,6 @@
-// Arrows base v4.0
+// Arrows base v4.1
 
-#property copyright "Copyright © 2019, "
+#property copyright "Copyright © 2020, "
 #property link      ""
 #property version   "1.0"
 #property strict
@@ -182,6 +182,19 @@ int deinit()
 int start()
 {
    int counted_bars = IndicatorCounted();
+   if (counted_bars <= 0 || counted_bars > Bars)
+   {
+      ArrayInitialize(ll, EMPTY_VALUE);
+      if (customStream != NULL)
+      {
+         ArrayInitialize(customStream._stream, EMPTY_VALUE);
+      }
+      for (int i = 0; i < ArraySize(conditions); ++i)
+      {
+         AlertSignal* item = conditions[i];
+         item.Init();
+      }
+   }
    int minBars = 1;
    int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
    for (int pos = limit; pos >= 0; --pos)

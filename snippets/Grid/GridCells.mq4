@@ -68,9 +68,9 @@ public:
          for (int rowIndex = 0; rowIndex < rows; ++rowIndex)
          {
             _columns[columnIndex].Get(rowIndex).Draw(currentX, currentY);
-            currentY += maxHeight[rowIndex] * _gap;
+            currentY += (int)(maxHeight[rowIndex] * _gap);
          }
-         currentX += maxWidth[columnIndex] * _gap;
+         currentX += (int)(maxWidth[columnIndex] * _gap);
       }
    }
 
@@ -110,7 +110,7 @@ public:
       int count = ArraySize(maxWidth);
       for (int i = 0; i < count; ++i)
       {
-         total += (i < count - 1) ? maxWidth[i] * _gap : maxWidth[i];
+         total += (int)((i < count - 1) ? maxWidth[i] * _gap : maxWidth[i]);
       }
       return total;
    }
@@ -138,7 +138,7 @@ public:
       int count = ArraySize(maxHeight);
       for (int i = 0; i < count; ++i)
       {
-         total += (i < count - 1) ? maxHeight[i] * _gap : maxHeight[i];
+         total += (int)((i < count - 1) ? maxHeight[i] * _gap : maxHeight[i]);
       }
       return total;
    }

@@ -211,3 +211,7 @@ Returns true when the given condition starts to return true (true on the current
 ## ActOnSwitchInstantCondition
 
 Returns true when the given condition return true after the false on the previous call. Timeframe insensitive.
+
+## PositionLimitHitCondition
+
+Position limit hit condition.

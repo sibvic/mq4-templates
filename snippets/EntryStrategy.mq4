@@ -5,7 +5,10 @@
 interface IEntryStrategy
 {
 public:
-   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker) = 0;
+   virtual void AddRef() = 0;
+   virtual void Release() = 0;
+
+   virtual int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment) = 0;
 
    virtual int Exit(const OrderSide side) = 0;
 };
@@ -20,20 +23,25 @@ class PendingEntryStrategy : public IEntryStrategy
    IStream* _longEntryPrice;
    IStream* _shortEntryPrice;
    ActionOnConditionLogic* _actions;
+   int _references;
+   bool _ecnBroker;
 public:
    PendingEntryStrategy(const string symbol, 
       const int magicMumber, 
       const int slippagePoints, 
       IStream* longEntryPrice, 
       IStream* shortEntryPrice,
-      ActionOnConditionLogic* actions)
+      ActionOnConditionLogic* actions,
+      bool ecnBroker)
    {
+      _ecnBroker = ecnBroker;
       _actions = actions;
       _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
       _longEntryPrice = longEntryPrice;
       _shortEntryPrice = shortEntryPrice;
+      _references = 1;
    }
 
    ~PendingEntryStrategy()
@@ -42,7 +50,19 @@ public:
       delete _shortEntryPrice;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker)
+   virtual void AddRef()
+   {
+      ++_references;
+   }
+
+   virtual void Release()
+   {
+      --_references;
+      if (_references == 0)
+         delete &this;
+   }
+
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment)
    {
       double entryPrice;
       if (!GetEntryPrice(period, side, entryPrice))
@@ -53,11 +73,14 @@ public:
       double stopLoss;
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
+      {
+         Print("Lot size is too small");
          return -1;
+      }
       OrderBuilder *orderBuilder = new OrderBuilder(_actions);
       int order = orderBuilder
          .SetRate(entryPrice)
-         .SetECNBroker(ecnBroker)
+         .SetECNBroker(_ecnBroker)
          .SetSide(side)
          .SetInstrument(_symbol)
          .SetAmount(amount)
@@ -96,19 +119,36 @@ class MarketEntryStrategy : public IEntryStrategy
    int _magicNumber;
    int _slippagePoints;
    ActionOnConditionLogic* _actions;
+   int _references;
+   bool _ecnBroker;
 public:
    MarketEntryStrategy(const string symbol, 
       const int magicMumber, 
       const int slippagePoints,
-      ActionOnConditionLogic* actions)
+      ActionOnConditionLogic* actions,
+      bool ecnBroker)
    {
+      _ecnBroker = ecnBroker;
       _actions = actions;
       _magicNumber = magicMumber;
       _slippagePoints = slippagePoints;
       _symbol = symbol;
+      _references = 1;
    }
 
-   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment, bool ecnBroker)
+   virtual void AddRef()
+   {
+      ++_references;
+   }
+
+   virtual void Release()
+   {
+      --_references;
+      if (_references == 0)
+         delete &this;
+   }
+
+   int OpenPosition(const int period, OrderSide side, IMoneyManagementStrategy *moneyManagement, const string comment)
    {
       double entryPrice = side == BuySide ? InstrumentInfo::GetAsk(_symbol) : InstrumentInfo::GetBid(_symbol);
       double amount;
@@ -116,12 +156,15 @@ public:
       double stopLoss;
       moneyManagement.Get(period, entryPrice, amount, stopLoss, takeProfit);
       if (amount == 0.0)
+      {
+         Print("Lot size is too small");
          return -1;
+      }
       string error = "";
       MarketOrderBuilder *orderBuilder = new MarketOrderBuilder(_actions);
       int order = orderBuilder
          .SetSide(side)
-         .SetECNBroker(ecnBroker)
+         .SetECNBroker(_ecnBroker)
          .SetInstrument(_symbol)
          .SetAmount(amount)
          .SetSlippage(_slippagePoints)

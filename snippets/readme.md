@@ -265,10 +265,6 @@ Money management.
 
 Trading controller.
 
-## PositionCap
-
-Limit number of opened trades
-
 ## OrderBuilder
 
 Creates an order.

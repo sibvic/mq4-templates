@@ -498,7 +498,9 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    TradingCalculator* tradingCalculator = TradingCalculator::Create(symbol);
    if (!tradingCalculator.IsLotsValid(lots_value, lots_type, error))
    {
-      tradingTimeCondition.Release();
+      #ifdef TRADING_TIME_FEATURE
+         tradingTimeCondition.Release();
+      #endif
       delete tradingCalculator;
       return NULL;
    }
@@ -506,17 +508,70 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    Signaler* signaler = new Signaler(symbol, timeframe);
    signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
    
-   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, signaler);
-   
+   ICloseOnOppositeStrategy* closeOnOpposite = close_on_opposite 
+      ? (ICloseOnOppositeStrategy*)new DoCloseOnOppositeStrategy(slippage_points, magic_number)
+      : (ICloseOnOppositeStrategy*)new DontCloseOnOppositeStrategy();
+   OrderHandlers* orderHandlers = new OrderHandlers();
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
-   controller.SetActions(actions);
-   controller.SetECNBroker(ecn_broker);
+   #ifdef USE_MARKET_ORDERS
+      IEntryStrategy* entryStrategy = new MarketEntryStrategy(symbol, magic_number, slippage_points, actions, ecn_broker);
+   #else
+      AStream *longPrice = new LongEntryStream(symbol, timeframe);
+      AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
+      IEntryStrategy* entryStrategy = new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice, actions, ecn_broker);
+   #endif
+
+   AndCondition* longCondition = new AndCondition();
+   AndCondition* shortCondition = new AndCondition();
+   #ifdef TRADING_TIME_FEATURE
+      longCondition.Add(tradingTimeCondition, true);
+      shortCondition.Add(tradingTimeCondition, true);
+      tradingTimeCondition.Release();
+   #endif
+
+   AndCondition* longFilterCondition = new AndCondition();
+   AndCondition* shortFilterCondition = new AndCondition();
+
+   switch (logic_direction)
+   {
+      case DirectLogic:
+         longFilterCondition.Add(CreateLongFilterCondition(symbol, timeframe), false);
+         shortFilterCondition.Add(CreateShortFilterCondition(symbol, timeframe), false);
+         longCondition.Add(CreateLongCondition(symbol, timeframe), false);
+         shortCondition.Add(CreateShortCondition(symbol, timeframe), false);
+         break;
+      case ReversalLogic:
+         shortFilterCondition.Add(CreateLongFilterCondition(symbol, timeframe), false);
+         longFilterCondition.Add(CreateShortFilterCondition(symbol, timeframe), false);
+         longCondition.Add(CreateShortCondition(symbol, timeframe), false);
+         shortCondition.Add(CreateLongCondition(symbol, timeframe), false);
+         break;
+   }
+   if (position_cap)
+   {
+      longCondition.Add(new PositionLimitHitCondition(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol), false);
+      shortCondition.Add(new PositionLimitHitCondition(SellSide, magic_number, no_of_sell_position, no_of_positions, symbol), false);
+   }
+   
+   EntryPositionController* longPosition = new EntryPositionController(BuySide, longCondition, longFilterCondition, 
+      entryStrategy, closeOnOpposite, orderHandlers, signaler, "", "Buy");
+   EntryPositionController* shortPosition = new EntryPositionController(SellSide, shortCondition, shortFilterCondition,
+      entryStrategy, closeOnOpposite, orderHandlers, signaler, "", "Sell");
+   longCondition.Release();
+   shortCondition.Release();
+   longFilterCondition.Release();
+   shortFilterCondition.Release();
+      
+   orderHandlers.Release();
+   closeOnOpposite.Release();
+   
+   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, longPosition, shortPosition, actions, signaler);
    
    if (breakeven_type != StopLimitDoNotUse)
    {
       #ifndef USE_NET_BREAKEVEN
          MoveStopLossOnProfitOrderAction* orderAction = new MoveStopLossOnProfitOrderAction(breakeven_type, breakeven_value, breakeven_level, signaler, actions);
-         controller.AddOrderAction(orderAction);
+         orderHandlers.AddOrderAction(orderAction);
          orderAction.Release();
       #endif
    }
@@ -533,43 +588,30 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          case TrailingPips:
             {
                CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
-               controller.AddOrderAction(trailingAction);
+               orderHandlers.AddOrderAction(trailingAction);
                trailingAction.Release();
             }
             break;
       }
    #endif
 
-   #ifdef MARTINGALE_FEATURE
-      switch (martingale_type)
-      {
-         case MartingaleDoNotUse:
-            controller.SetShortMartingaleStrategy(new NoMartingaleStrategy());
-            controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
-            break;
-         case MartingaleOnLoss:
-            {
-               PriceMovedFromTradeOpenCondition* condition = new PriceMovedFromTradeOpenCondition(symbol, timeframe, martingale_step_type, martingale_step);
-               controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
-               controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
-               condition.Release();
-            }
-            break;
-      }
-   #endif
-
-   AndCondition* longCondition = new AndCondition();
-   longCondition.Add(CreateLongCondition(symbol, timeframe), false);
-   AndCondition* shortCondition = new AndCondition();
-   shortCondition.Add(CreateShortCondition(symbol, timeframe), false);
-   #ifdef TRADING_TIME_FEATURE
-      longCondition.Add(tradingTimeCondition, true);
-      shortCondition.Add(tradingTimeCondition, true);
-   #endif
-   tradingTimeCondition.Release();
-
-   ICondition* longFilterCondition = CreateLongFilterCondition(symbol, timeframe);
-   ICondition* shortFilterCondition = CreateShortFilterCondition(symbol, timeframe);
+   // #ifdef MARTINGALE_FEATURE
+   //    switch (martingale_type)
+   //    {
+   //       case MartingaleDoNotUse:
+   //          controller.SetShortMartingaleStrategy(new NoMartingaleStrategy());
+   //          controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
+   //          break;
+   //       case MartingaleOnLoss:
+   //          {
+   //             PriceMovedFromTradeOpenCondition* condition = new PriceMovedFromTradeOpenCondition(symbol, timeframe, martingale_step_type, martingale_step);
+   //             controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
+   //             controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
+   //             condition.Release();
+   //          }
+   //          break;
+   //    }
+   // #endif
 
    #ifdef WITH_EXIT_LOGIC
       controller.SetExitLogic(exit_logic);
@@ -583,18 +625,10 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    switch (logic_direction)
    {
       case DirectLogic:
-         controller.SetLongCondition(longCondition);
-         controller.SetLongFilterCondition(longFilterCondition);
-         controller.SetShortCondition(shortCondition);
-         controller.SetShortFilterCondition(shortFilterCondition);
          controller.SetExitLongCondition(exitLongCondition);
          controller.SetExitShortCondition(exitShortCondition);
          break;
       case ReversalLogic:
-         controller.SetLongCondition(shortCondition);
-         controller.SetLongFilterCondition(shortFilterCondition);
-         controller.SetShortCondition(longCondition);
-         controller.SetShortFilterCondition(longFilterCondition);
          controller.SetExitLongCondition(exitShortCondition);
          controller.SetExitShortCondition(exitLongCondition);
          break;
@@ -610,8 +644,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    
    IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true);
    IMoneyManagementStrategy* shortMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, false);
-   controller.AddLongMoneyManagement(longMoneyManagement);
-   controller.AddShortMoneyManagement(shortMoneyManagement);
+   longPosition.AddMoneyManagement(longMoneyManagement);
+   shortPosition.AddMoneyManagement(shortMoneyManagement);
 
    #ifdef NET_STOP_LOSS_FEATURE
       if (net_stop_loss_type != StopLimitDoNotUse)
@@ -642,32 +676,9 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       }
    #endif
 
-   if (close_on_opposite)
-      controller.SetCloseOnOpposite(new DoCloseOnOppositeStrategy(slippage_points, magic_number));
-   else
-      controller.SetCloseOnOpposite(new DontCloseOnOppositeStrategy());
-
-   #ifdef POSITION_CAP_FEATURE
-      if (position_cap)
-      {
-         controller.SetLongPositionCap(new PositionCapStrategy(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol));
-         controller.SetShortPositionCap(new PositionCapStrategy(SellSide, magic_number, no_of_sell_position, no_of_positions, symbol));
-      }
-      else
-      {
-         controller.SetLongPositionCap(new NoPositionCapStrategy());
-         controller.SetShortPositionCap(new NoPositionCapStrategy());
-      }
-   #endif
-
    controller.SetEntryLogic(entry_logic);
-   #ifdef USE_MARKET_ORDERS
-      controller.SetEntryStrategy(new MarketEntryStrategy(symbol, magic_number, slippage_points, actions));
-   #else
-      AStream *longPrice = new LongEntryStream(symbol, timeframe);
-      AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
-      controller.SetEntryStrategy(new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice, actions));
-   #endif
+   controller.SetEntryStrategy(entryStrategy);
+   entryStrategy.Release();
    if (print_log)
    {
       controller.SetPrintLog(log_file);

@@ -1,7 +1,7 @@
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
 
-// Trading controller v7.6
+// Trading controller v7.7
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -87,12 +87,16 @@ public:
       string entryShortLog = "";
       string exitLongLog = "";
       string exitShortLog = "";
-      if (EntryAllowed(entryTime))
+      if (_lastEntryTime != 0 && EntryAllowed(entryTime))
       {
          if (DoEntryLogic(entryTradePeriod, entryTime, entryLongLog, entryShortLog))
          {
             _lastActionTime = entryTime;
          }
+         _lastEntryTime = entryTime;
+      }
+      else if (_lastEntryTime == 0)
+      {
          _lastEntryTime = entryTime;
       }
 

@@ -1,4 +1,4 @@
-// Risk lots provider v2.0
+// Risk lots provider v2.1
 
 #ifndef RiskLotsProvider_IMP
 #define RiskLotsProvider_IMP
@@ -21,7 +21,7 @@ public:
    virtual double GetValue(int period, double entryPrice)
    {
       double sl = _stopLoss.GetValue(period, entryPrice);
-      return _calculator.GetLots(_lotsType, _lots, sl);
+      return _calculator.GetLots(_lotsType, _lots, MathAbs(sl - entryPrice));
    }
 };
 

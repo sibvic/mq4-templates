@@ -551,8 +551,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    {
       ICondition* buyLimitCondition = new PositionLimitHitCondition(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol);
       ICondition* sellLimitCondition = new PositionLimitHitCondition(SellSide, magic_number, no_of_sell_position, no_of_positions, symbol);
-      longCondition.Add(new NotCondition(buyLimitCondition), false);
-      shortCondition.Add(new NotCondition(sellLimitCondition), false);
+      longFilterCondition.Add(new NotCondition(buyLimitCondition), false);
+      shortFilterCondition.Add(new NotCondition(sellLimitCondition), false);
       buyLimitCondition.Release();
       sellLimitCondition.Release();
    }

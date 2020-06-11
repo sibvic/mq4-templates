@@ -1,8 +1,8 @@
-// Trading commands v.2.14
-// More templates and snippets on https://github.com/sibvic/mq4-templates
-
 #include <InstrumentInfo.mq4>
 #include <OrdersIterator.mq4>
+
+// Trading commands v.2.14
+// More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef TradingCommands_IMP
 #define TradingCommands_IMP

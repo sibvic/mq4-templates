@@ -1,3 +1,7 @@
+## ATRStopLossStrategy
+
+ATR stop loss strategy.
+
 ## ATRTakeProfitStrategy
 
 ATR take profit strategy.

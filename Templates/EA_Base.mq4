@@ -112,6 +112,7 @@ enum TrailingType
    string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    input double stop_loss_value = 10; // Stop loss value
+   input double stop_loss_atr_multiplicator = 1; // Stop loss multiplicator (for ATR TP)
    input TrailingType trailing_type = TrailingDontUse; // Trailing type
    input double trailing_step = 10; // Trailing step
    input double trailing_start = 0; // Min distance to order to activate the trailing
@@ -127,16 +128,7 @@ input double breakeven_level = 0; // Breakeven target
    input double net_stop_loss_value = 10; // Net stop loss value
 #endif
 
-enum TakeProfitType
-{
-   TPDoNotUse, // Do not use
-   TPPercent, // Set in %
-   TPPips, // Set in Pips
-   TPDollar, // Set in $,
-   TPRiskReward, // Set in % of stop loss
-   TPAbsolute, // Set in absolite value (rate),
-   TPAtr // Set in ATR(value) * mult
-};
+#include <enums/TakeProfitType.mq4>
 #ifdef TAKE_PROFIT_FEATURE
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
@@ -219,23 +211,13 @@ input string log_file = "log.csv"; // Log file name
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
+#include <Conditions/PositionLimitHitCondition.mq4>
 #include <Actions/MoveNetStopLossAction.mq4>
 #include <Actions/MoveNetTakeProfitAction.mq4>
-#include <MoneyManagement/ILotsProvider.mq4>
-#include <MoneyManagement/IStopLossStrategy.mq4>
-#include <MoneyManagement/DollarStopLossStrategy.mq4>
-#include <MoneyManagement/RiskLotsProvider.mq4>
-#include <MoneyManagement/HighLowStopLossStrategy.mq4>
-#include <MoneyManagement/DefaultStopLossStrategy.mq4>
-#include <MoneyManagement/DefaultLotsProvider.mq4>
-#include <MoneyManagement/MoneyManagementStrategy.mq4>
-#include <MoneyManagement/RiskToRewardTakeProfitStrategy.mq4>
-#include <MoneyManagement/DefaultTakeProfitStrategy.mq4>
-#include <MoneyManagement/ATRTakeProfitStrategy.mq4>
+#include <MoneyManagement/functions.mq4>
 #include <MartingaleStrategy.mq4>
 #include <TradingCommands.mq4>
 #include <CloseOnOpposite.mq4>
-#include <PositionCap.mq4>
 #include <OrderBuilder.mq4>
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
@@ -407,84 +389,6 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
-IStopLossStrategy* CreateStopLossStrategy(TradingCalculator* tradingCalculator, string symbol,
-   ENUM_TIMEFRAMES timeframe, bool isBuy)
-{
-   switch (stop_loss_type)
-   {
-      case SLDoNotUse:
-         return new DefaultStopLossStrategy(tradingCalculator, StopLimitDoNotUse, stop_loss_value, isBuy);
-      case SLPercent:
-         return new DefaultStopLossStrategy(tradingCalculator, StopLimitPercent, stop_loss_value, isBuy);
-      case SLPips:
-         return new DefaultStopLossStrategy(tradingCalculator, StopLimitPips, stop_loss_value, isBuy);
-      case SLAbsolute:
-         return new DefaultStopLossStrategy(tradingCalculator, StopLimitAbsolute, stop_loss_value, isBuy);
-      case SLHighLow:
-         return new HighLowStopLossStrategy((int)stop_loss_value, isBuy, symbol, timeframe);
-      case SLAtr:
-         return NULL; // Not supported yet
-      case SLDollar:
-         return NULL; // Not supported at all
-   }
-   return NULL;
-}
-
-MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
-   ENUM_TIMEFRAMES timeframe, bool isBuy)
-{
-   ILotsProvider* lots = NULL;
-   IStopLossStrategy* stopLoss = NULL;
-   switch (lots_type)
-   {
-      case PositionSizeRisk:
-         stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy);
-         lots = new RiskLotsProvider(tradingCalculator, lots_type, lots_value, stopLoss);
-         break;
-      default:
-         lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);
-         switch (stop_loss_type)
-         {
-            case SLDollar:
-               stopLoss = new DollarStopLossStrategy(tradingCalculator, StopLimitDollar, stop_loss_value, isBuy, lots);
-               break;
-            default:
-               stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy);
-               break;
-         }
-         break;
-   }
-   ITakeProfitStrategy* tp = NULL;
-   switch (take_profit_type)
-   {
-      case TPDoNotUse:
-         tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDoNotUse, take_profit_value, isBuy);
-         break;
-      #ifdef TAKE_PROFIT_FEATURE
-         case TPPercent:
-            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPercent, take_profit_value, isBuy);
-            break;
-         case TPPips:
-            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitPips, take_profit_value, isBuy);
-            break;
-         case TPDollar:
-            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDollar, take_profit_value, isBuy);
-            break;
-         case TPRiskReward:
-            tp = new RiskToRewardTakeProfitStrategy(take_profit_value, isBuy);
-            break;
-         case TPAbsolute:
-            tp = new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, take_profit_value, isBuy);
-            break;
-         case TPAtr:
-            tp = new ATRTakeProfitStrategy(symbol, timeframe, (int)take_profit_value, take_profit_atr_multiplicator, isBuy);
-            break;
-      #endif
-   }
-   
-   return new MoneyManagementStrategy(lots, stopLoss, tp);
-}
-
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
 {
    #ifdef TRADING_TIME_FEATURE
@@ -646,8 +550,10 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       condition.Release();
    }
    
-   IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true);
-   IMoneyManagementStrategy* shortMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, false);
+   IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true, 
+      lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   IMoneyManagementStrategy* shortMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, false, 
+      lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
    longPosition.AddMoneyManagement(longMoneyManagement);
    shortPosition.AddMoneyManagement(shortMoneyManagement);
 

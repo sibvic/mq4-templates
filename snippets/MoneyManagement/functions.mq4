@@ -1,6 +1,6 @@
-#include <enums/TakeProfitType.mq4>
-#include <enums/StopLossType.mq4>
-#include <enums/PositionSizeType.mq4>
+#include <../enums/TakeProfitType.mq4>
+#include <../enums/StopLossType.mq4>
+#include <../enums/PositionSizeType.mq4>
 #include <IStopLossStrategy.mq4>
 #include <DefaultStopLossStrategy.mq4>
 #include <HighLowStopLossStrategy.mq4>

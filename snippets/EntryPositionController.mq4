@@ -1,9 +1,9 @@
 #include <conditions/ICondition.mq4>
 #include <enums/OrderSide.mq4>
-#include <ICloseOnOppositeStrategy.mq4>
+#include <CloseOnOpposite.mq4>
 #include <Signaler.mq4>
-#include <IMoneyManagementStrategy.mq4>
-#include <IEntryStrategy.mq4>
+#include <MoneyManagement/IMoneyManagementStrategy.mq4>
+#include <EntryStrategy.mq4>
 #include <OrderHandlers.mq4>
 
 // Entry position controller v1.0

@@ -1,5 +1,6 @@
 #include <actions/AOrderAction.mq4>
 #include <enums/OrderSide.mq4>
+#include <EntryPositionController.mq4>
 
 // Trading controller v7.7
 

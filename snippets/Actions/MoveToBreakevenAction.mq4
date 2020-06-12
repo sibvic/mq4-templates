@@ -1,22 +1,17 @@
-//Move to breakeven action v2.0
+//Move to breakeven action v3.0
 
 #ifndef MoveToBreakevenAction_IMP
 #define MoveToBreakevenAction_IMP
 
 class MoveToBreakevenAction : public AAction
 {
-   Signaler* _signaler;
-   double _trigger;
    double _target;
    InstrumentInfo *_instrument;
    IOrder* _order;
    string _name;
-   double _refLots;
 public:
-   MoveToBreakevenAction(double trigger, double target, string name, IOrder* order, Signaler *signaler, double refLots = 0)
+   MoveToBreakevenAction(double target, string name, IOrder* order)
    {
-      _signaler = signaler;
-      _trigger = trigger;
       _target = target;
       _name = name;
 
@@ -24,8 +19,11 @@ public:
       _order.AddRef();
       _order.Select();
       string symbol = OrderSymbol();
-      _instrument = new InstrumentInfo(symbol);
-      _refLots = refLots;
+      if (_instrument == NULL || symbol != _instrument.GetSymbol())
+      {
+         delete _instrument;
+         _instrument = new InstrumentInfo(symbol);
+      }
    }
 
    ~MoveToBreakevenAction()
@@ -36,31 +34,21 @@ public:
 
    virtual bool DoAction(const int period, const datetime date)
    {
-      if (!_order.Select() || OrderCloseTime() != 0 || (_refLots != 0 && _instrument.CompareLots(OrderLots(), _refLots) != 0))
+      if (!_order.Select() || OrderCloseTime() != 0)
       {
          return false;
       }
-      int ticket = OrderTicket();
+      int ticketId = OrderTicket();
       string error;
-      if (!TradingCommands::MoveSL(ticket, _target, error))
+      if (!TradingCommands::MoveSL(ticketId, _target, error))
       {
          Print(error);
          return false;
       }
-      if (_signaler != NULL)
-      {
-         _signaler.SendNotifications(GetNamePrefix() + "Trade " + IntegerToString(ticket) + " has reached " 
-            + DoubleToString(_trigger, _instrument.GetDigits()) + ". Stop loss moved to " 
-            + DoubleToString(_target, _instrument.GetDigits()));
-      }
+      string ticketIdStr = IntegerToString(ticketId);
+      GlobalVariableDel("be_" + ticketIdStr + "_ta");
+      GlobalVariableDel("be_" + ticketIdStr + "_tr");
       return true;
-   }
-private:
-   string GetNamePrefix()
-   {
-      if (_name == "")
-         return "";
-      return _name + ". ";
    }
 };
 

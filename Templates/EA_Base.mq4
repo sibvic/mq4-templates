@@ -479,6 +479,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    {
       #ifndef USE_NET_BREAKEVEN
          MoveStopLossOnProfitOrderAction* orderAction = new MoveStopLossOnProfitOrderAction(breakeven_type, breakeven_value, breakeven_level, signaler, actions);
+         orderAction.RestoreActions(_Symbol, magic_number);
          orderHandlers.AddOrderAction(orderAction);
          orderAction.Release();
       #endif

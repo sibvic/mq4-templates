@@ -51,7 +51,6 @@ public:
          {
             continue;
          }
-         Print("Restoring BE for " + ticketIdStr);
          CreateBreakeven(ticketId, trigger, target, "");
       }
    }

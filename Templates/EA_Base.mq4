@@ -497,6 +497,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          case TrailingPips:
             {
                CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
+               trailingAction.RestoreActions(_Symbol, magic_number);
                orderHandlers.AddOrderAction(trailingAction);
                trailingAction.Release();
             }

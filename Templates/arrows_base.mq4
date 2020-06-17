@@ -139,6 +139,7 @@ int init()
       Print("Error: Dll calls must be allowed!");
       return INIT_FAILED;
    }
+   IndicatorBuffers(8);
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName("...");
    mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);

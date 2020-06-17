@@ -28,6 +28,7 @@ input DisplayMode display_mode = Horizontal; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
+input int lookbakc_limit = 0; // Lookback limit
 
 #define MAX_LOOPBACK 500
 
@@ -70,8 +71,12 @@ public:
 
    virtual void Draw()
    { 
-      string label = "...";
-      ObjectMakeLabel(_id, _x, _y, label, Labels_Color, 1, WindowNumber, "Arial", font_size); 
+      for (int i = 0; i < lookbakc_limit; ++i)
+      {
+         string label = "...";
+         ObjectMakeLabel(_id, _x, _y, label, Labels_Color, 1, WindowNumber, "Arial", font_size); 
+         break;
+      }
    }
 };
 

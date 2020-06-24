@@ -1,6 +1,6 @@
-// ATR stop loss strategy v1.0
-
 #include <IStopLossStrategy.mq4>
+
+// ATR stop loss strategy v1.0
 
 #ifndef ATRStopLossStrategy_IMP
 #define ATRStopLossStrategy_IMP

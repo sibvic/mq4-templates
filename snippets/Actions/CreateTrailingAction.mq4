@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
 
-// Create trailing action v2.0
+// Create trailing action v2.1
 
 #ifndef CreateTrailingAction_IMP
 #define CreateTrailingAction_IMP
@@ -72,6 +72,7 @@ public:
 
       double distance = (OrderOpenPrice() - OrderStopLoss()) / pipSize;
 
+      string ticketIdStr = IntegerToString(_currentTicket);
       GlobalVariableSet("tr_" + ticketIdStr + "_stp", _step);
       GlobalVariableSet("tr_" + ticketIdStr + "_strt", _start);
       GlobalVariableSet("tr_" + ticketIdStr + "_d", distance);

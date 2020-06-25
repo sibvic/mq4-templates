@@ -1,12 +1,12 @@
-// Trend value cell v2.3
-
-#ifndef TrendValueCell_IMP
-#define TrendValueCell_IMP
-
 #include <../conditions/ICondition.mq4>
 #include <../Signaler.mq4>
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
+
+// Trend value cell v3.0
+
+#ifndef TrendValueCell_IMP
+#define TrendValueCell_IMP
 
 class TrendValueCell : public ICell
 {
@@ -18,11 +18,13 @@ class TrendValueCell : public ICell
    datetime _lastDatetime;
    ICondition* _conditions[];
    IValueFormatter* _valueFormatters[];
+   IValueFormatter* _historyValueFormatters[];
    Signaler* _signaler;
    datetime _lastSignalDate;
    int _lastSignal;
    int _alertShift;
    IValueFormatter* _defaultValue;
+   bool _historicalMode;
 public:
    TrendValueCell(const string id, const int x, const int y, const string symbol, 
       const ENUM_TIMEFRAMES timeframe, int alertShift, 
@@ -39,6 +41,7 @@ public:
       _timeframe = timeframe;
       _defaultValue = defaultValue;
       _defaultValue.AddRef();
+      _historicalMode = true;
    }
 
    ~TrendValueCell()
@@ -49,20 +52,35 @@ public:
       {
          _conditions[i].Release();
          _valueFormatters[i].Release();
+         if (_historyValueFormatters[i] != NULL)
+         {
+            _historyValueFormatters[i].Release();
+         }
       }
       ArrayResize(_conditions, 0);
       ArrayResize(_valueFormatters, 0);
+      ArrayResize(_historyValueFormatters, 0);
    }
 
-   void AddCondition(ICondition* condition, IValueFormatter* value)
+   void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue)
    {
       int size = ArraySize(_conditions);
       ArrayResize(_conditions, size + 1);
       ArrayResize(_valueFormatters, size + 1);
+      ArrayResize(_historyValueFormatters, size + 1);
       _conditions[size] = condition;
       condition.AddRef();
       _valueFormatters[size] = value;
       value.AddRef();
+      _historyValueFormatters[size] = historyValue;
+      if (historyValue != NULL)
+      {
+         historyValue.AddRef();
+      }
+      else
+      {
+         _historicalMode = false;
+      }
    }
 
    virtual void HandleButtonClicks()
@@ -92,12 +110,34 @@ public:
             return;
          }
       }
+      if (_historicalMode)
+      {
+         DrawHistoricalValue();
+         return;
+      }
       color clr;
       string text = _defaultValue.FormatItem(_alertShift, date, clr);
       DrawItem(text, clr, true);
    }
 
 private:
+   void DrawHistoricalValue()
+   {
+      for (int period = _alertShift + 1; period < 1000; ++period)
+      {
+         datetime date = iTime(_symbol, _timeframe, period);
+         for (int i = 0; i < ArraySize(_conditions); ++i)
+         {
+            if (_conditions[i].IsPass(period, date))
+            {
+               color clr;
+               string text = _historyValueFormatters[i].FormatItem(period, date, clr);
+               DrawItem(text, clr, true);
+               return;
+            }
+         }
+      }
+   }
    void DrawItem(string text, color clr, bool simpleLabel)
    {
       string id = _id + "B";

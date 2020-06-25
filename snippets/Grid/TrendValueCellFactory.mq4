@@ -2,7 +2,7 @@
 #include <TrendValueCell.mq4>
 #include <FixedTextFormatter.mq4>
 
-// Trend value cell factory v2.0
+// Trend value cell factory v3.0
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -12,12 +12,16 @@ class TrendValueCellFactory : public ICellFactory
    int _alertShift;
    color _upColor;
    color _downColor;
+   color _historicalUpColor;
+   color _historicalDownColor;
 public:
-   TrendValueCellFactory(int alertShift = 0, color upColor = Green, color downColor = Red)
+   TrendValueCellFactory(int alertShift = 0, color upColor = Green, color downColor = Red, color historicalUpColor = Lime, color historicalDownColor = Pink)
    {
       _alertShift = alertShift;
       _upColor = upColor;
       _downColor = downColor;
+      _historicalUpColor = historicalUpColor;
+      _historicalDownColor = historicalDownColor;
    }
 
    virtual string GetHeader()
@@ -33,15 +37,19 @@ public:
 
       ICondition* upCondition = new UpCondition(symbol, timeframe);
       IValueFormatter* upValue = new FixedTextFormatter("Buy", _upColor);
-      cell.AddCondition(upCondition, upValue);
+      IValueFormatter* historyUpValue = new FixedTextFormatter("Buy", _historicalUpColor);
+      cell.AddCondition(upCondition, upValue, historyUpValue);
       upCondition.Release();
       upValue.Release();
+      historyUpValue.Release();
 
       ICondition* downCondition = new DownCondition(symbol, timeframe);
       IValueFormatter* downValue = new FixedTextFormatter("Sell", _downColor);
-      cell.AddCondition(downCondition, downValue);
+      IValueFormatter* historyDownValue = new FixedTextFormatter("Sell", _historicalDownColor);
+      cell.AddCondition(downCondition, downValue, historyDownValue);
       downCondition.Release();
       downValue.Release();
+      historyDownValue.Release();
 
       return cell;
    }

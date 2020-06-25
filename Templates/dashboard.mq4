@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.2.1
+// ProfitRobots Dashboard template v.2.2
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -22,10 +22,10 @@ input bool     Include_D1               = true;
 input bool     Include_W1               = true;
 input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
-input color    Confirmed_Up_Color       = Green; // Confirmed up color
-//input color    Unconfirmed_Up_Color     = Lime; // Unconfirmed up color
-input color    Confirmed_Dn_Color       = Red; // Confirmed down color
-//input color    Unconfirmed_Dn_Color     = Pink; // Unconfirmed down color
+input color    historical_Up_Color      = Green; // Historical up color
+input color    Up_Color                 = Lime; // Up color
+input color    historical_Dn_Color      = Red; // Historical down color
+input color    Dn_Color                 = Pink; // Down color
 input color    Neutral_Color            = clrDarkGray;
 input int x_shift = 900; // X coordinate
 input DisplayMode display_mode = Vertical; // Display mode
@@ -85,18 +85,31 @@ public:
 #include <Grid/Grid.mq4>
 #include <Grid/TrendValueCellFactory.mq4>
 
-string IndicatorName;
 string IndicatorObjPrefix;
 
-string GenerateIndicatorName(const string target)
+bool NamesCollision(const string name)
 {
-   string name = target;
-   int try = 2;
-   while (WindowFind(name) != -1)
+   for (int k = ObjectsTotal(); k >= 0; k--)
    {
-      name = target + " #" + IntegerToString(try++);
+      if (StringFind(ObjectName(0, k), name) == 0)
+      {
+         return true;
+      }
    }
-   return name;
+   return false;
+}
+
+string GenerateIndicatorPrefix(const string target)
+{
+   for (int i = 0; i < 1000; ++i)
+   {
+      string prefix = target + "_" + IntegerToString(i);
+      if (!NamesCollision(prefix))
+      {
+         return prefix;
+      }
+   }
+   return target;
 }
 
 Grid *grid;
@@ -157,6 +170,7 @@ void OnChartEvent(const int id,
 //    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
 // }
 
+string IndicatorName = "...";
 int init()
 {
    if (!IsDllsAllowed() && advanced_alert)
@@ -165,12 +179,11 @@ int init()
       return INIT_FAILED;
    }
 
-   IndicatorName = GenerateIndicatorName("...");
-   IndicatorObjPrefix = "__" + IndicatorName + "__";
+   IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName(IndicatorName);
 
    GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical);
-   builder.AddCell(new TrendValueCellFactory(alert_on_close ? 1 : 0, Confirmed_Up_Color, Confirmed_Dn_Color));
+   builder.AddCell(new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

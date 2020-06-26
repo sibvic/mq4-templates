@@ -3,7 +3,7 @@
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
-// Trend value cell v3.0
+// Trend value cell v4.0
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -18,6 +18,7 @@ class TrendValueCell : public ICell
    datetime _lastDatetime;
    ICondition* _conditions[];
    IValueFormatter* _valueFormatters[];
+   IValueFormatter* _signalFormatters[];
    IValueFormatter* _historyValueFormatters[];
    Signaler* _signaler;
    datetime _lastSignalDate;
@@ -52,6 +53,10 @@ public:
       {
          _conditions[i].Release();
          _valueFormatters[i].Release();
+         if (_signalFormatters[i] != NULL)
+         {
+            _signalFormatters[i].Release();
+         }
          if (_historyValueFormatters[i] != NULL)
          {
             _historyValueFormatters[i].Release();
@@ -60,6 +65,7 @@ public:
       ArrayResize(_conditions, 0);
       ArrayResize(_valueFormatters, 0);
       ArrayResize(_historyValueFormatters, 0);
+      ArrayResize(_signalFormatters, 0);
    }
 
    void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue)
@@ -68,6 +74,7 @@ public:
       ArrayResize(_conditions, size + 1);
       ArrayResize(_valueFormatters, size + 1);
       ArrayResize(_historyValueFormatters, size + 1);
+      ArrayResize(_signalFormatters, size + 1);
       _conditions[size] = condition;
       condition.AddRef();
       _valueFormatters[size] = value;
@@ -80,6 +87,11 @@ public:
       else
       {
          _historicalMode = false;
+      }
+      _signalFormatters[size] = signal;
+      if (signal != NULL)
+      {
+         signal.AddRef();
       }
    }
 
@@ -106,7 +118,11 @@ public:
             color clr;
             string text = _valueFormatters[i].FormatItem(_alertShift, date, clr);
             DrawItem(text, clr, true);
-            SendAlert(text, i);
+            if (_signalFormatters[i] != NULL)
+            {
+               text = _signalFormatters[i].FormatItem(_alertShift, date, clr);
+               SendAlert(text, i);
+            }
             return;
          }
       }

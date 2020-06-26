@@ -1,9 +1,9 @@
+#include <ACondition.mq4>
+
 // Seconds before candle close v1.0
 
 #ifndef SecondsBeforeCandleCloseCondition_IMP
 #define SecondsBeforeCandleCloseCondition_IMP
-
-#include <ACondition.mq4>
 
 class SecondsBeforeCandleCloseCondition : public ACondition
 {

@@ -1,7 +1,7 @@
 // Partial close of the order action v1.0
 
 #include <AAction.mq4>
-#include <../IOrder.mq4>
+#include <../Order.mq4>
 
 #ifndef PartialCloseOrderAction_IMP
 #define PartialCloseOrderAction_IMP

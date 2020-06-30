@@ -16,10 +16,12 @@ public:
       _ticket = ticket;
    }
 
-   virtual bool DoAction()
+   virtual bool DoAction(const int period, const datetime date)
    {
       if (!OrderSelect(_ticket, SELECT_BY_TICKET, MODE_TRADES) || OrderCloseTime() != 0.0)
+      {
          return true;
+      }
 
       string error;
       if (!TradingCommands::CloseCurrentOrder(_slippagePoints, error))

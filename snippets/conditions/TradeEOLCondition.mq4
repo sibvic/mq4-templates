@@ -1,5 +1,5 @@
 #include <ACondition.mq4>
-#include <../IOrder.mq4>
+#include <../Order.mq4>
 
 // Trade end of life condition v1.0
 
@@ -23,7 +23,7 @@ public:
       _order.Release();
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       if (!_order.Select())
       {

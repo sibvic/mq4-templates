@@ -1,4 +1,4 @@
-// Colored stream v3.0
+// Colored stream v3.1
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -20,6 +20,15 @@ public:
    ColoredStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
       :AStream(symbol, timeframe)
    {
+   }
+
+   void Init(double defaultValue)
+   {
+      for (int i = 0; i < ArraySize(_streams); ++i)
+      {
+         ArrayInitialize(_streams[i].Stream, EMPTY_VALUE);
+      }
+      ArrayInitialize(_data, EMPTY_VALUE);
    }
 
    int RegisterInternalStream(int id)

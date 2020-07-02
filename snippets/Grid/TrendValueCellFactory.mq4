@@ -2,7 +2,7 @@
 #include <TrendValueCell.mq4>
 #include <FixedTextFormatter.mq4>
 
-// Trend value cell factory v3.0
+// Trend value cell factory v4.0
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -38,7 +38,7 @@ public:
       ICondition* upCondition = new UpCondition(symbol, timeframe);
       IValueFormatter* upValue = new FixedTextFormatter("Buy", _upColor);
       IValueFormatter* historyUpValue = new FixedTextFormatter("Buy", _historicalUpColor);
-      cell.AddCondition(upCondition, upValue, historyUpValue);
+      cell.AddCondition(upCondition, upValue, historyUpValue, upValue);
       upCondition.Release();
       upValue.Release();
       historyUpValue.Release();
@@ -46,7 +46,7 @@ public:
       ICondition* downCondition = new DownCondition(symbol, timeframe);
       IValueFormatter* downValue = new FixedTextFormatter("Sell", _downColor);
       IValueFormatter* historyDownValue = new FixedTextFormatter("Sell", _historicalDownColor);
-      cell.AddCondition(downCondition, downValue, historyDownValue);
+      cell.AddCondition(downCondition, downValue, historyDownValue, downValue);
       downCondition.Release();
       downValue.Release();
       historyDownValue.Release();

@@ -3,7 +3,7 @@
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
-// Trend value cell v4.0
+// Trend value cell v4.1
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -68,7 +68,7 @@ public:
       ArrayResize(_signalFormatters, 0);
    }
 
-   void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue)
+   void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue, IValueFormatter* signal)
    {
       int size = ArraySize(_conditions);
       ArrayResize(_conditions, size + 1);

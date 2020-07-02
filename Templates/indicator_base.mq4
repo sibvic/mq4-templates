@@ -75,8 +75,8 @@ int OnCalculate(const int rates_total,
    ArraySetAsSeries(close, true);
    ArraySetAsSeries(tick_volume, true);
 
-   int toSkip = fpPeriod;
-   for (int pos = rates_total - 1 - toSkip; pos >= 0; --pos)
+   int toSkip = 0;
+   for (int pos = rates_total - 1 - MathMax(prev_calculated, toSkip); pos >= 0; --pos)
    {
    }
    

@@ -1,9 +1,10 @@
-// Abstract stream v1.0
+#include <IStream.mq4>
+#include <../InstrumentInfo.mq4>
+
+// Abstract stream v1.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AStream_IMP
-#include <IStream.mq4>
-#include <../InstrumentInfo.mq4>
 
 class AStream : public IStream
 {
@@ -43,6 +44,11 @@ public:
       --_references;
       if (_references == 0)
          delete &this;
+   }
+
+   int Size()
+   {
+      return iBars(_symbol, _timeframe);
    }
 };
 #define AStream_IMP

@@ -1,37 +1,44 @@
-// Custom stream v1.0
+#include <AStreamBase.mq4>
+// Custom stream v2.0
 
 #ifndef CustomStream_IMP
 #define CustomStream_IMP
 
-#include <AStream.mq4>
-
-class CustomStream : public AStream
+class CustomStream : public AStreamBase
 {
-public:
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
    double _stream[];
+public:
 
    CustomStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-      :AStream(symbol, timeframe)
    {
+      _symbol = symbol;
+      _timeframe = timeframe;
    }
 
-   int RegisterStream(int id, color clr, int width, ENUM_LINE_STYLE style, string name)
+   virtual int Size()
    {
-      SetIndexBuffer(id, _stream);
-      SetIndexStyle(id, DRAW_LINE, style, width, clr);
-      SetIndexLabel(id, name);
-      return id + 1;
+      return iBars(_symbol, _timeframe);
    }
 
-   int RegisterInternalStream(int id)
+   void SetValue(const int period, double value)
    {
-      SetIndexBuffer(id, _stream);
-      SetIndexStyle(id, DRAW_NONE);
-      return id + 1;
+      int totalBars = Size();
+      if (ArrayRange(_stream, 0) != totalBars) 
+      {
+         ArrayResize(_stream, totalBars);
+      }
+      _stream[period] = value;
    }
 
    bool GetValue(const int period, double &val)
    {
+      int totalBars = Size();
+      if (ArrayRange(_stream, 0) != totalBars) 
+      {
+         ArrayResize(_stream, totalBars);
+      }
       val = _stream[period];
       return _stream[period] != EMPTY_VALUE;
    }

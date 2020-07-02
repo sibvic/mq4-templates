@@ -1,4 +1,4 @@
-// IBarStream v2.0
+// IBarStream v2.1
 
 #include <IStream.mq4>
 
@@ -21,8 +21,6 @@ public:
    virtual bool GetOpenClose(const int period, double &open, double &close) = 0;
 
    virtual bool GetDate(const int period, datetime &dt) = 0;
-
-   virtual int Size() = 0;
 
    virtual void Refresh() = 0;
 };

@@ -1,3 +1,5 @@
+#include <AStream.mq4>
+
 // Colored stream v3.1
 
 #ifndef ColoredStream_IMP
@@ -8,8 +10,6 @@ class ColoredStreamData
 public:
    double Stream[];
 };
-
-#include <AStream.mq4>
 
 class ColoredStream : public AStream
 {

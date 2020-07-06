@@ -144,3 +144,11 @@ Abstract implemention of stream with reference counting.
 ## ValueWhenStream
 
 Sets value to a stream when condition is passed.
+
+## IchimokuStream
+
+Ichimoke streams.
+
+## RenkoStream
+
+Renko bar stream.

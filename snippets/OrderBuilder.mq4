@@ -1,4 +1,4 @@
-// Order builder v2.1
+// Order builder v2.2
 
 #include <InstrumentInfo.mq4>
 #include <TradingCommands.mq4>
@@ -22,12 +22,20 @@ class OrderBuilder
    int _magicNumber;
    string _comment;
    bool _ecnBroker;
+   int _orderType;
    ActionOnConditionLogic* _actions;
 public:
    OrderBuilder(ActionOnConditionLogic* actions)
    {
+      _orderType = -1;
       _actions = actions;
       _ecnBroker = false;
+   }
+
+   OrderBuilder* SetOrderType(int orderType)
+   {
+      _orderType = orderType;
+      return &this;
    }
 
    // Sets ECN broker flag
@@ -90,6 +98,19 @@ public:
       _comment = comment;
       return &this;
    }
+
+   int GetOrderType()
+   {
+      if (_orderType != -1)
+      {
+         return _orderType;
+      }
+      if (_orderSide == BuySide)
+      {
+         return _rate > InstrumentInfo::GetAsk(_instrument) ? OP_BUYSTOP : OP_BUYLIMIT;
+      }
+      return _rate < InstrumentInfo::GetBid(_instrument) ? OP_SELLSTOP : OP_SELLLIMIT;
+   }
    
    int Execute(string &errorMessage)
    {
@@ -97,11 +118,7 @@ public:
       double rate = instrument.RoundRate(_rate);
       double sl = instrument.RoundRate(_stopLoss);
       double tp = instrument.RoundRate(_takeProfit);
-      int orderType;
-      if (_orderSide == BuySide)
-         orderType = rate > instrument.GetAsk() ? OP_BUYSTOP : OP_BUYLIMIT;
-      else
-         orderType = rate < instrument.GetBid() ? OP_SELLSTOP : OP_SELLLIMIT;
+      int orderType = GetOrderType();
       int order;
       if (_ecnBroker)
          order = OrderSend(_instrument, orderType, _amount, rate, _slippage, 0, 0, _comment, _magicNumber);

@@ -1,4 +1,4 @@
-//Visibility controller v1.2
+//Visibility controller v1.3
 class VisibilityCotroller
 {
    string buttonId;
@@ -17,8 +17,8 @@ public:
       buttonId = id;
       ChartSetInteger(0, CHART_EVENT_MOUSE_MOVE, 1);
       createButton(buttonId, caption, 65, 20, "Impact", 8, clrDarkRed, clrBlack, clrWhite);
-      ObjectSetInteger(0, buttonId, OBJPROP_YDISTANCE, x);
-      ObjectSetInteger(0, buttonId, OBJPROP_XDISTANCE, y);
+      ObjectSetInteger(0, buttonId, OBJPROP_YDISTANCE, y);
+      ObjectSetInteger(0, buttonId, OBJPROP_XDISTANCE, x);
    }
 
    void DeInit()

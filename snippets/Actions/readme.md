@@ -59,3 +59,7 @@ Move take profit action.
 ## LossTradesCounterAction
 
 Used with TradingMonitor. Counts trades with a loss in a raw.
+
+## DeletePendingOrderAction
+
+Deletes pending order.

@@ -1,5 +1,5 @@
 #include <AStreamBase.mq4>
-// Custom stream v2.0
+// Custom stream v2.1
 
 #ifndef CustomStream_IMP
 #define CustomStream_IMP
@@ -10,11 +10,15 @@ class CustomStream : public AStreamBase
    ENUM_TIMEFRAMES _timeframe;
    double _stream[];
 public:
-
    CustomStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
    {
       _symbol = symbol;
       _timeframe = timeframe;
+   }
+
+   void Init()
+   {
+      ArrayInitialize(_stream, EMPTY_VALUE);
    }
 
    virtual int Size()

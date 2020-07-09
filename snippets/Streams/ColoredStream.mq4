@@ -1,6 +1,6 @@
 #include <AStream.mq4>
 
-// Colored stream v3.1
+// Colored stream v3.2
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -26,9 +26,9 @@ public:
    {
       for (int i = 0; i < ArraySize(_streams); ++i)
       {
-         ArrayInitialize(_streams[i].Stream, EMPTY_VALUE);
+         ArrayInitialize(_streams[i].Stream, defaultValue);
       }
-      ArrayInitialize(_data, EMPTY_VALUE);
+      ArrayInitialize(_data, defaultValue);
    }
 
    int RegisterInternalStream(int id)

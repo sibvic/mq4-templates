@@ -216,6 +216,6 @@ Returns true when the given condition return true after the false on the previou
 
 Position limit hit condition.
 
-## TradeEOLCondition
+## OrderEOLCondition
 
 Trade end of life condition. Starts return true when the specified number of seconds passed since open of the trade (or trade was closed).

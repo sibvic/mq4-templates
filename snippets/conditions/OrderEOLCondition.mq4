@@ -3,22 +3,22 @@
 
 // Trade end of life condition v1.0
 
-#ifndef TradeEOLCondition_IMP
-#define TradeEOLCondition_IMP
+#ifndef OrderEOLCondition_IMP
+#define OrderEOLCondition_IMP
 
-class TradeEOLCondition : public AConditionBase
+class OrderEOLCondition : public AConditionBase
 {
    IOrder* _order;
    int _seconds;
 public:
-   TradeEOLCondition(IOrder* order, int seconds)
+   OrderEOLCondition(IOrder* order, int seconds)
    {
       _order = order;
       _order.AddRef();
       _seconds = seconds;
    }
 
-   ~TradeEOLCondition()
+   ~OrderEOLCondition()
    {
       _order.Release();
    }

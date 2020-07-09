@@ -90,7 +90,7 @@ public:
    {
       double body = MathAbs(iOpen(_symbol, _timeframe, period) - iClose(_symbol, _timeframe, period));
       double candle = iHigh(_symbol, _timeframe, period) - iLow(_symbol, _timeframe, period);
-      return body / candle >= _minSize / 100.0;
+      return candle == 0 ? (_minSize == 0) : (body / candle >= _minSize / 100.0);
    }
 
    virtual string GetLogMessage(const int period, const datetime date)

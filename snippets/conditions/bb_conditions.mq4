@@ -43,10 +43,10 @@ public:
       double deviation,
       int shift,
       ENUM_APPLIED_PRICE price,
-      int streadIndex)
+      int streamIndex)
       :ACondition(symbol, timeframe)
    {
-      _streamIndex = streadIndex;
+      _streamIndex = streamIndex;
       _condition = condition;
       _period = period;
       _deviation = deviation;
@@ -80,8 +80,8 @@ public:
    {
       double price0 = GetPrice(period);
       double price1 = GetPrice(period + 1);
-      double value0 = iBands(_symbol, _timeframe, _period, _deviation, _shift, _price, MODE_MAIN, period);
-      double value1 = iBands(_symbol, _timeframe, _period, _deviation, _shift, _price, MODE_MAIN, period + 1);
+      double value0 = iBands(_symbol, _timeframe, _period, _deviation, _shift, _price, _streamIndex, period);
+      double value1 = iBands(_symbol, _timeframe, _period, _deviation, _shift, _price, _streamIndex, period + 1);
       switch (_condition)
       {
          case FirstAboveSecond:

@@ -1,9 +1,9 @@
+#include <AAction.mq4>
+
 // Close order action v1.0
 
 #ifndef CloseOrderAction_IMP
 #define CloseOrderAction_IMP
-
-#include <AAction.mq4>
 
 class CloseOrderAction : public AAction
 {

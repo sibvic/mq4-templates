@@ -31,11 +31,11 @@ input color down_color = Red; // Down color
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
 #include <Streams/CandleStreams.mq4>
-#include <Streams/CustomStream.mq4>
+#include <Streams/StreamWrapper.mq4>
 
 AlertSignal* conditions[];
 Signaler* mainSignaler;
-CustomStream* customStream;
+StreamWrapper* customStream;
 
 int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction)
 {
@@ -149,7 +149,7 @@ int init()
 
    if (Type == Arrows)
    {
-      customStream = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      customStream = new StreamWrapper(_Symbol, (ENUM_TIMEFRAMES)_Period);
    }
    ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
    ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
@@ -188,7 +188,7 @@ int start()
       ArrayInitialize(ll, EMPTY_VALUE);
       if (customStream != NULL)
       {
-         ArrayInitialize(customStream._stream, EMPTY_VALUE);
+         customStream.Init();
       }
       for (int i = 0; i < ArraySize(conditions); ++i)
       {
@@ -198,11 +198,11 @@ int start()
    }
    int minBars = 1;
    int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
-   for (int pos = limit; pos >= 0; --pos)
+   for (int pos = limit; pos >= 0 && !IsStopped(); --pos)
    {
       if (customStream != NULL)
       {
-         customStream._stream[pos] = Close[pos];
+         customStream.SetValue(pos, Close[pos]);
       }
       for (int i = 0; i < ArraySize(conditions); ++i)
       {

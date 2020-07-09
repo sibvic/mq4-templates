@@ -58,9 +58,9 @@ Check whether required proifit is reached.
 
 Always true.
 
-## BandCrossUnderCondition and BandCrossOverCondition
+## bb_conditions
 
-Boilinger Band crossed by the close (over the top or under the bottom).
+Bands conditions.
 
 ## VolumeRiseCondition and VolumeFallCondition
 

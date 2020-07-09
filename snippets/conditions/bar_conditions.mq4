@@ -1,12 +1,12 @@
+#include <ACondition.mq4>
+#include <../Streams/IBarStream.mq4>
+
 // Bar condnitions v2.2
 
 #ifndef BarConditions_IMP
 #define BarConditions_IMP
 
-#include <ACondition.mq4>
-#include <../Streams/IBarStream.mq4>
-
-class BarAscendingCondition : public ACondition
+class BarAscendingCondition : public AConditionBase
 {
    IBarStream* _stream;
    int _periodShift;
@@ -41,7 +41,7 @@ public:
    }
 };
 
-class BarDescendingCondition : public ACondition
+class BarDescendingCondition : public AConditionBase
 {
    IBarStream* _stream;
    int _periodShift;
@@ -73,6 +73,30 @@ public:
    {
       bool result = IsPass(period, date);
       return "Bar descending: " + (result ? "true" : "false");
+   }
+};
+
+class MinBodySizeCondition : public ACondition
+{
+   double _minSize;
+public:
+   MinBodySizeCondition(const string symbol, ENUM_TIMEFRAMES timeframe, double minSize)
+      :ACondition(symbol, timeframe)
+   {
+      _minSize = minSize;
+   }
+
+   virtual bool IsPass(const int period, const datetime date)
+   {
+      double body = MathAbs(iOpen(_symbol, _timeframe, period) - iClose(_symbol, _timeframe, period));
+      double candle = iHigh(_symbol, _timeframe, period) - iLow(_symbol, _timeframe, period);
+      return body / candle >= _minSize / 100.0;
+   }
+
+   virtual string GetLogMessage(const int period, const datetime date)
+   {
+      bool result = IsPass(period, date);
+      return "Min body size: " + (result ? "true" : "false");
    }
 };
 #endif

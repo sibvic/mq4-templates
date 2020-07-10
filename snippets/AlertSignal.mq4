@@ -1,4 +1,4 @@
-// Alert signal v3.0
+// Alert signal v3.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mq4>
@@ -77,6 +77,7 @@ public:
       SetIndexBuffer(id, _signals);
       SetIndexLabel(id, name);
       SetIndexArrow(id, code);
+      SetIndexEmptyValue(id, EMPTY_VALUE);
       return id + 1;
    }
 

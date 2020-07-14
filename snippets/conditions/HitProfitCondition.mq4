@@ -1,6 +1,6 @@
-// Hit profit condition v3.0
-
 #include <AConditionBase.mq4>
+#include <../Order.mq4>
+// Hit profit condition v3.0
 
 #ifndef HitProfitCondition_IMP
 #define HitProfitCondition_IMP

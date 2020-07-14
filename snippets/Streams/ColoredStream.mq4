@@ -42,10 +42,11 @@ public:
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      SetIndexStyle(id + 0, lineType, lineStyle, width, clr);
-      SetIndexBuffer(id + 0, _streams[size].Stream);
+      SetIndexStyle(id, lineType, lineStyle, width, clr);
+      SetIndexBuffer(id, _streams[size].Stream);
+      SetIndexEmptyValue(id, EMPTY_VALUE);
       if (label != "")
-         SetIndexLabel(id + 0, label);
+         SetIndexLabel(id, label);
       return id + 1;
    }
 

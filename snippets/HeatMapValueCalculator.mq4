@@ -1,4 +1,4 @@
-// Heatmap value calculator v2.1
+// Heatmap value calculator v2.2
 
 #include <Conditions/ICondition.mq4>
 
@@ -9,6 +9,78 @@ class IHeatMapValueCalculator
 {
 public:
    virtual void UpdateValue(const int period) = 0;
+};
+
+class StreamOnCondition
+{
+   ICondition* _condition;
+   double _stream[];
+   double _value;
+public:
+   StreamOnCondition(ICondition* condition, double value)
+   {
+      _value = value;
+      _condition = condition;
+      _condition.AddRef();
+   }
+
+   ~StreamOnCondition()
+   {
+      _condition.Release();
+   }
+
+   int RegisterStreams(int id, string name, color clr)
+   {
+      SetIndexBuffer(id, _stream);
+      SetIndexStyle(id, DRAW_ARROW, EMPTY, EMPTY, clr);
+      SetIndexArrow(id, 110);
+      SetIndexLabel(id, name);
+      ++id;
+
+      return id;
+   }
+
+   void Set(int period, datetime date)
+   {
+      _stream[period] = _condition.IsPass(period, date) ? _value : EMPTY_VALUE;
+   }
+};
+
+class MultiHeatMapValueCalculator : public IHeatMapValueCalculator
+{
+   double _value;
+   StreamOnCondition* _streams[];
+public:
+   MultiHeatMapValueCalculator(const double value)
+   {
+      _value = value;
+   }
+
+   ~MultiHeatMapValueCalculator()
+   {
+      for (int i = 0; i < ArraySize(_streams); ++i)
+      {
+         delete _streams[i];
+      }
+      ArrayResize(_streams, 0);
+   }
+
+   int RegisterStreams(int id, color clr, ICondition* condition, string name)
+   {
+      int size = ArraySize(_streams);
+      ArrayResize(_streams, size + 1);
+      _streams[size] = new StreamOnCondition(condition, _value);
+      return _streams[size].RegisterStreams(id, name, clr);
+   }
+
+   void UpdateValue(const int period)
+   {
+      for (int i = 0; i < ArraySize(_streams); ++i)
+      {
+         StreamOnCondition* item = _streams[i];
+         item.Set(period, Time[period]);
+      }
+   }
 };
 
 class HeatMapValueCalculator : public IHeatMapValueCalculator

@@ -106,6 +106,11 @@ int init()
    int index = rows - 1;
 
    {
+      MultiHeatMapValueCalculator* calc = new MultiHeatMapValueCalculator(index + 1);
+      conditions[index] = calc;
+      id = calc.RegisterStreams(id, up_color, new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), name);
+   }
+   {
       id = CreateHeatmap(id, index--, "...", 
          new LongCondition(_Symbol, (ENUM_TIMEFRAMES)_Period), 
          new ShortCondition(_Symbol, (ENUM_TIMEFRAMES)_Period));

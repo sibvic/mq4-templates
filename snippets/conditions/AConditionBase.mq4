@@ -8,9 +8,11 @@
 class AConditionBase : public ICondition
 {
    int _references;
+   string _conditionName;
 public:
-   AConditionBase()
+   AConditionBase(string name = "")
    {
+      _conditionName = name;
       _references = 1;
    }
 
@@ -28,7 +30,11 @@ public:
 
    virtual string GetLogMessage(const int period, const datetime date)
    {
-      return "";
+      if (_conditionName == "" || _conditionName == NULL)
+      {
+         return "";
+      }
+      return _conditionName + ": " + (IsPass(period, date) ? "true" : "false");
    }
 };
 

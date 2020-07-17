@@ -13,7 +13,8 @@ protected:
    InstrumentInfo *_instrument;
    string _symbol;
 public:
-   ACondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+   ACondition(const string symbol, ENUM_TIMEFRAMES timeframe, string name = "")
+      :AConditionBase(name)
    {
       _instrument = new InstrumentInfo(symbol);
       _timeframe = timeframe;

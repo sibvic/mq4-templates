@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard template v.2.2
+// ProfitRobots Dashboard template v2.3
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -32,7 +32,7 @@ input DisplayMode display_mode = Vertical; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
-input bool alert_on_close = false; // Alert of bar close
+input bool alert_on_close = false; // Alert on bar close
 
 #include <Signaler.mq4>
 

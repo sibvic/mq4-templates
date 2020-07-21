@@ -86,10 +86,15 @@ public:
 
    static void DeleteOrders(const int magicNumber)
    {
-      OrdersIterator it1();
-      it1.WhenMagicNumber(magicNumber);
-      it1.WhenOrder();
-      while (it1.Next())
+      OrdersIterator orders();
+      orders.WhenMagicNumber(magicNumber);
+      orders.WhenOrder();
+      DeleteOrders(orders);
+   }
+
+   static void DeleteOrders(OrdersIterator& orders)
+   {
+      while (orders.Next())
       {
          int ticket = OrderTicket();
          if (!OrderDelete(ticket))

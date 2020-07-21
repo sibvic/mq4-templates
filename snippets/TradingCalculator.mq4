@@ -1,4 +1,4 @@
-// Trade calculator v2.3
+// Trade calculator v2.4
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <enums/OrderSide.mq4>
@@ -129,6 +129,18 @@ public:
             return _symbol.NormalizeLots(lotsValue);
          case PositionSizeEquity:
             return GetLotsForMoney(AccountEquity() * lotsValue / 100.0);
+         case PositionSizeRiskBalance:
+         {
+            double affordableLoss = AccountBalance() * lotsValue / 100.0;
+            double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
+            double tickSize = _symbol.GetTickSize();
+            double possibleLoss = unitCost * stopDistance / tickSize;
+            if (possibleLoss <= 0.01)
+            {
+               return 0;
+            }
+            return _symbol.NormalizeLots(affordableLoss / possibleLoss);
+         }
          case PositionSizeRisk:
          {
             double affordableLoss = AccountEquity() * lotsValue / 100.0;

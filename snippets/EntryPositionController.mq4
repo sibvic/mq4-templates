@@ -74,15 +74,25 @@ public:
 
    bool DoEntry(int period, datetime date, string& logMessage)
    {
+      bool conditionPassed = _condition.IsPass(period, date);
       if (_includeLog)
       {
-         logMessage = _condition.GetLogMessage(period, date);
+         logMessage = _condition.GetLogMessage(period, date) + "; Condition passed: " + (conditionPassed ? "true" : "false");
+         if (_filterCondition != NULL)
+         {
+            logMessage += ";" + _filterCondition.GetLogMessage(period, date);
+         }
       }
-      if (!_condition.IsPass(period, date))
+      if (!conditionPassed)
       {
          return false;
       }
-      if (_filterCondition != NULL && !_filterCondition.IsPass(period, date))
+      bool filterPassed = _filterCondition == NULL || _filterCondition.IsPass(period, date);
+      if (_includeLog)
+      {
+         logMessage += "; Filter passed: " + (filterPassed ? "true" : "false");
+      }
+      if (!filterPassed)
       {
          return false;
       }

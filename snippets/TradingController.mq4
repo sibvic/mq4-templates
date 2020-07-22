@@ -125,20 +125,26 @@ private:
 
    void DoExitLogic(int exitTradePeriod, datetime date, string& longLog, string& shortLog)
    {
+      bool exitLongPassed = _exitLongCondition.IsPass(exitTradePeriod, date);
+      bool exitShortPassed = _exitShortCondition.IsPass(exitTradePeriod, date);
       if (_logFile != -1)
       {
-         longLog = _exitLongCondition.GetLogMessage(exitTradePeriod, date);
-         shortLog = _exitShortCondition.GetLogMessage(exitTradePeriod, date);
+         longLog = _exitLongCondition.GetLogMessage(exitTradePeriod, date) + "; Exit long executed: " + (exitLongPassed ? "true" : "false");
+         shortLog = _exitShortCondition.GetLogMessage(exitTradePeriod, date) + "; Exit short executed: " + (exitShortPassed ? "true" : "false");
       }
-      if (_exitLongCondition.IsPass(exitTradePeriod, date))
+      if (exitLongPassed)
       {
          if (_entryStrategy.Exit(BuySide) > 0)
+         {
             _signaler.SendNotifications("Exit Buy");
+         }
       }
-      if (_exitShortCondition.IsPass(exitTradePeriod, date))
+      if (exitShortPassed)
       {
          if (_entryStrategy.Exit(SellSide) > 0)
+         {
             _signaler.SendNotifications("Exit Sell");
+         }
       }
    }
 

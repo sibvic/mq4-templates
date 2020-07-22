@@ -1,4 +1,4 @@
-// Fixed text and color formatter v1.0
+// Fixed text and color formatter v2.0
 
 #include <AValueFormatter.mq4>
 
@@ -8,16 +8,19 @@ class FixedTextFormatter : public AValueFormatter
 {
    string _text;
    color _clr;
+   color _bgClr;
 public:
-   FixedTextFormatter(string text, color clr)
+   FixedTextFormatter(string text, color clr, color bgClr)
    {
+      _bgClr = bgClr;
       _text = text;
       _clr = clr;
    }
 
-   virtual string FormatItem(const int period, const datetime date, color& clr)
+   virtual string FormatItem(const int period, const datetime date, color& clr, color& bgColor)
    {
       clr = _clr;
+      bgColor = _bgClr;
       return _text;
    }
 };

@@ -1,8 +1,10 @@
-// ProfitRobots Dashboard template v2.3
+// ProfitRobots Dashboard template v3.0
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
 #property strict
+
+#define USE_HISTORIC
 
 enum DisplayMode
 {
@@ -10,23 +12,40 @@ enum DisplayMode
    Horizontal
 };
 
+enum OutputMode
+{
+   OutputLabels, // Labels
+   OutputButtonsNewWindow, // New chart buttons
+   OutputButtons // Current chart buttons
+};
+input OutputMode output_mode = OutputLabels; // Mode
 input string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
-input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD";
-input bool     Include_M1               = false;
-input bool     Include_M5               = false;
-input bool     Include_M15              = false;
-input bool     Include_M30              = false;
-input bool     Include_H1               = true;
-input bool     Include_H4               = false;
-input bool     Include_D1               = true;
-input bool     Include_W1               = true;
-input bool     Include_MN1              = false;
-input color    Labels_Color             = clrWhite;
-input color    historical_Up_Color      = Green; // Historical up color
+input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD"; // Pairs
+input bool     Include_M1               = false; // Include M1
+input bool     Include_M5               = false; // Include M5
+input bool     Include_M15              = false; // Include M15
+input bool     Include_M30              = false; // Include M30
+input bool     Include_H1               = true; // Include H1
+input bool     Include_H4               = false; // Include H4
+input bool     Include_D1               = true; // Include D1
+input bool     Include_W1               = true; // Include W1
+input bool     Include_MN1              = false; // Onclude MN1
+input color    Labels_Color             = clrWhite; // Labels color
+input color    button_text_color        = Black; // Button text color
+input int min_button_width = 30; // Min button width
+#ifdef USE_HISTORIC
+   input color    historical_Up_Color      = Green; // Historical up color
+#else
+   color    historical_Up_Color      = Green; // Historical up color
+#endif
 input color    Up_Color                 = Lime; // Up color
-input color    historical_Dn_Color      = Red; // Historical down color
+#ifdef USE_HISTORIC
+   input color    historical_Dn_Color      = Red; // Historical down color
+#else
+   color    historical_Dn_Color      = Red; // Historical down color
+#endif
 input color    Dn_Color                 = Pink; // Down color
-input color    Neutral_Color            = clrDarkGray;
+input color    neutral_color            = clrDarkGray; // Neutral color
 input int x_shift = 900; // X coordinate
 input DisplayMode display_mode = Vertical; // Display mode
 input int font_size = 10; // Font Size;
@@ -124,52 +143,6 @@ void OnChartEvent(const int id,
    grid.HandleButtonClicks();
 }
 
-// void handleButtonClicks()
-// {
-//    int pair_num = ArraySize(pairs) - 1;
-//    for (int p = 0; p < pair_num; p++)
-//    {
-//       string pair = pairs[p];
-//       for (int t = 0; t < ArraySize(iTF); t++)
-//       {  
-//          if (!bTF[t])
-//             continue;
-      
-//          string arrow_id = Pref + "AO direction " + pair + " " + sTF[t];
-//          if (ObjectGetInteger(0, arrow_id, OBJPROP_STATE))
-//          {
-//             ObjectSetInteger(0, arrow_id, OBJPROP_STATE, false);
-//             ChartSetSymbolPeriod(0, pair, iTF[t]);
-//             return;
-//          }
-//       }
-//       string symbolId = "ADR " + pair;
-//       if (ObjectGetInteger(0, symbolId, OBJPROP_STATE))
-//       {
-//          ObjectSetInteger(0, symbolId, OBJPROP_STATE, false);
-//          ChartOpen(pair, _Period);
-//          return;
-//       }
-//    }
-// }
-
-// void DrawSymbolButton(string name, int corn, int x, int y, int width, int height, string symbol, color Clr=Green, int Win=0, int FSize=10)
-// {
-//    int Error = ObjectFind(name);
-//    if (Error != Win)
-//       ObjectCreate(name, OBJ_BUTTON, Win, 0, 0);
-     
-//    ObjectSet(name, OBJPROP_CORNER, corn);
-//    ObjectSet(name, OBJPROP_XDISTANCE, x);
-//    ObjectSet(name, OBJPROP_YDISTANCE, y);
-//    ObjectSetString(0, name, OBJPROP_FONT, "Arial");
-//    ObjectSetString(0, name, OBJPROP_TEXT, symbol);
-//    ObjectSetInteger(0, name, OBJPROP_COLOR, Clr);
-//    ObjectSetInteger(0, name, OBJPROP_XSIZE, width);
-//    ObjectSetInteger(0, name, OBJPROP_YSIZE, height);
-//    ObjectSetInteger(0, name, OBJPROP_FONTSIZE, FSize);
-// }
-
 string IndicatorName = "...";
 int init()
 {
@@ -183,7 +156,10 @@ int init()
    IndicatorShortName(IndicatorName);
 
    GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical);
-   builder.AddCell(new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color));
+   TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
+   factory.SetNeutralColor(neutral_color);
+   factory.SetButtonTextColor(button_text_color);
+   builder.AddCell(factory);
    builder.SetSymbols(Pairs);
 
    if (Include_M1)
@@ -207,7 +183,10 @@ int init()
 
    grid = builder.Build();
 
-   //ChartSetInteger(0, CHART_EVENT_MOUSE_MOVE, 1);
+   if (output_mode != OutputLabels)
+   {
+      ChartSetInteger(0, CHART_EVENT_MOUSE_MOVE, 1);
+   }
 
    return(0);
 }
@@ -222,7 +201,6 @@ int deinit()
 
 int start()
 {
-   //handleButtonClicks();
    WindowNumber = MathMax(0, WindowFind(IndicatorName));
    grid.HandleButtonClicks();
    grid.Draw();

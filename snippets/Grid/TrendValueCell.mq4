@@ -3,7 +3,7 @@
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
-// Trend value cell v4.1
+// Trend value cell v5.0
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -26,11 +26,15 @@ class TrendValueCell : public ICell
    int _alertShift;
    IValueFormatter* _defaultValue;
    bool _historicalMode;
+   OutputMode _outputMode;
+   int _minButtonWidth;
 public:
    TrendValueCell(const string id, const int x, const int y, const string symbol, 
       const ENUM_TIMEFRAMES timeframe, int alertShift, 
-      IValueFormatter* defaultValue)
+      IValueFormatter* defaultValue, OutputMode outputMode)
    { 
+      _minButtonWidth = 0;
+      _outputMode = outputMode;
       _lastSignal = 0;
       _alertShift = alertShift;
       _signaler = new Signaler(symbol, timeframe);
@@ -68,6 +72,11 @@ public:
       ArrayResize(_signalFormatters, 0);
    }
 
+   void SetMinButtonWidth(int width)
+   {
+      _minButtonWidth = width;
+   }
+
    void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue, IValueFormatter* signal)
    {
       int size = ArraySize(_conditions);
@@ -103,7 +112,14 @@ public:
          if (ObjectGetInteger(0, id, OBJPROP_STATE))
          {
             ObjectSetInteger(0, id, OBJPROP_STATE, false);
-            ChartOpen(_symbol, _timeframe);
+            if (_outputMode == OutputButtonsNewWindow)
+            {
+               ChartOpen(_symbol, _timeframe);
+            }
+            else
+            {
+               ChartSetSymbolPeriod(0, _symbol, _timeframe);
+            }
          }
       }
    }
@@ -115,12 +131,12 @@ public:
       {
          if (_conditions[i].IsPass(_alertShift, date))
          {
-            color clr;
-            string text = _valueFormatters[i].FormatItem(_alertShift, date, clr);
-            DrawItem(text, clr, true);
+            color textColor, bgColor;
+            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
+            DrawItem(text, textColor, bgColor);
             if (_signalFormatters[i] != NULL)
             {
-               text = _signalFormatters[i].FormatItem(_alertShift, date, clr);
+               text = _signalFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
                SendAlert(text, i);
             }
             return;
@@ -131,9 +147,9 @@ public:
          DrawHistoricalValue();
          return;
       }
-      color clr;
-      string text = _defaultValue.FormatItem(_alertShift, date, clr);
-      DrawItem(text, clr, true);
+      color textColor, bgColor;
+      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor);
+      DrawItem(text, textColor, bgColor);
    }
 
 private:
@@ -146,21 +162,21 @@ private:
          {
             if (_conditions[i].IsPass(period, date))
             {
-               color clr;
-               string text = _historyValueFormatters[i].FormatItem(period, date, clr);
-               DrawItem(text, clr, true);
+               color textColor, bgColor;
+               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor);
+               DrawItem(text, textColor, bgColor);
                return;
             }
          }
       }
    }
-   void DrawItem(string text, color clr, bool simpleLabel)
+   void DrawItem(string text, color textColor, color bgColor)
    {
       string id = _id + "B";
-      if (simpleLabel)
+      if (_outputMode == OutputLabels)
       {
          ObjectDelete(id);
-         ObjectMakeLabel(id, _x, _y, text, clr, 1, WindowNumber, "Arial", font_size); 
+         ObjectMakeLabel(id, _x, _y, text, textColor, 1, WindowNumber, "Arial", font_size); 
       }
       else
       {
@@ -174,12 +190,13 @@ private:
          ObjectSet(id, OBJPROP_CORNER, 1); 
          ObjectSetString(0, id, OBJPROP_FONT, "Arial");
          ObjectSetString(0, id, OBJPROP_TEXT, text);
-         ObjectSetInteger(0, id, OBJPROP_COLOR, clr);
+         ObjectSetInteger(0, id, OBJPROP_COLOR, textColor);
+         ObjectSetInteger(0, id, OBJPROP_BGCOLOR, bgColor);
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, font_size);
          TextSetFont("Arial", -font_size * 10);
          int width, height;
          TextGetSize(text, width, height);
-         ObjectSetInteger(0, id, OBJPROP_XSIZE, width + 5);
+         ObjectSetInteger(0, id, OBJPROP_XSIZE, MathMax(_minButtonWidth, width + 5));
          ObjectSetInteger(0, id, OBJPROP_YSIZE, height + 5);
       }
    }

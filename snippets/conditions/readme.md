@@ -219,3 +219,11 @@ Position limit hit condition.
 ## OrderEOLCondition
 
 Trade end of life condition. Starts return true when the specified number of seconds passed since open of the trade (or trade was closed).
+
+## NewBarCondition
+
+New bar condition.
+
+## DayOfWeekCondition
+
+Used to enable/disable actions per day of week.

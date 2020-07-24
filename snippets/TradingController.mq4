@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v7.7
+// Trading controller v7.8
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -112,9 +112,9 @@ public:
       {
          FileWrite(_logFile, TimeToString(TimeCurrent()), 
             "Entry long: " + entryLongLog, 
-            "Entry short: " + entryShortLog, 
-            "Exit long: " + exitLongLog, 
-            "Exit short: " + exitShortLog);
+            ";Entry short: " + entryShortLog, 
+            ";Exit long: " + exitLongLog, 
+            ";Exit short: " + exitShortLog);
       }
    }
 private:

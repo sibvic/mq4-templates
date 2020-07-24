@@ -37,7 +37,7 @@ AlertSignal* conditions[];
 Signaler* mainSignaler;
 StreamWrapper* customStream;
 
-int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction)
+int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction, int upCode, int downCode)
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
@@ -48,8 +48,8 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
    {
       case Arrows:
          {
-            id = conditions[size].RegisterStreams(id, "Up", 217, up_color, customStream);
-            id = conditions[size + 1].RegisterStreams(id, "Down", 218, down_color, customStream);
+            id = conditions[size].RegisterStreams(id, "Up", upCode, up_color, customStream);
+            id = conditions[size + 1].RegisterStreams(id, "Down", downCode, down_color, customStream);
          }
          break;
       case ArrowsOnMainChart:
@@ -58,8 +58,8 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
             highStream.SetShift(shift_arrows_pips);
             PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
             lowStream.SetShift(-shift_arrows_pips);
-            id = conditions[size].RegisterArrows(id, "Up", IndicatorObjPrefix + "_up", 217, up_color, highStream);
-            id = conditions[size + 1].RegisterArrows(id, "Down", IndicatorObjPrefix + "_down", 218, down_color, lowStream);
+            id = conditions[size].RegisterArrows(id, "Up", IndicatorObjPrefix + "_up", upCode, up_color, highStream);
+            id = conditions[size + 1].RegisterArrows(id, "Down", IndicatorObjPrefix + "_down", downCode, down_color, lowStream);
             lowStream.Release();
             highStream.Release();
          }
@@ -151,9 +151,11 @@ int init()
    {
       customStream = new StreamWrapper(_Symbol, (ENUM_TIMEFRAMES)_Period);
    }
-   ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   id = CreateAlert(id, upCondition, NULL, downCondition, NULL);
+   {
+      ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      id = CreateAlert(id, upCondition, NULL, downCondition, NULL, 217, 218);
+   }
    if (customStream != NULL)
    {
       id = customStream.RegisterInternalStream(id);

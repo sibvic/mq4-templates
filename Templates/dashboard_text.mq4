@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard text template v.1.2
+// ProfitRobots Dashboard text template v.1.3
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -78,6 +78,11 @@ public:
          break;
       }
    }
+
+   virtual void HandleButtonClicks()
+   {
+      
+   }
 };
 
 #include <Grid/TextValueCellFactory.mq4>
@@ -126,7 +131,7 @@ int init()
    IndicatorShortName("...");
 
    GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical);
-   builder.AddCell(new TextValueCellFactory(alert_on_close ? 1 : 0));
+   builder.AddCell(new TextValueCellFactory());
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

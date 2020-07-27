@@ -1,4 +1,4 @@
-// Grid builder v2.1
+// Grid builder v2.2
 
 #include <ICellFactory.mq4>
 
@@ -98,6 +98,7 @@ public:
          for (int ii = 0; ii < cellFactorySize; ++ii)
          {
             column[ii] = grid.AddRow();
+            #ifndef EXCLUDE_PERIOD_HEADER
             if (ii > 0)
             {
                column[ii].Add(new EmptyCell());
@@ -106,6 +107,7 @@ public:
             {
                column[ii].Add(new LabelCell(IndicatorObjPrefix + label + "_h", label, x[0], _headerHeight));
             }
+            #endif
          }
          
          Iterator yIterator(_originalY, _cellHeight);
@@ -139,7 +141,9 @@ public:
             y[ii] = _yIterator.GetNext();
          }
          Row* row = grid.AddRow();
-         row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _originalX, y[0]));
+         #ifndef EXCLUDE_PERIOD_HEADER
+            row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _originalX, y[0]));
+         #endif
          Iterator xIterator(_originalX - cell_width, -cell_width);
          for (int i = 0; i < _symbolsCount; i++)
          {

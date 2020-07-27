@@ -1,4 +1,4 @@
-// Forex currency template v1.1
+// Forex currency template v1.2
 
 #property copyright ""
 #property link      ""
@@ -99,6 +99,11 @@ int init()
 
 int deinit()
 {
+   for (int i = 0; i < ArraySize(Symbols); ++i)
+   {
+      delete Symbols[i];
+   }
+   ArrayResize(Symbols, 0);
    ObjectsDeleteAll(ChartID(), IndicatorObjPrefix);
    return(0);
 }

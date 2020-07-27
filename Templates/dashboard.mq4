@@ -1,10 +1,11 @@
-// ProfitRobots Dashboard template v3.0
+// ProfitRobots Dashboard template v3.1
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
 #property strict
 
 #define USE_HISTORIC
+#define EXCLUDE_PERIOD_HEADER
 
 enum DisplayMode
 {
@@ -47,6 +48,7 @@ input color    Up_Color                 = Lime; // Up color
 input color    Dn_Color                 = Pink; // Down color
 input color    neutral_color            = clrDarkGray; // Neutral color
 input int x_shift = 900; // X coordinate
+input ENUM_BASE_CORNER corner = CORNER_LEFT_UPPER; // Corner
 input DisplayMode display_mode = Vertical; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
@@ -155,7 +157,7 @@ int init()
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical);
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, corner);
    TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
    factory.SetNeutralColor(neutral_color);
    factory.SetButtonTextColor(button_text_color);

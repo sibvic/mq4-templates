@@ -2,7 +2,7 @@
 #include <TrendValueCell.mq4>
 #include <FixedTextFormatter.mq4>
 
-// Trend value cell factory v5.0
+// Trend value cell factory v6.0
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -41,10 +41,10 @@ public:
       return "Value";
    }
 
-   virtual ICell* Create(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   virtual ICell* Create(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe)
    {
       IValueFormatter* defaultValue = new FixedTextFormatter("-", GetTextColor(_neutralColor), GetBackgroundColor(_neutralColor));
-      TrendValueCell* cell = new TrendValueCell(id, x, y, symbol, timeframe, _alertShift, defaultValue);
+      TrendValueCell* cell = new TrendValueCell(id, x, y, corner, symbol, timeframe, _alertShift, defaultValue, output_mode);
       defaultValue.Release();
 
       ICondition* upCondition = new UpCondition(symbol, timeframe);

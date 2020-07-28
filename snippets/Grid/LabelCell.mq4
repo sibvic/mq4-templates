@@ -1,4 +1,4 @@
-// Label cell v1.1
+// Label cell v2.0
 
 #include <ICell.mq4>
 
@@ -11,9 +11,11 @@ class LabelCell : public ICell
    string _text; 
    int _x; 
    int _y;
+   ENUM_BASE_CORNER _corner;
 public:
-   LabelCell(const string id, const string text, const int x, const int y) 
+   LabelCell(const string id, const string text, const int x, const int y, ENUM_BASE_CORNER corner) 
    { 
+      _corner = corner;
       _id = id; 
       _text = text; 
       _x = x; 
@@ -21,7 +23,7 @@ public:
    } 
    virtual void Draw() 
    { 
-      ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, 1, WindowNumber, "Arial", font_size); 
+      ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, _corner, WindowNumber, "Arial", font_size); 
    }
 
    virtual void HandleButtonClicks()

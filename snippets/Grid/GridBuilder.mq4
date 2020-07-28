@@ -1,4 +1,4 @@
-// Grid builder v2.2
+// Grid builder v3.0
 
 #include <ICellFactory.mq4>
 
@@ -18,10 +18,12 @@ class GridBuilder
    int _cellHeight;
    int _headerHeight;
    ICellFactory* _cellFactory[];
+   ENUM_BASE_CORNER _corner;
 public:
-   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode)
+   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ENUM_BASE_CORNER corner)
       :_xIterator(x, -cell_width), _yIterator(y, cellHeight)
    {
+      _corner = corner;
       _cellHeight = cellHeight;
       _headerHeight = headerHeight;
       _verticalMode = verticalMode;
@@ -64,7 +66,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], _originalX + cell_width, yIterator.GetNext()));
+            row.Add(new LabelCell(id, _symbols[i], _originalX + cell_width, yIterator.GetNext(), _corner));
          }
       }
       else
@@ -76,7 +78,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = IndicatorObjPrefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], xIterator.GetNext(), _originalY - _headerHeight));
+            row.Add(new LabelCell(id, _symbols[i], xIterator.GetNext(), _originalY - _headerHeight, _corner));
          }
       }
    }
@@ -105,7 +107,7 @@ public:
             }
             else
             {
-               column[ii].Add(new LabelCell(IndicatorObjPrefix + label + "_h", label, x[0], _headerHeight));
+               column[ii].Add(new LabelCell(IndicatorObjPrefix + label + "_h", label, x[0], _headerHeight, _corner));
             }
             #endif
          }
@@ -117,7 +119,7 @@ public:
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
                string index = IntegerToString(ii + 1);
-               column[ii].Add(new LabelCell(IndicatorObjPrefix + label + "_sh" + index, _cellFactory[ii].GetHeader(), x[ii], y));
+               column[ii].Add(new LabelCell(IndicatorObjPrefix + label + "_sh" + index, _cellFactory[ii].GetHeader(), x[ii], y, _corner));
             }
          }
 
@@ -127,7 +129,7 @@ public:
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
                string id = IndicatorObjPrefix + _symbols[i] + "_" + label + IntegerToString(ii);
-               column[ii].Add(_cellFactory[ii].Create(id, x[ii], y, _symbols[i], timeframe));
+               column[ii].Add(_cellFactory[ii].Create(id, x[ii], y, _corner, _symbols[i], timeframe));
             }
          }
       }
@@ -142,7 +144,7 @@ public:
          }
          Row* row = grid.AddRow();
          #ifndef EXCLUDE_PERIOD_HEADER
-            row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _originalX, y[0]));
+            row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _originalX, y[0], _corner));
          #endif
          Iterator xIterator(_originalX - cell_width, -cell_width);
          for (int i = 0; i < _symbolsCount; i++)
@@ -151,7 +153,7 @@ public:
             int x = xIterator.GetNext();
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
-               row.Add(_cellFactory[ii].Create(id, x, y[ii], _symbols[i], timeframe));
+               row.Add(_cellFactory[ii].Create(id, x, y[ii], _corner, _symbols[i], timeframe));
             }
          }
       }

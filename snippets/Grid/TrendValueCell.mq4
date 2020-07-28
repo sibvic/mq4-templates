@@ -3,7 +3,7 @@
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
-// Trend value cell v5.0
+// Trend value cell v5.1
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -27,13 +27,13 @@ class TrendValueCell : public ICell
    IValueFormatter* _defaultValue;
    bool _historicalMode;
    OutputMode _outputMode;
-   int _minButtonWidth;
+   ENUM_BASE_CORNER _corner;
 public:
-   TrendValueCell(const string id, const int x, const int y, const string symbol, 
+   TrendValueCell(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, 
       const ENUM_TIMEFRAMES timeframe, int alertShift, 
       IValueFormatter* defaultValue, OutputMode outputMode)
    { 
-      _minButtonWidth = 0;
+      _corner = corner;
       _outputMode = outputMode;
       _lastSignal = 0;
       _alertShift = alertShift;
@@ -70,11 +70,6 @@ public:
       ArrayResize(_valueFormatters, 0);
       ArrayResize(_historyValueFormatters, 0);
       ArrayResize(_signalFormatters, 0);
-   }
-
-   void SetMinButtonWidth(int width)
-   {
-      _minButtonWidth = width;
    }
 
    void AddCondition(ICondition* condition, IValueFormatter* value, IValueFormatter* historyValue, IValueFormatter* signal)
@@ -176,7 +171,7 @@ private:
       if (_outputMode == OutputLabels)
       {
          ObjectDelete(id);
-         ObjectMakeLabel(id, _x, _y, text, textColor, 1, WindowNumber, "Arial", font_size); 
+         ObjectMakeLabel(id, _x, _y, text, textColor, _corner, WindowNumber, "Arial", font_size); 
       }
       else
       {
@@ -185,6 +180,8 @@ private:
          {
             ObjectCreate(id, OBJ_BUTTON, WindowNumber, 0, 0);
          }
+         
+         ObjectSet(id, OBJPROP_CORNER, _corner);
          ObjectSet(id, OBJPROP_XDISTANCE, _x);
          ObjectSet(id, OBJPROP_YDISTANCE, _y);
          ObjectSet(id, OBJPROP_CORNER, 1); 
@@ -196,7 +193,7 @@ private:
          TextSetFont("Arial", -font_size * 10);
          int width, height;
          TextGetSize(text, width, height);
-         ObjectSetInteger(0, id, OBJPROP_XSIZE, MathMax(_minButtonWidth, width + 5));
+         ObjectSetInteger(0, id, OBJPROP_XSIZE, MathMax(cell_width, width + 5));
          ObjectSetInteger(0, id, OBJPROP_YSIZE, height + 5);
       }
    }

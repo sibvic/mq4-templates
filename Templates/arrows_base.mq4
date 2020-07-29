@@ -1,4 +1,4 @@
-// Arrows base v4.1
+// Arrows base v5.0
 
 #property copyright "Copyright © 2020, "
 #property link      ""
@@ -41,8 +41,8 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
-   conditions[size] = new AlertSignal(upCondition, upAction, mainSignaler, signal_mode == SingalModeOnBarClose);
-   conditions[size + 1] = new AlertSignal(downCondition, downAction, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size] = new AlertSignal(upCondition, upAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size + 1] = new AlertSignal(downCondition, downAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
       
    switch (Type)
    {
@@ -132,6 +132,23 @@ string GenerateIndicatorPrefix(const string target)
    return target;
 }
 
+string TimeframeToString(ENUM_TIMEFRAMES tf)
+{
+   switch (tf)
+   {
+      case PERIOD_M1: return "M1";
+      case PERIOD_M5: return "M5";
+      case PERIOD_D1: return "D1";
+      case PERIOD_H1: return "H1";
+      case PERIOD_H4: return "H4";
+      case PERIOD_M15: return "M15";
+      case PERIOD_M30: return "M30";
+      case PERIOD_MN1: return "MN1";
+      case PERIOD_W1: return "W1";
+   }
+   return "";
+}
+
 int init()
 {
    if (!IsDllsAllowed() && advanced_alert)
@@ -142,8 +159,8 @@ int init()
    IndicatorBuffers(8);
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName("...");
-   mainSignaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
-   mainSignaler.SetMessagePrefix(_Symbol + "/" + mainSignaler.GetTimeframeStr() + ": ");
+   mainSignaler = new Signaler();
+   mainSignaler.SetMessagePrefix(_Symbol + "/" + TimeframeToString((ENUM_TIMEFRAMES)_Period) + ": ");
 
    int id = 0;
 

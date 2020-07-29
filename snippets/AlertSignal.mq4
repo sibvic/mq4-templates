@@ -1,4 +1,4 @@
-// Alert signal v3.1
+// Alert signal v4.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mq4>
@@ -177,9 +177,13 @@ class AlertSignal
    datetime _lastSignal;
    bool _onBarClose;
    IAlertSignalOutput* _signalOutput;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
 public:
-   AlertSignal(ICondition* condition, IAction* actionOnCondition, Signaler* signaler, bool onBarClose = false)
+   AlertSignal(ICondition* condition, IAction* actionOnCondition, string symbol, ENUM_TIMEFRAMES timeframe, Signaler* signaler, bool onBarClose = false)
    {
+      _symbol = symbol;
+      _timeframe = timeframe;
       _actionOnCondition = actionOnCondition;
       if (_actionOnCondition != NULL)
       {
@@ -232,8 +236,7 @@ public:
 
    void Update(int period)
    {
-      string symbol = _signaler.GetSymbol();
-      datetime dt = iTime(symbol, _signaler.GetTimeframe(), _onBarClose ? period + 1 : period);
+      datetime dt = iTime(_symbol, _timeframe, _onBarClose ? period + 1 : period);
 
       if (!_condition.IsPass(_onBarClose ? period + 1 : period, dt))
       {
@@ -247,10 +250,10 @@ public:
 
       if (period == 0)
       {
-         dt = iTime(symbol, _signaler.GetTimeframe(), 0);
+         dt = iTime(_symbol, _timeframe, 0);
          if (_lastSignal != dt)
          {
-            _signaler.SendNotifications(symbol + "/" + _signaler.GetTimeframeStr() + ": " + _message);
+            _signaler.SendNotifications(_message);
             _lastSignal = dt;
          }
       }

@@ -1,4 +1,4 @@
-//Signaler v 1.7
+//Signaler v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 input string   AlertsSection            = ""; // == Alerts ==
 input bool     popup_alert              = false; // Popup message
@@ -24,14 +24,10 @@ int ShellExecuteW(int hwnd,string Operation,string File,string Parameters,string
 
 class Signaler
 {
-   string _symbol;
-   ENUM_TIMEFRAMES _timeframe;
    string _prefix;
 public:
-   Signaler(const string symbol, ENUM_TIMEFRAMES timeframe)
+   Signaler()
    {
-      _symbol = symbol;
-      _timeframe = timeframe;
    }
 
    void SetMessagePrefix(string prefix)
@@ -39,43 +35,12 @@ public:
       _prefix = prefix;
    }
 
-   string GetSymbol()
-   {
-      return _symbol;
-   }
-
-   ENUM_TIMEFRAMES GetTimeframe()
-   {
-      return _timeframe;
-   }
-
-   string GetTimeframeStr()
-   {
-      switch (_timeframe)
-      {
-         case PERIOD_M1: return "M1";
-         case PERIOD_M5: return "M5";
-         case PERIOD_D1: return "D1";
-         case PERIOD_H1: return "H1";
-         case PERIOD_H4: return "H4";
-         case PERIOD_M15: return "M15";
-         case PERIOD_M30: return "M30";
-         case PERIOD_MN1: return "MN1";
-         case PERIOD_W1: return "W1";
-      }
-      return "M1";
-   }
-
-   void SendNotifications(const string subject, string message = NULL, string symbol = NULL, string timeframe = NULL)
+   void SendNotifications(const string subject, string message = NULL)
    {
       if (message == NULL)
          message = subject;
       if (_prefix != "" && _prefix != NULL)
          message = _prefix + message;
-      if (symbol == NULL)
-         symbol = _symbol;
-      if (timeframe == NULL)
-         timeframe = GetTimeframeStr();
 
       if (start_program)
          ShellExecuteW(0, "open", program_path, "", "", 1);
@@ -88,6 +53,6 @@ public:
       if (notification_alert)
          SendNotification(message);
       if (advanced_alert && advanced_key != "" && !IsTesting())
-         AdvancedAlert(advanced_key, message, symbol, timeframe);
+         AdvancedAlert(advanced_key, message, "", "");
    }
 };

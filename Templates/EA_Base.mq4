@@ -165,7 +165,7 @@ input int magic_number        = 42; // Magic number
    string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
 input bool print_log = false; // Print decisions into the log
-input string log_file = "log.csv"; // Log file name
+input string log_file = "log.csv"; // Log file name (empty for auto naming)
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
@@ -389,7 +389,24 @@ ICondition* CreateExitShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    #endif
 }
 
-TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string &error)
+string TimeframeToString(ENUM_TIMEFRAMES tf)
+{
+   switch (tf)
+   {
+      case PERIOD_M1: return "M1";
+      case PERIOD_M5: return "M5";
+      case PERIOD_D1: return "D1";
+      case PERIOD_H1: return "H1";
+      case PERIOD_H4: return "H4";
+      case PERIOD_M15: return "M15";
+      case PERIOD_M30: return "M30";
+      case PERIOD_MN1: return "MN1";
+      case PERIOD_W1: return "W1";
+   }
+   return "";
+}
+
+TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string algoId, string &error)
 {
    #ifdef TRADING_TIME_FEATURE
       ICondition* tradingTimeCondition = CreateTradingTimeCondition(start_time, stop_time, use_weekly_timing,
@@ -409,8 +426,8 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       return NULL;
    }
 
-   Signaler* signaler = new Signaler(symbol, timeframe);
-   signaler.SetMessagePrefix(symbol + "/" + signaler.GetTimeframeStr() + ": ");
+   Signaler* signaler = new Signaler();
+   signaler.SetMessagePrefix(symbol + "/" + TimeframeToString(timeframe) + ": ");
    
    ICloseOnOppositeStrategy* closeOnOpposite = close_on_opposite 
       ? (ICloseOnOppositeStrategy*)new DoCloseOnOppositeStrategy(slippage_points, magic_number)
@@ -473,7 +490,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    orderHandlers.Release();
    closeOnOpposite.Release();
    
-   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, longPosition, shortPosition, actions, signaler);
+   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, longPosition, shortPosition, actions, signaler, algoId);
    
    if (breakeven_type != StopLimitDoNotUse)
    {
@@ -593,7 +610,23 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    entryStrategy.Release();
    if (print_log)
    {
-      controller.SetPrintLog(log_file);
+      string name = log_file;
+      if (name == "")
+      {
+         name = symbol;
+      }
+      if (algoId != "" && algoId != NULL)
+      {
+         name = name + "_" + algoId;
+      }
+      MqlDateTime current_time;
+      string suffix = "";
+      if (TimeToStruct(TimeCurrent(), current_time))
+      {
+         name = name + "_" + IntegerToString(current_time.hour) + "-" + IntegerToString(current_time.min) + "-" + IntegerToString(current_time.sec);
+      }
+      name = name + ".csv";
+      controller.SetPrintLog(name);
    }
 
    return controller;

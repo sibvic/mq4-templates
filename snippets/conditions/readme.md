@@ -26,20 +26,6 @@ Check wether RSI about level.
 
 Check wether RSI below level.
 
-## Ichimoku conditions
-
-### PriceAboveKumhoCondition
-
-Close above Senkou Span A and B.
-
-### PriceBelowKumhoCondition
-
-Close below Senkou Span A and B.
-
-### IchimokeStreamAboveOrEqualIchimokuStreamCondition/IchimokeStreamBelowOrEqualIchimokuStreamCondition
-
-Ichimoku stream >=/<= than another Ichimoku stream.
-
 ## Parabolic SAR conditions
 
 ### PSARBelowPriceCondition
@@ -227,3 +213,7 @@ New bar condition.
 ## DayOfWeekCondition
 
 Used to enable/disable actions per day of week.
+
+## StreamConditions
+
+Stream-stream condition.

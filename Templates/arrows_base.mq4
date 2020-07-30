@@ -1,4 +1,4 @@
-// Arrows base v5.0
+// Arrows base v5.1
 
 #property copyright "Copyright © 2020, "
 #property link      ""
@@ -37,7 +37,7 @@ AlertSignal* conditions[];
 Signaler* mainSignaler;
 StreamWrapper* customStream;
 
-int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction, int upCode, int downCode)
+int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction, int upCode, int downCode, string upMessage = "Up", string downMessage = "Down")
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
@@ -48,8 +48,8 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
    {
       case Arrows:
          {
-            id = conditions[size].RegisterStreams(id, "Up", upCode, up_color, customStream);
-            id = conditions[size + 1].RegisterStreams(id, "Down", downCode, down_color, customStream);
+            id = conditions[size].RegisterStreams(id, upMessage, upCode, up_color, customStream);
+            id = conditions[size + 1].RegisterStreams(id, downMessage, downCode, down_color, customStream);
          }
          break;
       case ArrowsOnMainChart:
@@ -58,16 +58,16 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
             highStream.SetShift(shift_arrows_pips);
             PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
             lowStream.SetShift(-shift_arrows_pips);
-            id = conditions[size].RegisterArrows(id, "Up", IndicatorObjPrefix + "_up", upCode, up_color, highStream);
-            id = conditions[size + 1].RegisterArrows(id, "Down", IndicatorObjPrefix + "_down", downCode, down_color, lowStream);
+            id = conditions[size].RegisterArrows(id, upMessage, IndicatorObjPrefix + "_up", upCode, up_color, highStream);
+            id = conditions[size + 1].RegisterArrows(id, downMessage, IndicatorObjPrefix + "_down", downCode, down_color, lowStream);
             lowStream.Release();
             highStream.Release();
          }
          break;
       case Candles:
          {
-            id = conditions[size].RegisterStreams(id, "Up", up_color);
-            id = conditions[size + 1].RegisterStreams(id, "Down", down_color);
+            id = conditions[size].RegisterStreams(id, upMessage, up_color);
+            id = conditions[size + 1].RegisterStreams(id, downMessage, down_color);
          }
          break;
    }

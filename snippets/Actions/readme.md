@@ -63,3 +63,7 @@ Used with TradingMonitor. Counts trades with a loss in a raw.
 ## DeletePendingOrderAction
 
 Deletes pending order.
+
+## DeletePendingOrdersAction
+
+Deletes all pending orders with a specified magic number.

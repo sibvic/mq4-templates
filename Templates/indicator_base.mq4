@@ -86,5 +86,5 @@ int OnCalculate(const int rates_total,
    ArraySetAsSeries(low, lowSeries);
    ArraySetAsSeries(close, closeSeries);
    ArraySetAsSeries(tick_volume, tickVolumeSeries);
-   return 0;
+   return rates_total;
 }

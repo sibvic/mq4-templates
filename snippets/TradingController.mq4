@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v7.8
+// Trading controller v7.9
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -38,7 +38,7 @@ public:
       _longPosition = longPosition;
       _shortPosition = shortPosition;
       _entryLogic = TradingModeOnBarClose;
-      _exitLogic = TradingModeLive;
+      _exitLogic = TradingModeOnBarClose;
       _actions = actions;
       _calculator = calculator;
       _signaler = signaler;

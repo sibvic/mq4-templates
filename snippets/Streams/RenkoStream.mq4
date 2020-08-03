@@ -8,8 +8,8 @@
 
 enum RenkoMode
 {
-   RenkoTraditional,
-   RenkoATR
+   RenkoTraditional, // Traditional
+   RenkoATR // ATR
 };
 
 class RenkoStream : public ACustomBarStream

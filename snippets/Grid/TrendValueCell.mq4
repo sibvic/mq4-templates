@@ -1,5 +1,6 @@
 #include <../conditions/ICondition.mq4>
 #include <../Signaler.mq4>
+#include <../functions.mq4>
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
@@ -37,8 +38,8 @@ public:
       _outputMode = outputMode;
       _lastSignal = 0;
       _alertShift = alertShift;
-      _signaler = new Signaler(symbol, timeframe);
-      _signaler.SetMessagePrefix(symbol + "/" + _signaler.GetTimeframeStr() + ": ");
+      _signaler = new Signaler();
+      _signaler.SetMessagePrefix(symbol + "/" + TimeframeToString(timeframe) + ": ");
       _id = id; 
       _x = x; 
       _y = y; 

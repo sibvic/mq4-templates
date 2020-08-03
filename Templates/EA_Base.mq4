@@ -651,7 +651,7 @@ int OnInit()
    #endif
 
    string error;
-   TradingController *controller = CreateController(_Symbol, trading_timeframe, error);
+   TradingController *controller = CreateController(_Symbol, trading_timeframe, NULL, error);
    if (controller == NULL)
    {
       Print(error);

@@ -1,7 +1,7 @@
 #include <ACustomBarStream.mq4>
 #include <../InstrumentInfo.mq4>
 
-// Renko stream v1.0
+// Renko stream v1.1
 
 #ifndef RenkoStream_IMP
 #define RenkoStream_IMP
@@ -38,8 +38,8 @@ public:
       _mode = mode;
       if (_mode != RenkoATR)
       {
-         _step = step * _instrument.GetPipSize();
-         return true;
+         _step = _instrument.RoundRate(step * _instrument.GetPipSize());
+         return _step != 0;
       }
       _step = step;
       return true;
@@ -86,7 +86,7 @@ private:
       }
       
       step = _step;
-      return true;
+      return step != 0;
    }
 
    void AddBar(datetime date)

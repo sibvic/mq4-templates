@@ -1,12 +1,12 @@
 // Arrows base v5.1
 
-#property copyright "Copyright © 2020, "
-#property link      ""
 #property version   "1.0"
 #property strict
 #property indicator_chart_window
 //#property indicator_separate_window
 #property indicator_buffers 8
+
+#define ACT_ON_SWITCH
 
 enum SingalMode
 {
@@ -27,6 +27,7 @@ input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
 
 #include <conditions/ACondition.mq4>
+#include <conditions/ActOnSwitchCondition.mq4>
 #include <Streams/PriceStream.mq4>
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
@@ -41,6 +42,14 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 2);
+   #ifdef ACT_ON_SWITCH
+      ActOnSwitchCondition* upSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, upCondition);
+      upCondition.Release();
+      upCondition = upSwitch;
+      ActOnSwitchCondition* downSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, downCondition);
+      downCondition.Release();
+      downCondition = downSwitch;
+   #endif
    conditions[size] = new AlertSignal(upCondition, upAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
    conditions[size + 1] = new AlertSignal(downCondition, downAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
       
@@ -204,7 +213,8 @@ int start()
    int counted_bars = IndicatorCounted();
    if (counted_bars <= 0 || counted_bars > Bars)
    {
-      ArrayInitialize(ll, EMPTY_VALUE);
+      //TODO: initialize your streams here
+      //ArrayInitialize(ll, EMPTY_VALUE);
       if (customStream != NULL)
       {
          customStream.Init();

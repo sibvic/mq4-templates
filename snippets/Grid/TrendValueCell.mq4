@@ -4,7 +4,7 @@
 #include <IValueFormatter.mq4>
 #include <ICell.mq4>
 
-// Trend value cell v5.1
+// Trend value cell v5.2
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -185,7 +185,6 @@ private:
          ObjectSet(id, OBJPROP_CORNER, _corner);
          ObjectSet(id, OBJPROP_XDISTANCE, _x);
          ObjectSet(id, OBJPROP_YDISTANCE, _y);
-         ObjectSet(id, OBJPROP_CORNER, 1); 
          ObjectSetString(0, id, OBJPROP_FONT, "Arial");
          ObjectSetString(0, id, OBJPROP_TEXT, text);
          ObjectSetInteger(0, id, OBJPROP_COLOR, textColor);

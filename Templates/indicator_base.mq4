@@ -4,6 +4,8 @@
 #property indicator_buffers 1
 #property indicator_color1 Red
 
+input int bars_limit = 100000; // Bars limit
+
 string IndicatorObjPrefix;
 
 bool NamesCollision(const string name)
@@ -76,7 +78,7 @@ int OnCalculate(const int rates_total,
    ArraySetAsSeries(tick_volume, true);
 
    int toSkip = 0;
-   for (int pos = rates_total - 1 - MathMax(prev_calculated, toSkip); pos >= 0 && !IsStopped(); --pos)
+   for (int pos = MathMin(bars_limit, rates_total - 1 - MathMax(prev_calculated, toSkip)); pos >= 0 && !IsStopped(); --pos)
    {
    }
    

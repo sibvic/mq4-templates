@@ -1,7 +1,7 @@
 #include <ACondition.mq4>
 #include <../Streams/IBarStream.mq4>
 
-// Bar condnitions v2.2
+// Bar condnitions v2.3
 
 #ifndef BarConditions_IMP
 #define BarConditions_IMP
@@ -30,14 +30,19 @@ public:
 
    virtual bool IsPass(const int period, const datetime date)
    {
+      int streamPeriod;
+      if (!_stream.FindDatePeriod(date, streamPeriod))
+      {
+         return false;
+      }
       double open, close;
-      return _stream.GetOpenClose(period + _periodShift, open, close) && open < close;
+      return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open < close;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)
    {
       bool result = IsPass(period, date);
-      return "Bar ascending: " + (result ? "true" : "false");
+      return _stream.GetName() + " Bar ascending: " + (result ? "true" : "false");
    }
 };
 
@@ -65,14 +70,19 @@ public:
 
    virtual bool IsPass(const int period, const datetime date)
    {
+      int streamPeriod;
+      if (!_stream.FindDatePeriod(date, streamPeriod))
+      {
+         return false;
+      }
       double open, close;
-      return _stream.GetOpenClose(period + _periodShift, open, close) && open > close;
+      return _stream.GetOpenClose(streamPeriod + _periodShift, open, close) && open > close;
    }
 
    virtual string GetLogMessage(const int period, const datetime date)
    {
       bool result = IsPass(period, date);
-      return "Bar descending: " + (result ? "true" : "false");
+      return _stream.GetName() + " Bar descending: " + (result ? "true" : "false");
    }
 };
 

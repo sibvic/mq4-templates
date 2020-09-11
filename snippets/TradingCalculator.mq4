@@ -183,6 +183,11 @@ public:
       return _symbol.NormalizeLots(lots);
    }
 
+   double RoundLots(const double lots)
+   {
+      return _symbol.RoundLots(lots);
+   }
+
    double RoundRate(const double rate)
    {
       return _symbol.RoundRate(rate);

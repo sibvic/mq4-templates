@@ -51,7 +51,7 @@ public:
 
    virtual string GetLogMessage(const int period, const datetime date)
    {
-      return _condition.GetLogMessage(period, date);
+      return "Switch of (" + _condition.GetLogMessage(period, date) + (IsPass(period, date) ? ")=true" : ")=false");
    }
 };
 

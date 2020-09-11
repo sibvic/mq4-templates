@@ -98,6 +98,7 @@ class TradingTimeCondition : public AConditionBase
    int _weekStopDay;
 public:
    TradingTimeCondition(int startTime, int endTime)
+      :AConditionBase("Trading Time")
    {
       _startTime = startTime;
       _endTime = endTime;
@@ -106,6 +107,7 @@ public:
 
    TradingTimeCondition(int startTime, int endTime, const DayOfWeek startDay,
       int weekStartTime, const DayOfWeek stopDay, int weekEndTime)
+      :AConditionBase("Trading Time")
    {
       _startTime = startTime;
       _endTime = endTime;

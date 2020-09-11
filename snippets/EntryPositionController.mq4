@@ -80,7 +80,7 @@ public:
          logMessage = _condition.GetLogMessage(period, date) + "; Condition passed: " + (conditionPassed ? "true" : "false");
          if (_filterCondition != NULL)
          {
-            logMessage += ";" + _filterCondition.GetLogMessage(period, date);
+            logMessage += "; Filter: " + _filterCondition.GetLogMessage(period, date);
          }
       }
       if (!conditionPassed)

@@ -20,10 +20,10 @@ class GridBuilder
    ICellFactory* _cellFactory[];
    ENUM_BASE_CORNER _corner;
 public:
-   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ENUM_BASE_CORNER corner)
+   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ENUM_BASE_CORNER __corner)
       :_xIterator(x, -cell_width), _yIterator(y, cellHeight)
    {
-      _corner = corner;
+      _corner = __corner;
       _cellHeight = cellHeight;
       _headerHeight = headerHeight;
       _verticalMode = verticalMode;

@@ -137,6 +137,7 @@ input double breakeven_level = 0; // Breakeven target
 #else
    TakeProfitType take_profit_type = TPDoNotUse;
    double take_profit_value = 10;
+   double take_profit_atr_multiplicator = 1;
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
    input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
@@ -166,6 +167,18 @@ input int magic_number        = 42; // Magic number
 #endif
 input bool print_log = false; // Print decisions into the log
 input string log_file = "log.csv"; // Log file name (empty for auto naming)
+
+#ifdef SHOW_ACCOUNT_STAT
+   input string   DashboardSection            = ""; // == Dashboard ==
+   input color color_text = White; // General text color
+   input color color_buy_signal = Green; // Buy signal color
+   input color color_sell_signal = Red; // Sell signal color
+   input color color_profit = Green; // Profit color
+   input color color_loss = Red; // Loss color
+   input color background_color = DarkBlue; // Background color
+   input int x = 50; // Dashboard X coordinate
+   input int y = 50; // Dashboard Y coordinate
+#endif
 
 #include <Signaler.mq4>
 #include <InstrumentInfo.mq4>
@@ -224,10 +237,10 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <Actions/MoveStopLossOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
-#include <AccountStatistics.mq4>
 
 TradingController *controllers[];
 #ifdef SHOW_ACCOUNT_STAT
+#include <AccountStatistics.mq4>
    AccountStatistics *stats;
 #endif
 

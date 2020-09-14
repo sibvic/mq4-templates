@@ -1,122 +1,66 @@
-// Account statistics v1.4
+#include <Grid/GridCells.mq4>
 
-input color equity_color = White; // Equity & profit color
-input color color_text = Lime; // General text color
-input color header_color = Yellow; // Headers color
+// Account statistics v1.4
 
 class AccountStatistics
 {
    InstrumentInfo *_symbol;
-   int _textCorner;
-   string _eaName;
    int _fontSize;
    string _fontName;
-   string _headersFontName;
+   GridCells* cells0;
 public:
    AccountStatistics(string eaName)
    {
       _fontSize = 10;
-      _eaName = eaName;
-      _textCorner = 1;
       _symbol = new InstrumentInfo(_Symbol);
-      _headersFontName = "Impact";
       _fontName = "Cambria";
-
-      string_window(eaName + "EA_NAME", 5, 5, 0); 
-      ObjectSet(eaName + "EA_NAME", OBJPROP_CORNER, 3); 
-      ObjectSetText(eaName + "EA_NAME", _eaName, _fontSize + 3, _headersFontName, header_color);
+      cells0 = new GridCells(IndicatorObjPrefix + "0", 1.2);
    }
 
    ~AccountStatistics()
    {
-      ObjectsDeleteAll(ChartID(), _eaName);
+      delete cells0;
       delete _symbol;
    }
 
    void Update()
    {
-      OrdersIterator it();
-      it.WhenTrade().WhenMagicNumber(magic_number);
-      double profit = 0.0;
-      double profitWithCommissions = 0.0;
-      while (it.Next())
+      if (last_time == 0)
       {
-         profit += it.GetProfit();
-         profitWithCommissions += it.GetProfit() + OrderCommission() + OrderSwap();
+         return;
       }
-      string currentDate;
-      MqlDateTime current_time;
-      TimeToStruct(TimeCurrent(), current_time);
-      switch (current_time.day_of_week)
-      {
-         case MONDAY:
-            currentDate = "MONDAY";
-            break;
-         case TUESDAY:
-            currentDate = "TUESDAY";
-            break;
-         case WEDNESDAY:
-            currentDate = "WEDNESDAY";
-            break;
-         case THURSDAY:
-            currentDate = "THURSDAY";
-            break;
-         case FRIDAY:
-            currentDate = "FRIDAY";
-            break;
-         case SATURDAY:
-            currentDate = "SATURDAY";
-            break;
-         case SUNDAY:
-            currentDate = "SUNDAY";
-            break;
-      }
-      string_window(_eaName + "currentDate", 5, 18, 0);
-      ObjectSetText(_eaName + "currentDate", currentDate + ", " + DoubleToStr(Day(), 0) + " - " + DoubleToStr(Month(), 0) + " - " + DoubleToStr(Year(), 0), _fontSize+ 1 , _headersFontName, header_color);
-      ObjectSet(_eaName + "currentDate", OBJPROP_CORNER, _textCorner);
-
-      string_window(_eaName + "Balance", 5, 15 + 20, 0);
-      ObjectSetText(_eaName + "Balance"," Balance: " + DoubleToStr(AccountBalance(), 2), _fontSize, _fontName, color_text);
-      ObjectSet(_eaName + "Balance", OBJPROP_CORNER,_textCorner);  
-
-      string_window(_eaName + "Equity", 5, 30 + 20, 0);
-      ObjectSetText(_eaName + "Equity", "Equity: " + DoubleToStr(AccountEquity(),2), _fontSize, _fontName, equity_color); 
-      ObjectSet(_eaName + "Equity", OBJPROP_CORNER, _textCorner);  
+      int row = 0;
+      cells0.Add("Take Profit", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add(DoubleToString(last_tp, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
+      cells0.Add("Stop Loss", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add(DoubleToString(last_sl, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
+      cells0.Add("---", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add("---", color_text, _fontName, _fontSize, 1, row++);
+      cells0.Add("Current Signal", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add(last_signal == BuySide ? "BUY" : "SELL", last_signal == BuySide ? color_buy_signal : color_sell_signal, _fontName, _fontSize, 1, row++);
+      cells0.Add("Signal Price", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add(DoubleToString(last_price, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
       
-      string_window(_eaName + "Profit", 5, 45 + 20, 0); 
-      ObjectSetText(_eaName + "Profit", "Profit: " + DoubleToStr(profitWithCommissions, 2) , _fontSize, _fontName, equity_color); 
-      ObjectSet(_eaName + "Profit", OBJPROP_CORNER, _textCorner);
-      
-      string_window(_eaName + "Leverage", 5, 60 + 20, 0);
-      ObjectSetText(_eaName + "Leverage", "Leverage: " + DoubleToStr(AccountLeverage(), 0), _fontSize, _fontName, color_text);
-      ObjectSet(_eaName + "Leverage", OBJPROP_CORNER, _textCorner);
+      int distance = iBarShift(_Symbol, _Period, last_time);
+      cells0.Add("Signal Time", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add("From " + IntegerToString(distance) + " Candles", color_text, _fontName, _fontSize, 1, row++);
 
-      string_window(_eaName + "Spread", 5,75 + 20, 0);
-      ObjectSetText(_eaName + "Spread", "Spread: " + DoubleToStr(_symbol.GetSpread(), 1), _fontSize, _fontName, color_text);
-      ObjectSet(_eaName + "Spread", OBJPROP_CORNER, _textCorner);
-      
-      double Range = (iHigh(_symbol.GetSymbol(), 1440, 0) - iLow(_symbol.GetSymbol(), 1440, 0)) / _symbol.GetPipSize();
-      string_window(_eaName + "Range", 5, 90 + 20, 0);
-      ObjectSetText(_eaName + "Range","Range: " + DoubleToStr(Range, 1) , _fontSize, _fontName, color_text); 
-      ObjectSet(_eaName + "Range", OBJPROP_CORNER, _textCorner); 
-      
-      string_window(_eaName + "Price", 5, 125, 0);
-      ObjectSetText(_eaName + "Price", "Bid Price: " + DoubleToStr(_symbol.GetBid(), _symbol.GetDigits()), _fontSize, _fontName, GetPriceColor());
-      ObjectSet(_eaName + "Price", OBJPROP_CORNER, _textCorner); 
-   }
-private:
-   color GetPriceColor()
-   {
-      return Volume[0] %2 == 0 ? color_text : equity_color;
-   }
+      double pl = last_signal == BuySide ? (Bid - last_price) : (Ask - last_price);
+      cells0.Add("Signal Profit", color_text, _fontName, _fontSize, 0, row);
+      cells0.Add(DoubleToString(pl / _symbol.GetPipSize(), 2), pl < 0 ? color_loss : color_profit, _fontName, _fontSize, 1, row++);
 
-   int string_window(string n, int xoff, int yoff, int WindowToUse)
-   {
-      ObjectCreate(n, OBJ_LABEL, WindowToUse, 0, 0);
-      ObjectSet(n, OBJPROP_CORNER, 1);
-      ObjectSet(n, OBJPROP_XDISTANCE, xoff);
-      ObjectSet(n, OBJPROP_YDISTANCE, yoff);
-      ObjectSet(n, OBJPROP_BACK, true);
-      return 0;
+      int height0 = cells0.GetTotalHeight();
+      int width0 = cells0.GetTotalWidth();
+      ResetLastError();
+      string id = IndicatorObjPrefix + "idValue2";
+      ObjectCreate(0, id, OBJ_RECTANGLE_LABEL, 0, 0, 0);
+      ObjectSetInteger(0, id, OBJPROP_BGCOLOR, background_color);
+      ObjectSetInteger(0, id, OBJPROP_FILL, true);
+      ObjectSetInteger(0, id, OBJPROP_XDISTANCE, x - 10); 
+      ObjectSetInteger(0, id, OBJPROP_YDISTANCE, y - 10); 
+      ObjectSetInteger(0, id, OBJPROP_XSIZE, width0 + 10); 
+      ObjectSetInteger(0, id, OBJPROP_YSIZE, height0 + 10);
+      
+      cells0.Draw(x, y);
    }
 };

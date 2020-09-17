@@ -217,3 +217,11 @@ Used to enable/disable actions per day of week.
 ## StreamConditions
 
 Stream-stream condition.
+
+## HitEquityLevelCondition
+
+Hit equity level condition.
+
+## HitTotalProfitCondition
+
+Hit total profit (equity - balance) condition.

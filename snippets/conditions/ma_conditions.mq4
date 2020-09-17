@@ -1,4 +1,4 @@
-// MA Conditions v3.2
+// MA Conditions v4.0
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
@@ -15,13 +15,17 @@ class MAMACondition : public ACondition
    TwoStreamsConditionType _condition;
    int _shift1;
    int _shift2;
+   ENUM_APPLIED_PRICE _price1;
+   ENUM_APPLIED_PRICE _price2;
 public:
    MAMACondition(const string symbol, ENUM_TIMEFRAMES timeframe, TwoStreamsConditionType condition
-      , ENUM_MA_METHOD method1, int period1
-      , ENUM_MA_METHOD method2, int period2
+      , ENUM_MA_METHOD method1, int period1, ENUM_APPLIED_PRICE price1
+      , ENUM_MA_METHOD method2, int period2, ENUM_APPLIED_PRICE price2
       , int shift1 = 0, int shift2 = 0)
       :ACondition(symbol, timeframe)
    {
+      _price1 = price1;
+      _price2 = price2;
       _condition = condition;
       _method1 = method1;
       _period1 = period1;
@@ -33,10 +37,10 @@ public:
 
    bool IsPass(const int period, const datetime date)
    {
-      double value10 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + _shift1);
-      double value11 = iMA(_symbol, _timeframe, _period1, 0, _method1, PRICE_CLOSE, period + 1 + _shift1);
-      double value20 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + _shift2);
-      double value21 = iMA(_symbol, _timeframe, _period2, 0, _method2, PRICE_CLOSE, period + 1 + _shift2);
+      double value10 = iMA(_symbol, _timeframe, _period1, 0, _method1, _price1, period + _shift1);
+      double value11 = iMA(_symbol, _timeframe, _period1, 0, _method1, _price1, period + 1 + _shift1);
+      double value20 = iMA(_symbol, _timeframe, _period2, 0, _method2, _price2, period + _shift2);
+      double value21 = iMA(_symbol, _timeframe, _period2, 0, _method2, _price2, period + 1 + _shift2);
       switch (_condition)
       {
          case FirstAboveSecond:

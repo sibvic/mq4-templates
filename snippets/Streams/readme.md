@@ -4,6 +4,10 @@
 
 Interface for streams.
 
+## AOnStream
+
+Abstract class for streams based on another stream.
+
 ## IBarStream
 
 Interface for bar streams.
@@ -152,3 +156,11 @@ Ichimoke streams.
 ## RenkoStream
 
 Renko bar stream.
+
+## IndicatorOutputStream
+
+Stream with an indicator output.
+
+## RmaOnStream
+
+RMA calculated on stream.

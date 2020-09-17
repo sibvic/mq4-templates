@@ -2,6 +2,7 @@
 
 // Account statistics v1.4
 
+string IndicatorObjPrefix = "EA";
 class AccountStatistics
 {
    InstrumentInfo *_symbol;
@@ -25,10 +26,6 @@ public:
 
    void Update()
    {
-      if (last_time == 0)
-      {
-         return;
-      }
       int row = 0;
       cells0.Add("Take Profit", color_text, _fontName, _fontSize, 0, row);
       cells0.Add(DoubleToString(last_tp, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);

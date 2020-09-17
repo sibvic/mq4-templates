@@ -227,6 +227,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <Conditions/PositionLimitHitCondition.mq4>
 #include <Actions/MoveNetStopLossAction.mq4>
 #include <Actions/MoveNetTakeProfitAction.mq4>
+#include <Actions/EntryAction.mq4>
 #include <MoneyManagement/functions.mq4>
 #include <MartingaleStrategy.mq4>
 #include <TradingCommands.mq4>
@@ -492,15 +493,14 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    }
    
    EntryPositionController* longPosition = new EntryPositionController(BuySide, longCondition, longFilterCondition, 
-      entryStrategy, closeOnOpposite, orderHandlers, signaler, "", "Buy");
+      closeOnOpposite, signaler, "", "Buy");
    EntryPositionController* shortPosition = new EntryPositionController(SellSide, shortCondition, shortFilterCondition,
-      entryStrategy, closeOnOpposite, orderHandlers, signaler, "", "Sell");
+      closeOnOpposite, signaler, "", "Sell");
    longCondition.Release();
    shortCondition.Release();
    longFilterCondition.Release();
    shortFilterCondition.Release();
       
-   orderHandlers.Release();
    closeOnOpposite.Release();
    
    TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, longPosition, shortPosition, actions, signaler, algoId);
@@ -584,10 +584,15 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    
    IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true, 
       lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   IAction* openLongAction = new EntryAction(entryStrategy, BuySide, longMoneyManagement, "", orderHandlers);
+   longPosition.AddAction(openLongAction);
+   openLongAction.Release();
    IMoneyManagementStrategy* shortMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, false, 
       lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
-   longPosition.AddMoneyManagement(longMoneyManagement);
-   shortPosition.AddMoneyManagement(shortMoneyManagement);
+   IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers);
+   shortPosition.AddAction(openShortAction);
+   openShortAction.Release();
+   orderHandlers.Release();
 
    #ifdef NET_STOP_LOSS_FEATURE
       if (net_stop_loss_type != StopLimitDoNotUse)

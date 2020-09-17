@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v7.10
+// Trading controller v7.11
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -77,7 +77,11 @@ public:
    void SetExitLogic(TradingMode logicType) { _exitLogic = logicType; }
    void SetExitLongCondition(ICondition *condition) { _exitLongCondition = condition; }
    void SetExitShortCondition(ICondition *condition) { _exitShortCondition = condition; }
-   void SetEntryStrategy(IEntryStrategy *entryStrategy) { _entryStrategy = entryStrategy; }
+   void SetEntryStrategy(IEntryStrategy *entryStrategy)
+   { 
+      _entryStrategy = entryStrategy; 
+      _entryStrategy.AddRef(); 
+   }
 
    void DoTrading()
    {

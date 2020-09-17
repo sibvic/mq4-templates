@@ -2,11 +2,8 @@
 #include <enums/OrderSide.mq4>
 #include <CloseOnOpposite.mq4>
 #include <Signaler.mq4>
-#include <MoneyManagement/IMoneyManagementStrategy.mq4>
-#include <EntryStrategy.mq4>
-#include <OrderHandlers.mq4>
 
-// Entry position controller v1.0
+// Entry position controller v2.0
 
 #ifndef EntryPositionController_IMP
 #define EntryPositionController_IMP
@@ -19,23 +16,17 @@ class EntryPositionController
    OrderSide _side;
    ICloseOnOppositeStrategy *_closeOnOpposite;
    Signaler* _signaler;
-   IMoneyManagementStrategy *_moneyManagement[];
-   IEntryStrategy *_entryStrategy;
+   IAction* _actions[];
    string _algorithmId;
    string _alertMessage;
-   OrderHandlers* _orderHandlers;
 public:
-   EntryPositionController(OrderSide side, ICondition* condition, ICondition* filterCondition, IEntryStrategy *entryStrategy,
-      ICloseOnOppositeStrategy *closeOnOpposite, OrderHandlers* orderHandlers, Signaler* signaler, 
+   EntryPositionController(OrderSide side, ICondition* condition, ICondition* filterCondition, 
+      ICloseOnOppositeStrategy *closeOnOpposite, Signaler* signaler, 
       string algorithmId, string alertMessage)
    {
-      _orderHandlers = orderHandlers;
-      _orderHandlers.AddRef();
       _algorithmId = algorithmId;
       _filterCondition = filterCondition;
       _filterCondition.AddRef();
-      _entryStrategy = entryStrategy;
-      _entryStrategy.AddRef();
       _signaler = signaler;
       _side = side;
       _includeLog = false;
@@ -48,15 +39,13 @@ public:
 
    ~EntryPositionController()
    {
-      _orderHandlers.Release();
-      _entryStrategy.Release();
       _closeOnOpposite.Release();
       _condition.Release();
       _filterCondition.Release();
       
-      for (int i = 0; i < ArraySize(_moneyManagement); ++i)
+      for (int i = 0; i < ArraySize(_actions); ++i)
       {
-         delete _moneyManagement[i];
+         _actions[i].Release();
       }
    }
 
@@ -65,11 +54,12 @@ public:
       _includeLog = true;
    }
 
-   void AddMoneyManagement(IMoneyManagementStrategy *moneyManagement)
+   void AddAction(IAction* action)
    {
-      int count = ArraySize(_moneyManagement);
-      ArrayResize(_moneyManagement, count + 1);
-      _moneyManagement[count] = moneyManagement;
+      int count = ArraySize(_actions);
+      ArrayResize(_actions, count + 1);
+      _actions[count] = action;
+      _actions[count].AddRef();
    }
 
    bool DoEntry(int period, datetime date, string& logMessage)
@@ -98,13 +88,9 @@ public:
       }
       _closeOnOpposite.DoClose(GetOppositeSide(_side));
       
-      for (int i = 0; i < ArraySize(_moneyManagement); ++i)
+      for (int i = 0; i < ArraySize(_actions); ++i)
       {
-         int order = _entryStrategy.OpenPosition(period, _side, _moneyManagement[i], _algorithmId);
-         if (order >= 0)
-         {
-            _orderHandlers.DoAction(order);
-         }
+         _actions[i].DoAction(period, date);
       }
       _signaler.SendNotifications(_alertMessage);
       return true;

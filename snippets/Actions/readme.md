@@ -67,3 +67,7 @@ Deletes pending order.
 ## DeletePendingOrdersAction
 
 Deletes all pending orders with a specified magic number.
+
+## EntryAction
+
+Executes entry action.

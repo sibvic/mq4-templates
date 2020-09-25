@@ -10,7 +10,7 @@ class AccountStatistics
    string _fontName;
    GridCells* cells0;
 public:
-   AccountStatistics(string eaName)
+   AccountStatistics()
    {
       _fontSize = 10;
       _symbol = new InstrumentInfo(_Symbol);

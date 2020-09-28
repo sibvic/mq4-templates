@@ -225,3 +225,7 @@ Hit equity level condition.
 ## HitTotalProfitCondition
 
 Hit total profit (equity - balance) condition.
+
+## LineCrossCondition
+
+Line cross condition.

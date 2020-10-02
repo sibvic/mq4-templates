@@ -1,6 +1,6 @@
 #include <Grid/GridCells.mq4>
 
-// Account statistics v1.4
+// Account statistics v1.5
 
 string IndicatorObjPrefix = "EA";
 class AccountStatistics
@@ -27,25 +27,10 @@ public:
    void Update()
    {
       int row = 0;
-      cells0.Add("Take Profit", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add(DoubleToString(last_tp, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
-      cells0.Add("Stop Loss", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add(DoubleToString(last_sl, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
-      cells0.Add("---", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add("---", color_text, _fontName, _fontSize, 1, row++);
-      cells0.Add("Current Signal", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add(last_signal == BuySide ? "BUY" : "SELL", last_signal == BuySide ? color_buy_signal : color_sell_signal, _fontName, _fontSize, 1, row++);
-      cells0.Add("Signal Price", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add(DoubleToString(last_price, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
+      //TODO: add your own data
+      // cells0.Add("Take Profit", color_text, _fontName, _fontSize, 0, row);
+      // cells0.Add(DoubleToString(last_tp, _symbol.GetDigits()), color_text, _fontName, _fontSize, 1, row++);
       
-      int distance = iBarShift(_Symbol, _Period, last_time);
-      cells0.Add("Signal Time", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add("From " + IntegerToString(distance) + " Candles", color_text, _fontName, _fontSize, 1, row++);
-
-      double pl = last_signal == BuySide ? (Bid - last_price) : (Ask - last_price);
-      cells0.Add("Signal Profit", color_text, _fontName, _fontSize, 0, row);
-      cells0.Add(DoubleToString(pl / _symbol.GetPipSize(), 2), pl < 0 ? color_loss : color_profit, _fontName, _fontSize, 1, row++);
-
       int height0 = cells0.GetTotalHeight();
       int width0 = cells0.GetTotalWidth();
       ResetLastError();

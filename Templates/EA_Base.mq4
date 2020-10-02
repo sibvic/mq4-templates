@@ -680,7 +680,7 @@ int OnInit()
    controllers[controllersCount++] = controller;
    
    #ifdef SHOW_ACCOUNT_STAT
-      stats = new AccountStatistics(EA_NAME);
+      stats = new AccountStatistics();
    #endif
    return INIT_SUCCEEDED;
 }

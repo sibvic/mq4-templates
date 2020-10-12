@@ -1,4 +1,5 @@
 #include <AStreamBase.mq4>
+#include <IBarStream.mq4>
 
 // Ichimoku Stream v1.0
 

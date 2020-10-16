@@ -1,40 +1,19 @@
+#include <../AOnStream.mq4>
+
 // SMA on stream v1.0
 
 #ifndef SmaOnStream_IMP
 #define SmaOnStream_IMP
 
-#include <IStream.mq4>
-
-class SmaOnStream : public IStream
+class SmaOnStream : public AOnStream
 {
-   IStream *_source;
    int _length;
    double _buffer[];
-   int _references;
 public:
    SmaOnStream(IStream *source, const int length)
+      :AOnStream(source)
    {
-      _source = source;
-      _source.AddRef();
       _length = length;
-      _references = 1;
-   }
-
-   ~SmaOnStream()
-   {
-      _source.Release();
-   }
-
-   void AddRef()
-   {
-      ++_references;
-   }
-
-   void Release()
-   {
-      --_references;
-      if (_references == 0)
-         delete &this;
    }
 
    bool GetValue(const int period, double &val)

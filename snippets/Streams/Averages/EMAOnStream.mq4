@@ -1,4 +1,4 @@
-#include <IStream.mq4>
+#include <../IStream.mq4>
 
 // EMA on stream v1.0
 

@@ -1,6 +1,10 @@
-#include <AOnStream.mq4>
+#include <../AOnStream.mq4>
 
 //RmaOnStream v1.0
+
+#ifndef RmaOnStream_IMP
+#define RmaOnStream_IMP
+
 class RmaOnStream : public AOnStream
 {
    double _length;
@@ -35,3 +39,5 @@ public:
       return true;
    }
 };
+
+#endif

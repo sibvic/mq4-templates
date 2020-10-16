@@ -113,14 +113,6 @@ Returns iMA value.
 
 Boilinger Band stream.
 
-## SmaOnStream
-
-SMA/MVA stream.
-
-## EMAOnStream
-
-EMA stream.
-
 ## RangeStream
 
 Range stream.
@@ -160,7 +152,3 @@ Renko bar stream.
 ## IndicatorOutputStream
 
 Stream with an indicator output.
-
-## RmaOnStream
-
-RMA calculated on stream.

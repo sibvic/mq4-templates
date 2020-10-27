@@ -157,7 +157,12 @@ int init()
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName(IndicatorName);
 
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, corner);
+   #ifdef USE_HISTORIC
+   bool showHistorical = true;
+   #else
+   bool showHistorical = false;
+   #endif
+   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, corner, showHistorical);
    TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
    factory.SetNeutralColor(neutral_color);
    factory.SetButtonTextColor(button_text_color);

@@ -1,4 +1,4 @@
-// Grid builder v3.0
+// Grid builder v4.0
 
 #include <ICellFactory.mq4>
 
@@ -19,10 +19,12 @@ class GridBuilder
    int _headerHeight;
    ICellFactory* _cellFactory[];
    ENUM_BASE_CORNER _corner;
+   bool _showHistorical;
 public:
-   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ENUM_BASE_CORNER __corner)
+   GridBuilder(int x, int y, int headerHeight, int cellHeight, bool verticalMode, ENUM_BASE_CORNER __corner, bool showHistorical)
       :_xIterator(x, -cell_width), _yIterator(y, cellHeight)
    {
+      _showHistorical = showHistorical;
       _corner = __corner;
       _cellHeight = cellHeight;
       _headerHeight = headerHeight;
@@ -129,7 +131,7 @@ public:
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
                string id = IndicatorObjPrefix + _symbols[i] + "_" + label + IntegerToString(ii);
-               column[ii].Add(_cellFactory[ii].Create(id, x[ii], y, _corner, _symbols[i], timeframe));
+               column[ii].Add(_cellFactory[ii].Create(id, x[ii], y, _corner, _symbols[i], timeframe, _showHistorical));
             }
          }
       }
@@ -153,7 +155,7 @@ public:
             int x = xIterator.GetNext();
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
-               row.Add(_cellFactory[ii].Create(id, x, y[ii], _corner, _symbols[i], timeframe));
+               row.Add(_cellFactory[ii].Create(id, x, y[ii], _corner, _symbols[i], timeframe, _showHistorical));
             }
          }
       }

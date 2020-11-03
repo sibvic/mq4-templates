@@ -109,7 +109,7 @@ enum TrailingType
 #include <Enums/StopLossType.mq4>
 #include <Enums/StopLimitType.mq4>
 #ifdef STOP_LOSS_FEATURE
-   string StopLossSection            = ""; // == Stop loss ==
+   input string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    input double stop_loss_value = 10; // Stop loss value
    input double stop_loss_atr_multiplicator = 1; // Stop loss multiplicator (for ATR SL)

@@ -1,16 +1,16 @@
 #include <AConditionBase.mq4>
 
-// Line cross condition v1.0
+// Line cross condition v2.0
 
 #ifndef LineCrossCondition_IMP
 #define LineCrossCondition_IMP
 
-class LineCrossCondition : public AConditionBase
+class LineCrossUpCondition : public AConditionBase
 {
    string _lineId;
 public:
-   LineCrossCondition(string lineId)
-      :AConditionBase("Line cross")
+   LineCrossUpCondition(string lineId)
+      :AConditionBase("Line cross up")
    {
       _lineId = lineId;
    }
@@ -19,18 +19,59 @@ public:
    {
       double val0 = iClose(_Symbol, (ENUM_TIMEFRAMES)_Period, period);
       double val1 = iClose(_Symbol, (ENUM_TIMEFRAMES)_Period, period + 1);
-      double y0 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 0);
-      double y1 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 1);
-      double x0 = ObjectGetInteger(0, _lineId, OBJPROP_TIME, 0);
-      double x1 = ObjectGetInteger(0, _lineId, OBJPROP_TIME, 1);
-      if (y0 > 0 && y1 > 0 && x0 > 0 && x1 > 0)
+      int x1 = iBarShift(_Symbol, (ENUM_TIMEFRAMES)_Period, ObjectGetInteger(0, _lineId, OBJPROP_TIME, 0));
+      int x2 = iBarShift(_Symbol, (ENUM_TIMEFRAMES)_Period, ObjectGetInteger(0, _lineId, OBJPROP_TIME, 1));
+      double y1 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 0);
+      double y2 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 1);
+      if (x1 > x2)
       {
-         double d1 = (y0 - y1) * iTime(_symbol, (ENUM_TIMEFRAMES)_Period, period) + (x1 - x0) * val0 + (x0 * y1 - x1 * y0);
-         double d2 = (y0 - y1) * iTime(_symbol, (ENUM_TIMEFRAMES)_Period, period + 1) + (x1 - x0) * val1 + (x0 * y1 - x1 * y0);
-         double d = d1 * d2;
-         return d < 0 || d1 == 0;
+         datetime temp = x1;
+         x1 = x2;
+         x2 = temp;
+         double temp1 = y1;
+         y1 = y2;
+         y2 = temp1;
       }
-      return false;
+      double a = (x2 - x1) == 0 ? 0 : ((y2 - y1) / (x2 - x1));
+      double c = (y1 - a * x1);
+      double y_current = a * period + c;
+      double y_previous = a * (period + 1) + c;
+      return y_current > val0 && y_previous <= val1;
+   }
+};
+
+class LineCrossDownCondition : public AConditionBase
+{
+   string _lineId;
+public:
+   LineCrossDownCondition(string lineId)
+      :AConditionBase("Line cross down")
+   {
+      _lineId = lineId;
+   }
+
+   bool IsPass(const int period, const datetime date)
+   {
+      double val0 = iClose(_Symbol, (ENUM_TIMEFRAMES)_Period, period);
+      double val1 = iClose(_Symbol, (ENUM_TIMEFRAMES)_Period, period + 1);
+      int x1 = iBarShift(_Symbol, (ENUM_TIMEFRAMES)_Period, ObjectGetInteger(0, _lineId, OBJPROP_TIME, 0));
+      int x2 = iBarShift(_Symbol, (ENUM_TIMEFRAMES)_Period, ObjectGetInteger(0, _lineId, OBJPROP_TIME, 1));
+      double y1 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 0);
+      double y2 = ObjectGetDouble(0, _lineId, OBJPROP_PRICE, 1);
+      if (x1 > x2)
+      {
+         datetime temp = x1;
+         x1 = x2;
+         x2 = temp;
+         double temp1 = y1;
+         y1 = y2;
+         y2 = temp1;
+      }
+      double a = (x2 - x1) == 0 ? 0 : ((y2 - y1) / (x2 - x1));
+      double c = (y1 - a * x1);
+      double y_current = a * period + c;
+      double y_previous = a * (period + 1) + c;
+      return y_current < val0 && y_previous >= val1;
    }
 };
 

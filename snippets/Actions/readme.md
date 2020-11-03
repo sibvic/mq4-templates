@@ -71,3 +71,7 @@ Deletes all pending orders with a specified magic number.
 ## EntryAction
 
 Executes entry action.
+
+## OpenMarketOrderAction
+
+Open market order action.

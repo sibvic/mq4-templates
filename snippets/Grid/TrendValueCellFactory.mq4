@@ -41,7 +41,7 @@ public:
       return "Value";
    }
 
-   virtual ICell* Create(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   virtual ICell* Create(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe, bool showHistorical)
    {
       IValueFormatter* defaultValue = new FixedTextFormatter("-", GetTextColor(_neutralColor), GetBackgroundColor(_neutralColor));
       TrendValueCell* cell = new TrendValueCell(id, x, y, corner, symbol, timeframe, _alertShift, defaultValue, output_mode);
@@ -49,19 +49,33 @@ public:
 
       ICondition* upCondition = new UpCondition(symbol, timeframe);
       IValueFormatter* upValue = new FixedTextFormatter("Buy", GetTextColor(_upColor), GetBackgroundColor(_upColor));
-      IValueFormatter* historyUpValue = new FixedTextFormatter("Buy", GetTextColor(_historicalUpColor), GetBackgroundColor(_historicalUpColor));
+      IValueFormatter* historyUpValue = NULL;
+      if (showHistorical)
+      {
+         historyUpValue = new FixedTextFormatter("Buy", GetTextColor(_historicalUpColor), GetBackgroundColor(_historicalUpColor));
+      }
       cell.AddCondition(upCondition, upValue, historyUpValue, upValue);
       upCondition.Release();
       upValue.Release();
-      historyUpValue.Release();
+      if (historyUpValue != NULL)
+      {
+         historyUpValue.Release();
+      }
 
       ICondition* downCondition = new DownCondition(symbol, timeframe);
       IValueFormatter* downValue = new FixedTextFormatter("Sell", GetTextColor(_downColor), GetBackgroundColor(_downColor));
-      IValueFormatter* historyDownValue = new FixedTextFormatter("Sell", GetTextColor(_historicalDownColor), GetBackgroundColor(_historicalDownColor));
+      IValueFormatter* historyDownValue = NULL;
+      if (showHistorical)
+      {
+         historyDownValue = new FixedTextFormatter("Sell", GetTextColor(_historicalDownColor), GetBackgroundColor(_historicalDownColor));
+      }
       cell.AddCondition(downCondition, downValue, historyDownValue, downValue);
       downCondition.Release();
       downValue.Release();
-      historyDownValue.Release();
+      if (historyDownValue != NULL)
+      {
+         historyDownValue.Release();
+      }
 
       return cell;
    }

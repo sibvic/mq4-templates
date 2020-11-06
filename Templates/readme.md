@@ -27,3 +27,7 @@ Two candle streams. Used to color the candles.
 ## currency
 
 Template for a forex currency (like USD). Used to calculate some value based on several pairs for a single currency.
+
+## heatmap
+
+Heatmap.

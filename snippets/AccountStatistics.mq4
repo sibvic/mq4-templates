@@ -40,8 +40,8 @@ public:
       ObjectSetInteger(0, id, OBJPROP_FILL, true);
       ObjectSetInteger(0, id, OBJPROP_XDISTANCE, x - 10); 
       ObjectSetInteger(0, id, OBJPROP_YDISTANCE, y - 10); 
-      ObjectSetInteger(0, id, OBJPROP_XSIZE, width0 + 10); 
-      ObjectSetInteger(0, id, OBJPROP_YSIZE, height0 + 10);
+      ObjectSetInteger(0, id, OBJPROP_XSIZE, width0 + 20); 
+      ObjectSetInteger(0, id, OBJPROP_YSIZE, height0 + 20);
       
       cells0.Draw(x, y);
    }

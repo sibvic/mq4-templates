@@ -229,3 +229,7 @@ Hit total profit (equity - balance) condition.
 ## LineCrossCondition
 
 Line cross condition.
+
+## DayTimeCondition
+
+Triggers at the specific day of the month and time.

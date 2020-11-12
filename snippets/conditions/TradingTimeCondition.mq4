@@ -87,6 +87,28 @@ ICondition* CreateTradingTimeCondition(const string startTime, const string endT
    return new TradingTimeCondition(_startTime, _endTime, startDay, _weekStartTime, stopDay, _weekEndTime);
 }
 
+class DayTimeCondition : public TradingTimeCondition
+{
+   int _dayOfMonth;
+public:
+   DayTimeCondition(int dayOfMonth, int startTime, int intervalSeconds)
+      :TradingTimeCondition(startTime, startTime + intervalSeconds)
+   {
+      _dayOfMonth = dayOfMonth;
+   }
+
+   virtual bool IsPass(const int period, const datetime date)
+   {
+      MqlDateTime current_time;
+      if (!TimeToStruct(TimeCurrent(), current_time) || current_time.day != _dayOfMonth)
+      {
+         return false;
+      }
+      
+      return TradingTimeCondition::IsPass(period, date);
+   }
+};
+
 class TradingTimeCondition : public AConditionBase
 {
    int _startTime;

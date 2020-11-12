@@ -53,3 +53,7 @@ Calculates stop loss based n amount of money to lose (with fixed amount).
 ## HighLowStopLossStrategy
 
 Uses highest/lowest price of n last bars.
+
+## RiskBalanceStopLossStrategy
+
+Calculate stop loss to risk % of balance.

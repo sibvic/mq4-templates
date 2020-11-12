@@ -6,6 +6,7 @@
 #include <HighLowStopLossStrategy.mq4>
 #include <MoneyManagementStrategy.mq4>
 #include <ATRStopLossStrategy.mq4>
+#include <RiskBalanceStopLossStrategy.mq4>
 #include <ILotsProvider.mq4>
 #include <RiskLotsProvider.mq4>
 #include <DefaultLotsProvider.mq4>
@@ -37,6 +38,8 @@ IStopLossStrategy* CreateStopLossStrategy(TradingCalculator* tradingCalculator, 
       case SLAtr:
          return new ATRStopLossStrategy(symbol, timeframe, (int)stopLossValue, stopLosstAtrMultiplicator, isBuy);
       case SLDollar:
+      case SLRiskBalance:
+         Print("Not supported stop loss and amount types");
          return NULL; // Not supported at all
    }
    return NULL;
@@ -60,7 +63,10 @@ MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradin
          switch (stopLossType)
          {
             case SLDollar:
-               stopLoss = new DollarStopLossStrategy(tradingCalculator, StopLimitDollar, stopLossValue, isBuy, lots);
+               stopLoss = new DollarStopLossStrategy(tradingCalculator, stopLossValue, isBuy, lots);
+               break;
+            case SLRiskBalance:
+               stopLoss = new RiskBalanceStopLossStrategy(tradingCalculator, stopLossValue, isBuy, lots);
                break;
             default:
                stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy, stopLossType, stopLossValue, stopLosstAtrMultiplicator);

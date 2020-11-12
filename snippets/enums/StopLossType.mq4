@@ -11,7 +11,8 @@ enum StopLossType
    SLDollar, // Set in $,
    SLAbsolute, // Set in absolite value (rate),
    SLAtr, // Set in ATR(value) * mult,
-   SLHighLow // High/low of X bars
+   SLHighLow, // High/low of X bars
+   SLRiskBalance // Set in % of risked balance
 };
 
 #endif

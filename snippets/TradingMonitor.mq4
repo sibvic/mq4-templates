@@ -1,4 +1,4 @@
-// Trades monitor v.2.0
+// Trades monitor v3.0
 
 #include <actions/IAction.mq4>
 #ifndef TradingMonitor_IMP
@@ -14,24 +14,24 @@ class TradingMonitor
    bool active_still_active[1000];
    int active_total;
    IAction* _closedTradeAction;
-   IAction* _tradeChangedAction;
-   IAction* _newTradeAction;
+   IAction* _orderChangedAction;
+   IAction* _newOrderAction;
 public:
    TradingMonitor()
    {
       _closedTradeAction = NULL;
-      _tradeChangedAction = NULL;
-      _newTradeAction = NULL;
+      _orderChangedAction = NULL;
+      _newOrderAction = NULL;
    }
 
    ~TradingMonitor()
    {
       if (_closedTradeAction != NULL)
          _closedTradeAction.Release();
-      if (_tradeChangedAction != NULL)
-         _tradeChangedAction.Release();
-      if (_newTradeAction != NULL)
-         _newTradeAction.Release();
+      if (_orderChangedAction != NULL)
+         _orderChangedAction.Release();
+      if (_newOrderAction != NULL)
+         _newOrderAction.Release();
    }
 
    void SetClosedTradeAction(IAction* action)
@@ -43,22 +43,22 @@ public:
          _closedTradeAction.AddRef();
    }
 
-   void SetOnTradeChanged(IAction* action)
+   void SetOnOrderChanged(IAction* action)
    {
-      if (_tradeChangedAction != NULL)
-         _tradeChangedAction.Release();
-      _tradeChangedAction = action;
-      if (_tradeChangedAction != NULL)
-         _tradeChangedAction.AddRef();
+      if (_orderChangedAction != NULL)
+         _orderChangedAction.Release();
+      _orderChangedAction = action;
+      if (_orderChangedAction != NULL)
+         _orderChangedAction.AddRef();
    }
 
-   void SetOnNewTrade(IAction* action)
+   void SetOnNewOrder(IAction* action)
    {
-      if (_newTradeAction != NULL)
-         _newTradeAction.Release();
-      _newTradeAction = action;
-      if (_newTradeAction != NULL)
-         _newTradeAction.AddRef();
+      if (_newOrderAction != NULL)
+         _newOrderAction.Release();
+      _newOrderAction = action;
+      if (_newOrderAction != NULL)
+         _newOrderAction.AddRef();
    }
 
    void DoWork()
@@ -74,8 +74,8 @@ public:
          if (index == -1)
          {
             changed = true;
-            if (_newTradeAction != NULL)
-               _newTradeAction.DoAction(0, 0);
+            if (_newOrderAction != NULL)
+               _newOrderAction.DoAction(0, 0);
          }
          else
          {
@@ -86,8 +86,8 @@ public:
                   OrderType() != active_type[index])
             {
                changed = true;
-               if (_tradeChangedAction != NULL)
-                  _tradeChangedAction.DoAction(0, 0);
+               if (_orderChangedAction != NULL)
+                  _orderChangedAction.DoAction(0, 0);
             }
          }
       }

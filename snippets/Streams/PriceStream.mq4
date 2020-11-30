@@ -1,28 +1,142 @@
-// Price stream v1.0
+// Price stream v2.0
 
 #ifndef PriceStream_IMP
 #define PriceStream_IMP
+#include <AStreamBase.mq4>
 #include <AStream.mq4>
-enum PriceType
+#include <IBarStream.mq4>
+#include <../enums/PriceType.mq4>
+
+class PriceStream : public AStreamBase
 {
-   PriceClose = PRICE_CLOSE, // Close
-   PriceOpen = PRICE_OPEN, // Open
-   PriceHigh = PRICE_HIGH, // High
-   PriceLow = PRICE_LOW, // Low
-   PriceMedian = PRICE_MEDIAN, // Median
-   PriceTypical = PRICE_TYPICAL, // Typical
-   PriceWeighted = PRICE_WEIGHTED, // Weighted
-   PriceMedianBody, // Median (body)
-   PriceAverage, // Average
-   PriceTrendBiased, // Trend biased
-   PriceVolume, // Volume
+   PriceType _price;
+   IBarStream* _source;
+public:
+   PriceStream(IBarStream* source, const PriceType __price)
+      :AStreamBase()
+   {
+      _source = source;
+      _source.AddRef();
+      _price = __price;
+   }
+
+   ~PriceStream()
+   {
+      _source.Release();
+   }
+
+   int Size()
+   {
+      return _source.Size();
+   }
+
+   bool GetValue(const int period, double &val)
+   {
+      switch (_price)
+      {
+         case PriceClose:
+            if (!_source.GetClose(period, val))
+            {
+               return false;
+            }
+            break;
+         case PriceOpen:
+            if (!_source.GetOpen(period, val))
+            {
+               return false;
+            }
+            break;
+         case PriceHigh:
+            if (!_source.GetHigh(period, val))
+            {
+               return false;
+            }
+            break;
+         case PriceLow:
+            if (!_source.GetLow(period, val))
+            {
+               return false;
+            }
+            break;
+         case PriceMedian:
+            {
+               double high, low;
+               if (!_source.GetHighLow(period, high, low))
+               {
+                  return false;
+               }
+               val = (high + low) / 2.0;
+            }
+            break;
+         case PriceTypical:
+            {
+               double open, high, low, close;
+               if (!_source.GetValues(period, open, high, low, close))
+               {
+                  return false;
+               }
+               val = (high + low + close) / 3.0;
+            }
+            break;
+         case PriceWeighted:
+            {
+               double open, high, low, close;
+               if (!_source.GetValues(period, open, high, low, close))
+               {
+                  return false;
+               }
+               val = (high + low + close * 2) / 4.0;
+            }
+            break;
+         case PriceMedianBody:
+            {
+               double open, close;
+               if (!_source.GetOpenClose(period, open, close))
+               {
+                  return false;
+               }
+               val = (open + close) / 2.0;
+            }
+            break;
+         case PriceAverage:
+            {
+               double open, high, low, close;
+               if (!_source.GetValues(period, open, high, low, close))
+               {
+                  return false;
+               }
+               val = (high + low + close + open) / 4.0;
+            }
+            break;
+         case PriceTrendBiased:
+            {
+               double open, high, low, close;
+               if (!_source.GetValues(period, open, high, low, close))
+               {
+                  return false;
+               }
+               if (open > close)
+                  val = (high + close) / 2.0;
+               else
+                  val = (low + close) / 2.0;
+            }
+            break;
+         // case PriceVolume:
+         //    if (!_source.GetVolume(period, val))
+         //    {
+         //       return false;
+         //    }
+         //    break;
+      }
+      return true;
+   }
 };
 
-class PriceStream : public AStream
+class SimplePriceStream : public AStream
 {
    PriceType _price;
 public:
-   PriceStream(const string symbol, const ENUM_TIMEFRAMES timeframe, const PriceType __price)
+   SimplePriceStream(const string symbol, const ENUM_TIMEFRAMES timeframe, const PriceType __price)
       :AStream(symbol, timeframe)
    {
       _price = __price;

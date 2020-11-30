@@ -33,3 +33,7 @@ VWMA on stream
 ## ZeroLagMAOnStream
 
 Zero lag MA on stream
+
+## AlmaOnStream
+
+ALMA on stream

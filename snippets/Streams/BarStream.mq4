@@ -1,4 +1,4 @@
-// Bar stream v2.0
+// Bar stream v2.1
 
 #include <IBarStream.mq4>
 
@@ -26,6 +26,12 @@ public:
       --_referenceCount;
       if (_referenceCount == 0)
          delete &this;
+   }
+
+   virtual bool FindDatePeriod(const datetime date, int& period)
+   {
+      period = iBarShift(_symbol, _timeframe, date);
+      return true;
    }
 
    virtual bool GetValue(const int period, double &val)

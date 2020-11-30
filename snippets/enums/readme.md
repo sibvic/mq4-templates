@@ -27,3 +27,7 @@ Supported position size types.
 ## TwoStreamsConditionType
 
 Conditions between two streams.
+
+## PriceType
+
+Price type for the PriceStream class.

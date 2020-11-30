@@ -63,9 +63,9 @@ int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* 
          break;
       case ArrowsOnMainChart:
          {
-            PriceStream* highStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
+            SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
             highStream.SetShift(shift_arrows_pips);
-            PriceStream* lowStream = new PriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
+            SimplePriceStream* lowStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
             lowStream.SetShift(-shift_arrows_pips);
             id = conditions[size].RegisterArrows(id, upMessage, IndicatorObjPrefix + "_up", upCode, up_color, highStream);
             id = conditions[size + 1].RegisterArrows(id, downMessage, IndicatorObjPrefix + "_down", downCode, down_color, lowStream);

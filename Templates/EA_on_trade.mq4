@@ -13,6 +13,7 @@ input bool ecn_broker = false; // ECN Broker?
 
 #include <TradingMonitor.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
+#include <Actions/AAction.mq4>
 
 TradingMonitor tradingMonitor;
 ActionOnConditionLogic* actions;
@@ -40,7 +41,7 @@ int OnInit()
    actions = new ActionOnConditionLogic();
    
    OnTradeOpenActionAction* onNewTradeAction = new OnTradeOpenActionAction();
-   tradingMonitor.SetOnNewTrade(onNewTradeAction);
+   tradingMonitor.SetOnNewOrder(onNewTradeAction);
    onNewTradeAction.Release();
 
    OnTradeCloseAction* onTradeClosedAction = new OnTradeCloseAction();

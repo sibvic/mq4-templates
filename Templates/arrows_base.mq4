@@ -18,7 +18,8 @@ enum DisplayType
 {
    Arrows, // Arrows
    ArrowsOnMainChart, // Arrows on main chart
-   Candles // Candles color
+   Candles, // Candles color
+   Lines // Lines
 };
 input SingalMode signal_mode = SingalModeLive; // Signal mode
 input DisplayType Type = Arrows; // Presentation Type
@@ -38,49 +39,52 @@ AlertSignal* conditions[];
 Signaler* mainSignaler;
 StreamWrapper* customStream;
 
-int CreateAlert(int id, ICondition* upCondition, IAction* upAction, ICondition* downCondition, IAction* downAction, int upCode, int downCode, string upMessage = "Up", string downMessage = "Down")
+int CreateAlert(int id, ICondition* condition, IAction* action, int code, string message, color clr, PriceType priceType, int sign)
 {
    int size = ArraySize(conditions);
-   ArrayResize(conditions, size + 2);
+   ArrayResize(conditions, size + 1);
    #ifdef ACT_ON_SWITCH
-      ActOnSwitchCondition* upSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, upCondition);
-      upCondition.Release();
-      upCondition = upSwitch;
-      ActOnSwitchCondition* downSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, downCondition);
-      downCondition.Release();
-      downCondition = downSwitch;
+      ActOnSwitchCondition* upSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, condition);
+      condition.Release();
+      condition = upSwitch;
    #endif
-   conditions[size] = new AlertSignal(upCondition, upAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
-   conditions[size + 1] = new AlertSignal(downCondition, downAction, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
+   conditions[size] = new AlertSignal(condition, action, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
       
    switch (Type)
    {
       case Arrows:
          {
-            id = conditions[size].RegisterStreams(id, upMessage, upCode, up_color, customStream);
-            id = conditions[size + 1].RegisterStreams(id, downMessage, downCode, down_color, customStream);
+            id = conditions[size].RegisterStreams(id, message, code, clr, customStream);
          }
          break;
       case ArrowsOnMainChart:
          {
-            SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceHigh);
-            highStream.SetShift(shift_arrows_pips);
-            SimplePriceStream* lowStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, PriceLow);
-            lowStream.SetShift(-shift_arrows_pips);
-            id = conditions[size].RegisterArrows(id, upMessage, IndicatorObjPrefix + "_up", upCode, up_color, highStream);
-            id = conditions[size + 1].RegisterArrows(id, downMessage, IndicatorObjPrefix + "_down", downCode, down_color, lowStream);
-            lowStream.Release();
+            SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, priceType);
+            highStream.SetShift(shift_arrows_pips * sign);
+            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(id), code, clr, highStream);
             highStream.Release();
          }
          break;
       case Candles:
          {
-            id = conditions[size].RegisterStreams(id, upMessage, up_color);
-            id = conditions[size + 1].RegisterStreams(id, downMessage, down_color);
+            id = conditions[size].RegisterStreams(id, message, clr);
+         }
+         break;
+      case Lines:
+         {
+            id = conditions[size].RegisterLines(id, message, IndicatorObjPrefix + IntegerToString(id), clr);
          }
          break;
    }
    return id;
+}
+
+int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
+{
+   ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, tf);
+   ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, tf);
+   id = CreateAlert(id, upCondition, NULL, 217, "Up " + TimeframeToString(tf), upColor, PriceHigh, 1);
+   return CreateAlert(id, downCondition, NULL, 218, "Down " + TimeframeToString(tf), downColor, PriceLow, -1);
 }
 
 class UpCondition : public ACondition
@@ -180,7 +184,7 @@ int init()
    {
       ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
       ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-      id = CreateAlert(id, upCondition, NULL, downCondition, NULL, 217, 218);
+      id = CreateAlert(id, (ENUM_TIMEFRAMES)_Period, up_color, down_color);
    }
    if (customStream != NULL)
    {

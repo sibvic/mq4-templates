@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
 
-// Create trailing action v2.1
+// Create trailing action v3.0
 
 #ifndef CreateTrailingAction_IMP
 #define CreateTrailingAction_IMP
@@ -14,10 +14,12 @@ class CreateTrailingAction : public AOrderAction
 {
    double _start;
    double _step;
+   bool _startInPercent;
    ActionOnConditionLogic* _actions;
 public:
-   CreateTrailingAction(double start, double step, ActionOnConditionLogic* actions)
+   CreateTrailingAction(double start, bool startInPercent, double step, ActionOnConditionLogic* actions)
    {
+      _startInPercent = startInPercent;
       _start = start;
       _step = step;
       _actions = actions;
@@ -71,14 +73,15 @@ public:
       double pipSize = point * mult;
 
       double distance = (OrderOpenPrice() - OrderStopLoss()) / pipSize;
+      double start = _startInPercent ? distance * _start / 100.0 : _start;
 
       string ticketIdStr = IntegerToString(_currentTicket);
       GlobalVariableSet("tr_" + ticketIdStr + "_stp", _step);
-      GlobalVariableSet("tr_" + ticketIdStr + "_strt", _start);
+      GlobalVariableSet("tr_" + ticketIdStr + "_strt", start);
       GlobalVariableSet("tr_" + ticketIdStr + "_d", distance);
       
       TrailingPipsAction* action = new TrailingPipsAction(order, distance, _step);
-      ProfitInRangeCondition* condition = new ProfitInRangeCondition(order, _start, 100000);
+      ProfitInRangeCondition* condition = new ProfitInRangeCondition(order, start, 100000);
       _actions.AddActionOnCondition(action, condition);
       condition.Release();
       action.Release();

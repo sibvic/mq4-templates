@@ -36,9 +36,21 @@ Closes order.
 
 Keeps stop loss distance to the orders to the defined amount of pips.
 
+## TrailingStreamAction
+
+Keeps stop loss sync with stream value.
+
 ## CreateTrailingAction
 
-Creates trailing action for the order.
+Creates trailing action for the order. Start could be specified in pips or % of stop loss.
+
+## CreateTrailingStreamAction
+
+Creates trailing action for the order. Start could be specified in pips or % of stop loss. Keeps stop loss sync with a stream value.
+
+## CreateATRTrailingAction
+
+Creates trailing action for the order. The trailng starts after ATR distance has been reached in the profit.
 
 ## CloseAllAction
 

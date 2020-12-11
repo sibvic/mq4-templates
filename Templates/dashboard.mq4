@@ -19,7 +19,7 @@ enum OutputMode
    OutputButtonsNewWindow, // New chart buttons
    OutputButtons // Current chart buttons
 };
-input OutputMode output_mode = OutputLabels; // Mode
+input OutputMode output_mode            = OutputLabels; // Mode
 input string   Comment1                 = "- Comma Separated Pairs - Ex: EURUSD,EURJPY,GBPUSD - ";
 input string   Pairs                    = "EURUSD,EURJPY,USDJPY,GBPUSD"; // Pairs
 input bool     Include_M1               = false; // Include M1
@@ -33,27 +33,27 @@ input bool     Include_W1               = true; // Include W1
 input bool     Include_MN1              = false; // Include MN1
 input color    Labels_Color             = clrWhite; // Labels color
 input color    button_text_color        = Black; // Button text color
-input int min_button_width = 30; // Min button width
+input int min_button_width              = 30; // Min button width
 #ifdef USE_HISTORIC
-   input color    historical_Up_Color      = Green; // Historical up color
+   input color    historical_Up_Color   = Green; // Historical up color
 #else
-   color    historical_Up_Color      = Green; // Historical up color
+   color    historical_Up_Color         = Green; // Historical up color
 #endif
 input color    Up_Color                 = Lime; // Up color
 #ifdef USE_HISTORIC
-   input color    historical_Dn_Color      = Red; // Historical down color
+   input color    historical_Dn_Color   = Red; // Historical down color
 #else
-   color    historical_Dn_Color      = Red; // Historical down color
+   color    historical_Dn_Color         = Red; // Historical down color
 #endif
 input color    Dn_Color                 = Pink; // Down color
 input color    neutral_color            = clrDarkGray; // Neutral color
-input int x_shift = 900; // X coordinate
-input ENUM_BASE_CORNER corner = CORNER_LEFT_UPPER; // Corner
-input DisplayMode display_mode = Vertical; // Display mode
-input int font_size = 10; // Font Size;
-input int cell_width = 80; // Cell width
-input int cell_height = 30; // Cell height
-input bool alert_on_close = false; // Alert on bar close
+input int x_shift                       = 900; // X coordinate
+input ENUM_BASE_CORNER corner           = CORNER_LEFT_UPPER; // Corner
+input DisplayMode display_mode          = Vertical; // Display mode
+input int font_size                     = 10; // Font Size;
+input int cell_width                    = 80; // Cell width
+input int cell_height                   = 30; // Cell height
+input bool alert_on_close               = false; // Alert on bar close
 
 #include <Signaler.mq4>
 

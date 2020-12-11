@@ -104,18 +104,29 @@ enum MartingaleStepSizeType
 enum TrailingType
 {
    TrailingDontUse, // No trailing
-   TrailingPips // Use trailing in pips
+   TrailingPips, // Use trailing in pips
+   TrailingATR, // Use trailing with ATR start
+   TrailingSLPercent, // Use trailing, in % of stop loss
 };
 #include <Enums/StopLossType.mq4>
 #include <Enums/StopLimitType.mq4>
+#include <Enums/MATypes.mq4>
+enum TrailingTargetType
+{
+   TrailingTargetStep, // Move each n pips
+   TrailingTargetMA, // Sync with MA
+};
 #ifdef STOP_LOSS_FEATURE
-   input string StopLossSection            = ""; // == Stop loss ==
+   string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    input double stop_loss_value = 10; // Stop loss value
    input double stop_loss_atr_multiplicator = 1; // Stop loss multiplicator (for ATR SL)
-   input TrailingType trailing_type = TrailingDontUse; // Trailing type
-   input double trailing_step = 10; // Trailing step
+   input TrailingType trailing_type = TrailingDontUse; // Trailing start type
    input double trailing_start = 0; // Min distance to order to activate the trailing
+   input TrailingTargetType trailing_target_type = TrailingTargetStep; // Trailing target
+   input double trailing_step = 10; // Trailing step
+   input int trailing_ma_length = 14; // Trailing MA Length
+   input MATypes trailing_ma_type = ma_sma; // Trailing MA Type
 #else
    StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    double stop_loss_value = 10;
@@ -236,6 +247,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
 #include <Actions/MoveStopLossOnProfitOrderAction.mq4>
+#include <Actions/PartialCloseOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
 
@@ -246,7 +258,9 @@ TradingController *controllers[];
 #endif
 
 #include <actions/CreateTrailingAction.mq4>
+#include <actions/CreateATRTrailingAction.mq4>
 #include <actions/CloseAllAction.mq4>
+#include <streams/averages/AveragesStreamFactory.mq4>
 
 #include <conditions/ACondition.mq4>
 #include <conditions/TradingTimeCondition.mq4>
@@ -420,6 +434,58 @@ string TimeframeToString(ENUM_TIMEFRAMES tf)
    return "";
 }
 
+IStream* CreateTrailingStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+{
+   if (trailing_target_type == TrailingTargetMA)
+   {
+      IStream* source = new SimplePriceStream(symbol, timeframe, PriceClose);
+      IStream* trailingStream = AveragesStreamFactory::Create(source, trailing_ma_length, trailing_ma_type);
+      source.Release();
+      return trailingStream;
+   }
+   return NULL;
+}
+
+AOrderAction* CreateTrailing(const string symbol, const ENUM_TIMEFRAMES timeframe, ActionOnConditionLogic* actions)
+{
+   #ifdef STOP_LOSS_FEATURE
+      switch (trailing_type)
+      {
+         case TrailingDontUse:
+            return NULL;
+      #ifdef INDICATOR_BASED_TRAILING
+         case TrailingIndicator:
+            return NULL;
+      #endif
+         case TrailingPips:
+            {
+               if (trailing_target_type == TrailingTargetStep)
+               {
+                  return new CreateTrailingAction(trailing_start, false, trailing_step, actions);
+               }
+               IStream* stream = CreateTrailingStream(symbol, timeframe);
+               AOrderAction* action = new CreateTrailingStreamAction(trailing_start, false, stream, actions);
+               stream.Release();
+               return action;
+            }
+         case TrailingATR:
+            return new CreateATRTrailingAction(symbol, timeframe, trailing_start, trailing_step, actions);
+         case TrailingSLPercent:
+            {
+               if (trailing_target_type == TrailingTargetStep)
+               {
+                  return new CreateTrailingAction(trailing_start, true, trailing_step, actions);
+               }
+               IStream* stream = CreateTrailingStream(symbol, timeframe);
+               AOrderAction* action = new CreateTrailingStreamAction(trailing_start, true, stream, actions);
+               stream.Release();
+               return action;
+            }
+      }
+   #endif
+   return NULL;
+}
+
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string algoId, string &error)
 {
    #ifdef TRADING_TIME_FEATURE
@@ -514,26 +580,49 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          orderAction.Release();
       #endif
    }
-
-   #ifdef STOP_LOSS_FEATURE
-      switch (trailing_type)
-      {
-         case TrailingDontUse:
-            break;
-      #ifdef INDICATOR_BASED_TRAILING
-         case TrailingIndicator:
-            break;
-      #endif
-         case TrailingPips:
-            {
-               CreateTrailingAction* trailingAction = new CreateTrailingAction(trailing_start, trailing_step, actions);
-               trailingAction.RestoreActions(_Symbol, magic_number);
-               orderHandlers.AddOrderAction(trailingAction);
-               trailingAction.Release();
-            }
-            break;
-      }
+   #ifdef TWO_LEVEL_TP
+   switch (take_profit_type)
+   {
+      case TPDoNotUse:
+         break;
+      case TPPercent:
+         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPercent, take_profit_value_1, take_profit_1_close, signaler, actions);
+         orderHandlers.AddOrderAction(orderAction);
+         orderAction.Release();
+         break;
+      case TPPips:
+         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPips, take_profit_value_1, take_profit_1_close, signaler, actions);
+         orderHandlers.AddOrderAction(orderAction);
+         orderAction.Release();
+         break;
+      case TPDollar:
+         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitDollar, take_profit_value_1, take_profit_1_close, signaler, actions);
+         orderHandlers.AddOrderAction(orderAction);
+         orderAction.Release();
+         break;
+      case TPRiskReward:
+         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitRiskReward, take_profit_value_1, take_profit_1_close, signaler, actions);
+         orderHandlers.AddOrderAction(orderAction);
+         orderAction.Release();
+         break;
+      case TPAbsolute:
+         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitAbsolute, take_profit_value_1, take_profit_1_close, signaler, actions);
+         orderHandlers.AddOrderAction(orderAction);
+         orderAction.Release();
+         break;
+      default:
+         Print("Not supported take profit type");
+         break;
+   }
    #endif
+
+   AOrderAction* trailingAction = CreateTrailing(symbol, timeframe, actions);
+   if (trailingAction != NULL)
+   {
+      trailingAction.RestoreActions(_Symbol, magic_number);
+      orderHandlers.AddOrderAction(trailingAction);
+      trailingAction.Release();
+   }
 
    // #ifdef MARTINGALE_FEATURE
    //    switch (martingale_type)

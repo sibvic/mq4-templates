@@ -168,6 +168,48 @@ public:
    }
 };
 
+
+class MainChartAlertSignalLine : public IAlertSignalOutput
+{
+   string _labelId;
+   color _color;
+public:
+   int Register(int id, string labelId, color clr)
+   {
+      _labelId = labelId;
+      _color = clr;
+      
+      return id;
+   }
+
+   void Init()
+   {
+   }
+
+   virtual void Clear(int period)
+   {
+      ResetLastError();
+      string id = _labelId + TimeToString(Time[period]);
+      ObjectDelete(id);
+   }
+
+   virtual void Set(int period)
+   {
+      ResetLastError();
+      string id = _labelId + TimeToString(Time[period]);
+      if (ObjectFind(0, id) == -1)
+      {
+         if (!ObjectCreate(0, id, OBJ_VLINE, 0, Time[period], 0))
+         {
+            Print(__FUNCTION__, ". Error: ", GetLastError());
+            return ;
+         }
+         ObjectSetInteger(0, id, OBJPROP_COLOR, _color);
+      }
+      ObjectSetInteger(0, id, OBJPROP_TIME, Time[period]);
+   }
+};
+
 class AlertSignal
 {
    IAction* _actionOnCondition;
@@ -211,6 +253,14 @@ public:
       MainChartAlertSignalArrow* signalOutput = new MainChartAlertSignalArrow();
       _signalOutput = signalOutput;
       return signalOutput.Register(id, labelId, (uchar)code, clr, price);
+   }
+
+   int RegisterLines(int id, string name, string labelId, color clr)
+   {
+      _message = name;
+      MainChartAlertSignalLine* signalOutput = new MainChartAlertSignalLine();
+      _signalOutput = signalOutput;
+      return signalOutput.Register(id, labelId, clr);
    }
 
    int RegisterStreams(int id, string name, int code, color clr, IStream* price)

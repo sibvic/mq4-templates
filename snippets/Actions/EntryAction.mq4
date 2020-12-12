@@ -2,7 +2,7 @@
 #include <../EntryStrategy.mq4>
 #include <../OrderHandlers.mq4>
 
-// Entry action v1.0
+// Entry action v1.1
 
 #ifndef EntryAction_IMP
 #define EntryAction_IMP
@@ -14,9 +14,12 @@ class EntryAction : public AAction
    IMoneyManagementStrategy* _moneyManagement;
    string _algorithmId;
    OrderHandlers* _orderHandlers;
+   bool _singleAction;
 public:
-   EntryAction(IEntryStrategy* entryStrategy, OrderSide side, IMoneyManagementStrategy* moneyManagement, string algorithmId, OrderHandlers* orderHandlers)
+   EntryAction(IEntryStrategy* entryStrategy, OrderSide side, IMoneyManagementStrategy* moneyManagement, string algorithmId, 
+      OrderHandlers* orderHandlers, bool singleAction = false)
    {
+      _singleAction = singleAction;
       _orderHandlers = orderHandlers;
       _orderHandlers.AddRef();
       _algorithmId = algorithmId;
@@ -40,7 +43,7 @@ public:
       {
          _orderHandlers.DoAction(order);
       }
-      return false;
+      return _singleAction;
    }
 };
 

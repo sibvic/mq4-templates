@@ -1,5 +1,5 @@
 #include <Actions/AOrderAction.mq4>
-// Order handlers v1.0
+// Order handlers v1.1
 
 #ifndef OrderHandlers_IMP
 #define OrderHandlers_IMP
@@ -16,10 +16,16 @@ public:
 
    ~OrderHandlers()
    {
+      Clear();
+   }
+
+   void Clear()
+   {
       for (int i = 0; i < ArraySize(_orderHandlers); ++i)
       {
          delete _orderHandlers[i];
       }
+      ArrayResize(_orderHandlers, 0);
    }
 
    virtual void AddRef()

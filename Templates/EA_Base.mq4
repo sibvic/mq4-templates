@@ -97,8 +97,10 @@ enum MartingaleStepSizeType
    input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
    input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
    input double martingale_lot_value = 1.5; // Matringale lot sizing value
-   input MartingaleStepSizeType martingale_step_type = MartingaleStepSizePercent; // Step unit
-   input double martingale_step = 5; // Open matringale position step
+   MartingaleStepSizeType martingale_step_type = MartingaleStepSizePips; // Step unit
+   input double martingale_step = 50; // Open matringale position step
+   input int max_longs = 5; // Max long positions
+   input int max_shorts = 5; // Max short positions
 #endif
 
 enum TrailingType
@@ -162,6 +164,10 @@ input int magic_number        = 42; // Magic number
    input string start_time = "000000"; // Start time in hhmmss format
    input string stop_time = "000000"; // Stop time in hhmmss format
    input bool mandatory_closing = false; // Mandatory closing for non-trading time
+#else
+   string start_time = "000000"; // Start time in hhmmss format
+   string stop_time = "000000"; // Stop time in hhmmss format
+   bool mandatory_closing = false;
 #endif
 #ifdef WEEKLY_TRADING_TIME_FEATURE
    input bool use_weekly_timing = false; // Weekly time
@@ -196,6 +202,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <conditions/ActOnSwitchCondition.mq4>
 #include <conditions/DisabledCondition.mq4>
 #include <Streams/AStream.mq4>
+#include <Streams/PriceStream.mq4>
 #ifndef USE_MARKET_ORDERS
    class LongEntryStream : public AStream
    {
@@ -232,6 +239,8 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <TradingCalculator.mq4>
 #include <Order.mq4>
 #include <Actions/AAction.mq4>
+#include <Actions/CreateTrailingStreamAction.mq4>
+#include <Actions/CreateMartingaleAction.mq4>
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>
 #include <Conditions/HitProfitCondition.mq4>
@@ -486,6 +495,31 @@ AOrderAction* CreateTrailing(const string symbol, const ENUM_TIMEFRAMES timefram
    return NULL;
 }
 
+void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_TIMEFRAMES timeframe, IEntryStrategy* entryStrategy, 
+   OrderHandlers* orderHandlers, ActionOnConditionLogic* actions)
+{
+   CustomLotsProvider* lots = new CustomLotsProvider();
+
+   IStopLossStrategy* stopLoss = CreateStopLossStrategyForLots(lots, tradingCalculator, symbol, timeframe, true, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator);
+   ITakeProfitStrategy* tp = CreateTakeProfitStrategy(tradingCalculator, symbol, timeframe, true, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   IMoneyManagementStrategy* longMoneyManagement = new MoneyManagementStrategy(lots, stopLoss, tp);
+   IAction* openLongAction = new EntryAction(entryStrategy, BuySide, longMoneyManagement, "", orderHandlers, true);
+   
+   stopLoss = CreateStopLossStrategyForLots(lots, tradingCalculator, symbol, timeframe, false, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator);
+   tp = CreateTakeProfitStrategy(tradingCalculator, symbol, timeframe, false, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   IMoneyManagementStrategy* shortMoneyManagement = new MoneyManagementStrategy(lots, stopLoss, tp);
+   IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers, true);
+
+   CreateMartingaleAction* martingaleAction = new CreateMartingaleAction(lots, martingale_lot_sizing_type, martingale_lot_value, 
+      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions);
+   openLongAction.Release();
+   openShortAction.Release();
+   
+   martingaleAction.RestoreActions(_Symbol, magic_number);
+   orderHandlers.AddOrderAction(martingaleAction);
+   martingaleAction.Release();
+}
+
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string algoId, string &error)
 {
    #ifdef TRADING_TIME_FEATURE
@@ -493,7 +527,11 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          week_start_day, week_start_time, week_stop_day, 
          week_stop_time, error);
       if (tradingTimeCondition == NULL)
+      {
          return NULL;
+      }
+   #else
+      ICondition* tradingTimeCondition = NULL;
    #endif
 
    TradingCalculator* tradingCalculator = TradingCalculator::Create(symbol);
@@ -624,23 +662,16 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       trailingAction.Release();
    }
 
-   // #ifdef MARTINGALE_FEATURE
-   //    switch (martingale_type)
-   //    {
-   //       case MartingaleDoNotUse:
-   //          controller.SetShortMartingaleStrategy(new NoMartingaleStrategy());
-   //          controller.SetLongMartingaleStrategy(new NoMartingaleStrategy());
-   //          break;
-   //       case MartingaleOnLoss:
-   //          {
-   //             PriceMovedFromTradeOpenCondition* condition = new PriceMovedFromTradeOpenCondition(symbol, timeframe, martingale_step_type, martingale_step);
-   //             controller.SetShortMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
-   //             controller.SetLongMartingaleStrategy(new ActiveMartingaleStrategy(tradingCalculator, martingale_lot_sizing_type, martingale_lot_value, condition));
-   //             condition.Release();
-   //          }
-   //          break;
-   //    }
-   // #endif
+   #ifdef MARTINGALE_FEATURE
+      switch (martingale_type)
+      {
+         case MartingaleOnLoss:
+            {
+               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions);
+            }
+            break;
+      }
+   #endif
 
    #ifdef WITH_EXIT_LOGIC
       controller.SetExitLogic(exit_logic);
@@ -662,7 +693,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          controller.SetExitShortCondition(exitLongCondition);
          break;
    }
-   if (mandatory_closing)
+   if (mandatory_closing && tradingTimeCondition != NULL)
    {
       NotCondition* condition = new NotCondition(tradingTimeCondition);
       IAction* action = new CloseAllAction(magic_number, slippage_points);
@@ -681,7 +712,6 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers);
    shortPosition.AddAction(openShortAction);
    openShortAction.Release();
-   orderHandlers.Release();
 
    #ifdef NET_STOP_LOSS_FEATURE
       if (net_stop_loss_type != StopLimitDoNotUse)
@@ -739,8 +769,10 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    return controller;
 }
 
+OrderHandlers* orderHandlers;
 int OnInit()
 {
+   orderHandlers = new OrderHandlers();
    #ifdef SHOW_ACCOUNT_STAT
       stats = NULL;
    #endif
@@ -776,6 +808,9 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
+   orderHandlers.Clear();
+   orderHandlers.Release();
+
    #ifdef SHOW_ACCOUNT_STAT
       delete stats;
    #endif

@@ -87,3 +87,7 @@ Executes entry action.
 ## OpenMarketOrderAction
 
 Open market order action.
+
+## CreateMartingaleAction
+
+Creates additional position on loss.

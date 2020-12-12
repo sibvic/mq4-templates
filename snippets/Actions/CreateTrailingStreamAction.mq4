@@ -1,6 +1,7 @@
 #include <AOrderAction.mq4>
 #include <TrailingStreamAction.mq4>
 #include <../Streams/IStream.mq4>
+#include <../Logic/ActionOnConditionLogic.mq4>
 // v1.0
 
 #ifndef CreateTrailingStreamAction_IMP

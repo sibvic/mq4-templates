@@ -269,10 +269,6 @@ Trading controller.
 
 Creates an order.
 
-## MartingaleStrategy
-
-Martingale strategy.
-
 ## VisibilityCotroller
 
 Used for show/hide indicator data button.

@@ -156,10 +156,6 @@ Returns true when profit of the order in the specified range.
 
 Inverts result of the condition.
 
-## PriceMovedFromTradeOpenCondition
-
-Price moved from trade open. Checked for the current order.
-
 ## NoStopLossOrTakeProfitCondition
 
 No stop loss or take profit.

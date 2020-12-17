@@ -1,4 +1,4 @@
-// Arrows base v5.1
+// Arrows base v5.2
 
 #property version   "1.0"
 #property strict
@@ -61,7 +61,8 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
          {
             SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, priceType);
             highStream.SetShift(shift_arrows_pips * sign);
-            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(id), code, clr, highStream);
+            static int lastId = 1;
+            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(lastId++), code, clr, highStream);
             highStream.Release();
          }
          break;

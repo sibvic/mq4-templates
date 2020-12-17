@@ -22,6 +22,7 @@
 #define TRADING_TIME_FEATURE
 #define POSITION_CAP_FEATURE 
 #define WITH_EXIT_LOGIC
+#define TWO_LEVEL_TP
 
 #ifdef SHOW_ACCOUNT_STAT
    string EA_NAME = "[EA NAME]";
@@ -133,10 +134,12 @@ enum TrailingTargetType
    StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    double stop_loss_value = 10;
 #endif
+input string BreakevenSection = ""; // == Breakeven ==
 input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
 input double breakeven_value = 10; // Trigger for the breakeven
 input double breakeven_level = 0; // Breakeven target
 #ifdef NET_STOP_LOSS_FEATURE
+   input string NetStopSection = ""; // == Net stop ==
    input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
    input double net_stop_loss_value = 10; // Net stop loss value
 #endif
@@ -153,6 +156,7 @@ input double breakeven_level = 0; // Breakeven target
    double take_profit_atr_multiplicator = 1;
 #endif
 #ifdef NET_TAKE_PROFIT_FEATURE
+   input string NetTakeProfitSection            = ""; // == Net Take Profit ==
    input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
    input double net_take_profit_value = 10; // Net take profit value
 #endif
@@ -160,6 +164,7 @@ input double breakeven_level = 0; // Breakeven target
 #include <enums/DayOfWeek.mq4>
 input string OtherSection            = ""; // == Other ==
 input int magic_number        = 42; // Magic number
+input string trade_comment = ""; // Comment for orders
 #ifdef TRADING_TIME_FEATURE
    input string start_time = "000000"; // Start time in hhmmss format
    input string stop_time = "000000"; // Stop time in hhmmss format
@@ -249,14 +254,12 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <Actions/MoveNetTakeProfitAction.mq4>
 #include <Actions/EntryAction.mq4>
 #include <MoneyManagement/functions.mq4>
-#include <MartingaleStrategy.mq4>
 #include <TradingCommands.mq4>
 #include <CloseOnOpposite.mq4>
 #include <OrderBuilder.mq4>
 #include <MarketOrderBuilder.mq4>
 #include <EntryStrategy.mq4>
 #include <Actions/MoveStopLossOnProfitOrderAction.mq4>
-#include <Actions/PartialCloseOnProfitOrderAction.mq4>
 #include <TradingController.mq4>
 #include <Conditions/NoCondition.mq4>
 
@@ -276,7 +279,6 @@ TradingController *controllers[];
 #include <conditions/AndCondition.mq4>
 #include <conditions/OrCondition.mq4>
 #include <conditions/NotCondition.mq4>
-#include <conditions/PriceMovedFromTradeOpenCondition.mq4>
 
 class LongCondition : public ACondition
 {
@@ -495,6 +497,7 @@ AOrderAction* CreateTrailing(const string symbol, const ENUM_TIMEFRAMES timefram
    return NULL;
 }
 
+#ifdef MARTINGALE_FEATURE
 void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_TIMEFRAMES timeframe, IEntryStrategy* entryStrategy, 
    OrderHandlers* orderHandlers, ActionOnConditionLogic* actions)
 {
@@ -519,6 +522,7 @@ void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_
    orderHandlers.AddOrderAction(martingaleAction);
    martingaleAction.Release();
 }
+#endif
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string algoId, string &error)
 {
@@ -624,29 +628,39 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       case TPDoNotUse:
          break;
       case TPPercent:
-         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPercent, take_profit_value_1, take_profit_1_close, signaler, actions);
-         orderHandlers.AddOrderAction(orderAction);
-         orderAction.Release();
+         {
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPercent, take_profit_value_1, take_profit_1_close, signaler, actions);
+            orderHandlers.AddOrderAction(orderAction);
+            orderAction.Release();
+         }
          break;
       case TPPips:
-         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPips, take_profit_value_1, take_profit_1_close, signaler, actions);
-         orderHandlers.AddOrderAction(orderAction);
-         orderAction.Release();
+         {
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPips, take_profit_value_1, take_profit_1_close, signaler, actions);
+            orderHandlers.AddOrderAction(orderAction);
+            orderAction.Release();
+         }
          break;
       case TPDollar:
-         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitDollar, take_profit_value_1, take_profit_1_close, signaler, actions);
-         orderHandlers.AddOrderAction(orderAction);
-         orderAction.Release();
+         {
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitDollar, take_profit_value_1, take_profit_1_close, signaler, actions);
+            orderHandlers.AddOrderAction(orderAction);
+            orderAction.Release();
+         }
          break;
       case TPRiskReward:
-         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitRiskReward, take_profit_value_1, take_profit_1_close, signaler, actions);
-         orderHandlers.AddOrderAction(orderAction);
-         orderAction.Release();
+         {
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitRiskReward, take_profit_value_1, take_profit_1_close, signaler, actions);
+            orderHandlers.AddOrderAction(orderAction);
+            orderAction.Release();
+         }
          break;
       case TPAbsolute:
-         PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitAbsolute, take_profit_value_1, take_profit_1_close, signaler, actions);
-         orderHandlers.AddOrderAction(orderAction);
-         orderAction.Release();
+         {
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitAbsolute, take_profit_value_1, take_profit_1_close, signaler, actions);
+            orderHandlers.AddOrderAction(orderAction);
+            orderAction.Release();
+         }
          break;
       default:
          Print("Not supported take profit type");
@@ -790,7 +804,7 @@ int OnInit()
    #endif
 
    string error;
-   TradingController *controller = CreateController(_Symbol, trading_timeframe, NULL, error);
+   TradingController *controller = CreateController(_Symbol, trading_timeframe, trade_comment, error);
    if (controller == NULL)
    {
       Print(error);

@@ -245,6 +245,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <Order.mq4>
 #include <Actions/AAction.mq4>
 #include <Actions/CreateTrailingStreamAction.mq4>
+#include <Actions/PartialCloseOnProfitOrderAction.mq4>
 #include <Actions/CreateMartingaleAction.mq4>
 #include <Logic/ActionOnConditionController.mq4>
 #include <Logic/ActionOnConditionLogic.mq4>

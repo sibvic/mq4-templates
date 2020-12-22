@@ -45,10 +45,10 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
    ArrayResize(conditions, size + 1);
    #ifdef ACT_ON_SWITCH
       ActOnSwitchCondition* upSwitch = new ActOnSwitchCondition(_Symbol, (ENUM_TIMEFRAMES)_Period, condition);
-      condition.Release();
       condition = upSwitch;
    #endif
    conditions[size] = new AlertSignal(condition, action, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
+   condition.Release();
       
    switch (Type)
    {
@@ -85,7 +85,10 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, tf);
    ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, tf);
    id = CreateAlert(id, upCondition, NULL, 217, "Up " + TimeframeToString(tf), upColor, PriceHigh, 1);
-   return CreateAlert(id, downCondition, NULL, 218, "Down " + TimeframeToString(tf), downColor, PriceLow, -1);
+   id = CreateAlert(id, downCondition, NULL, 218, "Down " + TimeframeToString(tf), downColor, PriceLow, -1);
+   upCondition.Release();
+   downCondition.Release();
+   return id;
 }
 
 class UpCondition : public ACondition

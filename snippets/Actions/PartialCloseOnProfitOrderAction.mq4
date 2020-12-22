@@ -1,4 +1,8 @@
 #include <PartialCloseOrderAction.mq4>
+#include <AOrderAction.mq4>
+#include <../Logic/ActionOnConditionLogic.mq4>
+#include <../TradingCalculator.mq4>
+#include <../Signaler.mq4>
 // v1.0
 
 class PartialCloseOnProfitOrderAction : public AOrderAction

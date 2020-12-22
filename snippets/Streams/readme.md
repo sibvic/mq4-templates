@@ -152,3 +152,7 @@ Renko bar stream.
 ## IndicatorOutputStream
 
 Stream with an indicator output.
+
+## PointAndFigure
+
+Point and Figure bar stream.

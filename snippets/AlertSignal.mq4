@@ -1,4 +1,4 @@
-// Alert signal v4.0
+// Alert signal v4.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mq4>
@@ -233,6 +233,7 @@ public:
       }
       _signalOutput = NULL;
       _condition = condition;
+      _condition.AddRef();
       _signaler = signaler;
       _onBarClose = onBarClose;
    }
@@ -244,7 +245,7 @@ public:
          _actionOnCondition.Release();
       }
       delete _signalOutput;
-      delete _condition;
+      _condition.Release();
    }
 
    int RegisterArrows(int id, string name, string labelId, int code, color clr, IStream* price)

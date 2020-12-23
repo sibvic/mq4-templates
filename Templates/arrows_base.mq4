@@ -186,8 +186,6 @@ int init()
       customStream = new StreamWrapper(_Symbol, (ENUM_TIMEFRAMES)_Period);
    }
    {
-      ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
-      ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, (ENUM_TIMEFRAMES)_Period);
       id = CreateAlert(id, (ENUM_TIMEFRAMES)_Period, up_color, down_color);
    }
    if (customStream != NULL)

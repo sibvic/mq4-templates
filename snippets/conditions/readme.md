@@ -229,3 +229,7 @@ Line cross condition.
 ## DayTimeCondition
 
 Triggers at the specific day of the month and time.
+
+## MinMarginCondition
+
+Min marging condition

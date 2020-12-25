@@ -75,6 +75,8 @@ input TradingSide trading_side = BothSides; // What trades should be taken
    input int no_of_positions = 1; // Max # of buy+sell positions
    input int no_of_buy_position = 1; // Max # of buy positions
    input int no_of_sell_position = 1; // Max # of sell positions
+   input bool cap_by_margin = false; // Cap by usable margin
+   input double min_margin = 50; // Min usable margin
 #endif
 
 enum MartingaleType
@@ -206,6 +208,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <InstrumentInfo.mq4>
 #include <conditions/ActOnSwitchCondition.mq4>
 #include <conditions/DisabledCondition.mq4>
+#include <conditions/MinMarginCondition.mq4>
 #include <Streams/AStream.mq4>
 #include <Streams/PriceStream.mq4>
 #ifndef USE_MARKET_ORDERS
@@ -599,6 +602,13 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       shortFilterCondition.Add(new NotCondition(sellLimitCondition), false);
       buyLimitCondition.Release();
       sellLimitCondition.Release();
+   }
+   if (cap_by_margin)
+   {
+      ICondition* minMarginCondition = new MinMarginCondition(min_margin);
+      longFilterCondition.Add(new NotCondition(minMarginCondition), false);
+      shortFilterCondition.Add(new NotCondition(minMarginCondition), false);
+      minMarginCondition.Release();
    }
    
    EntryPositionController* longPosition = new EntryPositionController(BuySide, longCondition, longFilterCondition, 

@@ -22,6 +22,7 @@ enum DisplayType
    Lines // Lines
 };
 input SingalMode signal_mode = SingalModeLive; // Signal mode
+input bool filter_consecutive = false; // Filter consecutive alerts
 input DisplayType Type = Arrows; // Presentation Type
 input double shift_arrows_pips = 0.1; // Shift arrows
 input color up_color = Blue; // Up color
@@ -38,6 +39,9 @@ input color down_color = Red; // Down color
 AlertSignal* conditions[];
 Signaler* mainSignaler;
 StreamWrapper* customStream;
+int last_signal_side;
+datetime current_signal_date;
+int current_signal_side;
 
 int CreateAlert(int id, ICondition* condition, IAction* action, int code, string message, color clr, PriceType priceType, int sign)
 {
@@ -62,7 +66,7 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
             SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, priceType);
             highStream.SetShift(shift_arrows_pips * sign);
             static int lastId = 1;
-            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(lastId++), code, clr, highStream);
+            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(lastId++), code, clr, highStream, font_size);
             highStream.Release();
          }
          break;
@@ -82,12 +86,30 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
 
 int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
 {
-   ICondition* upCondition = (ICondition*) new UpCondition(_Symbol, tf);
-   ICondition* downCondition = (ICondition*) new DownCondition(_Symbol, tf);
-   id = CreateAlert(id, upCondition, NULL, 217, "Up " + TimeframeToString(tf), upColor, PriceHigh, 1);
-   id = CreateAlert(id, downCondition, NULL, 218, "Down " + TimeframeToString(tf), downColor, PriceLow, -1);
+   AndCondition* upCondition = new AndCondition();
+   upCondition.Add(new UpCondition(_Symbol, tf), false);
+   SetLastSignalAction* upAction = NULL;
+   if (filter_consecutive)
+   {
+      upCondition.Add(new LastSignalNotCondition(1), false);
+      upAction = new SetLastSignalAction(1);
+   }
+   id = CreateAlert(id, upCondition, upAction, 217, "Up " + TimeframeToString(tf), upColor, PriceLow, -1);
    upCondition.Release();
+   upAction.Release();
+   
+   AndCondition* downCondition = new AndCondition();
+   downCondition.Add(new DownCondition(_Symbol, tf), false);
+   SetLastSignalAction* downAction = NULL;
+   if (filter_consecutive)
+   {
+      downCondition.Add(new LastSignalNotCondition(-1), false);
+      downAction = new SetLastSignalAction(-1);
+   }
+   id = CreateAlert(id, downCondition, downAction, 218, "Down " + TimeframeToString(tf), downColor, PriceHigh, 1);
    downCondition.Release();
+   downAction.Release();
+   
    return id;
 }
 
@@ -239,6 +261,12 @@ int start()
       {
          customStream.SetValue(pos, Close[pos]);
       }
+      if (current_signal_date < Time[pos] && current_signal_side != 0)
+      {
+         last_signal_side = current_signal_side;
+         current_signal_date = Time[signal_mode == SingalModeOnBarClose ? pos + 1 : pos];
+      }
+      current_signal_side = 0;
       for (int i = 0; i < ArraySize(conditions); ++i)
       {
          AlertSignal* item = conditions[i];

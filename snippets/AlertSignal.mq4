@@ -107,9 +107,11 @@ class MainChartAlertSignalArrow : public IAlertSignalOutput
    string _labelId;
    color _color;
    uchar _code;
+   int _fontSize;
 public:
-   MainChartAlertSignalArrow()
+   MainChartAlertSignalArrow(int fontSize)
    {
+      _fontSize = font_size;
       _price = NULL;
    }
 
@@ -159,7 +161,7 @@ public:
             return ;
          }
          ObjectSetString(0, id, OBJPROP_FONT, "Wingdings");
-         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, 12);
+         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, _fontSize);
          ObjectSetInteger(0, id, OBJPROP_COLOR, _color);
       }
       ObjectSetInteger(0, id, OBJPROP_TIME, Time[period]);
@@ -248,10 +250,10 @@ public:
       _condition.Release();
    }
 
-   int RegisterArrows(int id, string name, string labelId, int code, color clr, IStream* price)
+   int RegisterArrows(int id, string name, string labelId, int code, color clr, IStream* price, int fontSize)
    {
       _message = name;
-      MainChartAlertSignalArrow* signalOutput = new MainChartAlertSignalArrow();
+      MainChartAlertSignalArrow* signalOutput = new MainChartAlertSignalArrow(fontSize);
       _signalOutput = signalOutput;
       return signalOutput.Register(id, labelId, (uchar)code, clr, price);
    }

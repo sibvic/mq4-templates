@@ -622,7 +622,9 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       
    closeOnOpposite.Release();
    
-   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, longPosition, shortPosition, actions, signaler, algoId);
+   TradingController* controller = new TradingController(tradingCalculator, timeframe, timeframe, actions, signaler, algoId);
+   controller.AddShortPosition(longPosition);
+   controller.AddShortPosition(shortPosition);
    
    if (breakeven_type != StopLimitDoNotUse)
    {

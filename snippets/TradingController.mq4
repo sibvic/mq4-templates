@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v7.11
+// Trading controller v8.0
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -23,20 +23,16 @@ class TradingController
    TradingMode _entryLogic;
    TradingMode _exitLogic;
    int _logFile;
-   EntryPositionController* _longPosition;
-   EntryPositionController* _shortPosition;
+   EntryPositionController* _longPositions[];
+   EntryPositionController* _shortPositions[];
 public:
    TradingController(TradingCalculator *calculator, 
                      ENUM_TIMEFRAMES entryTimeframe, 
                      ENUM_TIMEFRAMES exitTimeframe, 
-                     EntryPositionController* longPosition,
-                     EntryPositionController* shortPosition,
                      ActionOnConditionLogic* actions,
                      Signaler *signaler, 
                      const string algorithmId = "")
    {
-      _longPosition = longPosition;
-      _shortPosition = shortPosition;
       _entryLogic = TradingModeOnBarClose;
       _exitLogic = TradingModeOnBarClose;
       _actions = actions;
@@ -55,8 +51,16 @@ public:
       {
          FileClose(_logFile);
       }
-      delete _longPosition;
-      delete _shortPosition;
+      for (int i = 0; i < ArraySize(_longPositions); ++i)
+      {
+         delete _longPositions[i];
+      }
+      ArrayResize(_longPositions, 0);
+      for (int i = 0; i < ArraySize(_shortPositions); ++i)
+      {
+         delete _shortPositions[i];
+      }
+      ArrayResize(_shortPositions, 0);
       delete _actions;
       delete _entryStrategy;
       if (_exitLongCondition != NULL)
@@ -67,11 +71,30 @@ public:
       delete _signaler;
    }
 
+   void AddLongPosition(EntryPositionController* entryPos)
+   {
+      int size = ArraySize(_longPositions);
+      ArrayResize(_longPositions, size + 1);
+      _longPositions[size] = entryPos;
+   }
+   void AddShortPosition(EntryPositionController* entryPos)
+   {
+      int size = ArraySize(_shortPositions);
+      ArrayResize(_shortPositions, size + 1);
+      _shortPositions[size] = entryPos;
+   }
+
    void SetPrintLog(string logFile)
    {
       _logFile = FileOpen(logFile, FILE_WRITE | FILE_CSV, ",");
-      _longPosition.IncludeLog();
-      _shortPosition.IncludeLog();
+      for (int i = 0; i < ArraySize(_longPositions); ++i)
+      {
+         _longPositions[i].IncludeLog();
+      }
+      for (int i = 0; i < ArraySize(_shortPositions); ++i)
+      {
+         _shortPositions[i].IncludeLog();
+      }
    }
    void SetEntryLogic(TradingMode logicType) { _entryLogic = logicType; }
    void SetExitLogic(TradingMode logicType) { _exitLogic = logicType; }
@@ -162,9 +185,22 @@ private:
    }
    bool DoEntryLogic(int entryTradePeriod, datetime date, string& longLog, string& shortLog)
    {
-      bool longOpened = _longPosition.DoEntry(entryTradePeriod, date, longLog);
-      bool shortOpened = _shortPosition.DoEntry(entryTradePeriod, date, shortLog);
-      return longOpened || shortOpened;
+      bool positionOpened = false;
+      for (int i = 0; i < ArraySize(_longPositions); ++i)
+      {
+         if (_longPositions[i].DoEntry(entryTradePeriod, date, longLog))
+         {
+            positionOpened = true;
+         }
+      }
+      for (int i = 0; i < ArraySize(_shortPositions); ++i)
+      {
+         if (_shortPositions[i].DoEntry(entryTradePeriod, date, longLog))
+         {
+            positionOpened = true;
+         }
+      }
+      return positionOpened;
    }
 };
 #endif

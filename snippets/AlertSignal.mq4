@@ -1,4 +1,4 @@
-// Alert signal v4.1
+// Alert signal v4.2
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mq4>
@@ -111,7 +111,7 @@ class MainChartAlertSignalArrow : public IAlertSignalOutput
 public:
    MainChartAlertSignalArrow(int fontSize)
    {
-      _fontSize = font_size;
+      _fontSize = fontSize;
       _price = NULL;
    }
 

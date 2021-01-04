@@ -27,14 +27,48 @@ input DisplayType Type = Arrows; // Presentation Type
 input double shift_arrows_pips = 0.1; // Shift arrows
 input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
+input int font_size = 12; // Font size
 
 #include <conditions/ACondition.mq4>
 #include <conditions/ActOnSwitchCondition.mq4>
+#include <conditions/AndCondition.mq4>
 #include <Streams/PriceStream.mq4>
 #include <signaler.mq4>
 #include <AlertSignal.mq4>
 #include <Streams/CandleStreams.mq4>
 #include <Streams/StreamWrapper.mq4>
+#include <Actions/AAction.mq4>
+
+class SetLastSignalAction : public AAction
+{
+   int _signal;
+public:
+   SetLastSignalAction(int signal)
+   {
+      _signal = signal;
+   }
+
+   virtual bool DoAction(const int period, const datetime date)
+   {
+      current_signal_date = date;
+      current_signal_side = _signal;
+      return true;
+   }
+};
+class LastSignalNotCondition : public AConditionBase
+{
+   int _signal;
+public:
+   LastSignalNotCondition(int signal)
+   {
+      _signal = signal;
+   }
+
+   bool IsPass(const int period, const datetime date)
+   {
+      return last_signal_side != _signal;
+   }
+};
 
 AlertSignal* conditions[];
 Signaler* mainSignaler;
@@ -96,7 +130,10 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    }
    id = CreateAlert(id, upCondition, upAction, 217, "Up " + TimeframeToString(tf), upColor, PriceLow, -1);
    upCondition.Release();
-   upAction.Release();
+   if (upAction != NULL)
+   {
+      upAction.Release();
+   }
    
    AndCondition* downCondition = new AndCondition();
    downCondition.Add(new DownCondition(_Symbol, tf), false);
@@ -108,7 +145,10 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    }
    id = CreateAlert(id, downCondition, downAction, 218, "Down " + TimeframeToString(tf), downColor, PriceHigh, 1);
    downCondition.Release();
-   downAction.Release();
+   if (downAction != NULL)
+   {
+      downAction.Release();
+   }
    
    return id;
 }

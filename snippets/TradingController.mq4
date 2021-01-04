@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v8.0
+// Trading controller v8.1
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -195,7 +195,7 @@ private:
       }
       for (int i = 0; i < ArraySize(_shortPositions); ++i)
       {
-         if (_shortPositions[i].DoEntry(entryTradePeriod, date, longLog))
+         if (_shortPositions[i].DoEntry(entryTradePeriod, date, shortLog))
          {
             positionOpened = true;
          }

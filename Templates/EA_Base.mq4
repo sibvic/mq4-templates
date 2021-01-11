@@ -63,6 +63,7 @@ input TradingSide trading_side = BothSides; // What trades should be taken
 #else
    LogicDirection logic_direction = DirectLogic;
 #endif
+input double max_spread = 0; // Max spred, pips. 0 to disable
 #ifdef USE_MARKET_ORDERS
    input bool close_on_opposite = true; // Close on opposite signal
 #else
@@ -77,6 +78,13 @@ input TradingSide trading_side = BothSides; // What trades should be taken
    input int no_of_sell_position = 1; // Max # of sell positions
    input bool cap_by_margin = false; // Cap by usable margin
    input double min_margin = 50; // Min usable margin
+#else
+   bool position_cap = false;
+   int no_of_positions = 1;
+   int no_of_buy_position = 1;
+   int no_of_sell_position = 1;
+   bool cap_by_margin = false;
+   double min_margin = 50;
 #endif
 
 enum MartingaleType
@@ -209,6 +217,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <conditions/ActOnSwitchCondition.mq4>
 #include <conditions/DisabledCondition.mq4>
 #include <conditions/MinMarginCondition.mq4>
+#include <conditions/MaxSpreadCondition.mq4>
 #include <Streams/AStream.mq4>
 #include <Streams/PriceStream.mq4>
 #ifndef USE_MARKET_ORDERS
@@ -602,6 +611,11 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       shortFilterCondition.Add(new NotCondition(sellLimitCondition), false);
       buyLimitCondition.Release();
       sellLimitCondition.Release();
+   }
+   if (max_spread > 0)
+   {
+      longFilterCondition.Add(new MaxSpreadCondition(symbol, timeframe, max_spread), false);
+      shortFilterCondition.Add(new MaxSpreadCondition(symbol, timeframe, max_spread), false);
    }
    if (cap_by_margin)
    {

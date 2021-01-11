@@ -30,7 +30,6 @@ public:
       _signaler = signaler;
       _side = side;
       _includeLog = false;
-      _condition = NULL;
       _condition = condition;
       _condition.AddRef();
       _closeOnOpposite = closeOnOpposite;

@@ -4,8 +4,8 @@
 
 input bool direction = true; // Buy/long?
 input double amount = 0.01; // Lots
-input double stop = 60; // Stop in Pips
-input double limit = 30; // Limit in Pips
+input double stop_loss = 60; // Stop Loss in Pips
+input double take_profit = 30; // Take Profit in Pips
 input double distance = 30; // Hedging Distance
 input int magic_number = 42; // Magic number
 input int slippage = 3; // Slippage, points

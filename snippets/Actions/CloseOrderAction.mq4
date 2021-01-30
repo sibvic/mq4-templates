@@ -1,4 +1,5 @@
 #include <AAction.mq4>
+#include <../TradingCommands.mq4>
 
 // Close order action v1.0
 

@@ -23,6 +23,7 @@
 #define POSITION_CAP_FEATURE 
 #define WITH_EXIT_LOGIC
 #define TWO_LEVEL_TP
+#define CUSTOM_SL
 
 #ifdef SHOW_ACCOUNT_STAT
    string EA_NAME = "[EA NAME]";
@@ -292,6 +293,29 @@ TradingController *controllers[];
 #include <conditions/AndCondition.mq4>
 #include <conditions/OrCondition.mq4>
 #include <conditions/NotCondition.mq4>
+
+#ifdef CUSTOM_SL
+class CustomStopLossStrategy : public IStopLossStrategy
+{
+   bool _isBuy;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
+public:
+   CustomStopLossStrategy(string symbol, ENUM_TIMEFRAMES timeframe, bool isBuy)
+   {
+      _symbol = symbol;
+      _timeframe = timeframe;
+      _isBuy = isBuy;
+   }
+
+   virtual double GetValue(const int period, double entryPrice)
+   {
+      double high, low;
+      GetHighLow(_symbol, _timeframe, high, low);
+      return _isBuy ? low : high;
+   }
+};
+#endif
 
 class LongCondition : public ACondition
 {

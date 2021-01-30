@@ -37,6 +37,10 @@ IStopLossStrategy* CreateStopLossStrategy(TradingCalculator* tradingCalculator, 
          return new HighLowStopLossStrategy((int)stopLossValue, isBuy, symbol, timeframe);
       case SLAtr:
          return new ATRStopLossStrategy(symbol, timeframe, (int)stopLossValue, stopLosstAtrMultiplicator, isBuy);
+      #ifdef CUSTOM_SL
+      case SLCustom:
+         return new CustomStopLossStrategy(symbol, timeframe, isBuy);
+      #endif
       case SLDollar:
       case SLRiskBalance:
          Print("Not supported stop loss and amount types");

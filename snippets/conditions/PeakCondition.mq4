@@ -1,12 +1,12 @@
-// Peak Condition v1.1
+// Peak Condition v1.2
 
 #include <conditions/ICondition.mq4>
-#include <..streams/IStream.mq4>
+#include <../streams/IStream.mq4>
 
 #ifndef PeakCondition_IMP
 #define PeakCondition_IMP
 
-class PeakCondition : public ICondition
+class PeakCondition : public AConditionBase
 {
    IStream* _source;
    int _bars;
@@ -23,7 +23,7 @@ public:
       _source.Release();
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       double centerValue;
       if (!_source.GetValue(period + _bars, centerValue))

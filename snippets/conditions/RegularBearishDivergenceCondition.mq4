@@ -1,4 +1,4 @@
-// Regilar bearish divergence condition v1.1
+// Regilar bearish divergence condition v1.2
 
 #ifndef RegularBearishDivergenceCondition_IMP
 #define RegularBearishDivergenceCondition_IMP
@@ -7,7 +7,7 @@
 #include <PeakCondition.mq4>
 #include <../streams/PriceStream.mq4>
 
-class RegularBearishDivergenceCondition : public ICondition
+class RegularBearishDivergenceCondition : public AConditionBase
 {
    TroughCondition* _trough;
    PeakCondition* _pricePeak;
@@ -15,7 +15,7 @@ public:
    RegularBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
    {
       _trough = new TroughCondition(stream, 2);
-      PriceStream* high = new PriceStream(symbol, timeframe, PriceHigh);
+      SimplePriceStream* high = new SimplePriceStream(symbol, timeframe, PriceHigh);
       _pricePeak = new PeakCondition(high, 2);
       high.Release();
    }
@@ -26,9 +26,9 @@ public:
       delete _trough;
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, datetime date)
    {
-      return _trough.IsPass(period) && _pricePeak.IsPass(period);
+      return _trough.IsPass(period, date) && _pricePeak.IsPass(period, date);
    }
 
    virtual string GetLogMessage(const int period, const datetime date)

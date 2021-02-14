@@ -1,4 +1,4 @@
-// Trough Condition v1.1
+// Trough Condition v1.2
 
 
 #include <conditions/ICondition.mq4>
@@ -7,7 +7,7 @@
 #ifndef TroughCondition_IMP
 #define TroughCondition_IMP
 
-class TroughCondition : public ICondition
+class TroughCondition : public AConditionBase
 {
    IStream* _source;
    int _bars;
@@ -24,7 +24,7 @@ public:
       _source.Release();
    }
 
-   virtual bool IsPass(const int period)
+   virtual bool IsPass(const int period, const datetime date)
    {
       double centerValue;
       if (!_source.GetValue(period + _bars, centerValue))

@@ -1,7 +1,7 @@
 #include <../MoneyManagement/ILotsProvider.mq4>
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
-// v1.0
+// v1.1
 
 class CustomLotsProvider : public ILotsProvider
 {
@@ -59,14 +59,12 @@ public:
 
    virtual bool DoAction(const int period, const datetime date)
    {
-      OrderByTicketId* order = new OrderByTicketId(_currentTicket);
-      if (!order.Select())
+      if (IsLimitHit())
       {
-         order.Release();
          return false;
       }
-
-      if (IsLimitHit())
+      OrderByTicketId* order = new OrderByTicketId(_currentTicket);
+      if (!order.Select())
       {
          order.Release();
          return false;

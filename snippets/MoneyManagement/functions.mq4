@@ -84,6 +84,10 @@ ITakeProfitStrategy* CreateTakeProfitStrategy(TradingCalculator* tradingCalculat
             return new DefaultTakeProfitStrategy(tradingCalculator, StopLimitAbsolute, takeProfitValue, isBuy);
          case TPAtr:
             return new ATRTakeProfitStrategy(symbol, timeframe, (int)takeProfitValue, takeProfitAtrMultiplicator, isBuy);
+         #ifdef CUSTOM_TP
+         case TPCustom:
+            return new CustomTakeProfitStrategy(symbol, timeframe, isBuy);
+         #endif
       #endif
    }
    return new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDoNotUse, takeProfitValue, isBuy);

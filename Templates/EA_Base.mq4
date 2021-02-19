@@ -317,6 +317,29 @@ public:
 };
 #endif
 
+#ifdef CUSTOM_TP
+class CustomTakeProfitStrategy : public ITakeProfitStrategy
+{
+   bool _isBuy;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
+public:
+   CustomTakeProfitStrategy(string symbol, ENUM_TIMEFRAMES timeframe, bool isBuy)
+   {
+      _symbol = symbol;
+      _timeframe = timeframe;
+      _isBuy = isBuy;
+   }
+
+   virtual void GetTakeProfit(const int period, const double entryPrice, double stopLoss, double amount, double& takeProfit)
+   {
+      double high, low;
+      GetHighLow(_symbol, _timeframe, high, low);
+      return _isBuy ? high : low;
+   }
+};
+#endif
+
 class LongCondition : public ACondition
 {
 public:

@@ -24,6 +24,7 @@
 #define WITH_EXIT_LOGIC
 #define TWO_LEVEL_TP
 #define CUSTOM_SL
+#define CUSTOM_TP
 
 #ifdef SHOW_ACCOUNT_STAT
    string EA_NAME = "[EA NAME]";
@@ -144,6 +145,7 @@ enum TrailingTargetType
 #else
    StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
    double stop_loss_value = 10;
+   double stop_loss_atr_multiplicator = 1;
 #endif
 input string BreakevenSection = ""; // == Breakeven ==
 input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
@@ -614,7 +616,6 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    ICloseOnOppositeStrategy* closeOnOpposite = close_on_opposite 
       ? (ICloseOnOppositeStrategy*)new DoCloseOnOppositeStrategy(slippage_points, magic_number)
       : (ICloseOnOppositeStrategy*)new DontCloseOnOppositeStrategy();
-   OrderHandlers* orderHandlers = new OrderHandlers();
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
    #ifdef USE_MARKET_ORDERS
       IEntryStrategy* entryStrategy = new MarketEntryStrategy(symbol, magic_number, slippage_points, actions, ecn_broker);

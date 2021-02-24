@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <../TradingCalculator.mq4>
 #include <../Signaler.mq4>
-// v1.0
+// v1.1
 
 class PartialCloseOnProfitOrderAction : public AOrderAction
 {
@@ -28,6 +28,11 @@ public:
    ~PartialCloseOnProfitOrderAction()
    {
       delete _calculator;
+   }
+
+   void RestoreActions(string symbol, int magicNumber)
+   {
+      
    }
 
    virtual bool DoAction(const int period, const datetime date)

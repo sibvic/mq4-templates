@@ -1,21 +1,21 @@
-// Regilar bullush divergence condition v1.3
+// Hidden bullush divergence condition v1.0
 
-#ifndef RegularBullishDivergenceCondition_IMP
-#define RegularBullishDivergenceCondition_IMP
+#ifndef HiddenBullishDivergenceCondition_IMP
+#define HiddenBullishDivergenceCondition_IMP
 
 #include <TroughCondition.mq4>
 #include <PeakCondition.mq4>
 #include <../streams/PriceStream.mq4>
 
-class RegularBullishDivergenceCondition : public AConditionBase
+class HiddenBullishDivergenceCondition : public AConditionBase
 {
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
    IStream* _stream;
 public:
-   RegularBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
-      :AConditionBase("Regular bullish divergence")
+   HiddenBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
+      :AConditionBase("Hidden bullish divergence")
    {
       _stream = stream;
       _stream.AddRef();
@@ -24,7 +24,7 @@ public:
       _priceCondition = new TroughCondition(_price, 2);
    }
 
-   ~RegularBullishDivergenceCondition()
+   ~HiddenBullishDivergenceCondition()
    {
       _stream.Release();
       _price.Release();
@@ -50,7 +50,7 @@ public:
             double trough_prev, trough_l_prev;
             return _stream.GetValue(i, trough_prev) 
                && _price.GetValue(i, trough_l_prev)
-               && trough > trough_prev && trough_l < trough_l_prev;
+               && trough < trough_prev && trough_l > trough_l_prev;
          }
       }
       return false;

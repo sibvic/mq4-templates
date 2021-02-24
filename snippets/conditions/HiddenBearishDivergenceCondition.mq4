@@ -1,21 +1,21 @@
-// Regilar bearish divergence condition v1.3
+// Regilar bearish divergence condition v1.0
 
-#ifndef RegularBearishDivergenceCondition_IMP
-#define RegularBearishDivergenceCondition_IMP
+#ifndef HiddenBearishDivergenceCondition_IMP
+#define HiddenBearishDivergenceCondition_IMP
 
 #include <TroughCondition.mq4>
 #include <PeakCondition.mq4>
 #include <../streams/PriceStream.mq4>
 
-class RegularBearishDivergenceCondition : public AConditionBase
+class HiddenBearishDivergenceCondition : public AConditionBase
 {
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
    IStream* _stream;
 public:
-   RegularBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
-      :AConditionBase("Regular bearish divergence")
+   HiddenBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
+      :AConditionBase("Hidden bearish divergence")
    {
       _stream = stream;
       _stream.AddRef();
@@ -24,7 +24,7 @@ public:
       _priceCondition = new PeakCondition(_price, 2);
    }
 
-   ~RegularBearishDivergenceCondition()
+   ~HiddenBearishDivergenceCondition()
    {
       _stream.Release();
       _price.Release();
@@ -50,7 +50,7 @@ public:
             double peaks_prev, peaks_h_prev;
             return _stream.GetValue(i, peaks_prev) 
                && _price.GetValue(i, peaks_h_prev)
-               && peaks < peaks_prev && peaks_h > peaks_h_prev;
+               && peaks > peaks_prev && peaks_h < peaks_h_prev;
          }
       }
       return false;

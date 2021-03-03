@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <../TradingCalculator.mq4>
 #include <../Signaler.mq4>
-// v1.1
+// v1.2
 
 class PartialCloseOnProfitOrderAction : public AOrderAction
 {
@@ -57,7 +57,7 @@ public:
       IOrder *order = new OrderByTicketId(_currentTicket);
       HitProfitCondition* condition = new HitProfitCondition();
       condition.Set(order, triggerValue);
-      IAction* action = new PartialCloseOrderAction(order, _toClose, slippage_points);
+      IAction* action = new PartialCloseOrderAction(order, _calculator.NormalizeLots(OrderLots() * _toClose / 100.0), slippage_points);
       order.Release();
       _actions.AddActionOnCondition(action, condition);
       condition.Release();

@@ -1,7 +1,7 @@
 #include <../MoneyManagement/ILotsProvider.mq4>
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
-// v1.1
+// v2.0
 
 class CustomLotsProvider : public ILotsProvider
 {
@@ -21,7 +21,7 @@ public:
 class CreateMartingaleAction : public AOrderAction
 {
    ActionOnConditionLogic* _actions;
-   double _partingaleStepPips;
+   double _martingaleStepPips;
    IAction* _longAction;
    IAction* _shortAction;
    int _maxLongPositions;
@@ -29,10 +29,11 @@ class CreateMartingaleAction : public AOrderAction
    double _lotsValue;
    MartingaleLotSizingType _lotsSizingType;
    CustomLotsProvider* _lots;
+   bool _inProfit;
 public:
    CreateMartingaleAction(CustomLotsProvider* lots, MartingaleLotSizingType lotsSizingType, double lotsValue, 
-      double partingaleStepPips, IAction* longAction, IAction* shortAction, 
-      int maxLongPositions, int maxShortPositions, ActionOnConditionLogic* actions)
+      double martingaleStepPips, IAction* longAction, IAction* shortAction, 
+      int maxLongPositions, int maxShortPositions, ActionOnConditionLogic* actions, bool inProfit)
    {
       _lots = lots;
       _lotsValue = lotsValue;
@@ -44,7 +45,8 @@ public:
       _shortAction = shortAction;
       _shortAction.AddRef();
       _actions = actions;
-      _partingaleStepPips = partingaleStepPips;
+      _martingaleStepPips = martingaleStepPips;
+      _inProfit = inProfit;
    }
 
    ~CreateMartingaleAction()
@@ -82,7 +84,15 @@ public:
             _lots.SetLots(instrument.NormalizeLots(OrderLots() + _lotsValue));
             break;
       }
-      ProfitInRangeCondition* condition = new ProfitInRangeCondition(order, -100000, -_partingaleStepPips);
+      ProfitInRangeCondition* condition;
+      if (_inProfit)
+      {
+         condition = new ProfitInRangeCondition(order, _martingaleStepPips, 100000);
+      }
+      else
+      {
+         condition = new ProfitInRangeCondition(order, -100000, -_martingaleStepPips);
+      }
       if (TradingCalculator::IsBuyOrder())
       {
          _actions.AddActionOnCondition(_longAction, condition);

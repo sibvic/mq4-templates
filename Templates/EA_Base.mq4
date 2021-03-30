@@ -92,7 +92,8 @@ input double max_spread = 0; // Max spred, pips. 0 to disable
 enum MartingaleType
 {
    MartingaleDoNotUse, // Do not use
-   MartingaleOnLoss // Open another position on loss
+   MartingaleOnLoss, // Open another position on loss
+   MartingaleOnProfit // Open another position on profit
 };
 enum MartingaleLotSizingType
 {
@@ -561,7 +562,7 @@ AOrderAction* CreateTrailing(const string symbol, const ENUM_TIMEFRAMES timefram
 
 #ifdef MARTINGALE_FEATURE
 void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_TIMEFRAMES timeframe, IEntryStrategy* entryStrategy, 
-   OrderHandlers* orderHandlers, ActionOnConditionLogic* actions)
+   OrderHandlers* orderHandlers, ActionOnConditionLogic* actions, bool inProfit)
 {
    CustomLotsProvider* lots = new CustomLotsProvider();
 
@@ -576,7 +577,7 @@ void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_
    IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers, true);
 
    CreateMartingaleAction* martingaleAction = new CreateMartingaleAction(lots, martingale_lot_sizing_type, martingale_lot_value, 
-      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions);
+      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions, inProfit);
    openLongAction.Release();
    openShortAction.Release();
    
@@ -756,7 +757,12 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       {
          case MartingaleOnLoss:
             {
-               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions);
+               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions, false);
+            }
+            break;
+         case MartingaleOnProfit:
+            {
+               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions, true);
             }
             break;
       }

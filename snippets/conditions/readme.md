@@ -240,8 +240,12 @@ Triggers at the specific day of the month and time.
 
 ## MinMarginCondition
 
-Min marging condition
+Min marging condition.
 
 ## FibCrossCondition
 
-Fibonacci cross condition
+Fibonacci cross condition.
+
+## NewObjectCondition
+
+Acts when new object appears with the specified id start.

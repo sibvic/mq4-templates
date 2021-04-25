@@ -1,4 +1,11 @@
 #include <enums/OrderSide.mq4>
+#include <streams/IStream.mq4>
+#include <Logic/ActionOnConditionLogic.mq4>
+#include <MoneyManagement/IMoneyManagementStrategy.mq4>
+#include <OrderBuilder.mq4>
+#include <MarketOrderBuilder.mq4>
+#include <InstrumentInfo.mq4>
+#include <OrdersIterator.mq4>
 
 // Entry strategy v4.0
 

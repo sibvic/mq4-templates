@@ -143,7 +143,7 @@ Sets value to a stream when condition is passed.
 
 ## IchimokuStream
 
-Ichimoke streams.
+Ichimoku streams.
 
 ## RenkoStream
 
@@ -156,3 +156,7 @@ Stream with an indicator output.
 ## PointAndFigure
 
 Point and Figure bar stream.
+
+## ChangeStream
+
+Return difference between the current value and n periods before.

@@ -14,7 +14,6 @@
 #define STOP_LOSS_FEATURE
 #define USE_NET_BREAKEVEN
 #define TAKE_PROFIT_FEATURE
-#define NET_TAKE_PROFIT_FEATURE
 #define MARTINGALE_FEATURE
 #define USE_MARKET_ORDERS
 #define WEEKLY_TRADING_TIME_FEATURE
@@ -157,17 +156,13 @@ input double breakeven_level = 0; // Breakeven target
 #ifdef TAKE_PROFIT_FEATURE
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
+   input bool use_net_take_profit = false; // Use net take profit
    input double take_profit_value = 10; // Take profit value
    input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
 #else
    TakeProfitType take_profit_type = TPDoNotUse;
    double take_profit_value = 10;
    double take_profit_atr_multiplicator = 1;
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-   input string NetTakeProfitSection            = ""; // == Net Take Profit ==
-   input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
-   input double net_take_profit_value = 10; // Net take profit value
 #endif
 
 #include <enums/DayOfWeek.mq4>
@@ -828,16 +823,24 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       action.Release();
       condition.Release();
    }
-   #ifdef NET_TAKE_PROFIT_FEATURE
-      if (net_take_profit_type != StopLimitDoNotUse)
+   if (use_net_take_profit && take_profit_type != SLDoNotUse)
+   {
+      MoveNetTakeProfitAction* action = NULL;
+      switch (take_profit_type)
       {
-         IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, magic_number);
-         NoCondition* condition = new NoCondition();
-         actions.AddActionOnCondition(action, condition);
-         action.Release();
-         condition.Release();
+         case TPPips:
+            action = new MoveNetTakeProfitAction(tradingCalculator, StopLimitPips, take_profit_value, magic_number);
+            break;
+         default:
+            Alert("Selected take profit type not supported for net take profit");
+            break;
       }
-   #endif
+
+      NoCondition* condition = new NoCondition();
+      actions.AddActionOnCondition(action, condition);
+      action.Release();
+      condition.Release();
+   }
 
    controller.SetEntryLogic(entry_logic);
    controller.SetEntryStrategy(entryStrategy);

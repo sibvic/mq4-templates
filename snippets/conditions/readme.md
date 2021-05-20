@@ -249,3 +249,7 @@ Fibonacci cross condition.
 ## NewObjectCondition
 
 Acts when new object appears with the specified id start.
+
+## DayTradesLimitCondition
+
+Max trades at day condition.

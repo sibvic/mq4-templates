@@ -1,6 +1,6 @@
 #include <enums/OrderSide.mq4>
 
-// Entry strategy v4.0
+// Entry strategy v4.1
 
 interface IEntryStrategy
 {
@@ -12,8 +12,6 @@ public:
 
    virtual int Exit(const OrderSide side) = 0;
 };
-
-#ifndef USE_MARKET_ORDERS
 
 class PendingEntryStrategy : public IEntryStrategy
 {
@@ -112,7 +110,7 @@ private:
       return _shortEntryPrice.GetValue(period, price);
    }
 };
-#else
+
 class MarketEntryStrategy : public IEntryStrategy
 {
    string _symbol;
@@ -188,4 +186,3 @@ public:
       return TradingCommands::CloseTrades(toClose, _slippagePoints);
    }
 };
-#endif

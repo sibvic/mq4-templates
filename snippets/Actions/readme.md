@@ -95,3 +95,7 @@ Creates additional position on loss.
 ## DeleteOrdersAction
 
 Deletes order with a specified magic number and side.
+
+## CloseSideAction
+
+Close side action.

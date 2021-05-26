@@ -1,5 +1,6 @@
-// Move net take profit action v 2.0
+// Move net take profit action v 2.1
 #include <../TradingCalculator.mq4>
+#include <../TradingCommands.mq4>
 
 #ifndef MoveNetTakeProfitAction_IMP
 
@@ -50,17 +51,10 @@ private:
       {
          if (OrderTakeProfit() != takeProfit)
          {
-            int res = OrderModify(OrderTicket(), OrderOpenPrice(), OrderStopLoss(), takeProfit, 0, CLR_NONE);
-            if (res == 0)
+            string error;
+            if (!TradingCommands::MoveTP(OrderTicket(), takeProfit, error))
             {
-               int error = GetLastError();
-               switch (error)
-               {
-                  case ERR_NO_RESULT:
-                     break;
-                  case ERR_INVALID_TICKET:
-                     break;
-               }
+               Print(error);
             }
             else
                ++count;

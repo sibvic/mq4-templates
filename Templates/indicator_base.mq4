@@ -78,7 +78,7 @@ int OnCalculate(const int rates_total,
    ArraySetAsSeries(tick_volume, true);
 
    int toSkip = 0;
-   for (int pos = MathMin(bars_limit, rates_total - 1 - MathMax(prev_calculated, toSkip)); pos >= 0 && !IsStopped(); --pos)
+   for (int pos = MathMin(bars_limit, rates_total - 1 - MathMax(prev_calculated - 1, toSkip)); pos >= 0 && !IsStopped(); --pos)
    {
    }
    

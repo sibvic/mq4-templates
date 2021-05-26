@@ -1,5 +1,5 @@
 #include <GridTextCell.mq4>
-// Grid row v3.0
+// Grid row v4.0
 
 #ifndef GridRow_IMP
 #define GridRow_IMP
@@ -8,9 +8,11 @@ class GridRow
 {
    GridTextCell* _cells[];
    string _id;
+   int _window;
 public:
-   GridRow(string id)
+   GridRow(string id, int window)
    {
+      _window = window;
       _id = id;
    }
 
@@ -31,7 +33,7 @@ public:
       ArrayResize(_cells, newSize);
       for (int i = oldSize; i < newSize; ++i)
       {
-         _cells[i] = new GridTextCell(_id + "-" + IntegerToString(i));
+         _cells[i] = new GridTextCell(_id + "-" + IntegerToString(i), _window);
       }
    }
 

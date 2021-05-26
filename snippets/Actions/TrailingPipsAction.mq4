@@ -3,7 +3,7 @@
 #include <../TradingCommands.mq4>
 #include <../InstrumentInfo.mq4>
 
-// Trailing action v3.1
+// Trailing action v3.2
 
 #ifndef TrailingAction_IMP
 #define TrailingAction_IMP
@@ -36,8 +36,10 @@ public:
 
    virtual bool DoAction(const int period, const datetime date)
    {
-      if (!_order.Select())
+      if (!_order.Select() || OrderCloseTime() != 0)
+      {
          return true;
+      }
 
       string symbol = OrderSymbol();
       double closePrice = iClose(symbol, PERIOD_M1, 0);

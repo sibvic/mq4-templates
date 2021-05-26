@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <AOrderAction.mq4>
 
-// Create trailing action v3.0
+// Create trailing action v3.1
 
 #ifndef CreateTrailingAction_IMP
 #define CreateTrailingAction_IMP
@@ -72,7 +72,7 @@ public:
       int mult = digits == 3 || digits == 5 ? 10 : 1;
       double pipSize = point * mult;
 
-      double distance = (OrderOpenPrice() - OrderStopLoss()) / pipSize;
+      double distance = MathAbs(OrderOpenPrice() - OrderStopLoss()) / pipSize;
       double start = _startInPercent ? distance * _start / 100.0 : _start;
 
       string ticketIdStr = IntegerToString(_currentTicket);

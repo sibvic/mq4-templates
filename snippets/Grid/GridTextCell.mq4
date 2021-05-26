@@ -14,9 +14,11 @@ class GridTextCell
    string _fontName;
    ENUM_ANCHOR_POINT _anchor;
    int _cellWidth;
+   int _window;
 public:
-   GridTextCell(string id)
+   GridTextCell(string id, int window)
    {
+      _window = window;
       _id = id;
    }
 
@@ -35,9 +37,10 @@ public:
    {
       ResetLastError();
       string id = _id;
+      
       if (ObjectFind(0, id) == -1)
       {
-         if (!ObjectCreate(0, id, OBJ_LABEL, 0, 0, 0))
+         if (!ObjectCreate(0, id, OBJ_LABEL, _window, 0, 0))
          {
             Print(__FUNCTION__, ". Error: ", GetLastError());
             return ;

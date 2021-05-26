@@ -12,10 +12,8 @@
 #define SHOW_ACCOUNT_STAT
 #define REVERSABLE_LOGIC_FEATURE
 #define STOP_LOSS_FEATURE
-#define NET_STOP_LOSS_FEATURE
 #define USE_NET_BREAKEVEN
 #define TAKE_PROFIT_FEATURE
-#define NET_TAKE_PROFIT_FEATURE
 #define MARTINGALE_FEATURE
 #define USE_MARKET_ORDERS
 #define WEEKLY_TRADING_TIME_FEATURE
@@ -92,7 +90,8 @@ input double max_spread = 0; // Max spred, pips. 0 to disable
 enum MartingaleType
 {
    MartingaleDoNotUse, // Do not use
-   MartingaleOnLoss // Open another position on loss
+   MartingaleOnLoss, // Open another position on loss
+   MartingaleOnProfit // Open another position on profit
 };
 enum MartingaleLotSizingType
 {
@@ -106,7 +105,7 @@ enum MartingaleStepSizeType
    MartingaleStepSizePercent, // %
 };
 #ifdef MARTINGALE_FEATURE
-   input string MartingaleSection = ""; // == Martingale type ==
+   input string MartingaleSection = ""; // == Martingale ==
    input MartingaleType martingale_type = MartingaleDoNotUse; // Martingale type
    input MartingaleLotSizingType martingale_lot_sizing_type = MartingaleLotSizingNo; // Martingale lot sizing type
    input double martingale_lot_value = 1.5; // Matringale lot sizing value
@@ -132,8 +131,9 @@ enum TrailingTargetType
    TrailingTargetMA, // Sync with MA
 };
 #ifdef STOP_LOSS_FEATURE
-   string StopLossSection            = ""; // == Stop loss ==
+   input string StopLossSection            = ""; // == Stop loss ==
    input StopLossType stop_loss_type = SLDoNotUse; // Stop loss type
+   input bool use_net_stop_loss = false; // Use net stop loss
    input double stop_loss_value = 10; // Stop loss value
    input double stop_loss_atr_multiplicator = 1; // Stop loss multiplicator (for ATR SL)
    input TrailingType trailing_type = TrailingDontUse; // Trailing start type
@@ -151,27 +151,18 @@ input string BreakevenSection = ""; // == Breakeven ==
 input StopLimitType breakeven_type = StopLimitDoNotUse; // Trigger type for the breakeven
 input double breakeven_value = 10; // Trigger for the breakeven
 input double breakeven_level = 0; // Breakeven target
-#ifdef NET_STOP_LOSS_FEATURE
-   input string NetStopSection = ""; // == Net stop ==
-   input StopLimitType net_stop_loss_type = StopLimitDoNotUse; // Net stop loss type
-   input double net_stop_loss_value = 10; // Net stop loss value
-#endif
 
 #include <enums/TakeProfitType.mq4>
 #ifdef TAKE_PROFIT_FEATURE
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
+   input bool use_net_take_profit = false; // Use net take profit
    input double take_profit_value = 10; // Take profit value
    input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
 #else
    TakeProfitType take_profit_type = TPDoNotUse;
    double take_profit_value = 10;
    double take_profit_atr_multiplicator = 1;
-#endif
-#ifdef NET_TAKE_PROFIT_FEATURE
-   input string NetTakeProfitSection            = ""; // == Net Take Profit ==
-   input StopLimitType net_take_profit_type = StopLimitDoNotUse; // Net take profit type
-   input double net_take_profit_value = 10; // Net take profit value
 #endif
 
 #include <enums/DayOfWeek.mq4>
@@ -561,7 +552,7 @@ AOrderAction* CreateTrailing(const string symbol, const ENUM_TIMEFRAMES timefram
 
 #ifdef MARTINGALE_FEATURE
 void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_TIMEFRAMES timeframe, IEntryStrategy* entryStrategy, 
-   OrderHandlers* orderHandlers, ActionOnConditionLogic* actions)
+   OrderHandlers* orderHandlers, ActionOnConditionLogic* actions, bool inProfit)
 {
    CustomLotsProvider* lots = new CustomLotsProvider();
 
@@ -576,7 +567,7 @@ void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_
    IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers, true);
 
    CreateMartingaleAction* martingaleAction = new CreateMartingaleAction(lots, martingale_lot_sizing_type, martingale_lot_value, 
-      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions);
+      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions, inProfit);
    openLongAction.Release();
    openShortAction.Release();
    
@@ -756,7 +747,12 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       {
          case MartingaleOnLoss:
             {
-               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions);
+               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions, false);
+            }
+            break;
+         case MartingaleOnProfit:
+            {
+               CreateMartingale(tradingCalculator, symbol, timeframe, entryStrategy, orderHandlers, actions, true);
             }
             break;
       }
@@ -802,34 +798,49 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    shortPosition.AddAction(openShortAction);
    openShortAction.Release();
 
-   #ifdef NET_STOP_LOSS_FEATURE
-      if (net_stop_loss_type != StopLimitDoNotUse)
+   if (use_net_stop_loss && stop_loss_type != SLDoNotUse)
+   {
+      MoveNetStopLossAction* action = NULL;
+      switch (stop_loss_type)
       {
-         MoveNetStopLossAction* action = new MoveNetStopLossAction(tradingCalculator, net_stop_loss_type, net_stop_loss_value, magic_number);
-         #ifdef USE_NET_BREAKEVEN
-            if (breakeven_type != StopLimitDoNotUse)
-            {
-               //TODO: use breakeven_type as well
-               action.SetBreakeven(breakeven_value, breakeven_level);
-            }
-         #endif
+         case SLPips:
+            action = new MoveNetStopLossAction(tradingCalculator, StopLimitPips, stop_loss_value, magic_number);
+            break;
+         default:
+            Alert("Selected stop loss type not supported for net stop loss");
+            break;
+      }
+      #ifdef USE_NET_BREAKEVEN
+         if (breakeven_type != StopLimitDoNotUse)
+         {
+            //TODO: use breakeven_type as well
+            action.SetBreakeven(breakeven_value, breakeven_level);
+         }
+      #endif
 
-         NoCondition* condition = new NoCondition();
-         actions.AddActionOnCondition(action, condition);
-         action.Release();
-         condition.Release();
-      }
-   #endif
-   #ifdef NET_TAKE_PROFIT_FEATURE
-      if (net_take_profit_type != StopLimitDoNotUse)
+      NoCondition* condition = new NoCondition();
+      actions.AddActionOnCondition(action, condition);
+      action.Release();
+      condition.Release();
+   }
+   if (use_net_take_profit && take_profit_type != SLDoNotUse)
+   {
+      MoveNetTakeProfitAction* action = NULL;
+      switch (take_profit_type)
       {
-         IAction* action = new MoveNetTakeProfitAction(tradingCalculator, net_take_profit_type, net_take_profit_value, magic_number);
-         NoCondition* condition = new NoCondition();
-         actions.AddActionOnCondition(action, condition);
-         action.Release();
-         condition.Release();
+         case TPPips:
+            action = new MoveNetTakeProfitAction(tradingCalculator, StopLimitPips, take_profit_value, magic_number);
+            break;
+         default:
+            Alert("Selected take profit type not supported for net take profit");
+            break;
       }
-   #endif
+
+      NoCondition* condition = new NoCondition();
+      actions.AddActionOnCondition(action, condition);
+      action.Release();
+      condition.Release();
+   }
 
    controller.SetEntryLogic(entry_logic);
    controller.SetEntryStrategy(entryStrategy);

@@ -1,4 +1,4 @@
-// Grid cells v3.0
+// Grid cells v4.0
 
 #include <GridRow.mq4>
 
@@ -10,9 +10,11 @@ class GridCells
    string _id;
    GridRow* _columns[];
    double _gap;
+   int _window;
 public:
-   GridCells(string id, double gap)
+   GridCells(string id, double gap, int window)
    {
+      _window = window;
       _gap = gap;
       _id = id;
    }
@@ -151,7 +153,7 @@ private:
          ArrayResize(_columns, newSize);
          for (int i = oldSize; i < newSize; ++i)
          {
-            _columns[i] = new GridRow(_id + "-" + IntegerToString(i));
+            _columns[i] = new GridRow(_id + "-" + IntegerToString(i), _window);
          }
       }
    }

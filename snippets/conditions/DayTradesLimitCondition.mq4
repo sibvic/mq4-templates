@@ -1,6 +1,7 @@
-// Max trades at day condition v1.0
+// Max trades at day condition v1.1
 #include <ACondition.mq4>
 #include <../OrdersIterator.mq4>
+#include <../ClosedOrdersIterator.mq4>
 
 #ifndef DayTradesLimitCondition_IMP
 #define DayTradesLimitCondition_IMP
@@ -32,6 +33,21 @@ public:
       {
          MqlDateTime trade_time;
          if (!TimeToStruct(trades.GetOpenTime(), trade_time))
+         {
+            return false;
+         }
+         if (trade_time.year == current_time.year && trade_time.mon == current_time.mon && trade_time.day == current_time.day)
+         {
+            count++;
+         }
+      }
+      ClosedOrdersIterator closedTrades;
+      closedTrades.WhenSymbol(_symbol);
+      closedTrades.WhenMagicNumber(_magicNumber);
+      while (closedTrades.Next())
+      {
+         MqlDateTime trade_time;
+         if (!TimeToStruct(closedTrades.GetOpenTime(), trade_time))
          {
             return false;
          }

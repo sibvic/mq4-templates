@@ -1,4 +1,4 @@
-// ProfitRobots Dashboard text template v.1.3
+// ProfitRobots Dashboard text template v1.4
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
 #property indicator_separate_window
@@ -24,11 +24,12 @@ input bool     Include_MN1              = false;
 input color    Labels_Color             = clrWhite;
 input int x_shift = 900; // X coordinate
 input int y_shift = 50; // Y coordinate
+input ENUM_BASE_CORNER corner           = CORNER_LEFT_UPPER; // Corner
 input DisplayMode display_mode = Horizontal; // Display mode
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
-input int lookbakc_limit = 0; // Lookback limit
+input int lookback_limit = 0; // Lookback limit
 
 #define MAX_LOOPBACK 500
 
@@ -55,9 +56,13 @@ class TextValueCell : public ICell
    string _symbol; 
    ENUM_TIMEFRAMES _timeframe; 
    datetime _lastDatetime;
+   ENUM_BASE_CORNER _corner;
+   bool _showHistorical;
 public:
-   TextValueCell(const string id, const int x, const int y, const string symbol, const ENUM_TIMEFRAMES timeframe)
+   TextValueCell(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe, bool showHistorical)
    { 
+      _showHistorical = showHistorical;
+      _corner = corner;
       _id = id; 
       _x = x; 
       _y = y; 
@@ -71,10 +76,10 @@ public:
 
    virtual void Draw()
    { 
-      for (int i = 0; i < lookbakc_limit; ++i)
+      for (int i = 0; i <= lookback_limit; ++i)
       {
          string label = "...";
-         ObjectMakeLabel(_id, _x, _y, label, Labels_Color, 1, WindowNumber, "Arial", font_size); 
+         ObjectMakeLabel(_id, _x, _y, label, Labels_Color, _corner, WindowNumber, "Arial", font_size); 
          break;
       }
    }

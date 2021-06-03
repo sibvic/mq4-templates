@@ -22,7 +22,6 @@ enum CustomActionType
 input CustomActionType BB_Top_Line_Cross_Over        = Close_Buy_Positions;
 
 #define ACT_ON_SWITCH_CONDITION
-#define REVERSABLE_LOGIC_FEATURE
 #define STOP_LOSS_FEATURE
 #define TAKE_PROFIT_FEATURE
 #define USE_MARKET_ORDERS

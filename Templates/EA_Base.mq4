@@ -908,8 +908,11 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-   orderHandlers.Clear();
-   orderHandlers.Release();
+   if (orderHandlers != NULL)
+   {
+      orderHandlers.Clear();
+      orderHandlers.Release();
+   }
 
    #ifdef SHOW_ACCOUNT_STAT
       delete stats;

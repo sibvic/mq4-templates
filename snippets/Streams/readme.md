@@ -160,3 +160,11 @@ Point and Figure bar stream.
 ## ChangeStream
 
 Return difference between the current value and n periods before.
+
+## MaxOnStream
+
+Max value on stream.
+
+## MinOnStream
+
+Min value on stream.

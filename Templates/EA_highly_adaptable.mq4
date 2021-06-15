@@ -514,6 +514,7 @@ IAction* CreateAction(TradingCalculator* tradingCalculator, string symbol,
 
    IAction* action = new EntryAction(entryStrategy, orderSide, moneyManagement, "", orderHandlers);
    entryStrategy.Release();
+   tradingCalculator.Release();
    return action;
 }
 
@@ -693,7 +694,8 @@ int OnInit()
       {
          tradingTimeCondition.Release();
       }
-      delete tradingCalculator;
+      tradingCalculator.Release();
+      tradingCalculator = NULL;
       Print("Error: " + error);
       return INIT_FAILED;
    }
@@ -741,7 +743,10 @@ void OnDeinit(const int reason)
    orderHandlers.Clear();
    orderHandlers.Release();
    delete actions;
-   delete tradingCalculator;
+   if (tradingCalculator != NULL)
+   {
+      tradingCalculator.Release();
+   }
 }
 
 void OnTick()

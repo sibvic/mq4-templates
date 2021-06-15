@@ -1,4 +1,4 @@
-// Trade calculator v2.4
+// Trade calculator v2.5
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <enums/OrderSide.mq4>
@@ -13,10 +13,17 @@
 class TradingCalculator
 {
    InstrumentInfo *_symbol;
+   int _references;
 
    TradingCalculator(const string symbol)
    {
       _symbol = new InstrumentInfo(symbol);
+      _references = 1;
+   }
+
+   ~TradingCalculator()
+   {
+      delete _symbol;
    }
 public:
    static TradingCalculator *Create(const string symbol)
@@ -29,9 +36,16 @@ public:
       return new TradingCalculator(symbol);
    }
 
-   ~TradingCalculator()
+   void AddRef()
    {
-      delete _symbol;
+      ++_references;
+   }
+
+   void Release()
+   {
+      --_references;
+      if (_references == 0)
+         delete &this;
    }
 
    double GetPipSize() { return _symbol.GetPipSize(); }

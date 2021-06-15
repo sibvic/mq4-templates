@@ -597,7 +597,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       #ifdef TRADING_TIME_FEATURE
          tradingTimeCondition.Release();
       #endif
-      delete tradingCalculator;
+      tradingCalculator.Release();
       return NULL;
    }
 
@@ -865,6 +865,7 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       name = name + ".csv";
       controller.SetPrintLog(name);
    }
+   tradingCalculator.Release();
 
    return controller;
 }

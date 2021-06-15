@@ -1,7 +1,7 @@
 #include <AOrderAction.mq4>
 #include <MoveToBreakevenAction.mq4>
 
-// Move stop loss on profit order action v3.0
+// Move stop loss on profit order action v3.1
 
 #ifndef MoveStopLossOnProfitOrderAction_IMP
 #define MoveStopLossOnProfitOrderAction_IMP
@@ -30,7 +30,10 @@ public:
 
    ~MoveStopLossOnProfitOrderAction()
    {
-      delete _calculator;
+      if (_calculator != NULL)
+      {
+         _calculator.Release();
+      }
    }
 
    void RestoreActions(string symbol, int magicNumber)
@@ -65,7 +68,10 @@ public:
       string symbol = OrderSymbol();
       if (_calculator == NULL || symbol != _calculator.GetSymbol())
       {
-         delete _calculator;
+         if (_calculator != NULL)
+         {
+            _calculator.Release();
+         }
          _calculator = TradingCalculator::Create(symbol);
          if (_calculator == NULL)
          {

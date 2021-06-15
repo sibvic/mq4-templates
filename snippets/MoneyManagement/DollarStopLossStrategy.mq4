@@ -1,4 +1,4 @@
-// Dollar stop loss stream v1.0
+// Dollar stop loss stream v1.1
 
 #ifndef DollarStopLossStrategy_IMP
 #define DollarStopLossStrategy_IMP
@@ -16,6 +16,12 @@ public:
       _isBuy = isBuy;
       _stopLoss = stopLoss;
       _calculator = calculator;
+      _calculator.AddRef();
+   }
+
+   ~DollarStopLossStrategy()
+   {
+      _calculator.Release();
    }
 
    virtual double GetValue(const int period, double entryPrice)

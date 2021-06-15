@@ -1,4 +1,4 @@
-// Default stop loss stream v2.0
+// Default stop loss stream v2.1
 
 #ifndef DefaultStopLossStrategy_IMP
 #define DefaultStopLossStrategy_IMP
@@ -16,6 +16,12 @@ public:
       _stopLoss = stopLoss;
       _stopLossType = stopLossType;
       _calculator = calculator;
+      _calculator.AddRef();
+   }
+
+   ~DefaultStopLossStrategy()
+   {
+      _calculator.Release();
    }
 
    virtual double GetValue(const int period, double entryPrice)

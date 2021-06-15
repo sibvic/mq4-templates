@@ -2,7 +2,7 @@
 #include <enums/OrderSide.mq4>
 #include <EntryPositionController.mq4>
 
-// Trading controller v8.1
+// Trading controller v8.2
 
 #ifndef TradingController_IMP
 #define TradingController_IMP
@@ -37,6 +37,7 @@ public:
       _exitLogic = TradingModeOnBarClose;
       _actions = actions;
       _calculator = calculator;
+      _calculator.AddRef();
       _signaler = signaler;
       _entryTimeframe = entryTimeframe;
       _exitTimeframe = exitTimeframe;
@@ -67,7 +68,7 @@ public:
          _exitLongCondition.Release();
       if (_exitShortCondition != NULL)
          _exitShortCondition.Release();
-      delete _calculator;
+      _calculator.Release();
       delete _signaler;
    }
 

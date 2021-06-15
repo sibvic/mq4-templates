@@ -1,4 +1,4 @@
-// Risk lots provider v2.1
+// Risk lots provider v2.2
 
 #ifndef RiskLotsProvider_IMP
 #define RiskLotsProvider_IMP
@@ -14,8 +14,14 @@ public:
    {
       _stopLoss = stopLoss;
       _calculator = calculator;
+      _calculator.AddRef();
       _lotsType = lotsType;
       _lots = lots;
+   }
+
+   ~RiskLotsProvider()
+   {
+      _calculator.Release();
    }
 
    virtual double GetValue(int period, double entryPrice)

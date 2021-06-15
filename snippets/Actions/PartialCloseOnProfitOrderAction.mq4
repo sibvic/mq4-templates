@@ -3,7 +3,7 @@
 #include <../Logic/ActionOnConditionLogic.mq4>
 #include <../TradingCalculator.mq4>
 #include <../Signaler.mq4>
-// v1.2
+// v1.3
 
 class PartialCloseOnProfitOrderAction : public AOrderAction
 {
@@ -27,7 +27,10 @@ public:
 
    ~PartialCloseOnProfitOrderAction()
    {
-      delete _calculator;
+      if (_calculator != NULL)
+      {
+         _calculator.Release();
+      }
    }
 
    void RestoreActions(string symbol, int magicNumber)
@@ -43,7 +46,10 @@ public:
       string symbol = OrderSymbol();
       if (_calculator == NULL || symbol != _calculator.GetSymbol())
       {
-         delete _calculator;
+         if (_calculator != NULL)
+         {
+            _calculator.Release();
+         }
          _calculator = TradingCalculator::Create(symbol);
          if (_calculator == NULL)
             return false;

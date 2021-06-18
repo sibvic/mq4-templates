@@ -168,3 +168,7 @@ Max value on stream.
 ## MinOnStream
 
 Min value on stream.
+
+## TrueRangeStream
+
+True range stream.

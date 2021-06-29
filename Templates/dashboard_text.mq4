@@ -26,6 +26,7 @@ input int x_shift = 900; // X coordinate
 input int y_shift = 50; // Y coordinate
 input ENUM_BASE_CORNER corner           = CORNER_LEFT_UPPER; // Corner
 input DisplayMode display_mode = Horizontal; // Display mode
+input bool show_historic = true; // Show historic
 input int font_size = 10; // Font Size;
 input int cell_width = 80; // Cell width
 input int cell_height = 30; // Cell height
@@ -135,7 +136,7 @@ int init()
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName("...");
 
-   GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical);
+   GridBuilder builder(x_shift, y_shift, cell_height, cell_height, display_mode == Vertical, corner, show_historic);
    builder.AddCell(new TextValueCellFactory());
    builder.SetSymbols(Pairs);
 

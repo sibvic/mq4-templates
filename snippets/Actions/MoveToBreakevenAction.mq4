@@ -1,3 +1,5 @@
+#include <AAction.mq4>
+
 //Move to breakeven action v3.0
 
 #ifndef MoveToBreakevenAction_IMP

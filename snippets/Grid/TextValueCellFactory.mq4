@@ -17,7 +17,7 @@ public:
 
    virtual ICell* Create(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe, bool showHistorical)
    {
-      return new TextValueCell(id, x, y, symbol, timeframe);
+      return new TextValueCell(id, x, y, corner, symbol, timeframe, showHistorical);
    }
 };
 #endif

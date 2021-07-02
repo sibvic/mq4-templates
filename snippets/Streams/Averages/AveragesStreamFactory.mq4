@@ -8,6 +8,7 @@
 #include <LwmaOnStream.mq4>
 #include <VwmaOnStream.mq4>
 #include <RmaOnStream.mq4>
+#include <WMAOnStream.mq4>
 #include <ZeroLagTEMAOnStream.mq4>
 #include <ZeroLagMAOnStream.mq4>
 
@@ -25,6 +26,8 @@ public:
       {
          case ma_sma:
             return new SmaOnStream(source, length);
+         case ma_wma:
+            return new WMAOnStream(source, length);
          case ma_ema:
             return new EMAOnStream(source, length);
          //case 2  : return(iDsema(price,length,r,instanceNo));

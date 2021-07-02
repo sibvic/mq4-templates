@@ -25,7 +25,8 @@ enum MATypes
    //ma_ssm,     // Super smoother
    //ma_smoo,     // Smoother,
    ma_zltema, // Zero lag TEMA
-   ma_rma // RMA
+   ma_rma, // RMA
+   ma_wma, // WMA
 };
 
 #endif

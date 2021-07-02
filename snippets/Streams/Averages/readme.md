@@ -37,3 +37,7 @@ Zero lag MA on stream
 ## AlmaOnStream
 
 ALMA on stream
+
+## WMAOnStream
+
+WMA on stream

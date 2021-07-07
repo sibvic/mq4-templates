@@ -1,49 +1,21 @@
-#include <../IStream.mq4>
+#include <../AOnStream.mq4>
 
-// WMA on stream v1.0
+// WMA on stream v1.1
 
 #ifndef WMAOnStream_IMP
 #define WMAOnStream_IMP
 
-class WMAOnStream : public IStream
+class WMAOnStream : public AOnStream
 {
-   IStream *_source;
    int _length;
    double _k;
    double _buffer[];
-   int _references;
 public:
    WMAOnStream(IStream *source, const int length)
+      :AOnStream(source)
    {
-      _source = source;
-      _source.AddRef();
       _length = length;
-      _references = 1;
       _k = 1.0 / (_length);
-   }
-
-   ~WMAOnStream()
-   {
-      _source.Release();
-   }
-
-   void AddRef()
-   {
-      ++_references;
-   }
-
-   void Release()
-   {
-      --_references;
-      if (_references == 0)
-      {
-         delete &this;
-      }
-   }
-   
-   virtual int Size()
-   {
-      return _source.Size();
    }
 
    bool GetValue(const int period, double &val)

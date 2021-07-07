@@ -1,33 +1,13 @@
-// Highest high stream v1.0
+#include <AOnStream.mq4>
+// Highest high stream v1.1
 
-class HighestHighStream : public IStream
+class HighestHighStream : public AOnStream
 {
    int _loopback;
-   int _references;
-   IStream* _source;
 public:
    HighestHighStream(IStream* source, int loopback)
+      :AOnStream(source)
    {
-      _references = 1;
-      _source = source;
-      _source.AddRef();
-   }
-
-   ~HighestHighStream()
-   {
-      _source.Release();
-   }
-
-   void AddRef()
-   {
-      ++_references;
-   }
-
-   void Release()
-   {
-      --_references;
-      if (_references == 0)
-         delete &this;
    }
 
    bool GetValue(const int period, double &val)

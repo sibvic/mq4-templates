@@ -1,35 +1,14 @@
-// Lowest low stream v1.0
+// Lowest low stream v1.1
 
 #include <IStream.mq4>
 
-class LowestLowStream : public IStream
+class LowestLowStream : public AOnStream
 {
    int _loopback;
-   int _references;
-   IStream* _source;
 public:
    LowestLowStream(IStream* source, int loopback)
+      :AOnStream(source)
    {
-      _references = 1;
-      _source = source;
-      _source.AddRef();
-   }
-
-   ~LowestLowStream()
-   {
-      _source.Release();
-   }
-
-   void AddRef()
-   {
-      ++_references;
-   }
-
-   void Release()
-   {
-      --_references;
-      if (_references == 0)
-         delete &this;
    }
 
    bool GetValue(const int period, double &val)

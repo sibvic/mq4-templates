@@ -172,3 +172,7 @@ Min value on stream.
 ## TrueRangeStream
 
 True range stream.
+
+## ATRStream
+
+Average true range stream

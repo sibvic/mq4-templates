@@ -28,6 +28,7 @@ input double shift_arrows_pips = 0.1; // Shift arrows
 input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
 input int font_size = 12; // Font size
+input int bars_limit = 1000; // Bars limit
 
 #include <conditions/ACondition.mq4>
 #include <conditions/ActOnSwitchCondition.mq4>
@@ -293,9 +294,8 @@ int start()
          item.Init();
       }
    }
-   int minBars = 1;
-   int limit = MathMin(Bars - 1 - minBars, Bars - counted_bars - 1);
-   for (int pos = limit; pos >= 0 && !IsStopped(); --pos)
+   int toSkip = 1;
+   for (int pos = MathMin(bars_limit, Bars - 1 - MathMax(counted_bars - 1, toSkip)); pos >= 0 && !IsStopped(); --pos)
    {
       if (customStream != NULL)
       {

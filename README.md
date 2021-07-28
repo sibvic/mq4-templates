@@ -29,9 +29,3 @@
 [Indicore](https://github.com/sibvic/vsc-indicore)
 
 [NinjaTrader8](https://github.com/sibvic/vsc-nt8-snippets)
-
-## Donations gratefully accepted.
-
-* [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/sibvic)
-
-Or support us on [Patreon](https://www.patreon.com/profitrobots)

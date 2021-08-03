@@ -1,4 +1,4 @@
-// Alert signal v4.2
+// Alert signal v4.3
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mq4>
@@ -170,6 +170,77 @@ public:
    }
 };
 
+class MainChartAlertSignalText : public IAlertSignalOutput
+{
+   IStream* _price;
+   string _labelId;
+   color _color;
+   string _text;
+   int _fontSize;
+   ENUM_ANCHOR_POINT _anchor;
+public:
+   MainChartAlertSignalText(int fontSize)
+   {
+      _fontSize = fontSize;
+      _price = NULL;
+   }
+
+   ~MainChartAlertSignalText()
+   {
+      if (_price != NULL)
+         _price.Release();
+   }
+
+   int Register(int id, string labelId, string text, color clr, IStream* price, ENUM_ANCHOR_POINT anchor)
+   {
+      if (_price != NULL)
+         _price.Release();
+      _price = price;
+      _price.AddRef();
+      _labelId = labelId;
+      _color = clr;
+      _text = text;
+      _anchor = anchor;
+      
+      return id;
+   }
+
+   void Init()
+   {
+   }
+
+   virtual void Clear(int period)
+   {
+      ResetLastError();
+      string id = _labelId + TimeToString(Time[period]);
+      ObjectDelete(id);
+   }
+
+   virtual void Set(int period)
+   {
+      double price;
+      if (!_price.GetValue(period, price))
+         return;
+      
+      ResetLastError();
+      string id = _labelId + TimeToString(Time[period]);
+      if (ObjectFind(0, id) == -1)
+      {
+         if (!ObjectCreate(0, id, OBJ_TEXT, 0, Time[period], price))
+         {
+            Print(__FUNCTION__, ". Error: ", GetLastError());
+            return ;
+         }
+         ObjectSetString(0, id, OBJPROP_FONT, "Arial");
+         ObjectSetInteger(0, id, OBJPROP_FONTSIZE, _fontSize);
+         ObjectSetInteger(0, id, OBJPROP_COLOR, _color);
+         ObjectSetInteger(0, id, OBJPROP_ANCHOR, _anchor);
+      }
+      ObjectSetInteger(0, id, OBJPROP_TIME, Time[period]);
+      ObjectSetDouble(0, id, OBJPROP_PRICE1, price);
+      ObjectSetString(0, id, OBJPROP_TEXT, _text);
+   }
+};
 
 class MainChartAlertSignalLine : public IAlertSignalOutput
 {
@@ -248,6 +319,14 @@ public:
       }
       delete _signalOutput;
       _condition.Release();
+   }
+
+   int RegisterText(int id, string name, string labelId, string text, color clr, IStream* price, int fontSize, ENUM_ANCHOR_POINT anchor)
+   {
+      _message = name;
+      MainChartAlertSignalText* signalOutput = new MainChartAlertSignalText(fontSize);
+      _signalOutput = signalOutput;
+      return signalOutput.Register(id, labelId, text, clr, price, anchor);
    }
 
    int RegisterArrows(int id, string name, string labelId, int code, color clr, IStream* price, int fontSize)

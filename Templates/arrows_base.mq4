@@ -19,7 +19,8 @@ enum DisplayType
    Arrows, // Arrows
    ArrowsOnMainChart, // Arrows on main chart
    Candles, // Candles color
-   Lines // Lines
+   Lines, // Lines
+   Text // Label
 };
 input SingalMode signal_mode = SingalModeLive; // Signal mode
 input bool filter_consecutive = false; // Filter consecutive alerts
@@ -78,7 +79,7 @@ int last_signal_side;
 datetime current_signal_date;
 int current_signal_side;
 
-int CreateAlert(int id, ICondition* condition, IAction* action, int code, string message, color clr, PriceType priceType, int sign)
+int CreateAlert(int id, ICondition* condition, IAction* action, int code, string codeStr, string message, color clr, PriceType priceType, int sign)
 {
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + 1);
@@ -87,7 +88,9 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
       condition = upSwitch;
    #endif
    conditions[size] = new AlertSignal(condition, action, _Symbol, (ENUM_TIMEFRAMES)_Period, mainSignaler, signal_mode == SingalModeOnBarClose);
-   condition.Release();
+   #ifdef ACT_ON_SWITCH
+      condition.Release();
+   #endif
       
    switch (Type)
    {
@@ -115,6 +118,15 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
             id = conditions[size].RegisterLines(id, message, IndicatorObjPrefix + IntegerToString(id), clr);
          }
          break;
+      case Text:
+         {
+            SimplePriceStream* highStream = new SimplePriceStream(_Symbol, (ENUM_TIMEFRAMES)_Period, priceType);
+            highStream.SetShift(shift_arrows_pips * sign);
+            static int lastId = 1;
+            id = conditions[size].RegisterArrows(id, message, IndicatorObjPrefix + IntegerToString(lastId++), codeStr, clr, highStream, font_size);
+            highStream.Release();
+         }
+         break;
    }
    return id;
 }
@@ -129,7 +141,7 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
       upCondition.Add(new LastSignalNotCondition(1), false);
       upAction = new SetLastSignalAction(1);
    }
-   id = CreateAlert(id, upCondition, upAction, 217, "Up " + TimeframeToString(tf), upColor, PriceLow, -1);
+   id = CreateAlert(id, upCondition, upAction, 217, "Up", "Up " + TimeframeToString(tf), upColor, PriceLow, -1);
    upCondition.Release();
    if (upAction != NULL)
    {
@@ -144,7 +156,7 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
       downCondition.Add(new LastSignalNotCondition(-1), false);
       downAction = new SetLastSignalAction(-1);
    }
-   id = CreateAlert(id, downCondition, downAction, 218, "Down " + TimeframeToString(tf), downColor, PriceHigh, 1);
+   id = CreateAlert(id, downCondition, downAction, 218, "Down", "Down " + TimeframeToString(tf), downColor, PriceHigh, 1);
    downCondition.Release();
    if (downAction != NULL)
    {
@@ -277,10 +289,18 @@ int deinit()
    return 0;
 }
 
-int start()
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
 {
-   int counted_bars = IndicatorCounted();
-   if (counted_bars <= 0 || counted_bars > Bars)
+   if (prev_calculated <= 0 || prev_calculated > rates_total)
    {
       //TODO: initialize your streams here
       //ArrayInitialize(ll, EMPTY_VALUE);
@@ -294,8 +314,25 @@ int start()
          item.Init();
       }
    }
+   bool timeSeries = ArrayGetAsSeries(time); 
+   bool openSeries = ArrayGetAsSeries(open); 
+   bool highSeries = ArrayGetAsSeries(high); 
+   bool lowSeries = ArrayGetAsSeries(low); 
+   bool closeSeries = ArrayGetAsSeries(close); 
+   bool tickVolumeSeries = ArrayGetAsSeries(tick_volume); 
+   ArraySetAsSeries(time, true);
+   ArraySetAsSeries(open, true);
+   ArraySetAsSeries(high, true);
+   ArraySetAsSeries(low, true);
+   ArraySetAsSeries(close, true);
+   ArraySetAsSeries(tick_volume, true);
+   double point = MarketInfo(_Symbol, MODE_POINT);
+   int digits = (int)MarketInfo(_Symbol, MODE_DIGITS);
+   int mult = digits == 3 || digits == 5 ? 10 : 1;
+   double pipSize = point * mult;
+
    int toSkip = 1;
-   for (int pos = MathMin(bars_limit, Bars - 1 - MathMax(counted_bars - 1, toSkip)); pos >= 0 && !IsStopped(); --pos)
+   for (int pos = MathMin(bars_limit, rates_total - 1 - MathMax(prev_calculated - 1, toSkip)); pos >= 0 && !IsStopped(); --pos)
    {
       if (customStream != NULL)
       {
@@ -313,5 +350,12 @@ int start()
          item.Update(pos);
       }
    } 
-   return 0;
+
+   ArraySetAsSeries(time, timeSeries);
+   ArraySetAsSeries(open, openSeries);
+   ArraySetAsSeries(high, highSeries);
+   ArraySetAsSeries(low, lowSeries);
+   ArraySetAsSeries(close, closeSeries);
+   ArraySetAsSeries(tick_volume, tickVolumeSeries);
+   return rates_total;
 }

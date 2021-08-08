@@ -176,3 +176,15 @@ True range stream.
 ## ATRStream
 
 Average true range stream
+
+## FixnanStream
+
+Stream equivalent to Pine Script fixnan
+
+## PivotHighStream
+
+Stream equivalent to Pine Script pivothigh
+
+## PivotLowStream
+
+Stream equivalent to Pine Script pivotlow

@@ -143,7 +143,11 @@ Sets value to a stream when condition is passed.
 
 ## IchimokuStream
 
-Ichimoku streams.
+Ichimoku streams. Returns nothing. Used for separate ichimoku streams.
+
+## IchimokuTenkanSenStream, IchimokuKijunSenStream, IchimokuSpanAStream, IchimokuSpanBStream
+
+Separate Ichimoku streams.
 
 ## RenkoStream
 

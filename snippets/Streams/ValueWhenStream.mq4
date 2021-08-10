@@ -1,4 +1,4 @@
-// Value when stream v2.0
+// Value when stream v2.1
 
 #ifndef ValueWhenStream_IMP
 #define ValueWhenStream_IMP
@@ -82,10 +82,9 @@ public:
    }
 };
 
-
 class ValueWhenSimpleStream : public AStream
 {
-   int _periods[];
+   datetime _periods[];
    double _values[];
    int _shift;
 public:
@@ -112,7 +111,7 @@ public:
       return id + 1;
    }
 
-   void Update(const int period, datetime date, bool condition, double val)
+   double Update(const int period, datetime date, bool condition, double val)
    {
       if (condition)
       {
@@ -138,6 +137,7 @@ public:
       {
          _stream[period] = _stream[period + 1];
       }
+      return _stream[period];
    }
 
    bool GetValue(const int period, double &val)

@@ -1,6 +1,6 @@
 // Lowest low stream v1.1
 
-#include <IStream.mq4>
+#include <AOnStream.mq4>
 
 class LowestLowStream : public AOnStream
 {

@@ -1,6 +1,6 @@
 #include <IStopLossStrategy.mq4>
 
-// ATR stop loss strategy v1.0
+// ATR stop loss strategy v1.1
 
 #ifndef ATRStopLossStrategy_IMP
 #define ATRStopLossStrategy_IMP
@@ -19,7 +19,7 @@ public:
       _timeframe = timeframe;
       _period = period;
       _multiplicator = multiplicator;
-      _isBuy = true;
+      _isBuy = isBuy;
    }
 
    virtual double GetValue(const int period, double entryPrice)

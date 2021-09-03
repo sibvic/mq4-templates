@@ -1,0 +1,5 @@
+enum CompareType
+{
+   CompareLessThan,
+   CompareMoreThan
+};

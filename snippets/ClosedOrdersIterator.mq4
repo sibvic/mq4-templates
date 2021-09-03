@@ -3,6 +3,7 @@
 #ifndef ClosedOrdersIterator_IMP
 #define ClosedOrdersIterator_IMP
 
+#include <enums/CompareType.mq4>
 #include <enums/OrderSide.mq4>
 
 class ClosedOrdersIterator

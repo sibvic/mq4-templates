@@ -4,12 +4,7 @@
 #ifndef OrdersIterator_IMP
 #define OrdersIterator_IMP
 
-enum CompareType
-{
-   CompareLessThan,
-   CompareMoreThan
-};
-
+#include <enums/CompareType.mq4>
 #include <enums/OrderSide.mq4>
 
 class OrdersIterator

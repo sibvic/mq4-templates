@@ -192,3 +192,7 @@ Stream equivalent to Pine Script pivothigh
 ## PivotLowStream
 
 Stream equivalent to Pine Script pivotlow
+
+## CumOnStream
+
+Calculates cumulative value on stream

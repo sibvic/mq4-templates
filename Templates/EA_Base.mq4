@@ -35,6 +35,7 @@ enum TradingMode
 };
 
 input string GeneralSection = ""; // == General ==
+input string symbols = "EURUSD,USDJPY"; // Symbols to trade
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
 input bool ecn_broker = false; // ECN Broker? 
@@ -890,16 +891,21 @@ int OnInit()
       }
    #endif
 
-   string error;
-   TradingController *controller = CreateController(_Symbol, trading_timeframe, trade_comment, error);
-   if (controller == NULL)
+   string toTrade[];
+   StringSplit(symbols, ',', toTrade);
+   for (int i = 0; i < ArraySize(toTrade); ++i)
    {
-      Print(error);
-      return INIT_FAILED;
+      string error;
+      TradingController *controller = CreateController(toTrade[i], trading_timeframe, trade_comment, error);
+      if (controller == NULL)
+      {
+         Print(error);
+         return INIT_FAILED;
+      }
+      int controllersCount = 0;
+      ArrayResize(controllers, controllersCount + 1);
+      controllers[controllersCount++] = controller;
    }
-   int controllersCount = 0;
-   ArrayResize(controllers, controllersCount + 1);
-   controllers[controllersCount++] = controller;
    
    #ifdef SHOW_ACCOUNT_STAT
       stats = new AccountStatistics();

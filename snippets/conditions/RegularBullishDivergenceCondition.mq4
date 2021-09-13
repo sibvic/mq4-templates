@@ -1,4 +1,4 @@
-// Regilar bullush divergence condition v1.3
+// Regilar bullush divergence condition v2.0
 
 #ifndef RegularBullishDivergenceCondition_IMP
 #define RegularBullishDivergenceCondition_IMP
@@ -12,21 +12,23 @@ class RegularBullishDivergenceCondition : public AConditionBase
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
-   IStream* _stream;
+   IStream* _data;
+   int _right;
 public:
-   RegularBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
+   RegularBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
       :AConditionBase("Regular bullish divergence")
    {
-      _stream = stream;
-      _stream.AddRef();
-      _indiCondition = new TroughCondition(stream, 2);
+      _right = right;
+      _data = stream;
+      _data.AddRef();
+      _indiCondition = new TroughCondition(stream, left, right);
       _price = new SimplePriceStream(symbol, timeframe, PriceLow);
-      _priceCondition = new TroughCondition(_price, 2);
+      _priceCondition = new TroughCondition(_price, left, right);
    }
 
    ~RegularBullishDivergenceCondition()
    {
-      _stream.Release();
+      _data.Release();
       _price.Release();
       delete _priceCondition;
       delete _indiCondition;
@@ -39,17 +41,17 @@ public:
          return false;
       }
       double trough, trough_l;
-      if (!_stream.GetValue(period, trough) || !_price.GetValue(period, trough_l))
+      if (!_data.GetValue(period + _right, trough) || !_price.GetValue(period + _right, trough_l))
       {
          return false;
       }
-      for (int i = period; i < 1000; ++i)
+      for (int i = period + 1; i < 1000; ++i)
       {
          if (_indiCondition.IsPass(i, 0) && _priceCondition.IsPass(i, 0))
          {
             double trough_prev, trough_l_prev;
-            return _stream.GetValue(i, trough_prev) 
-               && _price.GetValue(i, trough_l_prev)
+            return _data.GetValue(i + _right, trough_prev) 
+               && _price.GetValue(i + _right, trough_l_prev)
                && trough > trough_prev && trough_l < trough_l_prev;
          }
       }

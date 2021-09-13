@@ -1,4 +1,4 @@
-// Peak Condition v1.2
+// Peak Condition v2.0
 
 #include <conditions/ICondition.mq4>
 #include <../streams/IStream.mq4>
@@ -9,13 +9,15 @@
 class PeakCondition : public AConditionBase
 {
    IStream* _source;
-   int _bars;
+   int _left;
+   int _right;
 public:
-   PeakCondition(IStream* source, int bars)
+   PeakCondition(IStream* source, int left, int right)
    {
       _source = source;
       _source.AddRef();
-      _bars = bars;
+      _left = left;
+      _right = right;
    }
 
    ~PeakCondition()
@@ -26,14 +28,17 @@ public:
    virtual bool IsPass(const int period, const datetime date)
    {
       double centerValue;
-      if (!_source.GetValue(period + _bars, centerValue))
+      if (!_source.GetValue(period + _right, centerValue))
          return false;
 
-      for (int i = 0; i < _bars; ++i)
+      for (int i = 0; i < _left; ++i)
       {
          double leftValue;
-         if (!_source.GetValue(period + _bars + i + 1, leftValue) || leftValue > centerValue)
+         if (!_source.GetValue(period + _right + i + 1, leftValue) || leftValue > centerValue)
             return false;
+      }
+      for (int i = 0; i < _right; ++i)
+      {
          double rightValue;
          if (!_source.GetValue(period + i, rightValue) || rightValue > centerValue)
             return false;

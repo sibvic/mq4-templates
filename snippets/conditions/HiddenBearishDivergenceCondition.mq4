@@ -1,4 +1,4 @@
-// Regilar bearish divergence condition v1.0
+// Regilar bearish divergence condition v2.0
 
 #ifndef HiddenBearishDivergenceCondition_IMP
 #define HiddenBearishDivergenceCondition_IMP
@@ -14,14 +14,14 @@ class HiddenBearishDivergenceCondition : public AConditionBase
    SimplePriceStream* _price;
    IStream* _stream;
 public:
-   HiddenBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe)
+   HiddenBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
       :AConditionBase("Hidden bearish divergence")
    {
       _stream = stream;
       _stream.AddRef();
-      _indiCondition = new PeakCondition(stream, 2);
+      _indiCondition = new PeakCondition(stream, left, right);
       _price = new SimplePriceStream(symbol, timeframe, PriceHigh);
-      _priceCondition = new PeakCondition(_price, 2);
+      _priceCondition = new PeakCondition(_price, left, right);
    }
 
    ~HiddenBearishDivergenceCondition()

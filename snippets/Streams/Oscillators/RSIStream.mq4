@@ -1,5 +1,5 @@
-#include <../AOnStream.mq4>
-#include <../ChangeStream.mq4>
+#include <../AOnStream.mqh>
+#include <../ChangeStream.mqh>
 
 // RSI stream v1.0
 

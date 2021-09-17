@@ -18,7 +18,7 @@ input color up_color = Green; // Up color
 input color dn_color = Red; // Down color
 input color ne_color = Gray; // Neutral color
 
-#include <HeatMapValueCalculator.mq4>
+#include <HeatMapValueCalculator.mqh>
 
 IHeatMapValueCalculator* conditions[];
 
@@ -49,7 +49,7 @@ string GenerateIndicatorPrefix(const string target)
    return target;
 }
 
-#include <Conditions/ACondition.mq4>
+#include <Conditions/ACondition.mqh>
 
 class LongCondition : public ACondition
 {

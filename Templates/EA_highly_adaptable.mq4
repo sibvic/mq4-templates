@@ -40,7 +40,7 @@ input int price_shift = 10; // Price shift, pips
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
 input bool ecn_broker = false; // ECN Broker? 
 input TradingMode trigger_logic = TradingModeLive; // Trigger logic
-#include <Enums/PositionSizeType.mq4>
+#include <Enums/PositionSizeType.mqh>
 enum LogicDirection
 {
    DirectLogic, // Direct
@@ -114,9 +114,9 @@ enum TrailingType
    TrailingATR, // Use trailing with ATR start
    TrailingSLPercent, // Use trailing, in % of stop loss
 };
-#include <Enums/StopLossType.mq4>
-#include <Enums/StopLimitType.mq4>
-#include <Enums/MATypes.mq4>
+#include <Enums/StopLossType.mqh>
+#include <Enums/StopLimitType.mqh>
+#include <Enums/MATypes.mqh>
 enum TrailingTargetType
 {
    TrailingTargetStep, // Move each n pips
@@ -148,7 +148,7 @@ input double breakeven_level = 0; // Breakeven target
    input double net_stop_loss_value = 10; // Net stop loss value
 #endif
 
-#include <enums/TakeProfitType.mq4>
+#include <enums/TakeProfitType.mqh>
 #ifdef TAKE_PROFIT_FEATURE
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
@@ -160,7 +160,7 @@ input double breakeven_level = 0; // Breakeven target
    double take_profit_atr_multiplicator = 1;
 #endif
 
-#include <enums/DayOfWeek.mq4>
+#include <enums/DayOfWeek.mqh>
 input string OtherSection            = ""; // == Other ==
 input int magic_number        = 42; // Magic number
 input string trade_comment = ""; // Comment for orders
@@ -189,51 +189,51 @@ input string trade_comment = ""; // Comment for orders
 input bool print_log = false; // Print decisions into the log
 input string log_file = "log.csv"; // Log file name (empty for auto naming)
 
-#include <InstrumentInfo.mq4>
-#include <conditions/ActOnSwitchCondition.mq4>
-#include <conditions/DisabledCondition.mq4>
-#include <conditions/MinMarginCondition.mq4>
-#include <conditions/MaxSpreadCondition.mq4>
-#include <Streams/AStream.mq4>
-#include <Streams/PriceStream.mq4>
-#include <OrdersIterator.mq4>
-#include <TradingCalculator.mq4>
-#include <Order.mq4>
-#include <Actions/AAction.mq4>
-#include <Actions/CreateTrailingStreamAction.mq4>
-#include <Actions/PartialCloseOnProfitOrderAction.mq4>
-#include <Actions/CreateMartingaleAction.mq4>
-#include <Logic/ActionOnConditionController.mq4>
-#include <Logic/ActionOnConditionLogic.mq4>
-#include <Conditions/HitProfitCondition.mq4>
-#include <Conditions/PositionLimitHitCondition.mq4>
-#include <Actions/MoveNetStopLossAction.mq4>
-#include <Actions/MoveNetTakeProfitAction.mq4>
-#include <Actions/EntryAction.mq4>
-#include <MoneyManagement/functions.mq4>
-#include <TradingCommands.mq4>
-#include <OrderBuilder.mq4>
-#include <MarketOrderBuilder.mq4>
-#include <EntryStrategy.mq4>
-#include <Actions/MoveStopLossOnProfitOrderAction.mq4>
-#include <Conditions/NoCondition.mq4>
+#include <InstrumentInfo.mqh>
+#include <conditions/ActOnSwitchCondition.mqh>
+#include <conditions/DisabledCondition.mqh>
+#include <conditions/MinMarginCondition.mqh>
+#include <conditions/MaxSpreadCondition.mqh>
+#include <Streams/AStream.mqh>
+#include <Streams/PriceStream.mqh>
+#include <OrdersIterator.mqh>
+#include <TradingCalculator.mqh>
+#include <Order.mqh>
+#include <Actions/AAction.mqh>
+#include <Actions/CreateTrailingStreamAction.mqh>
+#include <Actions/PartialCloseOnProfitOrderAction.mqh>
+#include <Actions/CreateMartingaleAction.mqh>
+#include <Logic/ActionOnConditionController.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <Conditions/HitProfitCondition.mqh>
+#include <Conditions/PositionLimitHitCondition.mqh>
+#include <Actions/MoveNetStopLossAction.mqh>
+#include <Actions/MoveNetTakeProfitAction.mqh>
+#include <Actions/EntryAction.mqh>
+#include <MoneyManagement/functions.mqh>
+#include <TradingCommands.mqh>
+#include <OrderBuilder.mqh>
+#include <MarketOrderBuilder.mqh>
+#include <EntryStrategy.mqh>
+#include <Actions/MoveStopLossOnProfitOrderAction.mqh>
+#include <Conditions/NoCondition.mqh>
 
 #ifdef SHOW_ACCOUNT_STAT
-#include <AccountStatistics.mq4>
+#include <AccountStatistics.mqh>
    AccountStatistics *stats;
 #endif
 
-#include <actions/CreateTrailingAction.mq4>
-#include <actions/CreateATRTrailingAction.mq4>
-#include <actions/CloseAllAction.mq4>
-#include <actions/CloseSideAction.mq4>
-#include <streams/averages/AveragesStreamFactory.mq4>
+#include <actions/CreateTrailingAction.mqh>
+#include <actions/CreateATRTrailingAction.mqh>
+#include <actions/CloseAllAction.mqh>
+#include <actions/CloseSideAction.mqh>
+#include <streams/averages/AveragesStreamFactory.mqh>
 
-#include <conditions/ACondition.mq4>
-#include <conditions/TradingTimeCondition.mq4>
-#include <conditions/AndCondition.mq4>
-#include <conditions/OrCondition.mq4>
-#include <conditions/NotCondition.mq4>
+#include <conditions/ACondition.mqh>
+#include <conditions/TradingTimeCondition.mqh>
+#include <conditions/AndCondition.mqh>
+#include <conditions/OrCondition.mqh>
+#include <conditions/NotCondition.mqh>
 
 #ifdef CUSTOM_SL
 class CustomStopLossStrategy : public IStopLossStrategy

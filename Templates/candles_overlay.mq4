@@ -9,7 +9,7 @@
 input color Top_color = Green; // Top Color
 input color Bottom_color = Red; // Bottom Color
 
-#include <streams/CandleStreams.mq4>
+#include <streams/CandleStreams.mqh>
 
 CandleStreams Top;
 CandleStreams Bottom;

@@ -6,8 +6,8 @@ Shows account statistics on the chart: date, balance, equity, profit, leverage, 
 
 Usage:
 
-    #include <InstrumentInfo.mq4>
-    #include <OrdersIterator.mq4>
+    #include <InstrumentInfo.mqh>
+    #include <OrdersIterator.mqh>
     AccountStatistics* stats;
     void OnInit()
     {

@@ -1,4 +1,4 @@
-#include <../AOnStream.mq4>
+#include <../AOnStream.mqh>
 
 // WMA on stream v1.1
 

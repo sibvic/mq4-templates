@@ -1,7 +1,7 @@
 // Zero lag TEMA on stream v1.0
 
-#include <TemaOnStream.mq4>
-#include <../AStreamBase.mq4>
+#include <TemaOnStream.mqh>
+#include <../AStreamBase.mqh>
 
 #ifndef ZeroLagTEMAOnStream_IMP
 #define ZeroLagTEMAOnStream_IMP

@@ -1,4 +1,4 @@
-#include <../AOnStream.mq4>
+#include <../AOnStream.mqh>
 
 // LWMA on stream v1.0
 

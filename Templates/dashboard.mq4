@@ -55,14 +55,14 @@ input int cell_width                    = 80; // Cell width
 input int cell_height                   = 30; // Cell height
 input bool alert_on_close               = false; // Alert on bar close
 
-#include <Signaler.mq4>
+#include <Signaler.mqh>
 
 #define MAX_LOOPBACK 500
 
 string   WindowName;
 int      WindowNumber;
 
-#include <conditions/ACondition.mq4>
+#include <conditions/ACondition.mqh>
 
 class UpCondition : public ACondition
 {
@@ -101,10 +101,10 @@ public:
    int GetNext() { _current += _shift; return _current; }
 };
 
-#include <Grid/EmptyCell.mq4>
-#include <Grid/LabelCell.mq4>
-#include <Grid/Grid.mq4>
-#include <Grid/TrendValueCellFactory.mq4>
+#include <Grid/EmptyCell.mqh>
+#include <Grid/LabelCell.mqh>
+#include <Grid/Grid.mqh>
+#include <Grid/TrendValueCellFactory.mqh>
 
 string IndicatorObjPrefix;
 
@@ -135,7 +135,7 @@ string GenerateIndicatorPrefix(const string target)
 
 Grid *grid;
 
-#include <Grid/GridBuilder.mq4>
+#include <Grid/GridBuilder.mqh>
 
 void OnChartEvent(const int id,
                   const long &lparam,

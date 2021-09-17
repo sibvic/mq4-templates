@@ -31,15 +31,15 @@ input color down_color = Red; // Down color
 input int font_size = 12; // Font size
 input int bars_limit = 1000; // Bars limit
 
-#include <conditions/ACondition.mq4>
-#include <conditions/ActOnSwitchCondition.mq4>
-#include <conditions/AndCondition.mq4>
-#include <Streams/PriceStream.mq4>
-#include <signaler.mq4>
-#include <AlertSignal.mq4>
-#include <Streams/CandleStreams.mq4>
-#include <Streams/StreamWrapper.mq4>
-#include <Actions/AAction.mq4>
+#include <conditions/ACondition.mqh>
+#include <conditions/ActOnSwitchCondition.mqh>
+#include <conditions/AndCondition.mqh>
+#include <Streams/PriceStream.mqh>
+#include <signaler.mqh>
+#include <AlertSignal.mqh>
+#include <Streams/CandleStreams.mqh>
+#include <Streams/StreamWrapper.mqh>
+#include <Actions/AAction.mqh>
 
 class SetLastSignalAction : public AAction
 {

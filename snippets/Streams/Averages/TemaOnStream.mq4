@@ -1,5 +1,5 @@
-#include <EmaOnStream.mq4>
-#include <../AStreamBase.mq4>
+#include <EmaOnStream.mqh>
+#include <../AStreamBase.mqh>
 
 // TEMA on stream v1.0
 

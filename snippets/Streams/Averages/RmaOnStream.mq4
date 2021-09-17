@@ -1,4 +1,4 @@
-#include <../AOnStream.mq4>
+#include <../AOnStream.mqh>
 
 //RmaOnStream v1.0
 

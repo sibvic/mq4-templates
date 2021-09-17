@@ -11,9 +11,9 @@ input int magic_number = 42; // Magic number
 input int slippage = 3; // Slippage, points
 input bool ecn_broker = false; // ECN Broker?
 
-#include <TradingMonitor.mq4>
-#include <Logic/ActionOnConditionLogic.mq4>
-#include <Actions/AAction.mq4>
+#include <TradingMonitor.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <Actions/AAction.mqh>
 
 TradingMonitor tradingMonitor;
 ActionOnConditionLogic* actions;

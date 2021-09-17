@@ -45,9 +45,9 @@ public:
    int GetNext() { _current += _shift; return _current; }
 };
 
-#include <Grid/EmptyCell.mq4>
-#include <Grid/LabelCell.mq4>
-#include <Grid/Grid.mq4>
+#include <Grid/EmptyCell.mqh>
+#include <Grid/LabelCell.mqh>
+#include <Grid/Grid.mqh>
 
 class TextValueCell : public ICell
 {
@@ -91,7 +91,7 @@ public:
    }
 };
 
-#include <Grid/TextValueCellFactory.mq4>
+#include <Grid/TextValueCellFactory.mqh>
 
 string IndicatorObjPrefix;
 
@@ -122,7 +122,7 @@ string GenerateIndicatorPrefix(const string target)
 
 Grid *grid;
 
-#include <Grid/GridBuilder.mq4>
+#include <Grid/GridBuilder.mqh>
 
 int init()
 {

@@ -29,20 +29,20 @@ input color up_color = Blue; // Up color
 input color down_color = Red; // Down color
 input int font_size = 12; // Font size
 
-#include <conditions/ACondition.mq4>
-#include <conditions/ActOnSwitchCondition.mq4>
-#include <conditions/AndCondition.mq4>
-#include <conditions/RegularBullishDivergenceCondition.mq4>
-#include <conditions/HiddenBullishDivergenceCondition.mq4>
-#include <conditions/RegularBearishDivergenceCondition.mq4>
-#include <conditions/HiddenBearishDivergenceCondition.mq4>
-#include <Streams/PriceStream.mq4>
-#include <signaler.mq4>
-#include <AlertSignal.mq4>
-#include <Streams/CandleStreams.mq4>
-#include <Streams/StreamWrapper.mq4>
-#include <Streams/IndicatorOutputStream.mq4>
-#include <Actions/AAction.mq4>
+#include <conditions/ACondition.mqh>
+#include <conditions/ActOnSwitchCondition.mqh>
+#include <conditions/AndCondition.mqh>
+#include <conditions/RegularBullishDivergenceCondition.mqh>
+#include <conditions/HiddenBullishDivergenceCondition.mqh>
+#include <conditions/RegularBearishDivergenceCondition.mqh>
+#include <conditions/HiddenBearishDivergenceCondition.mqh>
+#include <Streams/PriceStream.mqh>
+#include <signaler.mqh>
+#include <AlertSignal.mqh>
+#include <Streams/CandleStreams.mqh>
+#include <Streams/StreamWrapper.mqh>
+#include <Streams/IndicatorOutputStream.mqh>
+#include <Actions/AAction.mqh>
 
 class SetLastSignalAction : public AAction
 {

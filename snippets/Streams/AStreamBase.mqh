@@ -1,6 +1,6 @@
 // Stream base v1.0
 
-#include <IStream.mqh>
+#include <Streams/IStream.mqh>
 
 #ifndef AStreamBase_IMP
 #define AStreamBase_IMP

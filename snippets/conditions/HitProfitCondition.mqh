@@ -1,5 +1,6 @@
-#include <AConditionBase.mqh>
-#include <../Order.mqh>
+#include <Conditions/AConditionBase.mqh>
+#include <Order.mqh>
+#include <InstrumentInfo.mqh>
 // Hit profit condition v3.0
 
 #ifndef HitProfitCondition_IMP

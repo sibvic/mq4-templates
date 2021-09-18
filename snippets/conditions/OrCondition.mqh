@@ -1,6 +1,6 @@
 // Or condition v4.1
 
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 
 #ifndef OrCondition_IMP
 #define OrCondition_IMP

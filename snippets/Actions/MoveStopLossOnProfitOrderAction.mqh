@@ -1,5 +1,10 @@
-#include <AOrderAction.mqh>
-#include <MoveToBreakevenAction.mqh>
+#include <Actions/AOrderAction.mqh>
+#include <Actions/MoveToBreakevenAction.mqh>
+#include <enums/StopLimitType.mqh>
+#include <TradingCalculator.mqh>
+#include <Signaler.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <Conditions/HitProfitCondition.mqh>
 
 // Move stop loss on profit order action v3.1
 

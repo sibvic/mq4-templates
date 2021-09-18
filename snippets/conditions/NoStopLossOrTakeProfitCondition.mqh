@@ -1,6 +1,6 @@
 // No stop loss or take profit condition v1.0
 
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 
 #ifndef NoStopLossOrTakeProfitCondition_IMP
 #define NoStopLossOrTakeProfitCondition_IMP

@@ -1,5 +1,5 @@
-#include <IStream.mqh>
-#include <../InstrumentInfo.mqh>
+#include <Streams/IStream.mqh>
+#include <InstrumentInfo.mqh>
 
 // Abstract stream v1.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates

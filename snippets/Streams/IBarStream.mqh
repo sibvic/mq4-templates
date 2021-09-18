@@ -1,6 +1,6 @@
 // IBarStream v2.1
 
-#include <IStream.mqh>
+#include <Streams/IStream.mqh>
 
 #ifndef IBarStream_IMP
 #define IBarStream_IMP

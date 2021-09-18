@@ -1,8 +1,8 @@
 // Trading time condition v3.2
 
-#include <AConditionBase.mqh>
-#include <NoCondition.mqh>
-#include <../enums/DayOfWeek.mqh>
+#include <Conditions/AConditionBase.mqh>
+#include <Conditions/NoCondition.mqh>
+#include <enums/DayOfWeek.mqh>
 
 #ifndef TradingTimeCondition_IMP
 #define TradingTimeCondition_IMP
@@ -176,8 +176,8 @@ private:
       }
       if (current_time.day_of_week == _weekStopDay)
       {
-         int current_t = TimeToInt(current_time);
-         return current_t < _weekStopTime;
+         int current_t_ = TimeToInt(current_time);
+         return current_t_ < _weekStopTime;
       }
 
       return true;

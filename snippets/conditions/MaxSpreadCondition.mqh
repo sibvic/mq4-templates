@@ -1,3 +1,4 @@
+#include <Conditions/ACondition.mqh>
 // Max spead condition v2.0
 #ifndef MaxSpreadCondition_IMP
 #define MaxSpreadCondition_IMP

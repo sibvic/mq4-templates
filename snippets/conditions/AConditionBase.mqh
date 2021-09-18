@@ -1,6 +1,6 @@
 // Abstract condition v1.1
 
-#include <ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 
 #ifndef AConditionBase_IMP
 #define AConditionBase_IMP

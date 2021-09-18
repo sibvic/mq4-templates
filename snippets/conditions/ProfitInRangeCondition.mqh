@@ -1,6 +1,6 @@
-#include <AConditionBase.mqh>
-#include <../Order.mqh>
-#include <../InstrumentInfo.mqh>
+#include <Conditions/AConditionBase.mqh>
+#include <Order.mqh>
+#include <InstrumentInfo.mqh>
 
 // Profit in range condition v2.0
 
@@ -47,8 +47,8 @@ public:
       }
       else if (orderType == OP_SELL)
       {
-         double profit = (OrderOpenPrice() - closePrice) / _instrument.GetPipSize();
-         return profit >= _minProfit && profit <= _maxProfit;
+         double profit2 = (OrderOpenPrice() - closePrice) / _instrument.GetPipSize();
+         return profit2 >= _minProfit && profit2 <= _maxProfit;
       }
       return false;
    }

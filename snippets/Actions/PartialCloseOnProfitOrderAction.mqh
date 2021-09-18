@@ -1,8 +1,9 @@
-#include <PartialCloseOrderAction.mqh>
-#include <AOrderAction.mqh>
-#include <../Logic/ActionOnConditionLogic.mqh>
-#include <../TradingCalculator.mqh>
-#include <../Signaler.mqh>
+#include <Actions/PartialCloseOrderAction.mqh>
+#include <Actions/AOrderAction.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <TradingCalculator.mqh>
+#include <Signaler.mqh>
+#include <Conditions/HitProfitCondition.mqh>
 // v1.3
 
 class PartialCloseOnProfitOrderAction : public AOrderAction
@@ -13,10 +14,12 @@ class PartialCloseOnProfitOrderAction : public AOrderAction
    TradingCalculator *_calculator;
    Signaler *_signaler;
    ActionOnConditionLogic* _actions;
+   int _slippagePoints;
 public:
    PartialCloseOnProfitOrderAction(const StopLimitType triggerType, const double trigger,
-      const double toClose, Signaler *signaler, ActionOnConditionLogic* actions)
+      const double toClose, Signaler *signaler, ActionOnConditionLogic* actions, int slippagePoints)
    {
+      _slippagePoints = slippagePoints;
       _calculator = NULL;
       _signaler = signaler;
       _triggerType = triggerType;
@@ -63,7 +66,7 @@ public:
       IOrder *order = new OrderByTicketId(_currentTicket);
       HitProfitCondition* condition = new HitProfitCondition();
       condition.Set(order, triggerValue);
-      IAction* action = new PartialCloseOrderAction(order, _calculator.NormalizeLots(OrderLots() * _toClose / 100.0), slippage_points);
+      IAction* action = new PartialCloseOrderAction(order, _calculator.NormalizeLots(OrderLots() * _toClose / 100.0), _slippagePoints);
       order.Release();
       _actions.AddActionOnCondition(action, condition);
       condition.Release();

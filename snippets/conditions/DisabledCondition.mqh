@@ -1,6 +1,6 @@
 // Disabled condition v3.0
 
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 
 #ifndef DisabledCondition_IMP
 #define DisabledCondition_IMP

@@ -1,7 +1,7 @@
 
-#include <AConditionBase.mqh>
-#include <../enums/OrderSide.mqh>
-#include <../OrdersIterator.mqh>
+#include <Conditions/AConditionBase.mqh>
+#include <enums/OrderSide.mqh>
+#include <OrdersIterator.mqh>
 
 // Position limit hit condition v1.0
 

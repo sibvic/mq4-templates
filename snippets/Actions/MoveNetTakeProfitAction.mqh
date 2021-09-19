@@ -1,6 +1,7 @@
 // Move net take profit action v 2.1
-#include <../TradingCalculator.mqh>
-#include <../TradingCommands.mqh>
+#include <TradingCalculator.mqh>
+#include <TradingCommands.mqh>
+#include <Actions/AAction.mqh>
 
 #ifndef MoveNetTakeProfitAction_IMP
 

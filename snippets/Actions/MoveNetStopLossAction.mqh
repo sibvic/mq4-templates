@@ -1,6 +1,7 @@
 // Move net stop loss action v 2.0
-#include <../TradingCalculator.mqh>
-#include <../TradingCommands.mqh>
+#include <TradingCalculator.mqh>
+#include <TradingCommands.mqh>
+#include <Actions/AAction.mqh>
 
 #ifndef MoveNetStopLossAction_IMP
 #define MoveNetStopLossAction_IMP

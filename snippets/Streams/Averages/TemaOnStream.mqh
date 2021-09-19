@@ -1,5 +1,5 @@
-#include <EmaOnStream.mqh>
-#include <../AStreamBase.mqh>
+#include <Streams/Averages/EmaOnStream.mqh>
+#include <Streams/AStreamBase.mqh>
 
 // TEMA on stream v1.0
 

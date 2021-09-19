@@ -1,4 +1,6 @@
-#include <IStopLossStrategy.mqh>
+#include <MoneyManagement/IStopLossStrategy.mqh>
+#include <MoneyManagement/ILotsProvider.mqh>
+#include <TradingCalculator.mqh>
 
 // Risks % of the balance v1.1
 

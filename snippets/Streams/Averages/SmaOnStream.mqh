@@ -1,4 +1,4 @@
-#include <../AOnStream.mqh>
+#include <Streams/AOnStream.mqh>
 
 // SMA on stream v1.0
 
@@ -40,11 +40,11 @@ public:
          double summ = 0;
          for(int i = 0; i < _length; i++) 
          {
-            double current;
-            if (!_source.GetValue(period + i, current))
+            double current_;
+            if (!_source.GetValue(period + i, current_))
                return false;
 
-           summ += current;
+           summ += current_;
          }
          _buffer[bufferIndex] = summ / _length;
       }

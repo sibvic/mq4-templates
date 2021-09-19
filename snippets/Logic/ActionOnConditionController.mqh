@@ -1,6 +1,6 @@
-#include <../conditions/ICondition.mqh>
-#include <../actions/IAction.mqh>
-#include <IActionOnConditionController.mqh>
+#include <conditions/ICondition.mqh>
+#include <actions/IAction.mqh>
+#include <Logic/IActionOnConditionController.mqh>
 
 // Action on condition v3.0
 

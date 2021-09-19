@@ -3,8 +3,8 @@
 
 #ifndef ACondition_IMP
 #define ACondition_IMP
-#include <AConditionBase.mqh>
-#include <../InstrumentInfo.mqh>
+#include <Conditions/AConditionBase.mqh>
+#include <InstrumentInfo.mqh>
 
 class ACondition : public AConditionBase
 {

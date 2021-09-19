@@ -1,4 +1,4 @@
-#include <GridTextCell.mqh>
+#include <Grid/GridTextCell.mqh>
 // Grid row v4.0
 
 #ifndef GridRow_IMP

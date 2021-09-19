@@ -1,4 +1,4 @@
-#include <AStream.mqh>
+#include <Streams/AStream.mqh>
 
 // Stream wrapper v1.0
 

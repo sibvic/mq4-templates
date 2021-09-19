@@ -1,6 +1,6 @@
 // Not condition v2.0
 
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 
 #ifndef NotCondition_IMP
 #define NotCondition_IMP

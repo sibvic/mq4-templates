@@ -1,7 +1,8 @@
-#include <AOrderAction.mqh>
-#include <TrailingStreamAction.mqh>
-#include <../Streams/IStream.mqh>
-#include <../Logic/ActionOnConditionLogic.mqh>
+#include <Actions/AOrderAction.mqh>
+#include <Actions/TrailingStreamAction.mqh>
+#include <Streams/IStream.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <Conditions/ProfitInRangeCondition.mqh>
 // v1.0
 
 #ifndef CreateTrailingStreamAction_IMP

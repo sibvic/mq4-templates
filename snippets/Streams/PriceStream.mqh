@@ -1,11 +1,12 @@
+#include <Streams/AStreamBase.mqh>
+#include <Streams/AStream.mqh>
+#include <Streams/IBarStream.mqh>
+#include <enums/PriceType.mqh>
+
 // Price stream v2.0
 
 #ifndef PriceStream_IMP
 #define PriceStream_IMP
-#include <AStreamBase.mqh>
-#include <AStream.mqh>
-#include <IBarStream.mqh>
-#include <../enums/PriceType.mqh>
 
 class PriceStream : public AStreamBase
 {
@@ -70,55 +71,55 @@ public:
             break;
          case PriceTypical:
             {
-               double open, high, low, close;
-               if (!_source.GetValues(period, open, high, low, close))
+               double open1, high1, low1, close1;
+               if (!_source.GetValues(period, open1, high1, low1, close1))
                {
                   return false;
                }
-               val = (high + low + close) / 3.0;
+               val = (high1 + low1 + close1) / 3.0;
             }
             break;
          case PriceWeighted:
             {
-               double open, high, low, close;
-               if (!_source.GetValues(period, open, high, low, close))
+               double open2, high2, low2, close2;
+               if (!_source.GetValues(period, open2, high2, low2, close2))
                {
                   return false;
                }
-               val = (high + low + close * 2) / 4.0;
+               val = (high2 + low2 + close2 * 2) / 4.0;
             }
             break;
          case PriceMedianBody:
             {
-               double open, close;
-               if (!_source.GetOpenClose(period, open, close))
+               double open3, close3;
+               if (!_source.GetOpenClose(period, open3, close3))
                {
                   return false;
                }
-               val = (open + close) / 2.0;
+               val = (open3 + close3) / 2.0;
             }
             break;
          case PriceAverage:
             {
-               double open, high, low, close;
-               if (!_source.GetValues(period, open, high, low, close))
+               double open4, high4, low4, close4;
+               if (!_source.GetValues(period, open4, high4, low4, close4))
                {
                   return false;
                }
-               val = (high + low + close + open) / 4.0;
+               val = (high4 + low4 + close4 + open4) / 4.0;
             }
             break;
          case PriceTrendBiased:
             {
-               double open, high, low, close;
-               if (!_source.GetValues(period, open, high, low, close))
+               double open5, high5, low5, close5;
+               if (!_source.GetValues(period, open5, high5, low5, close5))
                {
                   return false;
                }
-               if (open > close)
-                  val = (high + close) / 2.0;
+               if (open5 > close5)
+                  val = (high5 + close5) / 2.0;
                else
-                  val = (low + close) / 2.0;
+                  val = (low5 + close5) / 2.0;
             }
             break;
          // case PriceVolume:

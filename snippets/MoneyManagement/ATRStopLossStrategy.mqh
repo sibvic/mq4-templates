@@ -1,4 +1,4 @@
-#include <IStopLossStrategy.mqh>
+#include <MoneyManagement/IStopLossStrategy.mqh>
 
 // ATR stop loss strategy v1.1
 

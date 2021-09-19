@@ -144,29 +144,9 @@ public:
          case PositionSizeEquity:
             return GetLotsForMoney(AccountEquity() * lotsValue / 100.0);
          case PositionSizeRiskBalance:
-         {
-            double affordableLoss = AccountBalance() * lotsValue / 100.0;
-            double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
-            double tickSize = _symbol.GetTickSize();
-            double possibleLoss = unitCost * stopDistance / tickSize;
-            if (possibleLoss <= 0.01)
-            {
-               return 0;
-            }
-            return _symbol.NormalizeLots(affordableLoss / possibleLoss);
-         }
+            return GetPositionSizeRiskBalance(lotsType, lotsValue, stopDistance);
          case PositionSizeRisk:
-         {
-            double affordableLoss = AccountEquity() * lotsValue / 100.0;
-            double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
-            double tickSize = _symbol.GetTickSize();
-            double possibleLoss = unitCost * stopDistance / tickSize;
-            if (possibleLoss <= 0.01)
-            {
-               return 0;
-            }
-            return _symbol.NormalizeLots(affordableLoss / possibleLoss);
-         }
+            return GetPositionSizeRisk(lotsType, lotsValue, stopDistance);
          case PositionSizeRiskCurrency:
          {
             double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
@@ -208,6 +188,30 @@ public:
    }
 
 private:
+   double GetPositionSizeRisk(const PositionSizeType lotsType, const double lotsValue, const double stopDistance)
+   {
+      double affordableLoss = AccountEquity() * lotsValue / 100.0;
+      double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
+      double tickSize = _symbol.GetTickSize();
+      double possibleLoss = unitCost * stopDistance / tickSize;
+      if (possibleLoss <= 0.01)
+      {
+         return 0;
+      }
+      return _symbol.NormalizeLots(affordableLoss / possibleLoss);
+   }
+   double GetPositionSizeRiskBalance(const PositionSizeType lotsType, const double lotsValue, const double stopDistance)
+   {
+      double affordableLoss = AccountBalance() * lotsValue / 100.0;
+      double unitCost = MarketInfo(_symbol.GetSymbol(), MODE_TICKVALUE);
+      double tickSize = _symbol.GetTickSize();
+      double possibleLoss = unitCost * stopDistance / tickSize;
+      if (possibleLoss <= 0.01)
+      {
+         return 0;
+      }
+      return _symbol.NormalizeLots(affordableLoss / possibleLoss);
+   }
    bool IsContractLotsValid(const double lots, string &error)
    {
       double minVolume = _symbol.GetMinLots();

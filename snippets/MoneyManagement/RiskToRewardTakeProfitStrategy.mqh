@@ -1,6 +1,6 @@
 // Risk to reward take profit strategy v1.1
 
-#include <ITakeProfitStrategy.mqh>
+#include <MoneyManagement/ITakeProfitStrategy.mqh>
 
 #ifndef RiskToRewardTakeProfitStrategy_IMP
 #define RiskToRewardTakeProfitStrategy_IMP

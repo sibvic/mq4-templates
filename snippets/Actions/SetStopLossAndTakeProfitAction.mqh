@@ -1,7 +1,7 @@
 // Set stop loss and/or take profit action v2.0
 
-#include <AAction.mqh>
-#include <../TradingCommands.mqh>
+#include <Actions/AAction.mqh>
+#include <TradingCommands.mqh>
 
 #ifndef SetStopLossAndTakeProfitAction_IMP
 #define SetStopLossAndTakeProfitAction_IMP

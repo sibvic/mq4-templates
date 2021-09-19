@@ -1,4 +1,8 @@
 // Risk lots provider v2.2
+#include <MoneyManagement/ILotsProvider.mqh>
+#include <MoneyManagement/IStopLossStrategy.mqh>
+#include <enums/PositionSizeType.mqh>
+#include <TradingCalculator.mqh>
 
 #ifndef RiskLotsProvider_IMP
 #define RiskLotsProvider_IMP

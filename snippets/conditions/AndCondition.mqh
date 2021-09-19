@@ -1,5 +1,5 @@
 // And condition v4.1
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 #ifndef AndCondition_IMP
 #define AndCondition_IMP
 class AndCondition : public AConditionBase

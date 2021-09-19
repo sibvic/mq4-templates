@@ -1,3 +1,9 @@
+#include <Order.mqh>
+#include <Actions/AAction.mqh>
+#include <InstrumentInfo.mqh>
+#include <TradingCommands.mqh>
+#include <Streams/IStream.mqh>
+
 // Trailiong stream action v1.0
 
 class TrailingStreamAction : public AAction

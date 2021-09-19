@@ -1,6 +1,6 @@
 // No condition v3.0
 
-#include <AConditionBase.mqh>
+#include <Conditions/AConditionBase.mqh>
 
 #ifndef NoCondition_IMP
 #define NoCondition_IMP

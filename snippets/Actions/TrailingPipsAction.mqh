@@ -1,7 +1,7 @@
-#include <AAction.mqh>
-#include <../Order.mqh>
-#include <../TradingCommands.mqh>
-#include <../InstrumentInfo.mqh>
+#include <Actions/AAction.mqh>
+#include <Order.mqh>
+#include <TradingCommands.mqh>
+#include <InstrumentInfo.mqh>
 
 // Trailing action v3.2
 

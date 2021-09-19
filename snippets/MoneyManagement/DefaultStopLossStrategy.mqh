@@ -1,3 +1,6 @@
+#include <TradingCalculator.mqh>
+#include <MoneyManagement/IStopLossStrategy.mqh>
+
 // Default stop loss stream v2.1
 
 #ifndef DefaultStopLossStrategy_IMP

@@ -1,16 +1,16 @@
 // Averages stream factory v1.0
 
-#include <../../enums/MATypes.mqh>
-#include <../IStream.mqh>
-#include <SmaOnStream.mqh>
-#include <EmaOnStream.mqh>
-#include <TemaOnStream.mqh>
-#include <LwmaOnStream.mqh>
-#include <VwmaOnStream.mqh>
-#include <RmaOnStream.mqh>
-#include <WMAOnStream.mqh>
-#include <ZeroLagTEMAOnStream.mqh>
-#include <ZeroLagMAOnStream.mqh>
+#include <enums/MATypes.mqh>
+#include <Streams/IStream.mqh>
+#include <Streams/Averages/SmaOnStream.mqh>
+#include <Streams/Averages/EmaOnStream.mqh>
+#include <Streams/Averages/TemaOnStream.mqh>
+#include <Streams/Averages/LwmaOnStream.mqh>
+#include <Streams/Averages/VwmaOnStream.mqh>
+#include <Streams/Averages/RmaOnStream.mqh>
+#include <Streams/Averages/WMAOnStream.mqh>
+#include <Streams/Averages/ZeroLagTEMAOnStream.mqh>
+#include <Streams/Averages/ZeroLagMAOnStream.mqh>
 
 #ifndef AveragesStreamFactory_IMP
 #define AveragesStreamFactory_IMP

@@ -593,6 +593,11 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
    #endif
 
    TradingCalculator* tradingCalculator = TradingCalculator::Create(symbol);
+   if (tradingCalculator == NULL)
+   {
+      error = "Unknown symbol: " + symbol;
+      return NULL;
+   }
    if (!tradingCalculator.IsLotsValid(lots_value, lots_type, error))
    {
       #ifdef TRADING_TIME_FEATURE

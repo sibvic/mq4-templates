@@ -1,4 +1,4 @@
-#include <../AOnStream.mqh>
+#include <Streams/AOnStream.mqh>
 
 #ifndef VwmaOnStream_IMP
 #define VwmaOnStream_IMP

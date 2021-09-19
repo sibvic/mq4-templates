@@ -1,6 +1,6 @@
-#include <../MoneyManagement/IMoneyManagementStrategy.mqh>
-#include <../EntryStrategy.mqh>
-#include <../OrderHandlers.mqh>
+#include <MoneyManagement/IMoneyManagementStrategy.mqh>
+#include <EntryStrategy.mqh>
+#include <OrderHandlers.mqh>
 
 // Entry action v1.1
 

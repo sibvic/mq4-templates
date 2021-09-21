@@ -1,4 +1,4 @@
-#include <AStream.mqh>
+#include <Streams/AStream.mqh>
 
 // Colored stream v3.2
 

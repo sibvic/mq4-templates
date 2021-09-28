@@ -1,6 +1,6 @@
-// Lowest low stream v1.1
+// Lowest low stream v1.2
 
-#include <AOnStream.mqh>
+#include <Streams/AOnStream.mqh>
 
 class LowestLowStream : public AOnStream
 {
@@ -9,6 +9,7 @@ public:
    LowestLowStream(IStream* source, int loopback)
       :AOnStream(source)
    {
+      _loopback = loopback;
    }
 
    bool GetValue(const int period, double &val)

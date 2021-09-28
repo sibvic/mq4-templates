@@ -1,5 +1,5 @@
-#include <AOnStream.mqh>
-// Highest high stream v1.1
+#include <Streams/AOnStream.mqh>
+// Highest high stream v1.2
 
 class HighestHighStream : public AOnStream
 {
@@ -8,6 +8,7 @@ public:
    HighestHighStream(IStream* source, int loopback)
       :AOnStream(source)
    {
+      _loopback = loopback;
    }
 
    bool GetValue(const int period, double &val)

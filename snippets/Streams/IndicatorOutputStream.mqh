@@ -1,4 +1,4 @@
-#include <AStream.mqh>
+#include <Streams/AStream.mqh>
 
 // IndicatorOutputStream v3.0
 class IndicatorOutputStream : public AStream

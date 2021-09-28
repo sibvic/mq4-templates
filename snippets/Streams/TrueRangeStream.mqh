@@ -1,6 +1,6 @@
 // True range stream v1.0
 
-#include <AStream.mqh>
+#include <Streams/AStream.mqh>
 
 #ifndef TrueRangeStream_IMP
 #define TrueRangeStream_IMP

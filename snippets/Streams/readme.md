@@ -196,3 +196,7 @@ Stream equivalent to Pine Script pivotlow
 ## CumOnStream
 
 Calculates cumulative value on stream
+
+## SumOnStream
+
+Summ on stream

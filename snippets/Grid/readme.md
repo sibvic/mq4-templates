@@ -6,6 +6,10 @@ Shows trend.
 
 Interface for a cell
 
+## ACell
+
+Base class for cells
+
 ## ICellFactory
 
 Interface for a cell factory

@@ -1,19 +1,17 @@
-#include <../conditions/ICondition.mqh>
-#include <../Signaler.mqh>
-#include <../functions.mqh>
-#include <IValueFormatter.mqh>
-#include <ICell.mqh>
+#include <conditions/ICondition.mqh>
+#include <Signaler.mqh>
+#include <functions.mqh>
+#include <Grid/IValueFormatter.mqh>
+#include <Grid/ACell.mqh>
 
-// Trend value cell v5.2
+// Trend value cell v6.0
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
 
-class TrendValueCell : public ICell
+class TrendValueCell : public ACell
 {
    string _id;
-   int _x;
-   int _y;
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
    datetime _lastDatetime;
@@ -30,10 +28,10 @@ class TrendValueCell : public ICell
    OutputMode _outputMode;
    ENUM_BASE_CORNER _corner;
 public:
-   TrendValueCell(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, 
+   TrendValueCell(const string id, ENUM_BASE_CORNER corner, const string symbol, 
       const ENUM_TIMEFRAMES timeframe, int alertShift, 
       IValueFormatter* defaultValue, OutputMode outputMode)
-   { 
+   {
       _corner = corner;
       _outputMode = outputMode;
       _lastSignal = 0;
@@ -41,8 +39,6 @@ public:
       _signaler = new Signaler();
       _signaler.SetMessagePrefix(symbol + "/" + TimeframeToString(timeframe) + ": ");
       _id = id; 
-      _x = x; 
-      _y = y; 
       _symbol = symbol;
       _timeframe = timeframe;
       _defaultValue = defaultValue;
@@ -120,7 +116,7 @@ public:
       }
    }
 
-   virtual void Draw()
+   virtual void Measure(int& width, int& height)
    {
       datetime date = iTime(_symbol, _timeframe, _alertShift);
       for (int i = 0; i < ArraySize(_conditions); ++i)
@@ -129,7 +125,30 @@ public:
          {
             color textColor, bgColor;
             string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
-            DrawItem(text, textColor, bgColor);
+            MeasureItem(text, width, height);
+            return;
+         }
+      }
+      if (_historicalMode)
+      {
+         MeasureHistoricalValue(width, height);
+         return;
+      }
+      color textColor, bgColor;
+      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor);
+      MeasureItem(text, width, height);
+   }
+
+   virtual void Draw(int x, int y)
+   {
+      datetime date = iTime(_symbol, _timeframe, _alertShift);
+      for (int i = 0; i < ArraySize(_conditions); ++i)
+      {
+         if (_conditions[i].IsPass(_alertShift, date))
+         {
+            color textColor, bgColor;
+            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
+            DrawItem(x, y, text, textColor, bgColor);
             if (_signalFormatters[i] != NULL)
             {
                text = _signalFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
@@ -140,16 +159,16 @@ public:
       }
       if (_historicalMode)
       {
-         DrawHistoricalValue();
+         DrawHistoricalValue(x, y);
          return;
       }
       color textColor, bgColor;
       string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor);
-      DrawItem(text, textColor, bgColor);
+      DrawItem(x, y, text, textColor, bgColor);
    }
 
 private:
-   void DrawHistoricalValue()
+   void MeasureHistoricalValue(int& width, int& height)
    {
       for (int period = _alertShift + 1; period < 1000; ++period)
       {
@@ -160,19 +179,52 @@ private:
             {
                color textColor, bgColor;
                string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor);
-               DrawItem(text, textColor, bgColor);
+               MeasureItem(text, width, height);
                return;
             }
          }
       }
    }
-   void DrawItem(string text, color textColor, color bgColor)
+   void DrawHistoricalValue(int x, int y)
+   {
+      for (int period = _alertShift + 1; period < 1000; ++period)
+      {
+         datetime date = iTime(_symbol, _timeframe, period);
+         for (int i = 0; i < ArraySize(_conditions); ++i)
+         {
+            if (_conditions[i].IsPass(period, date))
+            {
+               color textColor, bgColor;
+               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor);
+               DrawItem(x, y, text, textColor, bgColor);
+               return;
+            }
+         }
+      }
+   }
+   void MeasureItem(string text, int& width, int& height)
    {
       string id = _id + "B";
       if (_outputMode == OutputLabels)
       {
          ObjectDelete(id);
-         ObjectMakeLabel(id, _x, _y, text, textColor, _corner, WindowNumber, "Arial", font_size); 
+         Measure(text, "Arial", font_size, width, height); 
+         return;
+      }
+      
+      TextSetFont("Arial", -font_size * 10);
+      TextGetSize(text, width, height);
+      width += 5;
+      height += 5;
+   }
+
+   void DrawItem(int x, int y, string text, color textColor, color bgColor)
+   {
+      string id = _id + "B";
+      if (_outputMode == OutputLabels)
+      {
+         ObjectDelete(id);
+         ObjectMakeLabel(id, x, y, text, textColor, _corner, WindowNumber, "Arial", font_size); 
       }
       else
       {
@@ -183,18 +235,20 @@ private:
          }
          
          ObjectSet(id, OBJPROP_CORNER, _corner);
-         ObjectSet(id, OBJPROP_XDISTANCE, _x);
-         ObjectSet(id, OBJPROP_YDISTANCE, _y);
+         ObjectSet(id, OBJPROP_XDISTANCE, x);
+         ObjectSet(id, OBJPROP_YDISTANCE, y);
          ObjectSetString(0, id, OBJPROP_FONT, "Arial");
          ObjectSetString(0, id, OBJPROP_TEXT, text);
          ObjectSetInteger(0, id, OBJPROP_COLOR, textColor);
          ObjectSetInteger(0, id, OBJPROP_BGCOLOR, bgColor);
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, font_size);
          TextSetFont("Arial", -font_size * 10);
-         int width, height;
-         TextGetSize(text, width, height);
-         ObjectSetInteger(0, id, OBJPROP_XSIZE, MathMax(cell_width, width + 5));
-         ObjectSetInteger(0, id, OBJPROP_YSIZE, height + 5);
+         int w, h;
+         TextGetSize(text, w, h);
+         w += 5;
+         h += 5;
+         ObjectSetInteger(0, id, OBJPROP_XSIZE, w);
+         ObjectSetInteger(0, id, OBJPROP_YSIZE, h);
       }
    }
 

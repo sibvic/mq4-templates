@@ -1,6 +1,7 @@
-// Grid v1.1
+#include <Grid/Row.mqh>
+#include <Grid/RowSize.mqh>
 
-#include <Row.mqh>
+// Grid v2.0
 
 #ifndef Grid_IMP
 #define Grid_IMP
@@ -31,13 +32,17 @@ public:
       return _rows[index];
    }
    
-   void Draw()
+   void Draw(int x, int y)
    {
+      RowSize* widths = MeasureColumens();
       int count = ArraySize(_rows);
       for (int i = 0; i < count; ++i)
       {
-         _rows[i].Draw();
+         int w, h;
+         _rows[i].Draw(x, y, widths);
+         y += widths.GetMaxHeight();
       }
+      delete widths;
    }
 
    void HandleButtonClicks()
@@ -47,6 +52,17 @@ public:
       {
          _rows[i].HandleButtonClicks();
       }
+   }
+private:
+   RowSize* MeasureColumens()
+   {
+      RowSize* widths = new RowSize();
+      int count = ArraySize(_rows);
+      for (int i = 0; i < count; ++i)
+      {
+         _rows[i].Measure(widths);
+      }
+      return widths;
    }
 };
 

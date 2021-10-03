@@ -1,29 +1,31 @@
-// Label cell v2.0
+#include <Grid/ACell.mqh>
 
-#include <ICell.mqh>
+// Label cell v3.0
 
 #ifndef LabelCell_IMP
 #define LabelCell_IMP
 
-class LabelCell : public ICell
+class LabelCell : public ACell
 {
    string _id;
    string _text; 
-   int _x; 
-   int _y;
    ENUM_BASE_CORNER _corner;
 public:
-   LabelCell(const string id, const string text, const int x, const int y, ENUM_BASE_CORNER corner) 
+   LabelCell(const string id, const string text, ENUM_BASE_CORNER corner) 
    { 
       _corner = corner;
       _id = id; 
       _text = text; 
-      _x = x; 
-      _y = y; 
-   } 
-   virtual void Draw() 
+   }
+
+   virtual void Measure(int& width, int& height)
+   {
+      Measure(_text, "Arial", font_size, width, height);
+   }
+
+   virtual void Draw(int x, int y) 
    { 
-      ObjectMakeLabel(_id, _x, _y, _text, Labels_Color, _corner, WindowNumber, "Arial", font_size); 
+      ObjectMakeLabel(_id, x, y, _text, Labels_Color, _corner, WindowNumber, "Arial", font_size); 
    }
 
    virtual void HandleButtonClicks()

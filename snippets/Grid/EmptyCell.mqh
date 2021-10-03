@@ -1,14 +1,19 @@
-// Empty cell v1.1
+#include <Grid/ICell.mqh>
 
-#include <ICell.mqh>
+// Empty cell v2.0
 
 #ifndef EmptyCell_IMP
 #define EmptyCell_IMP
 
-class EmptyCell : public ICell
+class EmptyCell : public ACell
 {
 public:
-   virtual void Draw() { }
+   virtual void Draw(int x, int y) { }
+   virtual void Measure(int& width, int& height)
+   {
+      width = 0;
+      height = 0;
+   }
    virtual void HandleButtonClicks() {}
 };
 

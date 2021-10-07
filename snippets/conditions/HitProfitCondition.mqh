@@ -1,5 +1,5 @@
 #include <Conditions/AConditionBase.mqh>
-#include <Order.mqh>
+#include <Order/IOrder.mqh>
 #include <InstrumentInfo.mqh>
 // Hit profit condition v3.0
 

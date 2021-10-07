@@ -1,6 +1,6 @@
 #include <Actions/AAction.mqh>
 #include <InstrumentInfo.mqh>
-#include <Order.mqh>
+#include <Order/IOrder.mqh>
 #include <TradingCommands.mqh>
 
 //Move to breakeven action v3.0

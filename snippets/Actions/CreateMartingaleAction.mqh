@@ -1,7 +1,12 @@
-#include <../MoneyManagement/ILotsProvider.mqh>
-#include <../Logic/ActionOnConditionLogic.mqh>
-#include <AOrderAction.mqh>
-// v2.0
+#include <MoneyManagement/ILotsProvider.mqh>
+#include <Logic/ActionOnConditionLogic.mqh>
+#include <enums/MartingaleLotSizingType.mqh>
+#include <Order/OrderByTicketId.mqh>
+#include <Actions/AOrderAction.mqh>
+#include <InstrumentInfo.mqh>
+#include <Conditions/ProfitInRangeCondition.mqh>
+#include <TradingCalculator.mqh>
+// v3.0
 
 class CustomLotsProvider : public ILotsProvider
 {
@@ -30,11 +35,13 @@ class CreateMartingaleAction : public AOrderAction
    MartingaleLotSizingType _lotsSizingType;
    CustomLotsProvider* _lots;
    bool _inProfit;
+   int _magicNumber;
 public:
    CreateMartingaleAction(CustomLotsProvider* lots, MartingaleLotSizingType lotsSizingType, double lotsValue, 
       double martingaleStepPips, IAction* longAction, IAction* shortAction, 
-      int maxLongPositions, int maxShortPositions, ActionOnConditionLogic* actions, bool inProfit)
+      int maxLongPositions, int maxShortPositions, ActionOnConditionLogic* actions, bool inProfit, int magicNumber)
    {
+      _magicNumber = magicNumber;
       _lots = lots;
       _lotsValue = lotsValue;
       _lotsSizingType = lotsSizingType;
@@ -110,7 +117,7 @@ private:
    bool IsLimitHit()
    {
       OrdersIterator sideSpecificIterator();
-      sideSpecificIterator.WhenMagicNumber(magic_number).WhenTrade();
+      sideSpecificIterator.WhenMagicNumber(_magicNumber).WhenTrade();
       sideSpecificIterator.WhenSymbol(OrderSymbol());
       if (TradingCalculator::IsBuyOrder())
       {
@@ -119,7 +126,6 @@ private:
          return side_positions >= _maxLongPositions;
       }
       sideSpecificIterator.WhenSide(SellSide);
-      int side_positions = sideSpecificIterator.Count();
-      return side_positions >= _maxShortPositions;
+      return sideSpecificIterator.Count() >= _maxShortPositions;
    }
 };

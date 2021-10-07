@@ -94,12 +94,8 @@ enum MartingaleType
    MartingaleOnLoss, // Open another position on loss
    MartingaleOnProfit // Open another position on profit
 };
-enum MartingaleLotSizingType
-{
-   MartingaleLotSizingNo, // No lot sizing
-   MartingaleLotSizingMultiplicator, // Using miltiplicator
-   MartingaleLotSizingAdd // Addition
-};
+#include <enums/MartingaleLotSizingType.mqh>
+
 enum MartingaleStepSizeType
 {
    MartingaleStepSizePips, // Pips
@@ -249,7 +245,7 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 
 #include <OrdersIterator.mqh>
 #include <TradingCalculator.mqh>
-#include <Order.mqh>
+#include <Order/IOrder.mqh>
 #include <Actions/AAction.mqh>
 #include <Actions/CreateTrailingStreamAction.mqh>
 #include <Actions/PartialCloseOnProfitOrderAction.mqh>

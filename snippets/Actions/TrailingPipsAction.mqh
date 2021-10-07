@@ -1,5 +1,5 @@
 #include <Actions/AAction.mqh>
-#include <Order.mqh>
+#include <Order/IOrder.mqh>
 #include <TradingCommands.mqh>
 #include <InstrumentInfo.mqh>
 

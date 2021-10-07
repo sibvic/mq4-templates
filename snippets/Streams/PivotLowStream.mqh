@@ -1,6 +1,6 @@
-// Pivot low stream v1.0
+// Pivot low stream v1.1
 
-#include <AOnStream.mqh>
+#include <Streams/AOnStream.mqh>
 
 class PivotLowStream : public AOnStream
 {
@@ -21,18 +21,17 @@ public:
       {
          return false;
       }
+      double value;
       for (int i = 0; i < _rightBars; ++i)
       {
-         double value;
          if (!_source.GetValue(period + i, value) || center > value)
          {
             return false;
          }
       }
-      for (int i = 0; i < _leftBars; ++i)
+      for (int ii = 0; ii < _leftBars; ++ii)
       {
-         double value;
-         if (!_source.GetValue(period + i + _rightBars, value) || center > value)
+         if (!_source.GetValue(period + ii + _rightBars, value) || center > value)
          {
             return false;
          }

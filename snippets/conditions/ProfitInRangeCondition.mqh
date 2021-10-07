@@ -1,6 +1,6 @@
 #include <Conditions/AConditionBase.mqh>
-#include <Order.mqh>
 #include <InstrumentInfo.mqh>
+#include <Order/IOrder.mqh>
 
 // Profit in range condition v2.0
 

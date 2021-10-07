@@ -1,9 +1,9 @@
-// Partial close of the order action v1.0
-
 #include <Actions/AAction.mqh>
-#include <Order.mqh>
+#include <Order/IOrder.mqh>
 #include <InstrumentInfo.mqh>
 #include <TradingCommands.mqh>
+
+// Partial close of the order action v1.0
 
 #ifndef PartialCloseOrderAction_IMP
 #define PartialCloseOrderAction_IMP

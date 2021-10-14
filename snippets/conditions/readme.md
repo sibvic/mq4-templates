@@ -253,3 +253,7 @@ Acts when new object appears with the specified id start.
 ## DayTradesLimitCondition
 
 Max trades at day condition.
+
+## StreamStreamCondition
+
+Condition between two streams (over/under/cross over/cross under)

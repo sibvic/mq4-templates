@@ -41,3 +41,7 @@ ALMA on stream
 ## WMAOnStream
 
 WMA on stream
+
+## LinearRegressionOnStream
+
+Linear regression on stream

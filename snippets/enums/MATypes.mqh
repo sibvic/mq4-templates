@@ -17,7 +17,7 @@ enum MATypes
    //ma_hull,    // Hull moving average
    //ma_tma,     // Triangular moving average
    //ma_sine,    // Sine weighted moving average
-   //ma_linr,    // Linear regression value
+   ma_linreg,    // Linear regression value
    //ma_ie2,     // IE/2
    //ma_nlma,    // Non lag moving average
    ma_zlma,    // Zero lag moving average

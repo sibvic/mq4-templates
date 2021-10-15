@@ -11,6 +11,7 @@
 #include <Streams/Averages/WMAOnStream.mqh>
 #include <Streams/Averages/ZeroLagTEMAOnStream.mqh>
 #include <Streams/Averages/ZeroLagMAOnStream.mqh>
+#include <Streams/Averages/LinearRegressionOnStream.mqh>
 
 #ifndef AveragesStreamFactory_IMP
 #define AveragesStreamFactory_IMP
@@ -30,6 +31,8 @@ public:
             return new WMAOnStream(source, length);
          case ma_ema:
             return new EMAOnStream(source, length);
+         case ma_linreg:
+            return new LinearRegressionOnStream(source, length);
          //case 2  : return(iDsema(price,length,r,instanceNo));
          // case 3  : return(iDema(price,length,r,instanceNo));
          case ma_tema:

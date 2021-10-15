@@ -204,3 +204,7 @@ Summ on stream
 ## AbsStream
 
 Returns absolute value of a source.
+
+## PriceVolumeTrendStream
+
+Returns price-volume trend value.

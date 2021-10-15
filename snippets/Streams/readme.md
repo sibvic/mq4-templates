@@ -200,3 +200,7 @@ Calculates cumulative value on stream
 ## SumOnStream
 
 Summ on stream
+
+## AbsStream
+
+Returns absolute value of a source.

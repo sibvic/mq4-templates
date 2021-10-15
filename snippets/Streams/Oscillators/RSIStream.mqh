@@ -1,5 +1,5 @@
-#include <../AOnStream.mqh>
-#include <../ChangeStream.mqh>
+#include <Streams/AOnStream.mqh>
+#include <Streams/ChangeStream.mqh>
 
 // RSI stream v1.0
 
@@ -31,11 +31,11 @@ public:
       double sumn = 0;
       double positive;
       double negative;
+      double diff;
       if (period == totalBars - 1 || _pos[period + 1])
       {
          for (int i = 0; i < _period; ++i)
          {
-            double diff;
             if (!_source.GetValue(period + i, diff))
             {
                return false;
@@ -54,7 +54,6 @@ public:
       }
       else
       {
-         double diff;
          if (!_source.GetValue(period, diff))
          {
             return false;

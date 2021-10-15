@@ -1,4 +1,4 @@
-#include <AStreamBase.mqh>
+#include <Streams/AStreamBase.mqh>
 // Custom stream v2.1
 
 #ifndef CustomStream_IMP
@@ -29,22 +29,24 @@ public:
    void SetValue(const int period, double value)
    {
       int totalBars = Size();
-      if (ArrayRange(_stream, 0) != totalBars) 
-      {
-         ArrayResize(_stream, totalBars);
-      }
+      EnsureStreamHasProperSize(totalBars);
       _stream[period] = value;
    }
 
    bool GetValue(const int period, double &val)
    {
       int totalBars = Size();
-      if (ArrayRange(_stream, 0) != totalBars) 
-      {
-         ArrayResize(_stream, totalBars);
-      }
+      EnsureStreamHasProperSize(totalBars);
       val = _stream[period];
       return _stream[period] != EMPTY_VALUE;
+   }
+private:
+   void EnsureStreamHasProperSize(int size)
+   {
+      if (ArrayRange(_stream, 0) != size) 
+      {
+         ArrayResize(_stream, size);
+      }
    }
 };
 

@@ -1,8 +1,6 @@
+#include <Streams/IStream.mqh>
+
 // StDev stream v1.1
-
-#include <IStream.mqh>
-
-#ifndef StDev_IMP
 
 class StDevStream : public IStream
 {
@@ -51,6 +49,3 @@ public:
          delete &this;
    }
 };
-
-#define StDev_IMP
-#endif

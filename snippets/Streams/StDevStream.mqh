@@ -1,26 +1,17 @@
-#include <Streams/IStream.mqh>
+#include <Streams/AOnStream.mqh>
 
-// StDev stream v1.1
+// StDev stream v1.2
 
-class StDevStream : public IStream
+class StDevStream : public AOnStream
 {
-   int _references;
-   IStream* _source;
    int _period;
 public:
    StDevStream(IStream* __source, int period)
+      :AOnStream(__source)
    {
-      _references = 1;
-      _source = __source;
-      _source.AddRef();
       _period = period;
    }
    
-   ~StDevStream()
-   {
-      _source.Release();
-   }
-
    bool GetValue(const int period, double &val)
    {
       double sum = 0;
@@ -35,17 +26,5 @@ public:
       }
       val = MathSqrt((ssum * _period - sum * sum) / (_period * (_period - 1)));
       return true;
-   }
-
-   void AddRef()
-   {
-      ++_references;
-   }
-
-   void Release()
-   {
-      --_references;
-      if (_references == 0)
-         delete &this;
    }
 };

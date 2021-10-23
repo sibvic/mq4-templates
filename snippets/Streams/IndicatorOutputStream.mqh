@@ -1,6 +1,6 @@
 #include <Streams/AStream.mqh>
 
-// IndicatorOutputStream v3.0
+// IndicatorOutputStream v3.1
 class IndicatorOutputStream : public AStream
 {
 public:
@@ -32,7 +32,7 @@ public:
 
    virtual bool GetValue(const int period, double& val)
    {
-      if (_data[period] == EMPTY_VALUE)
+      if (period < 0 || period >= Size() || _data[period] == EMPTY_VALUE)
          return false;
       val = _data[period];
       return true;

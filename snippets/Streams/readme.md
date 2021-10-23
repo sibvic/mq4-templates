@@ -208,3 +208,7 @@ Returns absolute value of a source.
 ## PriceVolumeTrendStream
 
 Returns price-volume trend value.
+
+## CustomStreamOnStream
+
+Custom stream with a size of a parent stream

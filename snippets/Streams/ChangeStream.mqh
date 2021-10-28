@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// RSI stream v1.0
+// Change stream v1.0
 
 #ifndef ChangeStream_IMP
 #define ChangeStream_IMP

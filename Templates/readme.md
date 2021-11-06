@@ -10,7 +10,7 @@ Dashboard/scanner template. Shows text in the cells. You need to implement TextV
 
 ## EA_Base
 
-EA template. Parameters of this EA described [here](https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters).
+EA template. Parameters of this EA described [here](https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters). You can find the description of the internals [here](./EA_base.md)
 
 Featues:
 - Can trade multiple symbols.

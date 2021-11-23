@@ -9,3 +9,7 @@ TSI on a stream.
 ## ROCOnStream
 
 Rate of change on stream.
+
+## StochOnStream
+
+Stochastics on stream.

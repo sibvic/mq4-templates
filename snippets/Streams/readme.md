@@ -228,3 +228,7 @@ Shortcut for a crossover of two streams.
 ## CrossunderStream
 
 Shortcut for a crossunder of two streams.
+
+## TwoStreamDifferenceStream
+
+Difference between two streams.

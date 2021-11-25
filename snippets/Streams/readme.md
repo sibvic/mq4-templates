@@ -212,3 +212,7 @@ Returns price-volume trend value.
 ## CustomStreamOnStream
 
 Custom stream with a size of a parent stream
+
+## ValueWhenSimpleStream
+
+Returns last value on condition meet. 

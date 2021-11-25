@@ -1,34 +1,20 @@
-// Value when stream v2.1
+// Value when stream (condition as a parameter) v1.0
 
-#ifndef ValueWhenStream_IMP
-#define ValueWhenStream_IMP
+#include <Streams/AStream.mqh>
+#include <Conditions/ICondition.mqh>
 
-#include <AStreamBase.mqh>
-#include <../conditions/ICondition.mqh>
-
-class ValueWhenStream : public AStreamBase
+class ValueWhenSimpleStream : public AStream
 {
-   ICondition* _condition;
-   IStream* _source;
-   int _periods[];
+   datetime _periods[];
    double _values[];
    int _shift;
 public:
    double _stream[];
 
-   ValueWhenStream(ICondition* condition, IStream* source, int shift)
+   ValueWhenSimpleStream(const string symbol, const ENUM_TIMEFRAMES timeframe, int shift)
+      :AStream(symbol, timeframe)
    {
       _shift = shift;
-      _condition = condition;
-      _condition.AddRef();
-      _source = source;
-      _source.AddRef();
-   }
-
-   ~ValueWhenStream()
-   {
-      _source.Release();
-      _condition.Release();
    }
 
    int RegisterStream(int id, color clr, int width, ENUM_LINE_STYLE style, string name)
@@ -46,10 +32,9 @@ public:
       return id + 1;
    }
 
-   void Update(const int period, datetime date)
+   double Update(const int period, datetime date, bool condition, double val)
    {
-      double val;
-      if (_condition.IsPass(period, 0) && _source.GetValue(period, val))
+      if (condition)
       {
          int size = ArraySize(_periods);
          if (size == 0 || _periods[size - 1] != date)
@@ -69,10 +54,11 @@ public:
             _stream[period] = _values[size - 1 - _shift];
          }
       }
-      else if (_source.Size() - 1 > period)
+      else if (iBars(_symbol, _timeframe) - 1 > period)
       {
          _stream[period] = _stream[period + 1];
       }
+      return _stream[period];
    }
 
    bool GetValue(const int period, double &val)
@@ -81,5 +67,3 @@ public:
       return _stream[period] != EMPTY_VALUE;
    }
 };
-
-#endif

@@ -13,3 +13,7 @@ Rate of change on stream.
 ## StochOnStream
 
 Stochastics on stream.
+
+## CCIOnStream
+
+CCI oscillator on stream.

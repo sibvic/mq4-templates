@@ -216,3 +216,7 @@ Custom stream with a size of a parent stream
 ## ValueWhenSimpleStream
 
 Returns last value on condition meet. 
+
+## ConditionStream
+
+Converts condition to 1 and 0.

@@ -220,3 +220,11 @@ Returns last value on condition meet.
 ## ConditionStream
 
 Converts condition to 1 and 0.
+
+## CrossoverStream
+
+Shortcut for a crossover of two streams.
+
+## CrossunderStream
+
+Shortcut for a crossunder of two streams.

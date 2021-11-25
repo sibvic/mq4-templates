@@ -28,6 +28,11 @@ public:
       _lowest.Release();
    }
    
+   virtual int Size()
+   {
+      return _closeStream.Size();
+   }
+   
    virtual bool GetValue(const int period, double &val)
    {
       double close;

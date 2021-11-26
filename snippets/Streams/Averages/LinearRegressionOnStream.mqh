@@ -1,34 +1,39 @@
 #include <Streams/AOnStream.mqh>
-//LinearRegressionOnStream v1.0
+//LinearRegressionOnStream v1.1
 
 class LinearRegressionOnStream : public AOnStream
 {
    double _length;
    double _buffer[];
+   int _offset;
 public:
-   LinearRegressionOnStream(IStream *source, const int length)
+   LinearRegressionOnStream(IStream *source, const int length, int offset = 0)
       :AOnStream(source)
    {
+      _offset = offset;
       _length = length;
    }
 
    bool GetValue(const int period, double &val)
    {
       int size = Size();
-      int index = size - 1 - period;
       if (ArrayRange(_buffer, 0) < size)
       {
          ArrayResize(_buffer, size);
       }
 
       double price;
-      if (!_source.GetValue(period, price))
+      if (!_source.GetValue(period + _offset, price))
       {
          return false;
       }
+      int index = size - 1 - period - _offset;
       if (index < _length)
       {
-         _buffer[index] = price;
+         if (index >= 0)
+         {
+            _buffer[index] = price;
+         }
          return false;
       }
 

@@ -232,3 +232,7 @@ Shortcut for a crossunder of two streams.
 ## TwoStreamDifferenceStream
 
 Difference between two streams.
+
+## SimplePriceStream
+
+Price stream for symbol/timeframe

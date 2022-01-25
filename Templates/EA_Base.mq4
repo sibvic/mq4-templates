@@ -154,6 +154,10 @@ input double breakeven_level = 0; // Breakeven target
    input string TakeProfitSection            = ""; // == Take Profit ==
    input TakeProfitType take_profit_type = TPDoNotUse; // Take profit type
    input bool use_net_take_profit = false; // Use net take profit
+   #ifdef TWO_LEVEL_TP
+   input double take_profit_value_1 = 10; // Take profit value
+   input double take_profit_1_close = 50; // To close, %
+   #endif
    input double take_profit_value = 10; // Take profit value
    input double take_profit_atr_multiplicator = 1; // Take profit multiplicator (for ATR TP)
 #else
@@ -249,7 +253,6 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <Actions/AAction.mqh>
 #include <Actions/CreateTrailingStreamAction.mqh>
 #include <Actions/PartialCloseOnProfitOrderAction.mqh>
-#include <Actions/CreateMartingaleAction.mqh>
 #include <Logic/ActionOnConditionController.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Conditions/HitProfitCondition.mqh>
@@ -277,6 +280,7 @@ TradingController *controllers[];
 #include <actions/CreateATRTrailingAction.mqh>
 #include <actions/CloseAllAction.mqh>
 #include <streams/averages/AveragesStreamFactory.mqh>
+#include <Streams/SimplePriceStream.mqh>
 
 #include <conditions/ACondition.mqh>
 #include <conditions/TradingTimeCondition.mqh>
@@ -304,6 +308,11 @@ public:
       GetHighLow(_symbol, _timeframe, high, low);
       return _isBuy ? low : high;
    }
+private:
+   void GetHighLow(string symbol, ENUM_TIMEFRAMES timeframe, double& high, double& low)
+   {
+      //TODO: implement
+   }
 };
 #endif
 
@@ -325,7 +334,12 @@ public:
    {
       double high, low;
       GetHighLow(_symbol, _timeframe, high, low);
-      return _isBuy ? high : low;
+      takeProfit = _isBuy ? high : low;
+   }
+private:
+   void GetHighLow(string symbol, ENUM_TIMEFRAMES timeframe, double& high, double& low)
+   {
+      //TODO: implement
    }
 };
 #endif
@@ -564,7 +578,7 @@ void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_
    IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers, true);
 
    CreateMartingaleAction* martingaleAction = new CreateMartingaleAction(lots, martingale_lot_sizing_type, martingale_lot_value, 
-      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions, inProfit);
+      martingale_step, openLongAction, openShortAction, max_longs, max_shorts, actions, inProfit, magic_number);
    openLongAction.Release();
    openShortAction.Release();
    
@@ -697,35 +711,35 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
          break;
       case TPPercent:
          {
-            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPercent, take_profit_value_1, take_profit_1_close, signaler, actions);
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPercent, take_profit_value_1, take_profit_1_close, signaler, actions, slippage_points);
             orderHandlers.AddOrderAction(orderAction);
             orderAction.Release();
          }
          break;
       case TPPips:
          {
-            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPips, take_profit_value_1, take_profit_1_close, signaler, actions);
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitPips, take_profit_value_1, take_profit_1_close, signaler, actions, slippage_points);
             orderHandlers.AddOrderAction(orderAction);
             orderAction.Release();
          }
          break;
       case TPDollar:
          {
-            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitDollar, take_profit_value_1, take_profit_1_close, signaler, actions);
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitDollar, take_profit_value_1, take_profit_1_close, signaler, actions, slippage_points);
             orderHandlers.AddOrderAction(orderAction);
             orderAction.Release();
          }
          break;
       case TPRiskReward:
          {
-            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitRiskReward, take_profit_value_1, take_profit_1_close, signaler, actions);
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitRiskReward, take_profit_value_1, take_profit_1_close, signaler, actions, slippage_points);
             orderHandlers.AddOrderAction(orderAction);
             orderAction.Release();
          }
          break;
       case TPAbsolute:
          {
-            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitAbsolute, take_profit_value_1, take_profit_1_close, signaler, actions);
+            PartialCloseOnProfitOrderAction* orderAction = new PartialCloseOnProfitOrderAction(StopLimitAbsolute, take_profit_value_1, take_profit_1_close, signaler, actions, slippage_points);
             orderHandlers.AddOrderAction(orderAction);
             orderAction.Release();
          }
@@ -909,7 +923,7 @@ int OnInit()
    }
    
    #ifdef SHOW_ACCOUNT_STAT
-      stats = new AccountStatistics();
+      stats = new AccountStatistics(background_color, x, y);
    #endif
    return INIT_SUCCEEDED;
 }

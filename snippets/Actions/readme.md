@@ -88,10 +88,6 @@ Executes entry action.
 
 Open market order action.
 
-## CreateMartingaleAction
-
-Creates additional position on loss.
-
 ## DeleteOrdersAction
 
 Deletes order with a specified magic number and side.

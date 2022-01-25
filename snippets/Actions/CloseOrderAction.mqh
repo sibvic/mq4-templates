@@ -1,10 +1,7 @@
-#include <AAction.mqh>
-#include <../TradingCommands.mqh>
+#include <Actions/AAction.mqh>
+#include <TradingCommands.mqh>
 
 // Close order action v1.0
-
-#ifndef CloseOrderAction_IMP
-#define CloseOrderAction_IMP
 
 class CloseOrderAction : public AAction
 {
@@ -33,5 +30,3 @@ public:
       return true;
    }
 };
-
-#endif

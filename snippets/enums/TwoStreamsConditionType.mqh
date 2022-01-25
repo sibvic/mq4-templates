@@ -6,7 +6,8 @@ enum TwoStreamsConditionType
    FirstAboveSecond,
    FirstBelowSecond,
    FirstCrossOverSecond,
-   FirstCrossUnderSecond
+   FirstCrossUnderSecond,
+   FirstEqualsSecond
 };
 
 #endif

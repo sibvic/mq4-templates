@@ -261,3 +261,7 @@ Condition between two streams (over/under/cross over/cross under)
 ## OrderOlderThanCondition
 
 Returns true when given order older that given number of bars.
+
+## StreamValueCondition
+
+Compares stream value with a fixed value.

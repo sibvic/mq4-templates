@@ -1,9 +1,6 @@
 #include <Streams/AStreamBase.mqh>
 // Custom stream v2.1
 
-#ifndef CustomStream_IMP
-#define CustomStream_IMP
-
 class CustomStream : public AStreamBase
 {
    string _symbol;
@@ -49,5 +46,3 @@ private:
       }
    }
 };
-
-#endif

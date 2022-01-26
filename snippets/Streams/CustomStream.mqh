@@ -1,5 +1,5 @@
 #include <Streams/AStreamBase.mqh>
-// Custom stream v2.1
+// Custom stream v2.2
 
 class CustomStream : public AStreamBase
 {
@@ -26,16 +26,27 @@ public:
    void SetValue(const int period, double value)
    {
       int totalBars = Size();
+      int index = totalBars - period - 1;
+      if (index < 0 || totalBars <= index)
+      {
+         return;
+      }
       EnsureStreamHasProperSize(totalBars);
-      _stream[period] = value;
+      _stream[index] = value;
    }
 
    bool GetValue(const int period, double &val)
    {
       int totalBars = Size();
+      int index = totalBars - period - 1;
+      if (index < 0 || totalBars <= index)
+      {
+         return false;
+      }
       EnsureStreamHasProperSize(totalBars);
-      val = _stream[period];
-      return _stream[period] != EMPTY_VALUE;
+      
+      val = _stream[index];
+      return _stream[index] != EMPTY_VALUE;
    }
 private:
    void EnsureStreamHasProperSize(int size)

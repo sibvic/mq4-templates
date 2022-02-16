@@ -1,6 +1,6 @@
 // Fix NAN stream v1.0
 
-#include <AOnStream.mqh>
+#include <Streams/AOnStream.mqh>
 
 class FixnanStream : public AOnStream
 {

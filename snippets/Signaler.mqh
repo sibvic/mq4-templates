@@ -1,4 +1,4 @@
-//Signaler v2.0
+//Signaler v2.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 input string   AlertsSection            = ""; // == Alerts ==
 input bool     popup_alert              = false; // Popup message
@@ -10,6 +10,7 @@ input bool     start_program            = false; // Start external program
 input string   program_path             = ""; // Path to the external program executable
 input bool     advanced_alert           = false; // Advanced alert (Telegram/Discord/other platform (like another MT4))
 input string   advanced_key             = ""; // Advanced alert key
+input string   advanced_server          = "https://profitrobots.com"; // Advanced alert server url
 input string   Comment2                 = "- You can get a key via @profit_robots_bot Telegram Bot. Visit ProfitRobots.com for discord/other platform keys -";
 input string   Comment3                 = "- Allow use of dll in the indicator parameters window -";
 input string   Comment4                 = "- Install AdvancedNotificationsLib.dll -";
@@ -17,6 +18,7 @@ input string   Comment4                 = "- Install AdvancedNotificationsLib.dl
 // AdvancedNotificationsLib.dll could be downloaded here: http://profitrobots.com/Home/TelegramNotificationsMT4
 #import "AdvancedNotificationsLib.dll"
 void AdvancedAlert(string key, string text, string instrument, string timeframe);
+void AdvancedAlertCustom(string key, string text, string instrument, string timeframe, string url);
 #import
 #import "shell32.dll"
 int ShellExecuteW(int hwnd,string Operation,string File,string Parameters,string Directory,int ShowCmd);
@@ -53,6 +55,6 @@ public:
       if (notification_alert)
          SendNotification(message);
       if (advanced_alert && advanced_key != "" && !IsTesting())
-         AdvancedAlert(advanced_key, message, "", "");
+         AdvancedAlertCustom(advanced_key, message, "", "", advanced_server);
    }
 };

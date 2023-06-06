@@ -1,5 +1,5 @@
 #include <Streams/AOnStream.mqh>
-//LinearRegressionOnStream v1.1
+//LinearRegressionOnStream v1.2
 
 class LinearRegressionOnStream : public AOnStream
 {
@@ -17,9 +17,14 @@ public:
    bool GetValue(const int period, double &val)
    {
       int size = Size();
-      if (ArrayRange(_buffer, 0) < size)
+      int range = ArrayRange(_buffer, 0);
+      if (range < size)
       {
          ArrayResize(_buffer, size);
+         for (int i = range; i < Bars; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
       }
 
       double price;
@@ -40,8 +45,13 @@ public:
       double lwmw = _length;
       double lwma = lwmw * price;
       double sma  = price;
-      for (int i = 0; i < _length; ++i)
+      for (int i = 1; i < _length; ++i)
       {
+         if (_buffer[index - i] == EMPTY_VALUE)
+         {
+            _buffer[index] = price;
+            return false;
+         }
          double weight = _length - i;
          lwmw += weight;
          lwma += weight * _buffer[index - i];  

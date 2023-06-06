@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// Sum on stream v1.1
+// Sum on stream v1.2
 
 
 class SumOnStream : public AOnStream
@@ -29,7 +29,7 @@ public:
       }
          
       int bufferIndex = totalBars - 1 - period;
-      if (_buffer[bufferIndex - 1] != EMPTY_VALUE)
+      if (bufferIndex > 0 && _buffer[bufferIndex - 1] != EMPTY_VALUE)
       {
          if (GetValueBuffered(period, val, bufferIndex))
          {

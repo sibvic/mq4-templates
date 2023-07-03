@@ -322,3 +322,7 @@ Pivot
 ## TextMaxSizeCalculator
 
 Calculates max width/height for the bunch of strings.
+
+## PlotChar
+
+Implementation of plotchart from PineScript (TradingView)

@@ -1,8 +1,8 @@
 #include <Streams/AOnStream.mqh>
-#include <Streams/PriceStream.mqh>
+#include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Highest high stream v1.2
+// Highest high stream v1.3
 
 class HighestHighStream : public AOnStream
 {

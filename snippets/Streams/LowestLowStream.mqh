@@ -1,8 +1,8 @@
 #include <Streams/AOnStream.mqh>
-#include <Streams/PriceStream.mqh>
+#include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Lowest low stream v1.2
+// Lowest low stream v1.3
 
 class LowestLowStream : public AOnStream
 {

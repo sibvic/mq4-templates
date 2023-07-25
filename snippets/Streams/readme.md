@@ -244,3 +244,7 @@ Counts number of bars since last condition. Can accept ICondition or IStream. In
 ## HighestBarsStream
 
 Equivalent to highestbars from TradingView.
+
+## LowestBarsStream
+
+Equivalent to lowestbars from TradingView.

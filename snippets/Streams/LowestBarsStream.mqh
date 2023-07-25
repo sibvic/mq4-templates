@@ -12,6 +12,7 @@ public:
       :AOnStream(new SimplePriceStream(symbol, timeframe, PriceLow))
    {
       _source.Release();
+      _loopback = loopback;
    }
    LowestBarsStream(IStream* source, int loopback)
       :AOnStream(source)

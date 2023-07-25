@@ -12,6 +12,7 @@ public:
       :AOnStream(new SimplePriceStream(symbol, timeframe, PriceHigh))
    {
       _source.Release();
+      _loopback = loopback;
    }
    HighestBarsStream(IStream* source, int loopback)
       :AOnStream(source)

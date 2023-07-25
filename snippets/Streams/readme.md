@@ -240,3 +240,7 @@ Price stream for symbol/timeframe
 ## BarsSinceStream
 
 Counts number of bars since last condition. Can accept ICondition or IStream. In case of IStream checks it's value for 1.
+
+## HighestBarsStream
+
+Equivalent to highestbars from TradingView.

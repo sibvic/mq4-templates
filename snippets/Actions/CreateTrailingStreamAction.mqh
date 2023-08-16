@@ -3,7 +3,8 @@
 #include <Streams/IStream.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Conditions/ProfitInRangeCondition.mqh>
-// v1.0
+#include <Order/OrderByTicketId.mqh>
+// v1.1
 
 #ifndef CreateTrailingStreamAction_IMP
 #define CreateTrailingStreamAction_IMP

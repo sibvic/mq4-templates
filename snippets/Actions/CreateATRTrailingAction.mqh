@@ -2,8 +2,9 @@
 #include <Actions/TrailingPipsAction.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Actions/AOrderAction.mqh>
+#include <Order/OrderByTicketId.mqh>
 
-// Create ATR Trailing action v1.0
+// Create ATR Trailing action v1.1
 
 class CreateATRTrailingAction : public AOrderAction
 {

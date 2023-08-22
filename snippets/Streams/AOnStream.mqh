@@ -1,6 +1,7 @@
 #include <Streams/IStream.mqh>
 
-//AOnStream v1.0
+//Base implementation of stream based on another stream 
+//v1.1
 
 class AOnStream : public IStream
 {
@@ -12,7 +13,10 @@ public:
    {
       _references = 1;
       _source = source;
-      _source.AddRef();
+      if (_source != NULL)
+      {
+         _source.AddRef();
+      }
    }
 
    ~AOnStream()

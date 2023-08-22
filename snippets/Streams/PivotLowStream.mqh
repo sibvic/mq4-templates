@@ -1,4 +1,4 @@
-// Pivot low stream v1.1
+// Pivot low stream v1.2
 
 #include <Streams/AOnStream.mqh>
 
@@ -10,6 +10,14 @@ public:
    PivotLowStream(IStream *source, int leftBars, int rightBars)
       :AOnStream(source)
    {
+      _leftBars = leftBars;
+      _rightBars = rightBars;
+   }
+
+   PivotLowStream(string symbol, ENUM_TIMEFRAMES timeframe, int leftBars, int rightBars)
+      :AOnStream(NULL)
+   {
+      _source = new SimplePriceStream(symbol, timeframe, PriceLow);
       _leftBars = leftBars;
       _rightBars = rightBars;
    }

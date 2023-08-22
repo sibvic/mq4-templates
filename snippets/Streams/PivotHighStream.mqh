@@ -1,6 +1,8 @@
-// Pivot high stream v1.1
+// Pivot high stream v1.2
 
 #include <Streams/AOnStream.mqh>
+#include <Streams/SimplePriceStream.mqh>
+#include <enums/PriceType.mqh>
 
 class PivotHighStream : public AOnStream
 {
@@ -10,6 +12,14 @@ public:
    PivotHighStream(IStream *source, int leftBars, int rightBars)
       :AOnStream(source)
    {
+      _leftBars = leftBars;
+      _rightBars = rightBars;
+   }
+
+   PivotHighStream(string symbol, ENUM_TIMEFRAMES timeframe, int leftBars, int rightBars)
+      :AOnStream(NULL)
+   {
+      _source = new SimplePriceStream(symbol, timeframe, PriceHigh);
       _leftBars = leftBars;
       _rightBars = rightBars;
    }

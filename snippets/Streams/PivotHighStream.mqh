@@ -1,4 +1,4 @@
-// Pivot high stream v1.2
+// Pivot high stream v1.3
 
 #include <Streams/AOnStream.mqh>
 #include <Streams/SimplePriceStream.mqh>
@@ -34,16 +34,26 @@ public:
       double value;
       for (int i = 0; i < _rightBars; ++i)
       {
-         if (!_source.GetValue(period + i, value) || center < value)
+         if (!_source.GetValue(period + i, value))
          {
             return false;
+         }
+         if (center < value)
+         {
+            val = EMPTY_VALUE;
+            return true;
          }
       }
       for (int ii = 0; ii < _leftBars; ++ii)
       {
-         if (!_source.GetValue(period + ii + _rightBars, value) || center < value)
+         if (!_source.GetValue(period + ii + _rightBars, value))
          {
             return false;
+         }
+         if (center < value)
+         {
+            val = EMPTY_VALUE;
+            return true;
          }
       }
       val = center;

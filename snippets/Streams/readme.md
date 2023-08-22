@@ -248,3 +248,7 @@ Equivalent to highestbars from TradingView.
 ## LowestBarsStream
 
 Equivalent to lowestbars from TradingView.
+
+## VarianceOnStream
+
+Calculates variance on stream. Equivalent to ta.variance from TradingView.

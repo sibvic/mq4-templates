@@ -1,4 +1,4 @@
-// Simple price stream v1.0
+// Simple price stream v1.1
 #include <Streams/AStream.mqh>
 #include <enums/PriceType.mqh>
 
@@ -14,6 +14,7 @@ public:
 
    bool GetValue(const int period, double &val)
    {
+      ResetLastError();
       switch (_price)
       {
          case PriceClose:
@@ -55,6 +56,10 @@ public:
          case PriceVolume:
             val = (double)iVolume(_symbol, _timeframe, period);
             break;
+      }
+      if (GetLastError() != ERR_NO_ERROR)
+      {
+         return false;
       }
       val += _shift * _instrument.GetPipSize();
       return true;

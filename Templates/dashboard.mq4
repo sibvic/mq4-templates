@@ -162,7 +162,7 @@ int init()
    #else
    bool showHistorical = false;
    #endif
-   GridBuilder builder(x_shift, 50, cell_height, cell_height, display_mode == Vertical, corner, showHistorical);
+   GridBuilder builder(x_shift, 50, display_mode == Vertical, corner, showHistorical);
    TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
    factory.SetNeutralColor(neutral_color);
    factory.SetButtonTextColor(button_text_color);
@@ -210,7 +210,7 @@ int start()
 {
    WindowNumber = MathMax(0, WindowFind(IndicatorName));
    grid.HandleButtonClicks();
-   grid.Draw();
+   grid.Draw(cell_height, cell_height);
    
    return 0;
 }

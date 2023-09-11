@@ -1,6 +1,6 @@
-// Abstract value formatter v1.0
+// Abstract value formatter v1.1
 
-#include <IValueFormatter.mqh>
+#include <Grid/IValueFormatter.mqh>
 
 #ifndef AValueFormatter_IMP
 #define AValueFormatter_IMP

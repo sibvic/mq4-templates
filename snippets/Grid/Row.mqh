@@ -1,6 +1,7 @@
 #include <Grid/ICell.mqh>
+#include <Grid/RowSize.mqh>
 
-// Row v2.0
+// Row v2.1
 
 #ifndef Row_IMP
 #define Row_IMP

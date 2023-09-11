@@ -1,7 +1,7 @@
 #include <Grid/ICellFactory.mqh>
 #include <Grid/Grid.mqh>
 
-// Grid builder v5.0
+// Grid builder v5.1
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
@@ -107,7 +107,7 @@ public:
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
                string id = IndicatorObjPrefix + _symbols[i] + "_" + label + IntegerToString(ii);
-               row.Add(_cellFactory[ii].Create(id, _corner, _symbols[i], timeframe, _showHistorical));
+               row.Add(_cellFactory[ii].Create(id, 0, 0, _corner, _symbols[i], timeframe, _showHistorical));
             }
          }
       }
@@ -123,7 +123,7 @@ public:
             string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
-               row.Add(_cellFactory[ii].Create(id, _corner, _symbols[i], timeframe, _showHistorical));
+               row.Add(_cellFactory[ii].Create(id, 0, 0, _corner, _symbols[i], timeframe, _showHistorical));
             }
          }
       }

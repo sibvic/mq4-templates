@@ -1,7 +1,7 @@
 
-#include <ICellFactory.mqh>
+#include <Grid/ICellFactory.mqh>
 
-// Text value cell factory v2.0
+// Text value cell factory v2.1
 
 #ifndef TextValueCellFactory_IMP
 #define TextValueCellFactory_IMP

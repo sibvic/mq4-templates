@@ -1,8 +1,8 @@
-#include <ICellFactory.mqh>
-#include <TrendValueCell.mqh>
-#include <FixedTextFormatter.mqh>
+#include <Grid/ICellFactory.mqh>
+#include <Grid/TrendValueCell.mqh>
+#include <Grid/FixedTextFormatter.mqh>
 
-// Trend value cell factory v6.0
+// Trend value cell factory v6.1
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -44,7 +44,7 @@ public:
    virtual ICell* Create(const string id, const int x, const int y, ENUM_BASE_CORNER corner, const string symbol, const ENUM_TIMEFRAMES timeframe, bool showHistorical)
    {
       IValueFormatter* defaultValue = new FixedTextFormatter("-", GetTextColor(_neutralColor), GetBackgroundColor(_neutralColor));
-      TrendValueCell* cell = new TrendValueCell(id, x, y, corner, symbol, timeframe, _alertShift, defaultValue, output_mode);
+      TrendValueCell* cell = new TrendValueCell(id, corner, symbol, timeframe, _alertShift, defaultValue, output_mode);
       defaultValue.Release();
 
       ICondition* upCondition = new UpCondition(symbol, timeframe);

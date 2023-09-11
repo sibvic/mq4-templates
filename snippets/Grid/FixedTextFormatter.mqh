@@ -1,6 +1,6 @@
-// Fixed text and color formatter v2.0
+// Fixed text and color formatter v2.1
 
-#include <AValueFormatter.mqh>
+#include <Grid/AValueFormatter.mqh>
 
 #ifndef FixedTextFormatter_IMP
 #define FixedTextFormatter_IMP

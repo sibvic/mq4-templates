@@ -1,6 +1,6 @@
-#include <Grid/ICell.mqh>
+#include <Grid/ACell.mqh>
 
-// Empty cell v2.0
+// Empty cell v2.1
 
 #ifndef EmptyCell_IMP
 #define EmptyCell_IMP

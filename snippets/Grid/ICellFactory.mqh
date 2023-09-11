@@ -1,6 +1,6 @@
-// Interface for a cell factory v3.0
+// Interface for a cell factory v3.1
 
-#include <ICell.mqh>
+#include <Grid/ICell.mqh>
 
 #ifndef ICellFactory_IMP
 #define ICellFactory_IMP

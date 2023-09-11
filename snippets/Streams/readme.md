@@ -252,3 +252,7 @@ Equivalent to lowestbars from TradingView.
 ## VarianceOnStream
 
 Calculates variance on stream. Equivalent to ta.variance from TradingView.
+
+## CustomVariable
+
+Replacement of var x = y in PineScript

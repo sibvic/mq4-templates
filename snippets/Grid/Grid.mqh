@@ -1,7 +1,7 @@
 #include <Grid/Row.mqh>
 #include <Grid/RowSize.mqh>
 
-// Grid v2.0
+// Grid v2.1
 
 #ifndef Grid_IMP
 #define Grid_IMP
@@ -34,7 +34,7 @@ public:
    
    void Draw(int x, int y)
    {
-      RowSize* widths = MeasureColumens();
+      RowSize* widths = MeasureColumns();
       int count = ArraySize(_rows);
       for (int i = 0; i < count; ++i)
       {
@@ -54,7 +54,7 @@ public:
       }
    }
 private:
-   RowSize* MeasureColumens()
+   RowSize* MeasureColumns()
    {
       RowSize* widths = new RowSize();
       int count = ArraySize(_rows);

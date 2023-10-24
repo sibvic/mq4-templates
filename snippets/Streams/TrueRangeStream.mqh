@@ -1,6 +1,6 @@
 #include <Streams/AStream.mqh>
 
-// True range stream v2.1
+// True range stream v2.2
 
 #ifndef TrueRangeStream_IMP
 #define TrueRangeStream_IMP
@@ -27,9 +27,12 @@ public:
          }
          return false;
       }
-      double hl = MathAbs(iHigh(_symbol, _timeframe, pos) - iLow(_symbol, _timeframe, pos));
-      double hc = MathAbs(iHigh(_symbol, _timeframe, pos) - iClose(_symbol, _timeframe, pos + 1));
-      double lc = MathAbs(iLow(_symbol, _timeframe, pos) - iClose(_symbol, _timeframe, pos + 1));
+      double h = iHigh(_symbol, _timeframe, period);
+      double l = iLow(_symbol, _timeframe, period);
+      double c1 = iClose(_symbol, _timeframe, period + 1);
+      double hl = MathAbs(h - l);
+      double hc = MathAbs(h - c1);
+      double lc = MathAbs(l - c1);
 
       val = MathMax(lc, MathMax(hl, hc));
       return true;

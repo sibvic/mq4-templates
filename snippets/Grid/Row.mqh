@@ -1,7 +1,7 @@
 #include <Grid/ICell.mqh>
 #include <Grid/RowSize.mqh>
 
-// Row v2.1
+// Row v2.2
 
 #ifndef Row_IMP
 #define Row_IMP
@@ -47,6 +47,20 @@ public:
       { 
          _cells[i].HandleButtonClicks(); 
       } 
+   }
+   
+   ICell* GetCell(int index)
+   {
+      if (index < 0)
+      {
+         return NULL;
+      }
+      int count = ArraySize(_cells);
+      if (index >= count)
+      {
+         return NULL;
+      }
+      return _cells[index];
    }
 
    void Add(ICell *cell) 

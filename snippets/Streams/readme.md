@@ -256,3 +256,7 @@ Calculates variance on stream. Equivalent to ta.variance from TradingView.
 ## CustomVariable
 
 Replacement of var x = y in PineScript
+
+## CrossStream
+
+Puts 1 when two streams cross and 0 otherwise.

@@ -35,7 +35,7 @@ enum TradingMode
 };
 
 input string GeneralSection = ""; // == General ==
-input string symbols = "EURUSD,USDJPY"; // Symbols to trade
+input string symbols = ""; // Symbols to trade. Comma-separated. Use empty for on-chart symbol
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
 input bool ecn_broker = false; // ECN Broker? 
@@ -907,7 +907,7 @@ int OnInit()
    #endif
 
    string toTrade[];
-   StringSplit(symbols, ',', toTrade);
+   StringSplit(symbols == "" ? _Symbol : symbols, ',', toTrade);
    for (int i = 0; i < ArraySize(toTrade); ++i)
    {
       string error;

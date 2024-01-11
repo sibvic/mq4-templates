@@ -32,6 +32,11 @@ public:
       return _rows[index];
    }
    
+   int GetRowsCount()
+   {
+      return ArraySize(_rows);
+   }
+   
    void Draw(int x, int y)
    {
       RowSize* widths = MeasureColumns();

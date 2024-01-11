@@ -13,9 +13,18 @@ class LabelCell : public ACell
    int _fontSize;
    color _color;
    int _windowNumber;
+   string _textHAlign;
+   bool _withBackground;
+   color _bgColor;
+   int _width;
+   int _height;
+   int _linesHeights[];
+   int _linesWidths[];
 public:
    LabelCell(const string id, const string text, ENUM_BASE_CORNER corner, int fontSize, color clr, int windowNumber)
    { 
+      _withBackground = false;
+      _textHAlign = "cental";
       _corner = corner;
       _id = id; 
       _text = text;
@@ -26,12 +35,65 @@ public:
 
    virtual void Measure(int& width, int& height)
    {
-      Measure(_text, "Arial", _fontSize, width, height);
+      _width = 0;
+      _height = 0;
+      string lines[];
+      int linesCount = StringSplit(_text, '\n', lines);
+      ArrayResize(_linesHeights, linesCount);
+      ArrayResize(_linesWidths, linesCount);
+      for (int i = 0; i < linesCount; ++i)
+      {
+         int w, h;
+         Measure(lines[i], "Arial", _fontSize, w, h);
+         _height += h;
+         _width = MathMax(_width, w);
+         _linesHeights[i] = h;
+         _linesWidths[i] = w;
+      }
+      width = _width;
+      height = _height;
    }
 
    virtual void Draw(int x, int y) 
-   { 
-      ObjectMakeLabel(_id, x, y, _text, _color, _corner, _windowNumber, "Arial", _fontSize); 
+   {
+      if (_withBackground)
+      {
+         ObjectCreate(_id + "rect", OBJ_RECTANGLE_LABEL, 0, 0, 0);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_XDISTANCE, x);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_YDISTANCE, y);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_BGCOLOR, _bgColor); 
+         ObjectSetInteger(0, _id + "rect", OBJPROP_XSIZE, _width);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_YSIZE, _height);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_COLOR, _color);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_CORNER, _corner);
+      }
+      string lines[];
+      int linesCount = StringSplit(_text, '\n', lines);
+      for (int i = 0; i < linesCount; ++i)
+      {
+         int lineX = x;
+         if (_textHAlign == "center")
+         {
+            lineX += (_width - _linesWidths[i]) / 2;
+         }
+         else if (_textHAlign == "right")
+         {
+            lineX += _width - _linesWidths[i];
+         }
+         ObjectMakeLabel(_id + "line" + i, lineX, y, lines[i], _color, _corner, _windowNumber, "Arial", _fontSize); 
+         y += _linesHeights[i];
+      }
+   }
+   
+   bool SetBgColor(color clr)
+   {
+      if (_bgColor == clr)
+      {
+         return false;
+      }
+      _bgColor = clr;
+      _withBackground = true;
+      return true;
    }
 
    virtual void HandleButtonClicks()
@@ -46,7 +108,6 @@ public:
          return false;
       }
       _color = clr;
-      ObjectSetInteger(0, _id, OBJPROP_COLOR, clr);
       return true;
    }
    
@@ -57,7 +118,26 @@ public:
          return false;
       }
       _text = text;
-      ObjectSetString(0, _id, OBJPROP_TEXT, text);
+      return true;
+   }
+   
+   bool SetFontSize(int fontSize)
+   {
+      if (_fontSize == fontSize)
+      {
+         return false;
+      }
+      _fontSize = fontSize;
+      return true;
+   }
+   
+   bool SetTextHAlign(string textHAlign)
+   {
+      if (_textHAlign == textHAlign)
+      {
+         return false;
+      }
+      _textHAlign = textHAlign;
       return true;
    }
 };

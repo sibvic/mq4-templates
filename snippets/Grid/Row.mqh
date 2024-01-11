@@ -29,6 +29,11 @@ public:
          rowSizes.Add(i, w + 5, h + 5);
       } 
    }
+   
+   int GetColumnsCount()
+   {
+      return ArraySize(_cells);
+   }
 
    void Draw(int x, int y, RowSize* rowSizes) 
    { 

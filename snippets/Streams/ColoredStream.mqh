@@ -1,6 +1,6 @@
 #include <Streams/AStream.mqh>
 
-// Colored stream v3.2
+// Colored stream v3.3
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -9,10 +9,12 @@ class ColoredStreamData
 {
 public:
    double Stream[];
+   color Color;
 };
 
 class ColoredStream : public AStream
 {
+   bool _arrowsMode;
 public:
    ColoredStreamData _streams[];
    double _data[];
@@ -20,6 +22,7 @@ public:
    ColoredStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
       :AStream(symbol, timeframe)
    {
+      _arrowsMode = false;
    }
 
    void Init(double defaultValue)
@@ -29,6 +32,16 @@ public:
          ArrayInitialize(_streams[i].Stream, defaultValue);
       }
       ArrayInitialize(_data, defaultValue);
+   }
+   
+   int RegisterArrowStream(int id, color clr, int arrow)
+   {
+      _arrowsMode = true;
+      AddStream(id, clr);
+      
+      SetIndexEmptyValue(id, EMPTY_VALUE);
+      SetIndexArrow(id, arrow);
+      return id + 1;
    }
 
    int RegisterInternalStream(int id)
@@ -40,10 +53,9 @@ public:
 
    int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE, ENUM_LINE_STYLE lineStyle = STYLE_SOLID, int width = 1)
    {
-      int size = ArraySize(_streams);
-      ArrayResize(_streams, size + 1);
+      AddStream(id, clr);
+      
       SetIndexStyle(id, lineType, lineStyle, width, clr);
-      SetIndexBuffer(id, _streams[size].Stream);
       SetIndexEmptyValue(id, EMPTY_VALUE);
       if (label != "")
          SetIndexLabel(id, label);
@@ -59,6 +71,18 @@ public:
       }
       return -1;
    }
+   
+   void SetByColor(double value, int period, color clr)
+   {
+      for (int i = 0; i < ArraySize(_streams); ++i)
+      {
+         if (_streams[i].Color == clr)
+         {
+            Set(value, period, i);
+            return;
+         }
+      }
+   }
 
    void Set(double value, int period, int colorIndex)
    {
@@ -68,7 +92,7 @@ public:
          if (colorIndex == i)
          {
             _streams[i].Stream[period] = value;
-            if (period + 1 < iBars(_symbol, _timeframe) && _streams[i].Stream[period + 1] == EMPTY_VALUE)
+            if (!_arrowsMode && period + 1 < iBars(_symbol, _timeframe) && _streams[i].Stream[period + 1] == EMPTY_VALUE)
                _streams[i].Stream[period + 1] = _data[period + 1];   
          }
          else
@@ -84,6 +108,14 @@ public:
       }
       val = _data[period];
       return _data[period] != EMPTY_VALUE;
+   }
+private:
+   void AddStream(int id, color clr)
+   {
+      int size = ArraySize(_streams);
+      ArrayResize(_streams, size + 1);
+      _streams[size].Color = clr;
+      SetIndexBuffer(id, _streams[size].Stream);
    }
 };
 

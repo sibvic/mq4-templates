@@ -1,7 +1,7 @@
 #include <Streams/TrueRangeStream.mqh>
 #include <Streams/Averages/SmaOnStream.mqh>
 
-// Average true range stream v2.0
+// Average true range stream v2.1
 
 #ifndef ATRStream_IMP
 #define ATRStream_IMP
@@ -10,6 +10,13 @@ class ATRStream : public AStream
 {
    IStream* _avg;
 public:
+   ATRStream(int length)
+      :AStream(_Symbol, (ENUM_TIMEFRAMES)_Period)
+   {
+      IStream* tr = new TrueRangeStream(_Symbol, (ENUM_TIMEFRAMES)_Period, true);
+      _avg = new SmaOnStream(tr, length);
+      tr.Release();
+   }
    ATRStream(const string symbol, ENUM_TIMEFRAMES timeframe, int length)
       :AStream(symbol, timeframe)
    {

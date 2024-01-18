@@ -1,5 +1,5 @@
 #include <Streams/AStreamBase.mqh>
-// Custom stream v2.2
+// Custom stream v2.3
 
 class CustomStream : public AStreamBase
 {
@@ -51,9 +51,14 @@ public:
 private:
    void EnsureStreamHasProperSize(int size)
    {
-      if (ArrayRange(_stream, 0) != size) 
+      int currentSize = ArrayRange(_stream, 0);
+      if (currentSize != size) 
       {
          ArrayResize(_stream, size);
+         for (int i = currentSize; i < size; ++i)
+         {
+            _stream[i] = EMPTY_VALUE;
+         }
       }
    }
 };

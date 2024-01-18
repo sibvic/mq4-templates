@@ -1,11 +1,12 @@
-// Candles stream v.1.3
-class CandleStreams
+// Candles stream v.1.4
+class CandleStreamsData
 {
 public:
    double OpenStream[];
    double CloseStream[];
    double HighStream[];
    double LowStream[];
+   color Color;
 
    void Init()
    {
@@ -25,6 +26,7 @@ public:
 
    int RegisterStreams(const int id, const color clr)
    {
+      Color = clr;
       SetIndexStyle(id + 0, DRAW_HISTOGRAM, STYLE_SOLID, 5, clr);
       SetIndexBuffer(id + 0, OpenStream);
       SetIndexLabel(id + 0, "Open");
@@ -58,5 +60,71 @@ public:
       HighStream[index] = high;
       LowStream[index] = low;
       CloseStream[index] = close;
+   }
+};
+
+class CandleStreams
+{
+   int _offset;
+public:
+   CandleStreamsData* candles[];
+   CandleStreams()
+   {
+      _offset = 0;
+   }
+
+   ~CandleStreams()
+   {
+      for (int i = 0; i < ArraySize(candles); ++i)
+      {
+         delete candles[i];
+      }
+   }
+   
+   void SetOffset(int offset)
+   {
+      _offset = offset;
+   }
+
+   void Init()
+   {
+      for (int i = 0; i < ArraySize(candles); ++i)
+      {
+         CandleStreamsData* item = candles[i];
+         item.Init();
+      }
+   }
+
+   void Clear(const int index)
+   {
+      for (int i = 0; i < ArraySize(candles); ++i)
+      {
+         CandleStreamsData* item = candles[i];
+         item.Clear(index + _offset);
+      }
+   }
+
+   int RegisterStreams(const int id, const color clr)
+   {
+      int size = ArraySize(candles);
+      ArrayResize(candles, size + 1);
+      candles[size] = new CandleStreamsData();
+      return candles[size].RegisterStreams(id, clr);
+   }
+
+   void Set(const int index, const double open, const double high, const double low, const double close, const color clr)
+   {
+      for (int i = 0; i < ArraySize(candles); ++i)
+      {
+         CandleStreamsData* item = candles[i];
+         if (item.Color == clr)
+         {
+            item.Set(index + _offset, open, high, low, close);
+         }
+         else
+         {
+            item.Clear(index + _offset);
+         }
+      }
    }
 };

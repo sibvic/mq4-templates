@@ -2,7 +2,7 @@
 #include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Lowest low stream v1.3
+// Lowest low stream v1.4
 
 class LowestLowStream : public AOnStream
 {
@@ -19,18 +19,23 @@ public:
       _loopback = loopback;
    }
 
-   bool GetValue(const int period, double &val)
+   static bool GetValue(const int period, double &val, IStream* source, int loopback)
    {
-      if (!_source.GetValue(period, val))
+      if (!source.GetValue(period, val))
          return false;
 
-      for (int i = 1; i < _loopback; ++i)
+      for (int i = 1; i < loopback; ++i)
       {
          double value;
-         if (!_source.GetValue(period + i, value))
+         if (!source.GetValue(period + i, value))
             return false;
          val = MathMin(val, value);
       }
       return true;
+   }
+
+   bool GetValue(const int period, double &val)
+   {
+      return LowestLowStream::GetValue(period, val, _source, _loopback);
    }
 };

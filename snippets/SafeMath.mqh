@@ -95,3 +95,12 @@ double SafeMathMin(double left, double right)
    }
    return MathMin(left, right);
 }
+
+double SafeMathPow(double value, double power)
+{
+   if (value == EMPTY_VALUE || power == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathPow(value, power);
+}

@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// ALMA on stream v1.0
+// ALMA on stream v1.1
 
 #ifndef AlmaOnStream_IMP
 #define AlmaOnStream_IMP
@@ -10,13 +10,15 @@ class ALMAOnStream : public AOnStream
    int _length;
    double _m;
    double _s;
+   bool _floorValue;
 public:
-   ALMAOnStream(IStream *source, const int length, double offset, double sigma)
+   ALMAOnStream(IStream *source, const int length, double offset, double sigma, bool floorValue = false)
       :AOnStream(source)
    {
       _length = length;
       _m = MathFloor(offset * (_length - 1));
       _s = _length / sigma;
+      _floorValue = floorValue;
    }
 
    bool GetValue(const int period, double &val)

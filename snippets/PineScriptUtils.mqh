@@ -1,0 +1,1 @@
+#define ColorRGB(red, green, blue, transp) red + (green << 8) + (blue << 16)

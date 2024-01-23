@@ -72,18 +72,19 @@ public:
       return -1;
    }
    
-   void SetByColor(double value, int period, color clr)
+   double SetByColor(double value, int period, color clr)
    {
       for (int i = 0; i < ArraySize(_streams); ++i)
       {
          if (_streams[i].Color == clr)
          {
             Set(value, period, i);
-            return;
+            return value;
          }
       }
+      return value;
    }
-
+   
    void Set(double value, int period, int colorIndex)
    {
       _data[period] = value;

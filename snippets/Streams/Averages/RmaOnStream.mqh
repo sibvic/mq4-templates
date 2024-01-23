@@ -23,17 +23,25 @@ public:
       if (!_source.GetValue(period, price))
          return false;
 
-      if (ArrayRange(_buffer, 0) < size) 
+      int currentSize = ArrayRange(_buffer, 0);
+      if (currentSize < size)
+      {
          ArrayResize(_buffer, size);
+         for (int i = currentSize; i < size; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
+      }
 
+      double alpha = 1.0 / _length;
       int index = size - 1 - period;
-      if (index == 0)
+      if (index == 0 || _buffer[index - 1] == EMPTY_VALUE)
       {
          _buffer[index] = price;
       }
       else
       {
-         _buffer[index] = (_buffer[index - 1] * (_length - 1) + price) / _length;
+         _buffer[index] =  alpha * price + (1 - alpha) * _buffer[index - 1];
       }
       val = _buffer[index];
       return true;

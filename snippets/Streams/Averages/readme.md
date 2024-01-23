@@ -45,3 +45,7 @@ WMA on stream
 ## LinearRegressionOnStream
 
 Linear regression on stream
+
+## MFIOnStream
+
+Money flow index on stream

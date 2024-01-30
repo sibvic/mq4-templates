@@ -104,3 +104,12 @@ double SafeMathPow(double value, double power)
    }
    return MathPow(value, power);
 }
+
+double SafeMathAbs(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathAbs(value);
+}

@@ -1,4 +1,4 @@
-// Line object v1.1
+// Line object v1.2
 
 class Line
 {
@@ -25,6 +25,34 @@ public:
    string GetId()
    {
       return _id;
+   }
+
+   void SetXY1(int x, double y)
+   {
+      _x1 = x;
+      _y1 = y;
+   }
+   static void SetXY1(Line* line, int x, double y)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetXY1(x, y);
+   }
+   
+   void SetXY2(int x, double y)
+   {
+      _x2 = x;
+      _y2 = y;
+   }
+   static void SetXY2(Line* line, int x, double y)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetXY2(x, y);
    }
 
    void SetX1(int x)

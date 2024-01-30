@@ -22,17 +22,26 @@ public:
       _rightBars = rightBars;
    }
 
-   bool GetValue(const int period, double &val)
+   
+   static bool GetValue(const int period, double &val, string symbol, ENUM_TIMEFRAMES timeframe, int leftBars, int rightBars)
+   {
+      SimplePriceStream* stream = new SimplePriceStream(symbol, timeframe, PriceLow);
+      bool result = GetValue(period, val, stream, leftBars, rightBars);
+      stream.Release();
+      return result;
+   }
+
+   static bool GetValue(const int period, double &val, IStream* source, int leftBars, int rightBars)
    {
       double center;
-      if (!_source.GetValue(period + _rightBars, center))
+      if (!source.GetValue(period + rightBars, center))
       {
          return false;
       }
       double value;
-      for (int i = 0; i < _rightBars; ++i)
+      for (int i = 0; i < rightBars; ++i)
       {
-         if (!_source.GetValue(period + i, value))
+         if (!source.GetValue(period + i, value))
          {
             return false;
          }
@@ -42,9 +51,9 @@ public:
             return true;
          }
       }
-      for (int ii = 0; ii < _leftBars; ++ii)
+      for (int ii = 0; ii < leftBars; ++ii)
       {
-         if (!_source.GetValue(period + ii + _rightBars, value))
+         if (!source.GetValue(period + ii + rightBars, value))
          {
             return false;
          }
@@ -56,5 +65,10 @@ public:
       }
       val = center;
       return true;
+   }
+
+   bool GetValue(const int period, double &val)
+   {
+      return GetValue(period, val, _source, _leftBars, _rightBars);
    }
 };

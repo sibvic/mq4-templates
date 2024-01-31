@@ -70,8 +70,12 @@ class Table
    TablePosition _position;
    int _columns;
    int _rows;
+
    int _borderWidth;
+   color _borderColor;
+   
    int _frameWidth;
+   color _frameColor;
    Grid* _grid;
 public:
    Table(string prefix, string position, int columns, int rows)
@@ -107,7 +111,12 @@ public:
    {
       delete _grid;
    }
-   
+
+   Table* SetBorderColor(color clr)
+   {
+      _borderColor = clr;
+      return &this;
+   }
    Table* SetBorderWidth(int borderWidth)
    {
       _borderWidth = borderWidth;
@@ -124,6 +133,12 @@ public:
             cell.SetBgColor(clr);
          }
       }
+      return &this;
+   }
+   
+   Table* SetFrameColor(color clr)
+   {
+      _frameColor = clr;
       return &this;
    }
    Table* SetFrameWidth(int frameWidth)

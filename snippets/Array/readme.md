@@ -1,7 +1,7 @@
-## IArray
+## IArray, IIntArray, ILineArray, IFloatArray
 
-Interface for an array.
+Interfaces for an array.
 
-## Array
+## Array, IntArray, LineArray, FloatArray
 
-Array implementation similar to PineScript arrays
+Array implementations similar to PineScript arrays

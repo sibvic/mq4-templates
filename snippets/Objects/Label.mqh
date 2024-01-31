@@ -6,6 +6,7 @@
 class Label
 {
    color _color;
+   color _textColor;
    string _text;
    string _labelId;
    int _x;
@@ -18,6 +19,7 @@ class Label
 public:
    Label(int x, double y, string labelId)
    {
+      _textColor = Yellow;
       _x = x;
       _y = y;
       _labelId = labelId;
@@ -114,6 +116,12 @@ public:
       return &this;
    }
    
+   Label* SetTextColor(color clr)
+   {
+      _textColor = clr;
+      return &this;
+   }
+   
    static void SetStyle(Label* label, string style)
    {
       if (label == NULL)
@@ -173,7 +181,7 @@ public:
       {
          ObjectSetString(0, _labelId, OBJPROP_FONT, getFontSize());
          ObjectSetInteger(0, _labelId, OBJPROP_FONTSIZE, 12);
-         ObjectSetInteger(0, _labelId, OBJPROP_COLOR, _color);
+         ObjectSetInteger(0, _labelId, OBJPROP_COLOR, _textColor);
       }
       ObjectSetInteger(0, _labelId, OBJPROP_TIME, x);
       ObjectSetDouble(0, _labelId, OBJPROP_PRICE1, y);

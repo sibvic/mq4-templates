@@ -47,6 +47,7 @@ public:
    static Label* Create(string id, datetime x, double y, datetime dateId)
    {
       ResetLastError();
+      dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x - 1);
       string labelId = id + "_" 
          + IntegerToString(TimeDay(dateId)) + "_"
          + IntegerToString(TimeMonth(dateId)) + "_"

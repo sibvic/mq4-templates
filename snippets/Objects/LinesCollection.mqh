@@ -44,9 +44,10 @@ public:
       //ObjectDelete();
    }
 
-   static Line* Create(string id, datetime x1, double y1, datetime x2, double y2, datetime dateId)
+   static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId)
    {
       ResetLastError();
+      dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x1 - 1);
       string lineId = id + "_" 
          + IntegerToString(TimeDay(dateId)) + "_"
          + IntegerToString(TimeMonth(dateId)) + "_"

@@ -1,5 +1,5 @@
 // Implementation of PineScript's plotchar
-// v1.0
+// v1.1
 
 class PlotChar
 {
@@ -11,7 +11,7 @@ public:
       _char = ch;
       _id = id;
    }
-   void Set(int pos, bool toTrue)
+   void Set(int pos, bool toTrue, color clr = Blue)
    {
       datetime time = iTime(_Symbol, _Period, pos);
       string id = _id + TimeToString(time);
@@ -31,7 +31,7 @@ public:
          }
          ObjectSetString(0, id, OBJPROP_FONT, "Arial");
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, 12);
-         ObjectSetInteger(0, id, OBJPROP_COLOR, Blue);
+         ObjectSetInteger(0, id, OBJPROP_COLOR, clr);
          ObjectSetInteger(0, id, OBJPROP_ANCHOR, ANCHOR_LOWER);
       }
       ObjectSetInteger(0, id, OBJPROP_TIME, time);

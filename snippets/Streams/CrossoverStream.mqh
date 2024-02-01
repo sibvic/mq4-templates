@@ -12,4 +12,15 @@ public:
    {
       _condition.Release();
    }
+
+   bool GetValue(int pos, bool &val)
+   {
+      double value;
+      if (!GetValue(pos, value))
+      {
+         return false;
+      }
+      val = value == 1;
+      return true;
+   }
 };

@@ -58,6 +58,16 @@ public:
    {
       return array[index];
    }
+
+   void Shift()
+   {
+      int size = ArraySize(array);
+      for (int i = 0; i < size - 1; ++i)
+      {
+         array[i] = array[i + 1];
+      }
+      ArrayResize(array, size - 1);
+   }
    
    IFloatArray* Slice(int from, int to)
    {

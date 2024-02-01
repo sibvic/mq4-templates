@@ -11,4 +11,5 @@ public:
    virtual Line* Get(int index) = 0;
    virtual ILineArray* Slice(int from, int to) = 0;
    virtual ILineArray* Clear() = 0;
+   virtual void Shift() = 0;
 };

@@ -10,4 +10,5 @@ public:
    virtual int Get(int index) = 0;
    virtual IIntArray* Slice(int from, int to) = 0;
    virtual IIntArray* Clear() = 0;
+   virtual void Shift() = 0;
 };

@@ -15,6 +15,71 @@ public:
       }
       array.Unshift(value);
    }
+   
+   static int Size(ILineArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
+   static int Size(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
+   static int Size(IFloatArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
+
+   static void Shift(ILineArray* array) { if (array == NULL) { return; } array.Shift(); }
+   static void Shift(IIntArray* array) { if (array == NULL) { return; } array.Shift(); }
+   static void Shift(IFloatArray* array) { if (array == NULL) { return; } array.Shift(); }
+
+   static int Max(IIntArray* array)
+   {
+      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      int max = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         int current = array.Get(i);
+         if (max == EMPTY_VALUE || (current != EMPTY_VALUE && max < current))
+         {
+            max = current;
+         }
+      }
+      return max;
+   }
+   static double Max(IFloatArray* array)
+   {
+      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      double max = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         double current = array.Get(i);
+         if (max == EMPTY_VALUE || (current != EMPTY_VALUE && max < current))
+         {
+            max = current;
+         }
+      }
+      return max;
+   }
+   static int Min(IIntArray* array)
+   {
+      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      int min = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         int current = array.Get(i);
+         if (min == EMPTY_VALUE || (current != EMPTY_VALUE && min > current))
+         {
+            min = current;
+         }
+      }
+      return min;
+   }
+   static double Min(IFloatArray* array)
+   {
+      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      double min = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         double current = array.Get(i);
+         if (min == EMPTY_VALUE || (current != EMPTY_VALUE && min > current))
+         {
+            min = current;
+         }
+      }
+      return min;
+   }
 
    static void Push(ILineArray* array, Line* value)
    {

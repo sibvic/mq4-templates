@@ -113,3 +113,21 @@ double SafeMathAbs(double value)
    }
    return MathAbs(value);
 }
+
+double SafeMathRound(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathRound(value);
+}
+
+double SafeMathRound(double value, int precision)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return NormalizeDouble(value, precision);
+}

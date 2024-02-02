@@ -10,6 +10,7 @@ class Line
    color _clr;
    int _width;
    ENUM_TIMEFRAMES _timeframe;
+   string _style;
 public:
    Line(int x1, double y1, int x2, double y2, string id)
    {
@@ -25,6 +26,12 @@ public:
    string GetId()
    {
       return _id;
+   }
+
+   Line* SetStyle(string style)
+   {
+      _style = style;
+      return &this;
    }
 
    void SetXY1(int x, double y)
@@ -55,53 +62,30 @@ public:
       line.SetXY2(x, y);
    }
 
-   void SetX1(int x)
-   {
-      _x1 = x;
-   }
-   static void SetX1(Line* line, int x)
-   {
-      if (line == NULL)
-      {
-         return;
-      }
-      line.SetX1(x);
-   }
-   void SetX2(int x)
-   {
-      _x2 = x;
-   }
-   static void SetX2(Line* line, int x)
-   {
-      if (line == NULL)
-      {
-         return;
-      }
-      line.SetX2(x);
-   }
-   void SetY1(double y)
-   {
-      _y1 = y;
-   }
-   static void SetY1(Line* line, double y)
+   void SetX1(int x) { _x1 = x; }
+   static void SetX1(Line* line, int x) { if (line == NULL) { return; } line.SetX1(x); }
+   void SetX2(int x) { _x2 = x; }
+   static void SetX2(Line* line, int x) { if (line == NULL) { return; } line.SetX2(x); }
+   void SetY1(double y) { _y1 = y; }
+   static void SetY1(Line* line, double y) { if (line == NULL) { return; } line.SetY1(y); }
+   void SetY2(double y) { _y2 = y; }
+   static void SetY2(Line* line, double y) { if (line == NULL) { return; } line.SetY2(y); }
+
+   int GetX1() { return _x1; }
+   static int GetX1(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetX1(); }
+   int GetX2() { return _x2; }
+   static int GetX2(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetX2(); }
+   double GetY1() { return _y1; }
+   static double GetY1(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetY1(); }
+   double GetY2() { return _y2; }
+   static double GetY2(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetY2(); }
+
+   static void Delete(Line* line)
    {
       if (line == NULL)
       {
          return;
       }
-      line.SetY1(y);
-   }
-   void SetY2(double y)
-   {
-      _y2 = y;
-   }
-   static void SetY2(Line* line, double y)
-   {
-      if (line == NULL)
-      {
-         return;
-      }
-      line.SetY2(y);
    }
 
    Line* SetColor(color clr)

@@ -1,4 +1,4 @@
-// Array v1.0
+// Array v1.1
 #include <Array/IArray.mqh>
 #include <Array/LineArray.mqh>
 #include <Array/IntArray.mqh>
@@ -7,22 +7,17 @@
 class Array
 {
 public:
-   static void Unshift(IIntArray* array, int value)
-   {
-      if (array == NULL)
-      {
-         return;
-      }
-      array.Unshift(value);
-   }
+   static void Unshift(IIntArray* array, int value) { if (array == NULL) { return; } array.Unshift(value); }
+   static void Unshift(ILineArray* array, Line* value) { if (array == NULL) { return; } array.Unshift(value); }
+   static void Unshift(IFloatArray* array, double value) { if (array == NULL) { return; } array.Unshift(value); }
    
    static int Size(ILineArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
    static int Size(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
    static int Size(IFloatArray* array) { if (array == NULL) { return EMPTY_VALUE;} return array.Size(); }
 
-   static void Shift(ILineArray* array) { if (array == NULL) { return; } array.Shift(); }
-   static void Shift(IIntArray* array) { if (array == NULL) { return; } array.Shift(); }
-   static void Shift(IFloatArray* array) { if (array == NULL) { return; } array.Shift(); }
+   static Line* Shift(ILineArray* array) { if (array == NULL) { return NULL; } return array.Shift(); }
+   static int Shift(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
+   static double Shift(IFloatArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
 
    static int Max(IIntArray* array)
    {
@@ -81,30 +76,9 @@ public:
       return min;
    }
 
-   static void Push(ILineArray* array, Line* value)
-   {
-      if (array == NULL)
-      {
-         return;
-      }
-      array.Push(value);
-   }
-   static void Push(IIntArray* array, int value)
-   {
-      if (array == NULL)
-      {
-         return;
-      }
-      array.Push(value);
-   }
-   static void Push(IFloatArray* array, double value)
-   {
-      if (array == NULL)
-      {
-         return;
-      }
-      array.Push(value);
-   }
+   static void Push(ILineArray* array, Line* value) { if (array == NULL) { return; } array.Push(value); }
+   static void Push(IIntArray* array, int value) { if (array == NULL) { return; } array.Push(value); }
+   static void Push(IFloatArray* array, double value) { if (array == NULL) { return; } array.Push(value); }
 
    static int Sum(IIntArray* array)
    {
@@ -133,30 +107,12 @@ public:
       return sum;
    }
 
-   static int Pop(IIntArray* array)
-   {
-      if (array == NULL)
-      {
-         return 0;
-      }
-      return array.Pop();
-   }
+   static int Pop(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Pop(); }
+   static double Pop(IFloatArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Pop(); }
+   static Line* Pop(ILineArray* array) { if (array == NULL) { return NULL; } return array.Pop(); }
 
-   static int Get(IIntArray* array, int index)
-   {
-      if (array == NULL)
-      {
-         return 0;
-      }
-      return array.Get(index);
-   }
-   static double Get(IFloatArray* array, int index)
-   {
-      if (array == NULL)
-      {
-         return 0;
-      }
-      return array.Get(index);
-   }
+   static int Get(IIntArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Get(index); }
+   static double Get(IFloatArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Get(index); }
+   static Line* Get(ILineArray* array, int index) { if (array == NULL) { return NULL; } return array.Get(index); }
 };
 

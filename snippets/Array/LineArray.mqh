@@ -53,14 +53,16 @@ public:
       return value;
    }
 
-   void Shift()
+   Line* Shift()
    {
       int size = ArraySize(array);
+      Line* value = array[0];
       for (int i = 0; i < size - 1; ++i)
       {
          array[i] = array[i + 1];
       }
       ArrayResize(array, size - 1);
+      return value;
    }
 
    Line* Get(int index)

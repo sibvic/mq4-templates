@@ -10,5 +10,5 @@ public:
    virtual double Get(int index) = 0;
    virtual IFloatArray* Slice(int from, int to) = 0;
    virtual IFloatArray* Clear() = 0;
-   virtual void Shift() = 0;
+   virtual double Shift() = 0;
 };

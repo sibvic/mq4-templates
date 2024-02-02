@@ -54,14 +54,16 @@ public:
       return value;
    }
 
-   void Shift()
+   int Shift()
    {
       int size = ArraySize(array);
+      int value = array[0];
       for (int i = 0; i < size - 1; ++i)
       {
          array[i] = array[i + 1];
       }
       ArrayResize(array, size - 1);
+      return value;
    }
 
    int Get(int index)

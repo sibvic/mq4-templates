@@ -20,7 +20,7 @@ public:
       _loopback = loopback;
    }
 
-   bool GetValue(const int period, double &val)
+   bool GetValue(const int period, int &val)
    {
       double current;
       if (!_source.GetValue(period, current))
@@ -38,6 +38,17 @@ public:
          }
       }
       val = index;
+      return true;
+   }
+
+   bool GetValue(const int period, double &val)
+   {
+      int value;
+      if (!GetValue(period, value))
+      {
+         return false;
+      }
+      val = value;
       return true;
    }
 };

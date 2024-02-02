@@ -131,3 +131,12 @@ double SafeMathRound(double value, int precision)
    }
    return NormalizeDouble(value, precision);
 }
+
+double SafeMathSqrt(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathSqrt(value);
+}

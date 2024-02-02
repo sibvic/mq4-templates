@@ -2,7 +2,7 @@
 
 bool NumberToBool(double number)
 {
-   return number != EMPTY_VALUE;
+   return number != EMPTY_VALUE && number != 0;
 }
 
 class FirstBarState

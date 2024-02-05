@@ -140,3 +140,16 @@ double SafeMathSqrt(double value)
    }
    return MathSqrt(value);
 }
+
+int SafeSign(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   if (value == 0)
+   {
+      return 0;
+   }
+   return value > 0 ? 1 : -1;
+}

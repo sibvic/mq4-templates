@@ -1,4 +1,4 @@
-// Line array v1.0
+// Line array v1.1
 #include <Array/ILineArray.mqh>
 class LineArray : public ILineArray
 {
@@ -26,7 +26,7 @@ public:
    {
       int size = ArraySize(array);
       ArrayResize(array, size + 1);
-      for (int i = 0; i < size; ++i)
+      for (int i = size - 1; i >= 0; --i)
       {
          array[i + 1] = array[i];
       }

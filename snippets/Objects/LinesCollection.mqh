@@ -1,4 +1,4 @@
-// Collection of lines v1.0
+// Collection of lines v1.1
 
 #ifndef LinesCollection_IMPL
 #define LinesCollection_IMPL
@@ -39,9 +39,18 @@ public:
       ArrayResize(_collections, 0);
    }
 
-   void Delete(int index)
+   static void Delete(Line* line)
    {
-      //ObjectDelete();
+      if (line == NULL)
+      {
+         return;
+      }
+      LinesCollection* collection = FindCollection(line.GetId());
+      if (collection == NULL)
+      {
+         return;
+      }
+      collection.DeleteLine(line);
    }
 
    static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId)
@@ -75,20 +84,45 @@ public:
       }
    }
 private:
-   
-   void Add(Line* line)
+   int FindIndex(Line* line)
    {
       int size = ArraySize(_lines);
       for (int i = 0; i < size; ++i)
       {
          if (_lines[i].GetId() == line.GetId())
          {
-            delete _lines[i];
-            _lines[i] = line;
-            return;
+            return i;
          }
       }
-      
+      return -1;
+   }
+
+   void DeleteLine(Line* line)
+   {
+      int index = FindIndex(line);
+      if (index != -1)
+      {
+         return;
+      }
+      delete _lines[index];
+      int size = ArraySize(_lines);
+      for (int i = index + 1; i < size; ++i)
+      {
+         _lines[i - 1] = _lines[i];
+      }
+      ArrayResize(_lines, size - 1);
+   }
+   
+   void Add(Line* line)
+   {
+      int index = FindIndex(line);
+      if (index != -1)
+      {
+         delete _lines[index];
+         _lines[index] = line;
+         return;
+      }
+      int size = ArraySize(_lines);
       ArrayResize(_lines, size + 1);
       _lines[size] = line;
    }

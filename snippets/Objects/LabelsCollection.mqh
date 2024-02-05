@@ -1,4 +1,4 @@
-// Collection of labels v1.0
+// Collection of labels v1.1
 
 #ifndef LabelsCollection_IMPL
 #define LabelsCollection_IMPL
@@ -10,6 +10,8 @@ class LabelsCollection
    string _id;
    Label* _labels[];
    static LabelsCollection* _collections[];
+   static LabelsCollection* _all;
+   static int _maxLabels;
 public:
    LabelsCollection(string id)
    {
@@ -17,6 +19,11 @@ public:
    }
    
    ~LabelsCollection()
+   {
+      ClearLabels();
+   }
+   
+   void ClearLabels()
    {
       for (int i = 0; i < ArraySize(_labels); ++i)
       {
@@ -30,6 +37,40 @@ public:
       return _id;
    }
    
+   int Count()
+   {
+      return ArraySize(_labels);
+   }
+   
+   Label* GetFirst()
+   {
+      return _labels[0];
+   }
+   
+   Label* GetByIndex(int index)
+   {
+      int size = ArraySize(_labels);
+      if (index < 0 || index >= size)
+      {
+         return NULL;
+      }
+      return _labels[size - 1 - index];
+   }
+
+   static Label* Get(Label* label, int index)
+   {
+      if (label == NULL)
+      {
+         return NULL;
+      }
+      LabelsCollection* collection = FindCollection(label.GetCollectionId());
+      if (collection == NULL)
+      {
+         return NULL;
+      }
+      return collection.GetByIndex(index);
+   }
+   
    static void Clear()
    {
       for (int i = 0; i < ArraySize(_collections); ++i)
@@ -37,14 +78,29 @@ public:
          delete _collections[i];
       }
       ArrayResize(_collections, 0);
+      if (_all == NULL)
+      {
+         _all = new LabelsCollection("");
+      }
+      _all.ClearLabels();
    }
 
-   void Delete(int index)
+   static void Delete(Label* label)
    {
-      //ObjectDelete();
+      if (label == NULL)
+      {
+         return;
+      }
+      _all.RemoveLabel(label);
+      LabelsCollection* collection = FindCollection(label.GetCollectionId());
+      if (collection == NULL)
+      {
+         return;
+      }
+      collection.DeleteLabel(label);
    }
 
-   static Label* Create(string id, datetime x, double y, datetime dateId)
+   static Label* Create(string id, int x, double y, datetime dateId)
    {
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x - 1);
@@ -55,7 +111,7 @@ public:
          + IntegerToString(TimeHour(dateId)) + "_"
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
-      Label* label = new Label(x, y, labelId);
+      Label* label = new Label(x, y, labelId, id, 1);
       LabelsCollection* collection = FindCollection(id);
       if (collection == NULL)
       {
@@ -63,7 +119,17 @@ public:
          AddCollection(collection);
       }
       collection.Add(label);
+      _all.Add(label);
+      if (_all.Count() > _maxLabels)
+      {
+         Delete(_all.GetFirst());
+      }
       return label;
+   }
+
+   static void SetMaxLabels(int max)
+   {
+      _maxLabels = max;
    }
 
    static void Redraw()
@@ -74,20 +140,42 @@ public:
       }
    }
 private:
-   
-   void Add(Label* label)
+   int FindIndex(Label* label)
    {
       int size = ArraySize(_labels);
       for (int i = 0; i < size; ++i)
       {
-         if (_labels[i].GetId() == label.GetId())
+         if (_labels[i] == label)
          {
-            delete _labels[i];
-            _labels[i] = label;
-            return;
+            return i;
          }
       }
+      return -1;
+   }
+   void RemoveLabel(Label* label)
+   {
+      int index = FindIndex(label);
+      if (index == -1)
+      {
+         return;
+      }
+      int size = ArraySize(_labels);
+      for (int i = index + 1; i < size; ++i)
+      {
+         _labels[i - 1] = _labels[i];
+      }
+      ArrayResize(_labels, size - 1);
+   }
+   void DeleteLabel(Label* label)
+   {
+      RemoveLabel(label);
+      delete label;
+   }
+   void Add(Label* label)
+   {
+      int index = FindIndex(label);
       
+      int size = ArraySize(_labels);
       ArrayResize(_labels, size + 1);
       _labels[size] = label;
    }
@@ -100,7 +188,7 @@ private:
          _labels[i].Redraw();
       }
    }
-   
+
    static void AddCollection(LabelsCollection* collection)
    {
       int size = ArraySize(_collections);
@@ -121,4 +209,6 @@ private:
    }
 };
 LabelsCollection* LabelsCollection::_collections[];
+LabelsCollection* LabelsCollection::_all;
+int LabelsCollection::_maxLabels = 50;
 #endif

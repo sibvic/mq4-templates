@@ -1,4 +1,4 @@
-// Label v1.1
+// Label v1.2
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -9,6 +9,7 @@ class Label
    color _textColor;
    string _text;
    string _labelId;
+   string _collectionId;
    int _x;
    double _y;
    string _font;
@@ -16,13 +17,16 @@ class Label
    string _size;
    string _yloc;
    ENUM_TIMEFRAMES _timeframe;
+   int _window;
 public:
-   Label(int x, double y, string labelId)
+   Label(int x, double y, string labelId, string collectionId, int window)
    {
+      _window = window;
       _textColor = Yellow;
       _x = x;
       _y = y;
       _labelId = labelId;
+      _collectionId = collectionId;
       _font = "Arial";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
    }
@@ -30,6 +34,10 @@ public:
    string GetId()
    {
       return _labelId;
+   }
+   string GetCollectionId()
+   {
+      return _collectionId;
    }
 
    int GetX()
@@ -176,11 +184,12 @@ public:
       int pos = iBars(_Symbol, _timeframe) - _x - 1;
       datetime x = iTime(_Symbol, _timeframe, pos);
       double y = getY(pos);
+      
       if (ObjectFind(0, _labelId) == -1 
-         && ObjectCreate(0, _labelId, OBJ_TEXT, 0, x, y))
+         && ObjectCreate(0, _labelId, OBJ_TEXT, _window, x, y))
       {
-         ObjectSetString(0, _labelId, OBJPROP_FONT, getFontSize());
-         ObjectSetInteger(0, _labelId, OBJPROP_FONTSIZE, 12);
+         ObjectSetString(0, _labelId, OBJPROP_FONT, "Arial");
+         ObjectSetInteger(0, _labelId, OBJPROP_FONTSIZE, getFontSize());
          ObjectSetInteger(0, _labelId, OBJPROP_COLOR, _textColor);
       }
       ObjectSetInteger(0, _labelId, OBJPROP_TIME, x);

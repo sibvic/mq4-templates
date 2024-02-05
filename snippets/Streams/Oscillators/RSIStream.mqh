@@ -1,18 +1,19 @@
 #include <Streams/AOnStream.mqh>
 #include <Streams/ChangeStream.mqh>
+#include <Streams/AStreamBase.mqh>
 
-// RSI stream v1.0
+// RSI stream v1.1
 
 #ifndef RSIStream_IMP
 #define RSIStream_IMP
 
-class RSIStream : public AOnStream
+class RSISimpleStream : public AOnStream
 {
    int _period;
    double _pos[];
    double _neg[];
 public:
-   RSIStream(IStream* stream, int period)
+   RSISimpleStream(IStream* stream, int period)
       :AOnStream(new ChangeStream(stream))
    {
       _source.Release();
@@ -73,6 +74,78 @@ public:
       _neg[period] = negative;
       val = negative == 0 ? 0 : 100 - (100 / (1 + positive / negative));
       return true;
+   }
+};
+
+class PineScriptRSIUpDownStream : public AStreamBase
+{
+   IStream* _up;
+   IStream* _down;
+public:
+   PineScriptRSIUpDownStream(IStream* up, IStream* down)
+   {
+      _up = up;
+      _up.AddRef();
+      _down = down;
+      _down.AddRef();
+   }
+   ~PineScriptRSIUpDownStream()
+   {
+      _up.Release();
+      _down.Release();
+   }
+   
+   virtual int Size()
+   {
+      return _up.Size();
+   }
+
+   virtual bool GetValue(const int period, double &val)
+   {
+      double up;
+      double down;
+      if (!_up.GetValue(period, up) || !_down.GetValue(period, down))
+      {
+         return false;
+      }
+      if (down == 0)
+      {
+         val = 0;
+         return true;
+      }
+      double rs = up / down;
+      val = 100 - 100.0 / (1.0 + rs);
+      return true;
+   }
+};
+
+class RSIStream : public AStreamBase
+{
+   IStream* _impl;
+public:
+   RSIStream(IStream* stream, int period)
+   {
+      _impl = new RSISimpleStream(stream, period);
+   }
+
+   RSIStream(IStream* up, IStream* down)
+   {
+      _impl = new PineScriptRSIUpDownStream(up, down);
+   }
+
+   ~RSIStream()
+   {
+      _impl.Release();
+   }
+   
+   virtual int Size()
+   {
+      return _impl.Size();
+   }
+
+   virtual bool GetValue(const int period, double &val)
+   {
+      return _impl.GetValue(period, val);
    }
 };
 

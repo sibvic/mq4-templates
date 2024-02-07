@@ -4,7 +4,7 @@
 
 //AOnStream v1.0
 
-class CrossoverStream : public ConditionStream
+class CrossoverStream : public ConditionStream//Obsolete
 {
 public:
    CrossoverStream(IStream *left, IStream* right)

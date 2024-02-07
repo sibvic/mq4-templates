@@ -3,7 +3,7 @@
 
 //AOnStream v1.0
 
-class ConditionStream : public AStreamBase
+class ConditionStream : public AStreamBase//obsolete
 {
 protected:
    ICondition* _condition;

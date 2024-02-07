@@ -1,5 +1,8 @@
+#ifndef BarsSinceStream_IMPL
+#define BarsSinceStream_IMPL
+
 #include <Streams/AStream.mqh>
-#include <Streams/CustomStream.mqh>
+#include <Streams/Custom/FloatStream.mqh>
 #include <Conditions/ICondition.mqh>
 #include <Conditions/StreamValueCondition.mqh>
 #include <enums/TwoStreamsConditionType.mqh>
@@ -8,9 +11,9 @@
 // In case of stream check it's value equal to 1
 // v1.1
 
-class BarsSinceStream : public AStream
+class BarsSinceStream : public AStream //obsolete
 {
-   CustomStream* _stream;
+   FloatStream* _stream;
    ICondition* _condition;
    int _bars[];
 public:
@@ -32,7 +35,7 @@ public:
    BarsSinceStream(string symbol, ENUM_TIMEFRAMES timeframe)
       :AStream(symbol, timeframe)
    {
-      _stream = new CustomStream(symbol, timeframe);
+      _stream = new FloatStream(symbol, timeframe);
       _condition = new StreamValueCondition(symbol, timeframe, FirstEqualsSecond, _stream, 1, "Stream");
    }
 
@@ -99,3 +102,4 @@ private:
       }
    }
 };
+#endif

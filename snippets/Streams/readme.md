@@ -219,15 +219,15 @@ Returns last value on condition meet.
 
 ## ConditionStream
 
-Converts condition to 1 and 0.
+Obsolete. Converts condition to 1 and 0.
 
 ## CrossoverStream
 
-Shortcut for a crossover of two streams.
+Obsolete. Shortcut for a crossover of two streams.
 
 ## CrossunderStream
 
-Shortcut for a crossunder of two streams.
+Obsolete. Shortcut for a crossunder of two streams.
 
 ## TwoStreamDifferenceStream
 
@@ -239,7 +239,7 @@ Price stream for symbol/timeframe
 
 ## BarsSinceStream
 
-Counts number of bars since last condition. Can accept ICondition or IStream. In case of IStream checks it's value for 1.
+Obsolete. Counts number of bars since last condition. Can accept ICondition or IStream. In case of IStream checks it's value for 1.
 
 ## HighestBarsStream
 
@@ -259,8 +259,16 @@ Replacement of var x = y in PineScript
 
 ## CrossStream
 
-Puts 1 when two streams cross and 0 otherwise.
+Obsolete. Puts 1 when two streams cross and 0 otherwise.
 
-## Rising
+## RisingStream
 
 Returns true when value > than previous (length). Similar to ta.rising from Pine Script
+
+## FallingStream
+
+Returns true when value < than previous (length). Similar to ta.falling from Pine Script
+
+## BarsSinceStreamV2
+
+Counts number of bars since last condition.

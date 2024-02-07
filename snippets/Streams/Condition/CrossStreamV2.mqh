@@ -4,8 +4,9 @@
 #include <Conditions/StreamStreamCondition.mqh>
 #include <Conditions/OrCondition.mqh>
 #include <enums/TwoStreamsConditionType.mqh>
+#include <Streams/Custom/IntToFloatStreamWrapper.mqh>
 
-//CrossStreamV2 v1.0
+//CrossStreamV2 v1.1
 
 class CrossStreamFactory
 {
@@ -27,6 +28,13 @@ public:
       condition.Release();
       return result;
    }
+   static IBoolStream* CreateCrossunder(IStream *left, IIntStream* right)
+   {
+      IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
+      IBoolStream* condition = CreateCrossunder(left, rightWrapper);
+      rightWrapper.Release();
+      return condition;
+   }
 
    static IBoolStream* CreateCrossover(IStream *left, IStream* right)
    {
@@ -34,6 +42,22 @@ public:
       ConditionStreamV2* result = new ConditionStreamV2(condition);
       condition.Release();
       return result;
+   }
+   static IBoolStream* CreateCrossover(IIntStream *left, IIntStream* right)
+   {
+      IntToFloatStreamWrapper* leftWrapper = new IntToFloatStreamWrapper(left);
+      IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
+      IBoolStream* condition = CreateCrossover(leftWrapper, rightWrapper);
+      leftWrapper.Release();
+      rightWrapper.Release();
+      return condition;
+   }
+   static IBoolStream* CreateCrossover(IStream *left, IIntStream* right)
+   {
+      IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
+      IBoolStream* condition = CreateCrossover(left, rightWrapper);
+      rightWrapper.Release();
+      return condition;
    }
 };
 #endif

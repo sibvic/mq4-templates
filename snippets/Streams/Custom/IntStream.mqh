@@ -1,4 +1,4 @@
-// Custom integer stream v1.0
+// Custom integer stream v1.1
 
 #ifndef IntStream_IMPL
 #define IntStream_IMPL
@@ -26,7 +26,7 @@ public:
       return iBars(_symbol, _timeframe);
    }
 
-   void SetValue(const int period, double value)
+   void SetValue(const int period, int value)
    {
       int totalBars = Size();
       int index = totalBars - period - 1;

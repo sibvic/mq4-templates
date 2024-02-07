@@ -14,6 +14,10 @@ Implements reference counting for IIntArrayStream.
 
 Implements reference counting for IIntStream.
 
+## ABoolStream
+
+Implements reference counting for IBoolStream.
+
 ## ALineArrayStream
 
 Implements reference counting for ILineArrayStream.

@@ -4,4 +4,8 @@ Float stream. (used to be CustomStream)
 
 ## IntStream
 
-Int stream
+Integer stream
+
+## BoolStream
+
+Boolean stream

@@ -1,3 +1,5 @@
+#ifndef FixnanStream_IMP
+#define FixnanStream_IMP
 // Fix NAN stream v1.0
 
 #include <Streams/AOnStream.mqh>
@@ -25,3 +27,13 @@ public:
       return false;
    }
 };
+
+class FixnanStreamFactory
+{
+public:
+   static IStream* Create(IStream* source)
+   {
+      return new FixnanStream(source);
+   }
+};
+#endif

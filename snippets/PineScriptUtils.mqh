@@ -24,3 +24,18 @@ public:
       return first;
    }
 };
+
+color FromGradient(double value, double bottomValue, double topValue, color bottomColor, color topColor)
+{
+   if (value == EMPTY_VALUE || topValue == EMPTY_VALUE)
+   {
+      return bottomColor;
+   }
+   if (bottomValue == EMPTY_VALUE)
+   {
+      return topColor;
+   }
+   return value - bottomValue < topValue - value 
+      ? bottomColor
+      : topColor;
+}

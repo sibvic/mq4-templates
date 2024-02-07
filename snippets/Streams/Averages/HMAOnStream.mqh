@@ -1,10 +1,10 @@
-// HMA on stream v1.0
+// HMA on stream v1.1
 
 #ifndef HMAOnStream_IMP
 #define HMAOnStream_IMP
 #include <Streams/Averages/WMAOnStream.mqh>
 #include <Streams/AOnStream.mqh>
-#include <Streams/CustomStream.mqh>
+#include <Streams/Custom/FloatStream.mqh>
 
 class HMAOnStream : public AOnStream
 {
@@ -12,7 +12,7 @@ class HMAOnStream : public AOnStream
    WMAOnStream* wmaHalf;
    WMAOnStream* wma;
    WMAOnStream* wmaOnDiff;
-   CustomStream* diff;
+   FloatStream* diff;
 public:
    HMAOnStream(IStream *source, const int length)
       : AOnStream(source)
@@ -20,7 +20,7 @@ public:
       _length = length;
       wmaHalf = new WMAOnStream(source, MathFloor(length / 2 + 0.5));
       wma = new WMAOnStream(source, length);
-      diff = new CustomStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
+      diff = new FloatStream(_Symbol, (ENUM_TIMEFRAMES)_Period);
       wmaOnDiff = new WMAOnStream(diff, MathFloor(MathSqrt(length) + 0.5));
    }
 

@@ -1,3 +1,5 @@
+// VWMA on stream v1.1
+
 #include <Streams/AOnStream.mqh>
 
 #ifndef VwmaOnStream_IMP
@@ -6,23 +8,27 @@
 class VwmaOnStream : public AOnStream
 {
    int _length;
+   string _symbol;
+   ENUM_TIMEFRAMES _timeframe;
 public:
-   VwmaOnStream(IStream *source, const int length)
+   VwmaOnStream(string symbol, ENUM_TIMEFRAMES timeframe, IStream *source, const int length)
       :AOnStream(source)
    {
+      _symbol = symbol;
+      _timeframe = timeframe;
       _length = length;
    }
 
    bool GetValue(const int period, double &val)
    {
-      int totalBars = Bars;
+      int totalBars = iBars(_symbol, _timeframe);
       if (period > totalBars - _length)
          return false;
       double price;
       if (!_source.GetValue(period, price))
          return false;
 
-      long sumw = Volume[period];
+      long sumw = iVolume(_symbol, _timeframe, period);
       double sum = sumw * price;
       for (int k = 1; k < _length; k++)
       {

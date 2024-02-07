@@ -1,3 +1,6 @@
+#ifndef FloatStream_IMPL
+#define FloatStream_IMPL
+
 #include <Streams/AStreamBase.mqh>
 // Float stream v2.3
 
@@ -62,3 +65,5 @@ private:
       }
    }
 };
+
+#endif

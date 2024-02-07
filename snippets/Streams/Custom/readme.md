@@ -9,3 +9,7 @@ Integer stream
 ## BoolStream
 
 Boolean stream
+
+## IntToFloatStreamWrapper
+
+Integer to float stream adapter

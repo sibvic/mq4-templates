@@ -1,4 +1,4 @@
-//Signaler v2.1
+//Signaler v2.2
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 input string   AlertsSection            = ""; // == Alerts ==
 input bool     popup_alert              = false; // Popup message
@@ -24,17 +24,60 @@ void AdvancedAlertCustom(string key, string text, string instrument, string time
 int ShellExecuteW(int hwnd,string Operation,string File,string Parameters,string Directory,int ShowCmd);
 #import
 
+enum SignalerFrequency
+{
+   SignalsAll,
+   SignalsOncePerBarClose,
+   SignalsOncePerBar
+};
+
 class Signaler
 {
    string _prefix;
+   SignalerFrequency _frequency;
+   datetime _lastSignal;
 public:
+   Signaler(string frequency)
+   {
+      if (frequency == "all")
+      {
+         _frequency = SignalsAll;
+      }
+      else if (frequency == "once_per_bar_close")
+      {
+         _frequency = SignalsOncePerBarClose;
+      }
+      else if (frequency == "once_per_bar")
+      {
+         _frequency = SignalsOncePerBar;
+      }
+      _lastSignal = 0;
+   }
    Signaler()
    {
+      _lastSignal = 0;
    }
 
    void SetMessagePrefix(string prefix)
    {
       _prefix = prefix;
+   }
+
+   void Alert(string message, int position, datetime time)
+   {
+      if (position != 0)
+      {
+         return;
+      }
+      if (_frequency != SignalsAll)
+      {
+         if (_lastSignal == time)
+         {
+            return;
+         }
+      }
+      _lastSignal = time;
+      SendNotifications("", message);
    }
 
    void SendNotifications(const string subject, string message = NULL)

@@ -1,4 +1,4 @@
-// Box array v1.1
+// Box array v1.2
 #include <Array/IBoxArray.mqh>
 class BoxArray : public IBoxArray
 {
@@ -31,6 +31,10 @@ public:
          array[i + 1] = array[i];
       }
       array[0] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
 
    int Size()
@@ -43,6 +47,10 @@ public:
       int size = ArraySize(array);
       ArrayResize(array, size + 1);
       array[size] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
 
    Box* Pop()
@@ -50,6 +58,10 @@ public:
       int size = ArraySize(array);
       Box* value = array[size - 1];
       ArrayResize(array, size - 1);
+      if (value.Release() == 0)
+      {
+         return NULL;
+      }
       return value;
    }
 
@@ -77,6 +89,10 @@ public:
          array[i] = array[i + 1];
       }
       ArrayResize(array, size - 1);
+      if (value.Release() == 0)
+      {
+         return NULL;
+      }
       return value;
    }
 };

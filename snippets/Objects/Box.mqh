@@ -1,7 +1,7 @@
 #ifndef Box_IMPL
 #define Box_IMPL
 
-// Box object v1.0
+// Box object v1.1
 
 class Box
 {
@@ -16,9 +16,11 @@ class Box
    color _borderColor;
    ENUM_TIMEFRAMES _timeframe;
    string _extend;
+   int _refs;
 public:
    Box(int left, double top, int right, double bottom, string id, string collectionId, int window)
    {
+      _refs = 1;
       _left = left;
       _right = right;
       _top = top;
@@ -28,6 +30,19 @@ public:
       _window = window;
       _extend = "none";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
+   }
+   void AddRef()
+   {
+      _refs++;
+   }
+   int Release()
+   {
+      int refs = --_refs;
+      if (refs == 0)
+      {
+         delete &this;
+      }
+      return refs;
    }
 
    string GetId()

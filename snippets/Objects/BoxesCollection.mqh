@@ -1,4 +1,4 @@
-// Collection of boxes v1.0
+// Collection of boxes v1.1
 
 #ifndef BoxesCollection_IMPL
 #define BoxesCollection_IMPL
@@ -10,6 +10,8 @@ class BoxesCollection
    string _id;
    Box* _boxes[];
    static BoxesCollection* _collections[];
+   static BoxesCollection* _all;
+   static int _maxBoxes;
 public:
    BoxesCollection(string id)
    {
@@ -18,9 +20,14 @@ public:
 
    ~BoxesCollection()
    {
+      ClearBoxes();
+   }
+   
+   void ClearBoxes()
+   {
       for (int i = 0; i < ArraySize(_boxes); ++i)
       {
-         delete _boxes[i];
+         _boxes[i].Release();
       }
       ArrayResize(_boxes, 0);
    }
@@ -30,6 +37,40 @@ public:
       return _id;
    }
 
+   int Count()
+   {
+      return ArraySize(_boxes);
+   }
+
+   Box* GetFirst()
+   {
+      return _boxes[0];
+   }
+
+   Box* GetByIndex(int index)
+   {
+      int size = ArraySize(_boxes);
+      if (index < 0 || index >= size)
+      {
+         return NULL;
+      }
+      return _boxes[size - 1 - index];
+   }
+
+   static Box* Get(Box* box, int index)
+   {
+      if (box == NULL)
+      {
+         return NULL;
+      }
+      BoxesCollection* collection = FindCollection(box.GetCollectionId());
+      if (collection == NULL)
+      {
+         return NULL;
+      }
+      return collection.GetByIndex(index);
+   }
+
    static void Clear()
    {
       for (int i = 0; i < ArraySize(_collections); ++i)
@@ -37,11 +78,20 @@ public:
          delete _collections[i];
       }
       ArrayResize(_collections, 0);
+      if (_all == NULL)
+      {
+         _all = new BoxesCollection("");
+      }
+      _all.ClearBoxes();
    }
 
    static void Delete(Box* box)
    {
       if (box == NULL)
+      {
+         return;
+      }
+      if (!_all.RemoveBox(box))
       {
          return;
       }
@@ -73,7 +123,17 @@ public:
          AddCollection(collection);
       }
       collection.Add(box);
+      _all.Add(box);
+      if (_all.Count() > _maxBoxes)
+      {
+         Delete(_all.GetFirst());
+      }
       return box;
+   }
+   
+   static void SetMaxBoxes(int max)
+   {
+      _maxBoxes = max;
    }
 
    static void Redraw()
@@ -97,31 +157,33 @@ private:
       return -1;
    }
 
-   void DeleteBox(Box* box)
+   bool RemoveBox(Box* box)
    {
       int index = FindIndex(box);
       if (index == -1)
       {
-         return;
+         return false;
       }
-      delete _boxes[index];
       int size = ArraySize(_boxes);
       for (int i = index + 1; i < size; ++i)
       {
          _boxes[i - 1] = _boxes[i];
       }
       ArrayResize(_boxes, size - 1);
+      return true;
+   }
+   void DeleteBox(Box* box)
+   {
+      if (RemoveBox(box))
+      {
+         box.Release();
+      }
    }
    
    void Add(Box* box)
    {
       int index = FindIndex(box);
-      if (index != -1)
-      {
-         delete _boxes[index];
-         _boxes[index] = box;
-         return;
-      }
+      
       int size = ArraySize(_boxes);
       ArrayResize(_boxes, size + 1);
       _boxes[size] = box;
@@ -156,4 +218,6 @@ private:
    }
 };
 BoxesCollection* BoxesCollection::_collections[];
+BoxesCollection* BoxesCollection::_all;
+int BoxesCollection::_maxBoxes = 50;
 #endif

@@ -155,6 +155,7 @@ public:
    Label* SetText(string text)
    {
       _text = text;
+      StringReplace(_text, "\n", " ");
       if (_text == "")
       {
          _font = "Wingdings";
@@ -191,12 +192,25 @@ public:
          ObjectSetString(0, _labelId, OBJPROP_FONT, "Arial");
          ObjectSetInteger(0, _labelId, OBJPROP_FONTSIZE, getFontSize());
          ObjectSetInteger(0, _labelId, OBJPROP_COLOR, _textColor);
+         ObjectSetInteger(0, _labelId, OBJPROP_ANCHOR, GetAnchor());
       }
       ObjectSetInteger(0, _labelId, OBJPROP_TIME, x);
       ObjectSetDouble(0, _labelId, OBJPROP_PRICE1, y);
       ObjectSetString(0, _labelId, OBJPROP_TEXT, usedText);
    }
 private:
+   int GetAnchor()
+   {
+      if (_yloc == "abovebar")
+      {
+         return ANCHOR_LOWER;
+      }
+      if (_yloc == "belowbar")
+      {
+         return ANCHOR_UPPER;
+      }
+      return ANCHOR_CENTER;
+   }
    int getFontSize()
    {
       if (_size == "tiny")

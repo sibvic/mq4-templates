@@ -1,4 +1,4 @@
-// Line array v1.1
+// Line array v1.2
 #include <Array/ILineArray.mqh>
 class LineArray : public ILineArray
 {
@@ -55,14 +55,7 @@ public:
 
    Line* Shift()
    {
-      int size = ArraySize(array);
-      Line* value = array[0];
-      for (int i = 0; i < size - 1; ++i)
-      {
-         array[i] = array[i + 1];
-      }
-      ArrayResize(array, size - 1);
-      return value;
+      return Remove(0);
    }
 
    Line* Get(int index)
@@ -73,5 +66,17 @@ public:
    ILineArray* Slice(int from, int to)
    {
       return NULL; //TODO;
+   }
+
+   Line* Remove(int index)
+   {
+      int size = ArraySize(array);
+      Line* value = array[index];
+      for (int i = index; i < size - 1; ++i)
+      {
+         array[i] = array[i + 1];
+      }
+      ArrayResize(array, size - 1);
+      return value;
    }
 };

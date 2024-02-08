@@ -1,4 +1,4 @@
-// Int array v1.1
+// Int array v1.2
 #include <Array/IIntArray.mqh>
 
 class IntArray : public IIntArray
@@ -56,14 +56,7 @@ public:
 
    int Shift()
    {
-      int size = ArraySize(array);
-      int value = array[0];
-      for (int i = 0; i < size - 1; ++i)
-      {
-         array[i] = array[i + 1];
-      }
-      ArrayResize(array, size - 1);
-      return value;
+      return Remove(0);
    }
 
    int Get(int index)
@@ -74,5 +67,17 @@ public:
    IIntArray* Slice(int from, int to)
    {
       return NULL; //TODO;
+   }
+
+   int Remove(int index)
+   {
+      int size = ArraySize(array);
+      int value = array[index];
+      for (int i = index; i < size - 1; ++i)
+      {
+         array[i] = array[i + 1];
+      }
+      ArrayResize(array, size - 1);
+      return value;
    }
 };

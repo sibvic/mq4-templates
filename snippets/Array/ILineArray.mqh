@@ -1,4 +1,4 @@
-// Line array interface v1.0
+// Line array interface v1.1
 #include <Objects/Line.mqh>
 
 class ILineArray
@@ -12,4 +12,5 @@ public:
    virtual ILineArray* Slice(int from, int to) = 0;
    virtual ILineArray* Clear() = 0;
    virtual Line* Shift() = 0;
+   virtual Line* Remove(int index) = 0;
 };

@@ -1,4 +1,4 @@
-// float array interface v1.0
+// float array interface v1.1
 
 class IFloatArray
 {
@@ -11,4 +11,5 @@ public:
    virtual IFloatArray* Slice(int from, int to) = 0;
    virtual IFloatArray* Clear() = 0;
    virtual double Shift() = 0;
+   virtual double Remove(int index) = 0;
 };

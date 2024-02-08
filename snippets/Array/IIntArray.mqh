@@ -1,4 +1,4 @@
-// int array interface v1.0
+// int array interface v1.1
 
 class IIntArray
 {
@@ -11,4 +11,5 @@ public:
    virtual IIntArray* Slice(int from, int to) = 0;
    virtual IIntArray* Clear() = 0;
    virtual int Shift() = 0;
+   virtual int Remove(int index) = 0;
 };

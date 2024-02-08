@@ -1,4 +1,4 @@
-// Float array v1.1
+// Float array v1.2
 #include <Array/IFloatArray.mqh>
 
 class FloatArray : public IFloatArray
@@ -61,18 +61,23 @@ public:
 
    double Shift()
    {
-      int size = ArraySize(array);
-      double value = array[0];
-      for (int i = 0; i < size - 1; ++i)
-      {
-         array[i] = array[i + 1];
-      }
-      ArrayResize(array, size - 1);
-      return value;
+      return Remove(0);
    }
    
    IFloatArray* Slice(int from, int to)
    {
       return NULL; //TODO;
+   }
+
+   double Remove(int index)
+   {
+      int size = ArraySize(array);
+      double value = array[index];
+      for (int i = index; i < size - 1; ++i)
+      {
+         array[i] = array[i + 1];
+      }
+      ArrayResize(array, size - 1);
+      return value;
    }
 };

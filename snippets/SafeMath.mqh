@@ -14,6 +14,14 @@ double SafePlus(double left, double right)
    }
    return left + right;
 }
+string SafePlus(string left, string right)
+{
+   if (left == NULL || right == NULL)
+   {
+      return NULL;
+   }
+   return left + right;
+}
 
 double SafeMinus(double left, double right)
 {

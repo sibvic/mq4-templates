@@ -111,7 +111,7 @@ public:
          + IntegerToString(TimeHour(dateId)) + "_"
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
-      Label* label = new Label(x, y, labelId, id, 1);
+      Label* label = new Label(x, y, labelId, id, WindowOnDropped());
       LabelsCollection* collection = FindCollection(id);
       if (collection == NULL)
       {

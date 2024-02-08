@@ -100,7 +100,7 @@ private:
    void DeleteLine(Line* line)
    {
       int index = FindIndex(line);
-      if (index != -1)
+      if (index == -1)
       {
          return;
       }

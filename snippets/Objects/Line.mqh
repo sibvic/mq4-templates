@@ -80,14 +80,6 @@ public:
    double GetY2() { return _y2; }
    static double GetY2(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetY2(); }
 
-   static void Delete(Line* line)
-   {
-      if (line == NULL)
-      {
-         return;
-      }
-   }
-
    Line* SetColor(color clr)
    {
       _clr = clr;

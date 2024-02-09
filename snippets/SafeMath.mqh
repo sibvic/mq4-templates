@@ -50,38 +50,38 @@ double SafeMultiply(double left, double right)
    return left * right;
 }
 
-double SafeGreater(double left, double right)
+bool SafeGreater(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return EMPTY_VALUE;
+      return (bool)EMPTY_VALUE;
    }
    return left > right;
 }
 
-double SafeGE(double left, double right)
+bool SafeGE(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return EMPTY_VALUE;
+      return (bool)EMPTY_VALUE;
    }
    return left >= right;
 }
 
-double SafeLess(double left, double right)
+bool SafeLess(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return EMPTY_VALUE;
+      return (bool)EMPTY_VALUE;
    }
    return left < right;
 }
 
-double SafeLE(double left, double right)
+bool SafeLE(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return EMPTY_VALUE;
+      return (bool)EMPTY_VALUE;
    }
    return left <= right;
 }

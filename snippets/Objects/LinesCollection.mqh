@@ -8,30 +8,44 @@
 class LinesCollection
 {
    string _id;
-   Line* _lines[];
+   Line* _array[];
    static LinesCollection* _collections[];
+   static LinesCollection* _all;
+   static int _max;
 public:
-   LinesCollection(string id)
+   static Line* Get(Line* line, int index)
    {
-      _id = id;
-   }
-
-   ~LinesCollection()
-   {
-      for (int i = 0; i < ArraySize(_lines); ++i)
+      if (line == NULL)
       {
-         delete _lines[i];
+         return NULL;
       }
-      ArrayResize(_lines, 0);
-   }
-   
-   string GetId()
-   {
-      return _id;
+      LinesCollection* collection = FindCollection(line.GetCollectionId());
+      if (collection == NULL)
+      {
+         return NULL;
+      }
+      return collection.GetByIndex(index);
    }
 
-   static void Clear()
+   static void Clear(bool full = false)
    {
+      if (_all == NULL)
+      {
+         if (!full)
+         {
+            _all = new LinesCollection("");
+         }
+      }
+      else
+      {
+      
+         _all.ClearItems();
+         if (full)
+         {
+            delete _all;
+            _all = NULL;
+         }
+      }
       for (int i = 0; i < ArraySize(_collections); ++i)
       {
          delete _collections[i];
@@ -45,12 +59,16 @@ public:
       {
          return;
       }
-      LinesCollection* collection = FindCollection(line.GetId());
+      if (!_all.DeleteItem(line))
+      {
+         return;
+      }
+      LinesCollection* collection = FindCollection(line.GetCollectionId());
       if (collection == NULL)
       {
          return;
       }
-      collection.DeleteLine(line);
+      collection.DeleteItem(line);
    }
 
    static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId)
@@ -65,7 +83,7 @@ public:
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
       
-      Line* line = new Line(x1, y1, x2, y2, lineId);
+      Line* line = new Line(x1, y1, x2, y2, lineId, id, WindowOnDropped());
       LinesCollection* collection = FindCollection(id);
       if (collection == NULL)
       {
@@ -73,7 +91,18 @@ public:
          AddCollection(collection);
       }
       collection.Add(line);
+      _all.Add(line);
+      if (_all.Count() > _max)
+      {
+         Delete(_all.GetFirst());
+      }
+      line.Release();
       return line;
+   }
+
+   static void SetMaxLines(int max)
+   {
+      _max = max;
    }
 
    static void Redraw()
@@ -84,12 +113,59 @@ public:
       }
    }
 private:
+   LinesCollection(string id)
+   {
+      _id = id;
+   }
+
+   ~LinesCollection()
+   {
+      ClearItems();
+   }
+   
+   string GetId()
+   {
+      return _id;
+   }
+   
+   void ClearItems()
+   {
+      for (int i = 0; i < ArraySize(_array); ++i)
+      {
+         if (_array[i] != NULL)
+         {
+            _array[i].Release();
+         }
+      }
+      ArrayResize(_array, 0);
+   }
+   
+   int Count()
+   {
+      return ArraySize(_array);
+   }
+
+   Line* GetFirst()
+   {
+      return _array[0];
+   }
+
+   Line* GetByIndex(int index)
+   {
+      int size = ArraySize(_array);
+      if (index < 0 || index >= size)
+      {
+         return NULL;
+      }
+      return _array[size - 1 - index];
+   }
+   
    int FindIndex(Line* line)
    {
-      int size = ArraySize(_lines);
+      int size = ArraySize(_array);
       for (int i = 0; i < size; ++i)
       {
-         if (_lines[i].GetId() == line.GetId())
+         if (_array[i] == line)
          {
             return i;
          }
@@ -97,42 +173,45 @@ private:
       return -1;
    }
 
-   void DeleteLine(Line* line)
+   bool DeleteItem(Line* line)
    {
       int index = FindIndex(line);
       if (index == -1)
       {
-         return;
+         return false;
       }
-      delete _lines[index];
-      int size = ArraySize(_lines);
+      if (_array[index] != NULL)
+      {
+         _array[index].Release();
+      }
+      int size = ArraySize(_array);
       for (int i = index + 1; i < size; ++i)
       {
-         _lines[i - 1] = _lines[i];
+         _array[i - 1] = _array[i];
       }
-      ArrayResize(_lines, size - 1);
+      ArrayResize(_array, size - 1);
+      return true;
    }
    
    void Add(Line* line)
    {
       int index = FindIndex(line);
-      if (index != -1)
+      
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
+      _array[size] = line;
+      if (line != NULL)
       {
-         delete _lines[index];
-         _lines[index] = line;
-         return;
+         line.AddRef();
       }
-      int size = ArraySize(_lines);
-      ArrayResize(_lines, size + 1);
-      _lines[size] = line;
    }
 
    void RedrawLines()
    {
-      int size = ArraySize(_lines);
+      int size = ArraySize(_array);
       for (int i = 0; i < size; ++i)
       {
-         _lines[i].Redraw();
+         _array[i].Redraw();
       }
    }
    
@@ -156,4 +235,6 @@ private:
    }
 };
 LinesCollection* LinesCollection::_collections[];
+LinesCollection* LinesCollection::_all;
+int LinesCollection::_max = 50;
 #endif

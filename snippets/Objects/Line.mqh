@@ -11,9 +11,13 @@ class Line
    int _width;
    ENUM_TIMEFRAMES _timeframe;
    string _style;
+   int _refs;
+   string _collectionId;
+   int _window;
 public:
-   Line(int x1, double y1, int x2, double y2, string id)
+   Line(int x1, double y1, int x2, double y2, string id, string collectionId, int window)
    {
+      _refs = 1;
       _x1 = x1;
       _x2 = x2;
       _y1 = y1;
@@ -21,11 +25,30 @@ public:
       _id = id;
       _clr = Blue;
       _timeframe = (ENUM_TIMEFRAMES)_Period;
+      _window = window;
+      _collectionId = collectionId;
+   }
+   void AddRef()
+   {
+      _refs++;
+   }
+   int Release()
+   {
+      int refs = --_refs;
+      if (refs == 0)
+      {
+         delete &this;
+      }
+      return refs;
    }
 
    string GetId()
    {
       return _id;
+   }
+   string GetCollectionId()
+   {
+      return _collectionId;
    }
 
    Line* SetStyle(string style)

@@ -3,7 +3,7 @@
 
 class IntArray : public IIntArray
 {
-   int array[];
+   int _array[];
    int _defaultSize;
    int _defaultValue;
 public:
@@ -15,42 +15,42 @@ public:
 
    IIntArray* Clear()
    {
-      ArrayResize(array, _defaultSize);
+      ArrayResize(_array, _defaultSize);
       for (int i = 0; i < _defaultSize; ++i)
       {
-         array[i] = _defaultValue;
+         _array[i] = _defaultValue;
       }
       return &this;
    }
 
    void Unshift(int value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
       for (int i = size - 1; i >= 0; --i)
       {
-         array[i + 1] = array[i];
+         _array[i + 1] = _array[i];
       }
-      array[0] = value;
+      _array[0] = value;
    }
 
    int Size()
    {
-      return ArraySize(array);
+      return ArraySize(_array);
    }
 
    void Push(int value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
-      array[size] = value;
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
+      _array[size] = value;
    }
 
    int Pop()
    {
-      int size = ArraySize(array);
-      int value = array[size - 1];
-      ArrayResize(array, size - 1);
+      int size = ArraySize(_array);
+      int value = _array[size - 1];
+      ArrayResize(_array, size - 1);
       return value;
    }
 
@@ -61,7 +61,7 @@ public:
 
    int Get(int index)
    {
-      return array[index];
+      return _array[index];
    }
    
    IIntArray* Slice(int from, int to)
@@ -71,13 +71,13 @@ public:
 
    int Remove(int index)
    {
-      int size = ArraySize(array);
-      int value = array[index];
+      int size = ArraySize(_array);
+      int value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
-         array[i] = array[i + 1];
+         _array[i] = _array[i + 1];
       }
-      ArrayResize(array, size - 1);
+      ArrayResize(_array, size - 1);
       return value;
    }
 };

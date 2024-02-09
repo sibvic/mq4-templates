@@ -1,8 +1,12 @@
+#ifndef LineArray_IMPL
+#define LineArray_IMPL
 // Line array v1.2
 #include <Array/ILineArray.mqh>
+#include <Objects/LinesCollection.mqh>
+
 class LineArray : public ILineArray
 {
-   Line* array[];
+   Line* _array[];
    int _defaultSize;
    Line* _defaultValue;
 public:
@@ -12,44 +16,70 @@ public:
       Clear();
    }
 
+   ~LineArray()
+   {
+      Clear();
+   }
+
    ILineArray* Clear()
    {
-      ArrayResize(array, _defaultSize);
+      int size = ArraySize(_array);
+      for (int i = 0; i < size; i++)
+      {
+         if (_array[i] != NULL)
+         {
+            LinesCollection::Delete(_array[i]);
+            _array[i].Release();
+         }
+      }
+      ArrayResize(_array, _defaultSize);
       for (int i = 0; i < _defaultSize; ++i)
       {
-         array[i] = _defaultValue;
+         _array[i] = _defaultValue;
       }
       return &this;
    }
 
    void Unshift(Line* value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
       for (int i = size - 1; i >= 0; --i)
       {
-         array[i + 1] = array[i];
+         _array[i + 1] = _array[i];
       }
-      array[0] = value;
+      _array[0] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
 
    int Size()
    {
-      return ArraySize(array);
+      return ArraySize(_array);
    }
 
    void Push(Line* value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
-      array[size] = value;
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
+      _array[size] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
 
    Line* Pop()
    {
-      int size = ArraySize(array);
-      Line* value = array[size - 1];
-      ArrayResize(array, size - 1);
+      int size = ArraySize(_array);
+      Line* value = _array[size - 1];
+      ArrayResize(_array, size - 1);
+      if (value.Release() == 0)
+      {
+         return NULL;
+      }
       return value;
    }
 
@@ -60,7 +90,7 @@ public:
 
    Line* Get(int index)
    {
-      return array[index];
+      return _array[index];
    }
    
    ILineArray* Slice(int from, int to)
@@ -70,13 +100,18 @@ public:
 
    Line* Remove(int index)
    {
-      int size = ArraySize(array);
-      Line* value = array[index];
+      int size = ArraySize(_array);
+      Line* value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
-         array[i] = array[i + 1];
+         _array[i] = _array[i + 1];
       }
-      ArrayResize(array, size - 1);
+      ArrayResize(_array, size - 1);
+      if (value.Release() == 0)
+      {
+         return NULL;
+      }
       return value;
    }
 };
+#endif

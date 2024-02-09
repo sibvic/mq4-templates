@@ -1,8 +1,12 @@
+#ifndef BoxArray_IMPL
+#define BoxArray_IMPL
 // Box array v1.2
 #include <Array/IBoxArray.mqh>
+#include <Objects/BoxesCollection.mqh>
+
 class BoxArray : public IBoxArray
 {
-   Box* array[];
+   Box* _array[];
    int _defaultSize;
    Box* _defaultValue;
 public:
@@ -12,25 +16,40 @@ public:
       Clear();
    }
 
+   ~BoxArray()
+   {
+      Clear();
+   }
+
    IBoxArray* Clear()
    {
-      ArrayResize(array, _defaultSize);
-      for (int i = 0; i < _defaultSize; ++i)
+      int size = ArraySize(_array);
+      int i;
+      for (i = 0; i < size; i++)
       {
-         array[i] = _defaultValue;
+         if (_array[i] != NULL)
+         {
+            BoxesCollection::Delete(_array[i]);
+            _array[i].Release();
+         }
+      }
+      ArrayResize(_array, _defaultSize);
+      for (i = 0; i < _defaultSize; ++i)
+      {
+         _array[i] = _defaultValue;
       }
       return &this;
    }
 
    void Unshift(Box* value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
       for (int i = size - 1; i >= 0; --i)
       {
-         array[i + 1] = array[i];
+         _array[i + 1] = _array[i];
       }
-      array[0] = value;
+      _array[0] = value;
       if (value != NULL)
       {
          value.AddRef();
@@ -39,14 +58,14 @@ public:
 
    int Size()
    {
-      return ArraySize(array);
+      return ArraySize(_array);
    }
 
    void Push(Box* value)
    {
-      int size = ArraySize(array);
-      ArrayResize(array, size + 1);
-      array[size] = value;
+      int size = ArraySize(_array);
+      ArrayResize(_array, size + 1);
+      _array[size] = value;
       if (value != NULL)
       {
          value.AddRef();
@@ -55,9 +74,9 @@ public:
 
    Box* Pop()
    {
-      int size = ArraySize(array);
-      Box* value = array[size - 1];
-      ArrayResize(array, size - 1);
+      int size = ArraySize(_array);
+      Box* value = _array[size - 1];
+      ArrayResize(_array, size - 1);
       if (value.Release() == 0)
       {
          return NULL;
@@ -72,7 +91,7 @@ public:
 
    Box* Get(int index)
    {
-      return array[index];
+      return _array[index];
    }
    
    IBoxArray* Slice(int from, int to)
@@ -82,13 +101,13 @@ public:
 
    Box* Remove(int index)
    {
-      int size = ArraySize(array);
-      Box* value = array[index];
+      int size = ArraySize(_array);
+      Box* value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
-         array[i] = array[i + 1];
+         _array[i] = _array[i + 1];
       }
-      ArrayResize(array, size - 1);
+      ArrayResize(_array, size - 1);
       if (value.Release() == 0)
       {
          return NULL;
@@ -96,3 +115,4 @@ public:
       return value;
    }
 };
+#endif

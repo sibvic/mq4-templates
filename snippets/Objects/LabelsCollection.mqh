@@ -71,18 +71,26 @@ public:
       return collection.GetByIndex(index);
    }
    
-   static void Clear()
+   static void Clear(bool full = false)
    {
       for (int i = 0; i < ArraySize(_collections); ++i)
       {
          delete _collections[i];
       }
       ArrayResize(_collections, 0);
-      if (_all == NULL)
+      if (_all == NULL && !full)
       {
          _all = new LabelsCollection("");
       }
-      _all.ClearLabels();
+      else
+      {
+         _all.ClearLabels();
+         if (full)
+         {
+            delete _all;
+            _all = NULL;
+         }
+      }
    }
 
    static void Delete(Label* label)

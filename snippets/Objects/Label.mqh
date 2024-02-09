@@ -17,10 +17,12 @@ class Label
    string _size;
    string _yloc;
    ENUM_TIMEFRAMES _timeframe;
+   int _refs;
    int _window;
 public:
    Label(int x, double y, string labelId, string collectionId, int window)
    {
+      _refs = 1;
       _window = window;
       _textColor = Yellow;
       _x = x;
@@ -29,6 +31,19 @@ public:
       _collectionId = collectionId;
       _font = "Arial";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
+   }
+   void AddRef()
+   {
+      _refs++;
+   }
+   int Release()
+   {
+      int refs = --_refs;
+      if (refs == 0)
+      {
+         delete &this;
+      }
+      return refs;
    }
    
    string GetId()

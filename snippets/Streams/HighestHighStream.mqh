@@ -2,7 +2,7 @@
 #include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Highest high stream v1.4
+// Highest high stream v1.5
 
 class HighestHighStream : public AOnStream
 {
@@ -11,6 +11,7 @@ public:
    HighestHighStream(string symbol, ENUM_TIMEFRAMES timeframe, int loopback)
       :AOnStream(new SimplePriceStream(symbol, timeframe, PriceHigh))
    {
+      _loopback = loopback;
       _source.Release();
    }
    HighestHighStream(IStream* source, int loopback)

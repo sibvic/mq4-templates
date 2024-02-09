@@ -2,7 +2,7 @@
 #include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Lowest low stream v1.4
+// Lowest low stream v1.5
 
 class LowestLowStream : public AOnStream
 {
@@ -11,6 +11,7 @@ public:
    LowestLowStream(string symbol, ENUM_TIMEFRAMES timeframe, int loopback)
       :AOnStream(new SimplePriceStream(symbol, timeframe, PriceLow))
    {
+      _loopback = loopback;
       _source.Release();
    }
    LowestLowStream(IStream* source, int loopback)

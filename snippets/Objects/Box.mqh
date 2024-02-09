@@ -1,7 +1,7 @@
 #ifndef Box_IMPL
 #define Box_IMPL
 
-// Box object v1.1
+// Box object v1.2
 
 class Box
 {
@@ -63,6 +63,15 @@ public:
    static int GetRight(Box* box) { if (box == NULL) { return EMPTY_VALUE; } return box.GetRight(); }
    int GetRight() { return _right; }
 
+   static void SetTop(Box* box, double value) { if (box == NULL) { return; } box.SetTop(value); }
+   void SetTop(double value) { _top = value; }
+   static void SetBottom(Box* box, double value) { if (box == NULL) { return; } box.SetBottom(value); }
+   void SetBottom(double value) { _bottom = value; }
+   static void SetLeft(Box* box, int value) { if (box == NULL) { return; } box.SetLeft(value); }
+   void SetLeft(int value) { _left = value; }
+   static void SetRight(Box* box, int value) { if (box == NULL) { return; } box.SetRight(value); }
+   void SetRight(int value) { _right = value; }
+
    static void SetBgColor(Box* box, color clr) { if (box == NULL) { return; } box.SetBgColor(clr); }
    Box* SetBgColor(color clr) { _bgcolor = clr; return &this; }
    static void SetBorderColor(Box* box, color clr) { if (box == NULL) { return; } box.SetBorderColor(clr); }
@@ -81,7 +90,7 @@ public:
       {
          pos1 = iBars(_Symbol, _timeframe) - _left - 1;
       }
-      datetime left = iTime(_Symbol, _timeframe, pos1);
+      datetime left = iTime(_Symbol, _timeframe, MathMax(0, pos1));
       int pos2 = 0;
       if (_extend == "right" || _extend == "both")
       {
@@ -91,10 +100,12 @@ public:
       {
          pos2 = iBars(_Symbol, _timeframe) - _right - 1;
       }
-      datetime right = iTime(_Symbol, _timeframe, pos2);
+      datetime right = iTime(_Symbol, _timeframe, MathMax(0, pos2));
       if (ObjectFind(0, _id) == -1 && ObjectCreate(0, _id, OBJ_RECTANGLE, _window, left, _top, right, _bottom))
       {
          ObjectSetInteger(0, _id, OBJPROP_COLOR, _bgcolor);
+         ObjectSetInteger(0, _id, OBJPROP_STYLE, STYLE_SOLID);
+         ObjectSetInteger(0, _id, OBJPROP_WIDTH, 1);
       }
       ObjectSetDouble(0, _id, OBJPROP_PRICE1, _top);
       ObjectSetDouble(0, _id, OBJPROP_PRICE2, _bottom);

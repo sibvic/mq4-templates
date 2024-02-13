@@ -1,6 +1,6 @@
 #include <Streams/AStream.mqh>
 
-// Colored stream v3.4
+// Colored stream v4.0
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -16,6 +16,12 @@ public:
    virtual void Clear(int period) = 0;
 };
 
+class InternalStream
+{
+public:
+   double _stream[];
+};
+
 class LineColoredStreamData : public IColoredStreamData
 {
    double _stream[];
@@ -26,10 +32,12 @@ class LineColoredStreamData : public IColoredStreamData
    int _width;
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
+   InternalStream* _internalStream;
 public:
    LineColoredStreamData(const string symbol, const ENUM_TIMEFRAMES timeframe, color clr, string label, 
-      int lineType, ENUM_LINE_STYLE lineStyle, int width)
+      int lineType, ENUM_LINE_STYLE lineStyle, int width, InternalStream* internalStream)
    {
+      _internalStream = internalStream;
       _symbol = symbol;
       _timeframe = timeframe;
       _color = clr;
@@ -65,14 +73,37 @@ public:
 
    void Set(int period, double value, double prevValue)
    {
-      _stream[period] = value;
-      if (period + 1 < iBars(_symbol, _timeframe) && _stream[period + 1] == EMPTY_VALUE)
-         _stream[period + 1] = prevValue;
+      if (value == EMPTY_VALUE)
+      {
+         _stream[period] = EMPTY_VALUE;
+         return;
+      }
+      int size = iBars(_symbol, _timeframe);
+      int nextNonEmpty = FindNextNonempty(period, size);
+      int count = nextNonEmpty - period + 1;
+      double startPoint = _internalStream._stream[nextNonEmpty];
+      double diff = startPoint - value;
+      for (int i = nextNonEmpty; i >= period; --i)
+      {
+         _stream[i] = value - double(period - i) / count * diff;
+      }
    }
 
    void Clear(int period)
    {
       _stream[period] = EMPTY_VALUE;
+   }
+private:
+   int FindNextNonempty(int period, int size)
+   {
+      for (int i = period + 1; i < size; ++i)
+      {
+         if (_internalStream._stream[i] != EMPTY_VALUE)
+         {
+            return i;
+         }
+      }
+      return period;
    }
 };
 
@@ -81,10 +112,10 @@ class HistogramColoredStreamData : public IColoredStreamData
    LineColoredStreamData* _up;
    LineColoredStreamData* _down;
 public:
-   HistogramColoredStreamData(const string symbol, const ENUM_TIMEFRAMES timeframe, color clr, string label, int width)
+   HistogramColoredStreamData(const string symbol, const ENUM_TIMEFRAMES timeframe, color clr, string label, int width, InternalStream* internalStream)
    {
-      _up = new LineColoredStreamData(symbol, timeframe, clr, label, DRAW_HISTOGRAM, STYLE_SOLID, width);
-      _down = new LineColoredStreamData(symbol, timeframe, clr, label, DRAW_HISTOGRAM, STYLE_SOLID, width);
+      _up = new LineColoredStreamData(symbol, timeframe, clr, label, DRAW_HISTOGRAM, STYLE_SOLID, width, internalStream);
+      _down = new LineColoredStreamData(symbol, timeframe, clr, label, DRAW_HISTOGRAM, STYLE_SOLID, width, internalStream);
    }
    ~HistogramColoredStreamData()
    {
@@ -174,12 +205,12 @@ public:
 class ColoredStream : public AStream
 {
    IColoredStreamData* _streams[];
-   double _data[];
+   InternalStream* _internal;
 public:
-
    ColoredStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
       :AStream(symbol, timeframe)
    {
+      _internal = new InternalStream();
    }
 
    ~ColoredStream()
@@ -188,6 +219,7 @@ public:
       {
          delete _streams[i];
       }
+      delete _internal;
    }
 
    void Init(double defaultValue)
@@ -196,12 +228,12 @@ public:
       {
          _streams[i].Init(defaultValue);
       }
-      ArrayInitialize(_data, defaultValue);
+      ArrayInitialize(_internal._stream, defaultValue);
    }
 
    int RegisterInternalStream(int id)
    {
-      SetIndexBuffer(id, _data);
+      SetIndexBuffer(id, _internal._stream);
       SetIndexStyle(id, DRAW_NONE);
       return id + 1;
    }
@@ -217,14 +249,14 @@ public:
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      _streams[size] = new LineColoredStreamData(_symbol, _timeframe, clr, label, lineType, lineStyle, width);
+      _streams[size] = new LineColoredStreamData(_symbol, _timeframe, clr, label, lineType, lineStyle, width, _internal);
       return _streams[size].Register(id);
    }
    int RegisterHistogramStream(int id, color clr, string label = "", int width = 1)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      _streams[size] = new HistogramColoredStreamData(_symbol, _timeframe, clr, label, width);
+      _streams[size] = new HistogramColoredStreamData(_symbol, _timeframe, clr, label, width, _internal);
       return _streams[size].Register(id);
    }
 
@@ -248,13 +280,14 @@ public:
             return value;
          }
       }
+      _internal._stream[period] = value;
       return value;
    }
    
    void Set(double value, int period, int colorIndex)
    {
-      _data[period] = value;
-      double prevValue = period + 1 >= iBars(_symbol, _timeframe) ? EMPTY_VALUE : _data[period + 1];
+      _internal._stream[period] = value;
+      double prevValue = period + 1 >= iBars(_symbol, _timeframe) ? EMPTY_VALUE : _internal._stream[period + 1];
       for (int i = 0; i < ArraySize(_streams); ++i)
       {
          if (colorIndex == i)
@@ -274,8 +307,8 @@ public:
       {
          return false;
       }
-      val = _data[period];
-      return _data[period] != EMPTY_VALUE;
+      val = _internal._stream[period];
+      return _internal._stream[period] != EMPTY_VALUE;
    }
 };
 

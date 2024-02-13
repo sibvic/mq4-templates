@@ -161,3 +161,68 @@ int SafeSign(double value)
    }
    return value > 0 ? 1 : -1;
 }
+
+double SafeLog(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathLog(value);
+}
+double SafeLog10(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathLog10(value);
+}
+double SafeCos(double value) 
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathCos(value);
+}
+double SafeArccos(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathArccos(value);
+}
+double SafeSin(double value) 
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathSin(value);
+}
+double SafeArcsin(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathArcsin(value);
+}
+double SafeTan(double value) 
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathTan(value);
+}
+double SafeArctan(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathArctan(value);
+}

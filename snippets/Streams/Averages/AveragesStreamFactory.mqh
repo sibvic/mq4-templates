@@ -1,4 +1,4 @@
-// Averages stream factory v1.0
+// Averages stream factory v1.2
 
 #include <enums/MATypes.mqh>
 #include <Streams/IStream.mqh>
@@ -16,12 +16,10 @@
 #ifndef AveragesStreamFactory_IMP
 #define AveragesStreamFactory_IMP
 
-// Averages v. 1.1
-
 class AveragesStreamFactory
 {
 public:
-   static IStream *Create(IStream *source, const int length, const MATypes type)
+   static IStream *Create(IStream *source, const int length, const MATypes type, IIntStream* volume = NULL)
    {
       switch (type)
       {
@@ -43,7 +41,7 @@ public:
          // case 7  : return(iLwmp(price,length,r,instanceNo));
          // case 8  : return(iAlex(price,length,r,instanceNo));
          case ma_vwma:
-            return new VwmaOnStream(source, length);
+            return VwmaOnStreamFactory::Create(source, volume, length);
          // case 10 : return(iHull(price,length,r,instanceNo));
          // case 11 : return(iTma(price,length,r,instanceNo));
          // case 12 : return(iSineWMA(price,(int)length,r,instanceNo));

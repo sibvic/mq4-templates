@@ -21,3 +21,11 @@ Interface for integer stream. Similar to IStream located in the directory above,
 ## IBoolStream
 
 Interface for boolean stream. Similar to IStream located in the directory above, but returns bool
+
+## IBoxArrayStream
+
+Interface for box array stream. Similar to IStream located in the directory above, but returns IBoxArray
+
+## IBoxStream
+
+Interface for box stream. Similar to IStream located in the directory above, but returns Box

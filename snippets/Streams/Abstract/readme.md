@@ -25,3 +25,11 @@ Implements reference counting for IFloatStream.
 ## ALineArrayStream
 
 Implements reference counting for ILineArrayStream.
+
+## ABoxArrayStream
+
+Implements reference counting for IBoxArrayStream.
+
+## ABoxStream
+
+Implements reference counting for IBoxStream.

@@ -1,6 +1,6 @@
 #include <Streams/AStream.mqh>
 
-// Colored stream v4.0
+// Colored stream v4.1
 
 #ifndef ColoredStream_IMP
 #define ColoredStream_IMP
@@ -244,6 +244,10 @@ public:
       ArrayResize(_streams, size + 1);
       _streams[size] = new ArrowColoredStreamData(arrow, clr);
       return _streams[size].Register(id);
+   }
+   int RegisterStream(int id, color clr, int transparency)
+   {
+      return RegisterStream(id, clr, "", transparency == 100 ? DRAW_NONE : DRAW_LINE, STYLE_SOLID, 1);
    }
    int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE, ENUM_LINE_STYLE lineStyle = STYLE_SOLID, int width = 1)
    {

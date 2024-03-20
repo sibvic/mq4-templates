@@ -1,7 +1,7 @@
 #ifndef Box_IMPL
 #define Box_IMPL
 
-// Box object v1.2
+// Box object v1.3
 
 class Box
 {
@@ -16,11 +16,19 @@ class Box
    color _borderColor;
    ENUM_TIMEFRAMES _timeframe;
    string _extend;
+
+   string _text;
+   string _textHAlign;
+   string _textVAlign;
+   string _textSize;
+   color _textColor;
+
    int _refs;
 public:
    Box(int left, double top, int right, double bottom, string id, string collectionId, int window)
    {
       _refs = 1;
+      _textColor = White;
       _left = left;
       _right = right;
       _top = top;
@@ -54,6 +62,21 @@ public:
       return _collectionId;
    }
 
+   static Box* Copy(Box* box) { if (box == NULL) { return NULL; } return box.Copy(); }
+   Box* Copy()
+   {
+      Box* copy = new Box(_left, _top, _right, _bottom, _id, _collectionId, _window);
+      copy.SetBgColor(_bgcolor);
+      copy.SetBorderColor(_borderColor);
+      copy.SetExtend(_extend);
+      copy.SetText(_text);
+      copy.SetTextHAlign(_textHAlign);
+      copy.SetTextVAlign(_textVAlign);
+      copy.SetTextSize(_textSize);
+      copy.SetTextColor(_textColor);
+      return copy;
+   }
+
    static double GetTop(Box* box) { if (box == NULL) { return EMPTY_VALUE; } return box.GetTop(); }
    double GetTop() { return _top; }
    static double GetBottom(Box* box) { if (box == NULL) { return EMPTY_VALUE; } return box.GetBottom(); }
@@ -78,6 +101,17 @@ public:
    Box* SetBorderColor(color clr) { _borderColor = clr; return &this; }
    static void SetExtend(Box* box, string extend) { if (box == NULL) { return; } box.SetExtend(extend); }
    Box* SetExtend(string extend) { _extend = extend; return &this; }
+
+   static void SetText(Box* box, string text) { if (box == NULL) { return; } box.SetText(text); }
+   Box* SetText(string text) { _text = text; return &this; }
+   static void SetTextHAlign(Box* box, string halign) { if (box == NULL) { return; } box.SetTextHAlign(halign); }
+   Box* SetTextHAlign(string halign) { _textHAlign = halign; return &this; }
+   static void SetTextVAlign(Box* box, string valign) { if (box == NULL) { return; } box.SetTextVAlign(valign); }
+   Box* SetTextVAlign(string valign) { _textVAlign = valign; return &this; }
+   static void SetTextSize(Box* box, string size) { if (box == NULL) { return; } box.SetTextSize(size); }
+   Box* SetTextSize(string size) { _textSize = size; return &this; }
+   static void SetTextColor(Box* box, color clr) { if (box == NULL) { return; } box.SetTextColor(clr); }
+   Box* SetTextColor(color clr) { _textColor = clr; return &this; }
 
    void Redraw()
    {

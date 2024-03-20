@@ -1,6 +1,6 @@
 #ifndef BoxArray_IMPL
 #define BoxArray_IMPL
-// Box array v1.2
+// Box array v1.3
 #include <Array/IBoxArray.mqh>
 #include <Objects/BoxesCollection.mqh>
 
@@ -77,7 +77,7 @@ public:
       int size = ArraySize(_array);
       Box* value = _array[size - 1];
       ArrayResize(_array, size - 1);
-      if (value.Release() == 0)
+      if (value != NULL && value.Release() == 0)
       {
          return NULL;
       }
@@ -91,6 +91,10 @@ public:
 
    Box* Get(int index)
    {
+      if (index < 0 || index >= Size())
+      {
+         return NULL;
+      }
       return _array[index];
    }
    

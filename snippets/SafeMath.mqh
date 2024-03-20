@@ -1,5 +1,5 @@
 // Pine-script like safe operations
-// v.1.1
+// v.1.2
 
 double Nz(double val, double defaultValue = 0)
 {
@@ -77,7 +77,7 @@ bool SafeGreater(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return (bool)EMPTY_VALUE;
+      return false;
    }
    return left > right;
 }
@@ -86,7 +86,7 @@ bool SafeGE(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return (bool)EMPTY_VALUE;
+      return false;
    }
    return left >= right;
 }
@@ -95,7 +95,7 @@ bool SafeLess(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return (bool)EMPTY_VALUE;
+      return false;
    }
    return left < right;
 }
@@ -104,7 +104,7 @@ bool SafeLE(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)
    {
-      return (bool)EMPTY_VALUE;
+      return false;
    }
    return left <= right;
 }

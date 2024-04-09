@@ -109,6 +109,15 @@ bool SafeLE(double left, double right)
    return left <= right;
 }
 
+double SafeMathExp(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathExp(value);
+}
+
 double SafeMathMax(double left, double right)
 {
    if (left == EMPTY_VALUE || right == EMPTY_VALUE)

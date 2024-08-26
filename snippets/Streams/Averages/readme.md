@@ -53,3 +53,7 @@ Money flow index on stream
 ## HMAOnStream
 
 Hull moving average on stream
+
+## VwapOnStream
+
+VWAP average on stream

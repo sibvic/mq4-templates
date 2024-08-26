@@ -272,3 +272,11 @@ Returns true when value < than previous (length). Similar to ta.falling from Pin
 ## BarsSinceStreamV2
 
 Counts number of bars since last condition.
+
+## DateTimeStream
+
+Returns datetime for the specified symbol/timeframe.
+
+## VolumeStream
+
+Returns volume for the specified symbol/timeframe.

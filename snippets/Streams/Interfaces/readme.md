@@ -29,3 +29,7 @@ Interface for box array stream. Similar to IStream located in the directory abov
 ## IBoxStream
 
 Interface for box stream. Similar to IStream located in the directory above, but returns Box
+
+## IDateTimeStream
+
+Interface for date/time stream. Similar to IStream located in the directory above, but returns datetime

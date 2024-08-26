@@ -1,6 +1,6 @@
 #ifndef BoxArray_IMPL
 #define BoxArray_IMPL
-// Box array v1.3
+// Box array v1.4
 #include <Array/IBoxArray.mqh>
 #include <Objects/BoxesCollection.mqh>
 
@@ -96,6 +96,23 @@ public:
          return NULL;
       }
       return _array[index];
+   }
+   
+   void Set(int index, Box* value)
+   {
+      if (index < 0 || index >= Size())
+      {
+         return;
+      }
+      if (_array[index] != NULL)
+      {
+         _array[index].Release();
+      }
+      _array[index] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
    
    IBoxArray* Slice(int from, int to)

@@ -1,4 +1,4 @@
-// Float array v1.2
+// Float array v1.3
 #include <Array/IFloatArray.mqh>
 
 class FloatArray : public IFloatArray
@@ -10,6 +10,7 @@ public:
    FloatArray(int size, double defaultValue)
    {
       _defaultSize = size;
+      _defaultValue = defaultValue;
       Clear();
    }
 
@@ -56,7 +57,20 @@ public:
 
    double Get(int index)
    {
+      if (index < 0 || index >= Size())
+      {
+         return EMPTY_VALUE;
+      }
       return _array[index];
+   }
+   
+   void Set(int index, double value)
+   {
+      if (index < 0 || index >= Size())
+      {
+         return;
+      }
+      _array[index] = value;
    }
 
    double Shift()

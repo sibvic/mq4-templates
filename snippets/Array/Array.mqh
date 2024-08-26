@@ -1,4 +1,4 @@
-// Array v1.2
+// Array v1.3
 #include <Array/IArray.mqh>
 #include <Array/LineArray.mqh>
 #include <Array/IntArray.mqh>
@@ -37,6 +37,11 @@ public:
    static double Get(IFloatArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Get(index); }
    static Line* Get(ILineArray* array, int index) { if (array == NULL) { return NULL; } return array.Get(index); }
    static Box* Get(IBoxArray* array, int index) { if (array == NULL) { return NULL; } return array.Get(index); }
+   
+   static void Set(IIntArray* array, int index, int value) { if (array == NULL) { return; } array.Set(index, value); }
+   static void Set(IFloatArray* array, int index, double value) { if (array == NULL) { return; } array.Set(index, value); }
+   static void Set(ILineArray* array, int index, Line* value) { if (array == NULL) { return; } array.Set(index, value); }
+   static void Set(IBoxArray* array, int index, Box* value) { if (array == NULL) { return; } array.Set(index, value); }
 
    static int Remove(IIntArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Remove(index); }
    static double Remove(IFloatArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Remove(index); }

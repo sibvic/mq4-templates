@@ -1,6 +1,6 @@
 #ifndef LineArray_IMPL
 #define LineArray_IMPL
-// Line array v1.2
+// Line array v1.3
 #include <Array/ILineArray.mqh>
 #include <Objects/LinesCollection.mqh>
 
@@ -90,7 +90,28 @@ public:
 
    Line* Get(int index)
    {
+      if (index < 0 || index >= Size())
+      {
+         return NULL;
+      }
       return _array[index];
+   }
+   
+   void Set(int index, Line* value)
+   {
+      if (index < 0 || index >= Size())
+      {
+         return;
+      }
+      if (_array[index] != NULL)
+      {
+         _array[index].Release();
+      }
+      _array[index] = value;
+      if (value != NULL)
+      {
+         value.AddRef();
+      }
    }
    
    ILineArray* Slice(int from, int to)

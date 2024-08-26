@@ -1,4 +1,4 @@
-// Int array v1.2
+// Int array v1.3
 #include <Array/IIntArray.mqh>
 
 class IntArray : public IIntArray
@@ -61,7 +61,20 @@ public:
 
    int Get(int index)
    {
+      if (index < 0 || index >= Size())
+      {
+         return EMPTY_VALUE;
+      }
       return _array[index];
+   }
+   
+   void Set(int index, int value)
+   {
+      if (index < 0 || index >= Size())
+      {
+         return;
+      }
+      _array[index] = value;
    }
    
    IIntArray* Slice(int from, int to)

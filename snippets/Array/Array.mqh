@@ -1,4 +1,4 @@
-// Array v1.1
+// Array v1.2
 #include <Array/IArray.mqh>
 #include <Array/LineArray.mqh>
 #include <Array/IntArray.mqh>
@@ -42,6 +42,47 @@ public:
    static double Remove(IFloatArray* array, int index) { if (array == NULL) { return EMPTY_VALUE; } return array.Remove(index); }
    static Line* Remove(ILineArray* array, int index) { if (array == NULL) { return NULL; } return array.Remove(index); }
    static Box* Remove(IBoxArray* array, int index) { if (array == NULL) { return NULL; } return array.Remove(index); }
+
+   static int PercentRank(IIntArray* array, int index)
+   {
+      int arraySize = array.Size();
+      if (array == NULL || arraySize == 0 || arraySize <= index) { return EMPTY_VALUE; }
+      int target = array.Get(index);
+      if (target == EMPTY_VALUE)
+      {
+         return EMPTY_VALUE;
+      }
+      int count = 0;
+      for (int i = 0; i < arraySize; ++i)
+      {
+         int current = array.Get(i);
+         if (current != EMPTY_VALUE && target >= current)
+         {
+            count++;
+         }
+      }
+      return (count * 100.0) / arraySize;
+   }
+   static double PercentRank(IFloatArray* array, int index)
+   {
+      int arraySize = array.Size();
+      if (array == NULL || arraySize == 0 || arraySize <= index) { return EMPTY_VALUE; }
+      double target = array.Get(index);
+      if (target == EMPTY_VALUE)
+      {
+         return EMPTY_VALUE;
+      }
+      int count = 0;
+      for (int i = 0; i < arraySize; ++i)
+      {
+         double current = array.Get(i);
+         if (current != EMPTY_VALUE && target >= current)
+         {
+            count++;
+         }
+      }
+      return (count * 100.0) / arraySize;
+   }
 
    static int Max(IIntArray* array)
    {

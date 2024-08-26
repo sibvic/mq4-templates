@@ -116,3 +116,5 @@ snippets/stderror.mqh
 snippets/stdlib.mqh
 snippets/StdLibErr.mqh
 snippets/WinUser32.mqh
+copy_from_mt.bat
+copy_to_mt.bat

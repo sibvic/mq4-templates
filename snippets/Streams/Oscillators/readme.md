@@ -17,3 +17,7 @@ Stochastics on stream.
 ## CCIOnStream
 
 CCI oscillator on stream.
+
+## CorrelationStream
+
+Correlation on stream

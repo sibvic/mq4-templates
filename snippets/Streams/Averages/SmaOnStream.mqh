@@ -1,7 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// SMA on stream v1.0
-
+// SMA on stream v1.1
 #ifndef SmaOnStream_IMP
 #define SmaOnStream_IMP
 
@@ -19,8 +18,15 @@ public:
    bool GetValue(const int period, double &val)
    {
       int totalBars = Bars;
-      if (ArrayRange(_buffer, 0) != totalBars) 
+      int currentBufferSize = ArrayRange(_buffer, 0);
+      if (currentBufferSize != totalBars) 
+      {
          ArrayResize(_buffer, totalBars);
+         for (int i = currentBufferSize; i < totalBars; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
+      }
       
       if (period > totalBars - _length)
          return false;

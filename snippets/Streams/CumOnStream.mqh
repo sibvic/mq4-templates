@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// Cumulative on stream v1.0
+// Cumulative on stream v1.1
 
 #ifndef CumOnStream_IMP
 #define CumOnStream_IMP
@@ -17,8 +17,15 @@ public:
    bool GetValue(const int period, double &val)
    {
       int totalBars = Bars;
-      if (ArrayRange(_buffer, 0) != totalBars) 
+      int currentBufferSize = ArrayRange(_buffer, 0);
+      if (currentBufferSize != totalBars) 
+      {
          ArrayResize(_buffer, totalBars);
+         for (int i = currentBufferSize; i < totalBars; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
+      }
 
       double current;
       if (!_source.GetValue(period, current))

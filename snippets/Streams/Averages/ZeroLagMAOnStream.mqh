@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// Zero lag MA on stream v1.0
+// Zero lag MA on stream v1.1
 
 #ifndef ZeroLagMAOnStream_IMP
 #define ZeroLagMAOnStream_IMP
@@ -21,8 +21,15 @@ public:
    bool GetValue(const int period, double &val)
    {
       int totalBars = Bars;
-      if (ArrayRange(_buffer, 0) != totalBars) 
+      int currentBufferSize = ArrayRange(_buffer, 0);
+      if (currentBufferSize != totalBars) 
+      {
          ArrayResize(_buffer, totalBars);
+         for (int i = currentBufferSize; i < totalBars; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
+      }
       
       if (period > totalBars - 1)
          return false;

@@ -1,4 +1,4 @@
-// Custom variable v1.0
+// Custom variable v1.1
 
 class CustomVariable
 {
@@ -16,10 +16,14 @@ public:
       _rates_total = rates_total;
       int pos = rates_total - period - 1;
 
-      int size = ArraySize(_buffer);
-      if (size != rates_total)
+      int currentBufferSize = ArrayRange(_buffer, 0);
+      if (currentBufferSize != rates_total) 
       {
          ArrayResize(_buffer, rates_total);
+         for (int i = currentBufferSize; i < rates_total; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
       }
       if (_lastIndex == -1)
       {

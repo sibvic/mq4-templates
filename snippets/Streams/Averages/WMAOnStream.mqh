@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// WMA on stream v1.1
+// WMA on stream v1.2
 
 #ifndef WMAOnStream_IMP
 #define WMAOnStream_IMP
@@ -21,9 +21,14 @@ public:
    bool GetValue(const int period, double &val)
    {
       int totalBars = _source.Size();
-      if (ArrayRange(_buffer, 0) != totalBars) 
+      int currentBufferSize = ArrayRange(_buffer, 0);
+      if (currentBufferSize != totalBars) 
       {
          ArrayResize(_buffer, totalBars);
+         for (int i = currentBufferSize; i < totalBars; ++i)
+         {
+            _buffer[i] = EMPTY_VALUE;
+         }
       }
       
       if (period > totalBars - _length)

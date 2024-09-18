@@ -258,3 +258,19 @@ double SafeArctan(double value)
    }
    return MathArctan(value);
 }
+double InvertSign(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return -value;
+}
+double SafeMathFloor(double value)
+{
+   if (value == EMPTY_VALUE)
+   {
+      return EMPTY_VALUE;
+   }
+   return MathFloor(value);
+}

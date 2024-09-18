@@ -1,4 +1,5 @@
 #include <Streams/AStream.mqh>
+#include <PineScriptUtils.mqh>
 
 // Colored stream v4.1
 
@@ -238,29 +239,29 @@ public:
       return id + 1;
    }
    
-   int RegisterArrowStream(int id, color clr, int arrow)
+   int RegisterArrowStream(int id, uint clr, int arrow)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      _streams[size] = new ArrowColoredStreamData(arrow, clr);
+      _streams[size] = new ArrowColoredStreamData(arrow, GetColorOnly(clr));
       return _streams[size].Register(id);
    }
-   int RegisterStream(int id, color clr, int transparency)
+   int RegisterStream(int id, uint clr, int transparency)
    {
-      return RegisterStream(id, clr, "", transparency == 100 ? DRAW_NONE : DRAW_LINE, STYLE_SOLID, 1);
+      return RegisterStream(id, GetColorOnly(clr), "", transparency == 100 ? DRAW_NONE : DRAW_LINE, STYLE_SOLID, 1);
    }
-   int RegisterStream(int id, color clr, string label = "", int lineType = DRAW_LINE, ENUM_LINE_STYLE lineStyle = STYLE_SOLID, int width = 1)
+   int RegisterStream(int id, uint clr, string label = "", int lineType = DRAW_LINE, ENUM_LINE_STYLE lineStyle = STYLE_SOLID, int width = 1)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      _streams[size] = new LineColoredStreamData(_symbol, _timeframe, clr, label, lineType, lineStyle, width, _internal);
+      _streams[size] = new LineColoredStreamData(_symbol, _timeframe, GetColorOnly(clr), label, lineType, lineStyle, width, _internal);
       return _streams[size].Register(id);
    }
-   int RegisterHistogramStream(int id, color clr, string label = "", int width = 1)
+   int RegisterHistogramStream(int id, uint clr, string label = "", int width = 1)
    {
       int size = ArraySize(_streams);
       ArrayResize(_streams, size + 1);
-      _streams[size] = new HistogramColoredStreamData(_symbol, _timeframe, clr, label, width, _internal);
+      _streams[size] = new HistogramColoredStreamData(_symbol, _timeframe, GetColorOnly(clr), label, width, _internal);
       return _streams[size].Register(id);
    }
 
@@ -274,8 +275,9 @@ public:
       return -1;
    }
    
-   double SetByColor(double value, int period, color clr)
+   double SetByColor(double value, int period, uint clr)
    {
+      clr = GetColorOnly(clr);
       for (int i = 0; i < ArraySize(_streams); ++i)
       {
          if (_streams[i].GetColor() == clr)

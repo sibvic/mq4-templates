@@ -1,4 +1,4 @@
-// Label v1.2
+// Label v1.3
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -10,6 +10,7 @@ class Label
    string _text;
    string _labelId;
    string _collectionId;
+   string _textAlign;
    int _x;
    double _y;
    string _font;
@@ -30,6 +31,7 @@ public:
       _labelId = labelId;
       _collectionId = collectionId;
       _font = "Arial";
+      _textAlign = "";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
    }
    void AddRef()
@@ -179,6 +181,20 @@ public:
       {
          _font = "Arial";
       }
+      return &this;
+   }
+   
+   static void SetTextAlign(Label* label, string textAlign)
+   {
+      if (label == NULL)
+      {
+         return;
+      }
+      label.SetTextAlign(textAlign);
+   }
+   Label* SetTextAlign(string textAlign)
+   {
+      _textAlign = textAlign;
       return &this;
    }
 

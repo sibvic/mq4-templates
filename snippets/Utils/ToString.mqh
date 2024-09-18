@@ -8,3 +8,7 @@ string ToString(double value)
 {
    return DoubleToStr(value);
 }
+int StrLength(string value)
+{
+   return StringLen(value);
+}

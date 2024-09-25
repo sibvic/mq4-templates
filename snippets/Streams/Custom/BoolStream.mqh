@@ -1,4 +1,4 @@
-// Custom boolean stream v1.0
+// Custom boolean stream v1.1
 
 #ifndef BoolStream_IMPL
 #define BoolStream_IMPL
@@ -39,6 +39,20 @@ public:
    }
 
    bool GetValue(const int period, bool &val)
+   {
+      int totalBars = Size();
+      int index = totalBars - period - 1;
+      if (index < 0 || totalBars <= index)
+      {
+         return false;
+      }
+      EnsureStreamHasProperSize(totalBars);
+      
+      val = _stream[index];
+      return _stream[index] != EMPTY_VALUE;
+   }
+   
+   bool GetValue(const int period, int &val)
    {
       int totalBars = Size();
       int index = totalBars - period - 1;

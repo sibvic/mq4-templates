@@ -28,6 +28,38 @@ public:
    {
       return 0;
    }
+   
+   static void Close(Signaler* signaler, string id, bool when)
+   {
+      if (!when)
+      {
+         return;
+      }
+      signaler.SendNotifications(id);
+   }
+   
+   static void Cancel(Signaler* signaler, string id, bool when)
+   {
+      if (!when)
+      {
+         return;
+      }
+      signaler.SendNotifications(id);
+   }
+   
+   static void CloseAll(Signaler* signaler, bool when, string id)
+   {
+      if (!when)
+      {
+         return;
+      }
+      signaler.SendNotifications(id);
+   }
+   
+   static double Equity()
+   {
+      return 0;
+   }
 };
 
 #endif 

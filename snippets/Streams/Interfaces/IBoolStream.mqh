@@ -11,6 +11,7 @@ public:
    virtual int Size() = 0;
 
    virtual bool GetValue(const int period, bool &val) = 0;
+   virtual bool GetValue(const int period, int &val) = 0;
 };
 
 #endif

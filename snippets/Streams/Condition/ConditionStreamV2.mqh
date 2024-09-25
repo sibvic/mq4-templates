@@ -3,7 +3,7 @@
 #include <Streams/Abstract/ABoolStream.mqh>
 #include <Conditions/ICondition.mqh>
 
-//ConditionStreamV2 v1.0
+//ConditionStreamV2 v1.1
 
 class ConditionStreamV2 : public ABoolStream
 {
@@ -27,6 +27,11 @@ public:
    }
 
    bool GetValue(const int period, bool &val)
+   {
+      val = _condition.IsPass(period, 0);
+      return true;
+   }
+   bool GetValue(const int period, int &val)
    {
       val = _condition.IsPass(period, 0);
       return true;

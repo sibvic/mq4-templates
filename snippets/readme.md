@@ -326,3 +326,7 @@ Calculates max width/height for the bunch of strings.
 ## PlotChar
 
 Implementation of plotchart from PineScript (TradingView)
+
+## PineStrategyAsIndicator
+
+Pine-script like strategy functions for an indicator. It translates all trading operations into alerts.

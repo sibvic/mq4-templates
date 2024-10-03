@@ -1,4 +1,4 @@
-// Vwap on stream v1.0
+// Vwap on stream v1.1
 
 #include <Streams/AOnStream.mqh>
 #include <Streams/interfaces/IIntStream.mqh>
@@ -53,7 +53,7 @@ public:
             return false;
          }
          int currentDay = TimeDay(current);
-         if (currentDay != startDate)
+         if (currentDay != startDay)
          {
             break;
          }

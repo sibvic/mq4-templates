@@ -330,3 +330,7 @@ Implementation of plotchart from PineScript (TradingView)
 ## PineStrategyAsIndicator
 
 Pine-script like strategy functions for an indicator. It translates all trading operations into alerts.
+
+## PineScriptRequest
+
+PineScript-like request.* functions

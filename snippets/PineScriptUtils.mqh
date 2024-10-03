@@ -90,6 +90,12 @@ public:
       TimeToStruct(dt, date);
       return date.hour;
    }
+   static int Year(datetime dt)
+   {
+      MqlDateTime date;
+      TimeToStruct(dt, date);
+      return date.year;
+   }
    static int DayOfWeek(datetime dt)
    {
       MqlDateTime date;
@@ -123,5 +129,15 @@ public:
    static int Saturday()
    {
       return 6;
+   }
+};
+
+class Runtime
+{
+public:
+   static void Error(string message)
+   {
+      Print(message);
+      ExpertRemove();
    }
 };

@@ -338,3 +338,7 @@ PineScript-like request.* functions
 ## PineScriptSymInfo
 
 PineScript-like syminfo.* functions
+
+## PineScriptTimeframe
+
+PineScript-like timeframe.* functions

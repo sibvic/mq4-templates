@@ -1,4 +1,4 @@
-// Array v1.3
+// Array v1.4
 #include <Array/IArray.mqh>
 #include <Array/LineArray.mqh>
 #include <Array/IntArray.mqh>
@@ -171,6 +171,49 @@ public:
          sum += array.Get(i);
       }
       return sum;
+   }
+   
+   static double Stdev(IIntArray* array)
+   {
+      if (array == NULL)
+      {
+         return EMPTY_VALUE;
+      }
+      double sum = 0;
+      double ssum = 0;
+      int size = array.Size();
+      if (size < 2)
+      {
+         return 0;
+      }
+      for (int i = 0; i < size; i++)
+      {
+         int value = array.Get(i);
+         sum += value;
+         ssum += MathPow(value, 2);
+      }
+      return MathSqrt((ssum * size - sum * sum) / (size * (size - 1)));
+   }
+   static double Stdev(IFloatArray* array)
+   {
+      if (array == NULL)
+      {
+         return EMPTY_VALUE;
+      }
+      double sum = 0;
+      double ssum = 0;
+      int size = array.Size();
+      if (size < 2)
+      {
+         return 0;
+      }
+      for (int i = 0; i < size; i++)
+      {
+         double value = array.Get(i);
+         sum += value;
+         ssum += MathPow(value, 2);
+      }
+      return MathSqrt((ssum * size - sum * sum) / (size * (size - 1)));
    }
 };
 

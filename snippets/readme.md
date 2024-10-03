@@ -334,3 +334,7 @@ Pine-script like strategy functions for an indicator. It translates all trading 
 ## PineScriptRequest
 
 PineScript-like request.* functions
+
+## PineScriptSymInfo
+
+PineScript-like syminfo.* functions

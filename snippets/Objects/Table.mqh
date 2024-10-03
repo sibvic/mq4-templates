@@ -196,6 +196,21 @@ public:
       }
    }
    
+   static void CellBGColor(Table* table, int column, int row, uint clr)
+   {
+      if (table == NULL)
+      {
+         return;
+      }
+      table.CellBGColor(column, row, clr);
+   }
+   void CellBGColor(int column, int row, uint clr)
+   {
+      Row* gridRow = _grid.GetRow(row);
+      LabelCell* cell = (LabelCell*)gridRow.GetCell(column);
+      cell.SetBgColor(clr);
+   }
+   
    static void CellTextHAlign(Table* table, int column, int row, string halign)
    {
       if (table == NULL)

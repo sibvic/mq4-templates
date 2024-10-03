@@ -11,17 +11,17 @@ class LabelCell : public ACell
    string _text; 
    ENUM_BASE_CORNER _corner;
    int _fontSize;
-   color _color;
+   uint _color;
    int _windowNumber;
    string _textHAlign;
    bool _withBackground;
-   color _bgColor;
+   uint _bgColor;
    int _width;
    int _height;
    int _linesHeights[];
    int _linesWidths[];
 public:
-   LabelCell(const string id, const string text, ENUM_BASE_CORNER corner, int fontSize, color clr, int windowNumber)
+   LabelCell(const string id, const string text, ENUM_BASE_CORNER corner, int fontSize, uint clr, int windowNumber)
    { 
       _withBackground = false;
       _textHAlign = "cental";
@@ -85,7 +85,7 @@ public:
       }
    }
    
-   bool SetBgColor(color clr)
+   bool SetBgColor(uint clr)
    {
       if (_bgColor == clr)
       {
@@ -101,7 +101,7 @@ public:
       
    }
    
-   bool SetColor(color clr)
+   bool SetColor(uint clr)
    {
       if (_color == clr)
       {

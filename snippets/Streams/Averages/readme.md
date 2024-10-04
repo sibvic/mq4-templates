@@ -57,3 +57,7 @@ Hull moving average on stream
 ## VwapOnStream
 
 VWAP average on stream
+
+## SwmaOnStream
+
+SWMA average.

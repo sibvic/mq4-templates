@@ -4,6 +4,20 @@
 class Timeframe
 {
 public:
+   static string Period()
+   {
+      if (_Period == PERIOD_M1) { return "1"; }
+      if (_Period == PERIOD_M5) { return "5"; }
+      if (_Period == PERIOD_M15) { return "15"; }
+      if (_Period == PERIOD_M30) { return "30"; }
+      if (_Period == PERIOD_H1) { return "60"; }
+      if (_Period == PERIOD_H4) { return "240"; }
+      if (_Period == PERIOD_D1) { return "D"; }
+      if (_Period == PERIOD_W1) { return "W"; }
+      if (_Period == PERIOD_MN1) { return "M"; }
+      return "1";
+   }
+   
    static bool Change(string timeframe, int pos)
    {
       int bars = iBars(_Symbol, _Period);

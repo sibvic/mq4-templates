@@ -21,3 +21,7 @@ CCI oscillator on stream.
 ## CorrelationStream
 
 Correlation on stream
+
+## DevStream
+
+Measure of difference between the series and it's SMA stream 

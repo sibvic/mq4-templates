@@ -1,19 +1,19 @@
-// Int array v1.3
-#include <Array/IIntArray.mqh>
+// String array v1.0
+#include <PineScript/Array/IStringArray.mqh>
 
-class IntArray : public IIntArray
+class StringArray : public IStringArray
 {
-   int _array[];
+   string _array[];
    int _defaultSize;
-   int _defaultValue;
+   string _defaultValue;
 public:
-   IntArray(int size, int defaultValue)
+   StringArray(int size, string defaultValue)
    {
       _defaultSize = size;
       Clear();
    }
 
-   IIntArray* Clear()
+   IStringArray* Clear()
    {
       ArrayResize(_array, _defaultSize);
       for (int i = 0; i < _defaultSize; ++i)
@@ -23,7 +23,7 @@ public:
       return &this;
    }
 
-   void Unshift(int value)
+   void Unshift(string value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -39,36 +39,37 @@ public:
       return ArraySize(_array);
    }
 
-   void Push(int value)
+   IStringArray* Push(string value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
       _array[size] = value;
+      return &this;
    }
 
-   int Pop()
+   string Pop()
    {
       int size = ArraySize(_array);
-      int value = _array[size - 1];
+      string value = _array[size - 1];
       ArrayResize(_array, size - 1);
       return value;
    }
 
-   int Shift()
+   string Shift()
    {
       return Remove(0);
    }
 
-   int Get(int index)
+   string Get(int index)
    {
       if (index < 0 || index >= Size())
       {
-         return EMPTY_VALUE;
+         return NULL;
       }
       return _array[index];
    }
    
-   void Set(int index, int value)
+   void Set(int index, string value)
    {
       if (index < 0 || index >= Size())
       {
@@ -77,20 +78,33 @@ public:
       _array[index] = value;
    }
    
-   IIntArray* Slice(int from, int to)
+   IStringArray* Slice(int from, int to)
    {
       return NULL; //TODO;
    }
 
-   int Remove(int index)
+   string Remove(int index)
    {
       int size = ArraySize(_array);
-      int value = _array[index];
+      string value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
          _array[i] = _array[i + 1];
       }
       ArrayResize(_array, size - 1);
       return value;
+   }
+   
+   int Includes(string value)
+   {
+      int size = ArraySize(_array);
+      for (int i = 0; i < size; ++i)
+      {
+         if (_array[i] == value)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 };

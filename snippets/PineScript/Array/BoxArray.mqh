@@ -1,7 +1,7 @@
 #ifndef BoxArray_IMPL
 #define BoxArray_IMPL
 // Box array v1.4
-#include <Array/IBoxArray.mqh>
+#include <PineScript/Array/IBoxArray.mqh>
 #include <Objects/BoxesCollection.mqh>
 
 class BoxArray : public IBoxArray
@@ -134,6 +134,19 @@ public:
          return NULL;
       }
       return value;
+   }
+   
+   int Includes(Box* value)
+   {
+      int size = ArraySize(_array);
+      for (int i = 0; i < size; ++i)
+      {
+         if (_array[i] == value)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 };
 #endif

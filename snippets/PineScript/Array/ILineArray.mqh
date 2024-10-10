@@ -14,4 +14,5 @@ public:
    virtual ILineArray* Clear() = 0;
    virtual Line* Shift() = 0;
    virtual Line* Remove(int index) = 0;
+   virtual int Includes(Line* value) = 0;
 };

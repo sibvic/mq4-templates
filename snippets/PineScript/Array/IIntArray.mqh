@@ -13,4 +13,5 @@ public:
    virtual IIntArray* Clear() = 0;
    virtual int Shift() = 0;
    virtual int Remove(int index) = 0;
+   virtual int Includes(int value) = 0;
 };

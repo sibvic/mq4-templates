@@ -14,4 +14,5 @@ public:
    virtual IBoxArray* Clear() = 0;
    virtual Box* Shift() = 0;
    virtual Box* Remove(int index) = 0;
+   virtual int Includes(Box* value) = 0;
 };

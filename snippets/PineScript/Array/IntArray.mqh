@@ -1,20 +1,19 @@
-// Float array v1.3
-#include <Array/IFloatArray.mqh>
+// Int array v1.3
+#include <PineScript/Array/IIntArray.mqh>
 
-class FloatArray : public IFloatArray
+class IntArray : public IIntArray
 {
-   double _array[];
+   int _array[];
    int _defaultSize;
-   double _defaultValue;
+   int _defaultValue;
 public:
-   FloatArray(int size, double defaultValue)
+   IntArray(int size, int defaultValue)
    {
       _defaultSize = size;
-      _defaultValue = defaultValue;
       Clear();
    }
 
-   IFloatArray* Clear()
+   IIntArray* Clear()
    {
       ArrayResize(_array, _defaultSize);
       for (int i = 0; i < _defaultSize; ++i)
@@ -24,7 +23,7 @@ public:
       return &this;
    }
 
-   void Unshift(double value)
+   void Unshift(int value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -40,22 +39,27 @@ public:
       return ArraySize(_array);
    }
 
-   void Push(double value)
+   void Push(int value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
       _array[size] = value;
    }
 
-   double Pop()
+   int Pop()
    {
       int size = ArraySize(_array);
-      double value = _array[size - 1];
+      int value = _array[size - 1];
       ArrayResize(_array, size - 1);
       return value;
    }
 
-   double Get(int index)
+   int Shift()
+   {
+      return Remove(0);
+   }
+
+   int Get(int index)
    {
       if (index < 0 || index >= Size())
       {
@@ -64,7 +68,7 @@ public:
       return _array[index];
    }
    
-   void Set(int index, double value)
+   void Set(int index, int value)
    {
       if (index < 0 || index >= Size())
       {
@@ -72,26 +76,34 @@ public:
       }
       _array[index] = value;
    }
-
-   double Shift()
-   {
-      return Remove(0);
-   }
    
-   IFloatArray* Slice(int from, int to)
+   IIntArray* Slice(int from, int to)
    {
       return NULL; //TODO;
    }
 
-   double Remove(int index)
+   int Remove(int index)
    {
       int size = ArraySize(_array);
-      double value = _array[index];
+      int value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
          _array[i] = _array[i + 1];
       }
       ArrayResize(_array, size - 1);
       return value;
+   }
+   
+   int Includes(int value)
+   {
+      int size = ArraySize(_array);
+      for (int i = 0; i < size; ++i)
+      {
+         if (_array[i] == value)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 };

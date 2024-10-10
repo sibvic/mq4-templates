@@ -1,7 +1,7 @@
 #ifndef LineArray_IMPL
 #define LineArray_IMPL
 // Line array v1.3
-#include <Array/ILineArray.mqh>
+#include <PineScript/Array/ILineArray.mqh>
 #include <Objects/LinesCollection.mqh>
 
 class LineArray : public ILineArray
@@ -133,6 +133,19 @@ public:
          return NULL;
       }
       return value;
+   }
+   
+   int Includes(Line* value)
+   {
+      int size = ArraySize(_array);
+      for (int i = 0; i < size; ++i)
+      {
+         if (_array[i] == value)
+         {
+            return true;
+         }
+      }
+      return false;
    }
 };
 #endif

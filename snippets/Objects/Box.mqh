@@ -1,7 +1,7 @@
 #ifndef Box_IMPL
 #define Box_IMPL
 
-// Box object v1.3
+// Box object v1.4
 
 class Box
 {
@@ -94,6 +94,8 @@ public:
    void SetLeft(int value) { _left = value; }
    static void SetRight(Box* box, int value) { if (box == NULL) { return; } box.SetRight(value); }
    void SetRight(int value) { _right = value; }
+   static void SetLeftTop(Box* box, double top, int left) { if (box == NULL) { return; } box.SetTop(top); box.SetLeft(left); }
+   static void SetRightBottom(Box* box, double bottom, int right) { if (box == NULL) { return; } box.SetRight(right); box.SetBottom(bottom); }
 
    static void SetBgColor(Box* box, color clr) { if (box == NULL) { return; } box.SetBgColor(clr); }
    Box* SetBgColor(color clr) { _bgcolor = clr; return &this; }

@@ -1,4 +1,4 @@
-// Label v1.3
+// Label v1.4
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -82,30 +82,11 @@ public:
       }
       return label.GetY();
    }
-   void SetX(int x)
-   {
-      _x = x;
-   }
-   static void SetX(Label* label, int x)
-   {
-      if (label == NULL)
-      {
-         return;
-      }
-      label.SetX(x);
-   }
-   void SetY(double y)
-   {
-      _y = y;
-   }
-   static void SetY(Label* label, double y)
-   {
-      if (label == NULL)
-      {
-         return;
-      }
-      label.SetY(y);
-   }
+   void SetX(int x) { _x = x; }
+   static void SetX(Label* label, int x) { if (label == NULL) { return; } label.SetX(x); }
+   void SetY(double y) { _y = y; }
+   static void SetY(Label* label, double y) { if (label == NULL) { return; } label.SetY(y); }
+   static void SetXY(Label* label, int x, double y) { if (label == NULL) { return; } label.SetX(x); label.SetY(y); }
 
    Label* SetSize(string size)
    {

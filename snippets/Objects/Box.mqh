@@ -1,7 +1,7 @@
 #ifndef Box_IMPL
 #define Box_IMPL
 
-// Box object v1.4
+// Box object v1.5
 
 class Box
 {
@@ -22,10 +22,11 @@ class Box
    string _textVAlign;
    string _textSize;
    color _textColor;
+   bool global;
 
    int _refs;
 public:
-   Box(int left, double top, int right, double bottom, string id, string collectionId, int window)
+   Box(int left, double top, int right, double bottom, string id, string collectionId, int window, bool global = false)
    {
       _refs = 1;
       _textColor = White;
@@ -38,6 +39,7 @@ public:
       _window = window;
       _extend = "none";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
+      this.global = global;
    }
    void AddRef()
    {
@@ -51,6 +53,10 @@ public:
          delete &this;
       }
       return refs;
+   }
+   bool IsGlobal()
+   {
+      return global;
    }
 
    string GetId()

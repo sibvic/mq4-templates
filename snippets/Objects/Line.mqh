@@ -1,4 +1,4 @@
-// Line object v1.2
+// Line object v1.3
 
 class Line
 {
@@ -14,8 +14,9 @@ class Line
    int _refs;
    string _collectionId;
    int _window;
+   bool global;
 public:
-   Line(int x1, double y1, int x2, double y2, string id, string collectionId, int window)
+   Line(int x1, double y1, int x2, double y2, string id, string collectionId, int window, bool global)
    {
       _refs = 1;
       _x1 = x1;
@@ -27,6 +28,7 @@ public:
       _timeframe = (ENUM_TIMEFRAMES)_Period;
       _window = window;
       _collectionId = collectionId;
+      this.global = global;
    }
    void AddRef()
    {
@@ -40,6 +42,11 @@ public:
          delete &this;
       }
       return refs;
+   }
+   
+   bool IsGlobal()
+   {
+      return global;
    }
 
    string GetId()

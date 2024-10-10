@@ -1,4 +1,4 @@
-// Collection of boxes v1.1
+// Collection of boxes v1.2
 
 #ifndef BoxesCollection_IMPL
 #define BoxesCollection_IMPL
@@ -102,10 +102,7 @@ public:
       {
          return;
       }
-      if (!_all.RemoveItem(box))
-      {
-         return;
-      }
+      _all.DeleteItem(box);
       BoxesCollection* collection = FindCollection(box.GetCollectionId());
       if (collection == NULL)
       {
@@ -114,7 +111,7 @@ public:
       collection.DeleteItem(box);
    }
 
-   static Box* Create(string id, int left, double top, int right, double bottom, datetime dateId)
+   static Box* Create(string id, int left, double top, int right, double bottom, datetime dateId, bool global = false)
    {
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - left - 1);
@@ -126,7 +123,7 @@ public:
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
       
-      Box* box = new Box(left, top, right, bottom, boxId, id, WindowOnDropped());
+      Box* box = new Box(left, top, right, bottom, boxId, id, WindowOnDropped(), global);
       BoxesCollection* collection = FindCollection(id);
       if (collection == NULL)
       {
@@ -135,9 +132,19 @@ public:
       }
       collection.Add(box);
       _all.Add(box);
-      if (_all.Count() > _max)
+      box.Release();
+      int allCount = _all.Count();
+      if (allCount > _max)
       {
-         Delete(_all.GetFirst());
+         for (int i = 0; i < allCount; ++i)
+         {
+            Box* toDelete = _all.GetByIndex(i);
+            if (!toDelete.IsGlobal() && toDelete != box)
+            {
+               Delete(toDelete);
+               break;
+            }
+         }
       }
       return box;
    }
@@ -168,12 +175,12 @@ private:
       return -1;
    }
 
-   bool RemoveItem(Box* box)
+   void DeleteItem(Box* box)
    {
       int index = FindIndex(box);
       if (index == -1)
       {
-         return false;
+         return;
       }
       int size = ArraySize(_array);
       for (int i = index + 1; i < size; ++i)
@@ -181,14 +188,7 @@ private:
          _array[i - 1] = _array[i];
       }
       ArrayResize(_array, size - 1);
-      return true;
-   }
-   void DeleteItem(Box* box)
-   {
-      if (RemoveItem(box))
-      {
-         box.Release();
-      }
+      box.Release();
    }
    
    void Add(Box* box)
@@ -198,6 +198,7 @@ private:
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
       _array[size] = box;
+      box.AddRef();
    }
 
    void RedrawBoxs()

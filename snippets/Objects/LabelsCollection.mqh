@@ -1,4 +1,4 @@
-// Collection of labels v1.1
+// Collection of labels v1.2
 
 #ifndef LabelsCollection_IMPL
 #define LabelsCollection_IMPL
@@ -108,7 +108,7 @@ public:
       collection.DeleteLabel(label);
    }
 
-   static Label* Create(string id, int x, double y, datetime dateId)
+   static Label* Create(string id, int x, double y, datetime dateId, bool globalLabel = false)
    {
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x - 1);
@@ -119,7 +119,7 @@ public:
          + IntegerToString(TimeHour(dateId)) + "_"
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
-      Label* label = new Label(x, y, labelId, id, WindowOnDropped());
+      Label* label = new Label(x, y, labelId, id, WindowOnDropped(), globalLabel);
       LabelsCollection* collection = FindCollection(id);
       if (collection == NULL)
       {
@@ -128,9 +128,18 @@ public:
       }
       collection.Add(label);
       _all.Add(label);
-      if (_all.Count() > _maxLabels)
+      int allLabelsCount = _all.Count();
+      if (allLabelsCount > _maxLabels)
       {
-         Delete(_all.GetFirst());
+         for (int i = 0; i < allLabelsCount; ++i)
+         {
+            Label* labelToDelete = _all.GetByIndex(i);
+            if (!labelToDelete.IsGlobal() && labelToDelete != label)
+            {
+               Delete(labelToDelete);
+               break;
+            }
+         }
       }
       return label;
    }

@@ -4,7 +4,7 @@
 #ifndef PineStrategy_IMPL
 #define PineStrategy_IMPL
 
-#include "Signaler.mqh"
+#include <Signaler.mqh>
 
 class PineStrategy
 {

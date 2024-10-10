@@ -1,4 +1,4 @@
-// Label v1.4
+// Label v1.5
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -20,8 +20,9 @@ class Label
    ENUM_TIMEFRAMES _timeframe;
    int _refs;
    int _window;
+   bool globalLabel;
 public:
-   Label(int x, double y, string labelId, string collectionId, int window)
+   Label(int x, double y, string labelId, string collectionId, int window, bool globalLabel)
    {
       _refs = 1;
       _window = window;
@@ -33,6 +34,7 @@ public:
       _font = "Arial";
       _textAlign = "";
       _timeframe = (ENUM_TIMEFRAMES)_Period;
+      this.globalLabel = globalLabel;
    }
    void AddRef()
    {
@@ -46,6 +48,11 @@ public:
          delete &this;
       }
       return refs;
+   }
+   
+   bool IsGlobal()
+   {
+      return globalLabel;
    }
    
    string GetId()

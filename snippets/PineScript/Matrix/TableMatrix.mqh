@@ -1,5 +1,5 @@
 // Table matrix
-// v1.0
+// v1.1
 #include <PineScript/Matrix/ITableMatrix.mqh>
 #include <PineScript/Objects/Table.mqh>
 
@@ -15,7 +15,13 @@ public:
       this.rows = rows;
       this.columns = columns;
       this.initialValue = initialValue;
+      initialValue.Lock();
       Clear();
+   }
+   
+   ~TableMatrix()
+   {
+      initialValue.Unlock();
    }
    
    ITableMatrix* Clear()

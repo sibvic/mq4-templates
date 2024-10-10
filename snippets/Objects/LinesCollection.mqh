@@ -1,4 +1,4 @@
-// Collection of lines v1.1
+// Collection of lines v1.2
 
 #ifndef LinesCollection_IMPL
 #define LinesCollection_IMPL
@@ -71,7 +71,7 @@ public:
       collection.DeleteItem(line);
    }
 
-   static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId)
+   static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId, bool global = false)
    {
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x1 - 1);
@@ -83,7 +83,7 @@ public:
          + IntegerToString(TimeMinute(dateId)) + "_"
          + IntegerToString(TimeSeconds(dateId));
       
-      Line* line = new Line(x1, y1, x2, y2, lineId, id, WindowOnDropped());
+      Line* line = new Line(x1, y1, x2, y2, lineId, id, WindowOnDropped(), global);
       LinesCollection* collection = FindCollection(id);
       if (collection == NULL)
       {
@@ -92,9 +92,18 @@ public:
       }
       collection.Add(line);
       _all.Add(line);
-      if (_all.Count() > _max)
+      int allLinesCount = _all.Count();
+      if (allLinesCount > _max)
       {
-         Delete(_all.GetFirst());
+         for (int i = 0; i < allLinesCount; ++i)
+         {
+            Line* lineToDelete = _all.GetByIndex(i);
+            if (!lineToDelete.IsGlobal() && lineToDelete != line)
+            {
+               Delete(lineToDelete);
+               break;
+            }
+         }
       }
       line.Release();
       return line;

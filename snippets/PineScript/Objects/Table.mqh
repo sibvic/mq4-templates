@@ -10,7 +10,22 @@ public:
    static void Clear();
    static void Add(Table* table);
    static void Redraw();
+   static Table* Create(string prefix, string tableIndex, string position, int columns, int rows);
 };
+
+Table* TableManager::Create(string prefix, string tableIndex, string position, int columns, int rows)
+{
+   string id = prefix + "_" + tableIndex;
+   int tablesCount = ArraySize(tables);
+   for (int i = 0; i < tablesCount; ++i)
+   {
+      if (tables[i].GetId() == id)
+      {
+         return tables[i];
+      }
+   }
+   return new Table(id, position, columns, rows);
+}
 
 Table* TableManager::tables[];
 void TableManager::Clear()
@@ -72,10 +87,10 @@ class Table
    int _rows;
 
    int _borderWidth;
-   color _borderColor;
+   uint _borderColor;
    
    int _frameWidth;
-   color _frameColor;
+   uint _frameColor;
    Grid* _grid;
 public:
    Table(string prefix, string position, int columns, int rows)
@@ -111,8 +126,13 @@ public:
    {
       delete _grid;
    }
+   
+   string GetId()
+   {
+      return _prefix;
+   }
 
-   Table* SetBorderColor(color clr)
+   Table* SetBorderColor(uint clr)
    {
       _borderColor = clr;
       return &this;
@@ -122,7 +142,7 @@ public:
       _borderWidth = borderWidth;
       return &this;
    }
-   Table* SetBGColor(color clr)
+   Table* SetBGColor(uint clr)
    {
       for (int row = 0; row < _grid.GetRowsCount(); ++row)
       {
@@ -136,7 +156,7 @@ public:
       return &this;
    }
    
-   Table* SetFrameColor(color clr)
+   Table* SetFrameColor(uint clr)
    {
       _frameColor = clr;
       return &this;
@@ -163,7 +183,7 @@ public:
          Redraw();
       }
    }
-   static void CellTextColor(Table* table, int column, int row, color clr)
+   static void CellTextColor(Table* table, int column, int row, uint clr)
    {
       if (table == NULL)
       {
@@ -171,7 +191,7 @@ public:
       }
       table.CellTextColor(column, row, clr);
    }
-   void CellTextColor(int column, int row, color clr)
+   void CellTextColor(int column, int row, uint clr)
    {
       Row* gridRow = _grid.GetRow(row);
       LabelCell* cell = (LabelCell*)gridRow.GetCell(column);

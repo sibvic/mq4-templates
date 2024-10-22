@@ -48,7 +48,7 @@ public:
    }
 };
 
-color FromGradient(double value, double bottomValue, double topValue, color bottomColor, color topColor)
+uint FromGradient(double value, double bottomValue, double topValue, uint bottomColor, uint topColor)
 {
    if (value == EMPTY_VALUE || topValue == EMPTY_VALUE)
    {

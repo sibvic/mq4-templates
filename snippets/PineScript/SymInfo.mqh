@@ -1,5 +1,5 @@
 // syminfo.* functions from Pine Script
-// v1.0
+// v1.1
 
 class SymInfo
 {
@@ -15,5 +15,15 @@ public:
    static string Ticker()
    {
       return _Symbol;
+   }
+   
+   static string TickerId()
+   {
+      return _Symbol;
+   }
+   
+   static string Currency()
+   {
+      return SymbolInfoString(_Symbol, SYMBOL_CURRENCY_BASE);
    }
 };

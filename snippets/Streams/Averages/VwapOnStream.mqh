@@ -6,8 +6,8 @@
 #include <Streams/interfaces/IDateTimeStream.mqh>
 #include <Streams/VolumeStream.mqh>
 #include <Streams/DateTimeStream.mqh>
-#include <Array/Array.mqh>
-#include <Array/FloatArray.mqh>
+#include <PineScript/Array/Array.mqh>
+#include <PineScript/Array/FloatArray.mqh>
 
 #ifndef VwapOnStream_IMP
 #define VwapOnStream_IMP

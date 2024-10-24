@@ -1,4 +1,4 @@
-// Array v1.3
+// Array v1.4
 #include <PineScript/Array/IArray.mqh>
 #include <PineScript/Array/LineArray.mqh>
 #include <PineScript/Array/IntArray.mqh>
@@ -126,12 +126,12 @@ public:
 
    static int Max(IIntArray* array)
    {
-      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      if (array == NULL || array.Size() == 0) { return INT_MIN; }
       int max = array.Get(0);
       for (int i = 1; i < array.Size(); ++i)
       {
          int current = array.Get(i);
-         if (max == EMPTY_VALUE || (current != EMPTY_VALUE && max < current))
+         if (max == INT_MIN || (current != INT_MIN && max < current))
          {
             max = current;
          }
@@ -154,12 +154,12 @@ public:
    }
    static int Min(IIntArray* array)
    {
-      if (array == NULL || array.Size() == 0) { return EMPTY_VALUE; }
+      if (array == NULL || array.Size() == 0) { return INT_MIN; }
       int min = array.Get(0);
       for (int i = 1; i < array.Size(); ++i)
       {
          int current = array.Get(i);
-         if (min == EMPTY_VALUE || (current != EMPTY_VALUE && min > current))
+         if (min == INT_MIN || (current != INT_MIN && min > current))
          {
             min = current;
          }

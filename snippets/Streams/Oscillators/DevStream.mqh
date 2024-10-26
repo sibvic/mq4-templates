@@ -1,5 +1,5 @@
 #include <Streams/AOnStream.mqh>
-#include <Streams/Averages/SmaOnStream.mqh>
+#include <Streams/Averages/SMAOnStream.mqh>
 
 // Measure of difference between the series and it's SMA stream 
 // v1.0

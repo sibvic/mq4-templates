@@ -1,5 +1,5 @@
 #include <Streams/AOnStream.mqh>
-#include <Streams/Averages/SmaOnStream.mqh>
+#include <Streams/Averages/SMAOnStream.mqh>
 #include <Streams/TwoStreamDifferenceStream.mqh>
 #include <Streams/AbsStream.mqh>
 #include <Streams/SumOnStream.mqh>

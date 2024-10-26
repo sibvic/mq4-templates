@@ -3,7 +3,7 @@
 // Correlation stream v1.0
 
 #include <Streams/AOnStream.mqh>
-#include <Streams/Averages/SmaOnStream.mqh>
+#include <Streams/Averages/SMAOnStream.mqh>
 
 class CorrelationStream : public AOnStream
 {

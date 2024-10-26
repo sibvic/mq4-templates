@@ -2,7 +2,7 @@
 
 #include <enums/MATypes.mqh>
 #include <Streams/IStream.mqh>
-#include <Streams/Averages/SmaOnStream.mqh>
+#include <Streams/Averages/SMAOnStream.mqh>
 #include <Streams/Averages/EmaOnStream.mqh>
 #include <Streams/Averages/TemaOnStream.mqh>
 #include <Streams/Averages/LwmaOnStream.mqh>

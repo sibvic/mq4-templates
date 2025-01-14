@@ -1,7 +1,9 @@
 #include <Grid/ICellFactory.mqh>
 #include <Grid/Grid.mqh>
+#include <Grid/EmptyCell.mqh>
+#include <Grid/LabelCell.mqh>
 
-// Grid builder v5.1
+// Grid builder v6.0
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
@@ -17,9 +19,11 @@ class GridBuilder
    ICellFactory* _cellFactory[];
    ENUM_BASE_CORNER _corner;
    bool _showHistorical;
+   string prefix;
 public:
-   GridBuilder(int x, int y, bool verticalMode, ENUM_BASE_CORNER __corner, bool showHistorical)
+   GridBuilder(int x, int y, bool verticalMode, ENUM_BASE_CORNER __corner, bool showHistorical, string prefix)
    {
+      this.prefix = prefix;
       _showHistorical = showHistorical;
       _corner = __corner;
       _verticalMode = verticalMode;
@@ -62,8 +66,8 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             row = grid.AddRow();
-            string id = IndicatorObjPrefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], _corner));
+            string id = prefix + _symbols[i] + "_Name";
+            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, 0));
          }
       }
       else
@@ -73,8 +77,8 @@ public:
          row.Add(new EmptyCell());
          for (int i = 0; i < _symbolsCount; i++)
          {
-            string id = IndicatorObjPrefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], _corner));
+            string id = prefix + _symbols[i] + "_Name";
+            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, 0));
          }
       }
    }
@@ -86,7 +90,7 @@ public:
       {
          int startIndex = 1;
          Row* header = grid.GetRow(0);
-         header.Add(new LabelCell(IndicatorObjPrefix + label + "_h", label, _corner));
+         header.Add(new LabelCell(prefix + label + "_h", label, _corner, 12, clrGray, 0));
          if (cellFactorySize > 1)
          {
             ++startIndex;
@@ -97,7 +101,7 @@ public:
                {
                   header.Add(new EmptyCell());
                }
-               subHeader.Add(new LabelCell(IndicatorObjPrefix + label + "_sh" + IntegerToString(i), _cellFactory[i].GetHeader(), _corner));
+               subHeader.Add(new LabelCell(prefix + label + "_sh" + IntegerToString(i), _cellFactory[i].GetHeader(), _corner, 12, clrGray, 0));
             }
          }
          
@@ -106,7 +110,7 @@ public:
             Row* row = grid.GetRow(startIndex + i);
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
-               string id = IndicatorObjPrefix + _symbols[i] + "_" + label + IntegerToString(ii);
+               string id = prefix + _symbols[i] + "_" + label + IntegerToString(ii);
                row.Add(_cellFactory[ii].Create(id, 0, 0, _corner, _symbols[i], timeframe, _showHistorical));
             }
          }
@@ -116,11 +120,11 @@ public:
          //TODO: add support of multiple values
          Row* row = grid.AddRow();
          #ifndef EXCLUDE_PERIOD_HEADER
-            row.Add(new LabelCell(IndicatorObjPrefix + label + "_Label", label, _corner));
+            row.Add(new LabelCell(prefix + label + "_Label", label, _corner, 12, clrGray, 0));
          #endif
          for (int i = 0; i < _symbolsCount; i++)
          {
-            string id = IndicatorObjPrefix + _symbols[i] + "_" + label;
+            string id = prefix + _symbols[i] + "_" + label;
             for (int ii = 0; ii < cellFactorySize; ++ii)
             {
                row.Add(_cellFactory[ii].Create(id, 0, 0, _corner, _symbols[i], timeframe, _showHistorical));

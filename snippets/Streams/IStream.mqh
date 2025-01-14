@@ -1,5 +1,7 @@
 // Stream v.3.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
+#ifndef IStream_IMPL
+#define IStream_IMPL
 
 interface IStream
 {
@@ -10,3 +12,4 @@ public:
 
    virtual bool GetValue(const int period, double &val) = 0;
 };
+#endif

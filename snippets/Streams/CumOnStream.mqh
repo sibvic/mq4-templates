@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// Cumulative on stream v1.1
+// Cumulative on stream v1.2
 
 #ifndef CumOnStream_IMP
 #define CumOnStream_IMP
@@ -32,7 +32,7 @@ public:
          return false;
       
       int bufferIndex = totalBars - 1 - period;
-      if (period > totalBars - 1 && _buffer[bufferIndex - 1] != EMPTY_VALUE)
+      if (bufferIndex > 0 && _buffer[bufferIndex - 1] != EMPTY_VALUE)
       {
          _buffer[bufferIndex] = _buffer[bufferIndex - 1] + current;
       }

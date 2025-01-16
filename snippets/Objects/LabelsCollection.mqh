@@ -1,4 +1,4 @@
-// Collection of labels v1.2
+// Collection of labels v1.3
 
 #ifndef LabelsCollection_IMPL
 #define LabelsCollection_IMPL
@@ -47,6 +47,15 @@ public:
       return _labels[0];
    }
    
+   Label* Get(int index)
+   {
+      int size = ArraySize(_labels);
+      if (index < 0 || index >= size)
+      {
+         return NULL;
+      }
+      return _labels[index];
+   }
    Label* GetByIndex(int index)
    {
       int size = ArraySize(_labels);
@@ -133,7 +142,7 @@ public:
       {
          for (int i = 0; i < allLabelsCount; ++i)
          {
-            Label* labelToDelete = _all.GetByIndex(i);
+            Label* labelToDelete = _all.Get(i);
             if (!labelToDelete.IsGlobal() && labelToDelete != label)
             {
                Delete(labelToDelete);

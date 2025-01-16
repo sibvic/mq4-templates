@@ -1,4 +1,4 @@
-// Collection of boxes v1.2
+// Collection of boxes v1.3
 
 #ifndef BoxesCollection_IMPL
 #define BoxesCollection_IMPL
@@ -50,6 +50,15 @@ public:
       return _array[0];
    }
 
+   Box* Get(int index)
+   {
+      int size = ArraySize(_array);
+      if (index < 0 || index >= size)
+      {
+         return NULL;
+      }
+      return _array[index];
+   }
    Box* GetByIndex(int index)
    {
       int size = ArraySize(_array);
@@ -138,7 +147,7 @@ public:
       {
          for (int i = 0; i < allCount; ++i)
          {
-            Box* toDelete = _all.GetByIndex(i);
+            Box* toDelete = _all.Get(i);
             if (!toDelete.IsGlobal() && toDelete != box)
             {
                Delete(toDelete);

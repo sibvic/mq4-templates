@@ -215,13 +215,45 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <conditions/MaxSpreadCondition.mqh>
 #include <Streams/AStream.mqh>
 #include <Streams/PriceStream.mqh>
+class EntryStreamData
+{
+   int refs;
+public:
+   EntryStreamData(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   {
+      refs = 1;
+      //create common indicators here
+   }
+   ~EntryStreamData()
+   {
+      //delete common indicators here
+   }
+   void AddRef()
+   {
+      ++refs;
+   }
+   void Release()
+   {
+      if (--refs == 0)
+      {
+         delete &this;
+      }
+   }
+};
 #ifndef USE_MARKET_ORDERS
    class LongEntryStream : public AStream
    {
+      EntryStreamData* data;
    public:
-      LongEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+      LongEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
          :AStream(symbol, timeframe)
       {
+         this.data = data;
+         data.AddRef();
+      }
+      ~LongEntryStream()
+      {
+         data.Release();
       }
 
       bool GetValue(const int period, double &val)
@@ -233,10 +265,17 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 
    class ShortEntryStream : public AStream
    {
+      EntryStreamData* data;
    public:
-      ShortEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+      ShortEntryStream(const string symbol, const ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
          :AStream(symbol, timeframe)
       {
+         this.data = data;
+         data.AddRef();
+      }
+      ~ShortEntryStream()
+      {
+         data.Release();
       }
 
       bool GetValue(const int period, double &val)
@@ -346,11 +385,17 @@ private:
 
 class LongCondition : public ACondition
 {
+   EntryStreamData* data;
 public:
-   LongCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+   LongCondition(const string symbol, ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
       :ACondition(symbol, timeframe)
    {
-
+      this.data = data;
+      data.AddRef();
+   }
+   ~LongCondition()
+   {
+      data.Release();
    }
 
    bool IsPass(const int period, const datetime date)
@@ -362,11 +407,17 @@ public:
 
 class ShortCondition : public ACondition
 {
+   EntryStreamData* data;
 public:
-   ShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe)
+   ShortCondition(const string symbol, ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
       :ACondition(symbol, timeframe)
    {
-
+      this.data = data;
+      data.AddRef();
+   }
+   ~ShortCondition()
+   {
+      data.Release();
    }
 
    bool IsPass(const int period, const datetime date)
@@ -408,7 +459,7 @@ public:
    }
 };
 
-ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
 {
    if (trading_side == ShortSideOnly)
    {
@@ -416,7 +467,7 @@ ICondition* CreateLongCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    }
 
    AndCondition* condition = new AndCondition();
-   condition.Add(new LongCondition(symbol, timeframe), false);
+   condition.Add(new LongCondition(symbol, timeframe, data), false);
    #ifdef ACT_ON_SWITCH_CONDITION
       ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
       condition.Release();
@@ -437,7 +488,7 @@ ICondition* CreateLongFilterCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    return condition;
 }
 
-ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
+ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe, EntryStreamData* data)
 {
    if (trading_side == LongSideOnly)
    {
@@ -445,7 +496,7 @@ ICondition* CreateShortCondition(string symbol, ENUM_TIMEFRAMES timeframe)
    }
 
    AndCondition* condition = new AndCondition();
-   condition.Add(new ShortCondition(symbol, timeframe), false);
+   condition.Add(new ShortCondition(symbol, timeframe, data), false);
    #ifdef ACT_ON_SWITCH_CONDITION
       ActOnSwitchCondition* switchCondition = new ActOnSwitchCondition(symbol, timeframe, (ICondition*) condition);
       condition.Release();
@@ -624,11 +675,12 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       ? (ICloseOnOppositeStrategy*)new DoCloseOnOppositeStrategy(slippage_points, magic_number)
       : (ICloseOnOppositeStrategy*)new DontCloseOnOppositeStrategy();
    ActionOnConditionLogic* actions = new ActionOnConditionLogic();
+   EntryStreamData* data = new EntryStreamData(symbol, timeframe);
    #ifdef USE_MARKET_ORDERS
       IEntryStrategy* entryStrategy = new MarketEntryStrategy(symbol, magic_number, slippage_points, actions, ecn_broker);
    #else
-      AStream *longPrice = new LongEntryStream(symbol, timeframe);
-      AStream *shortPrice = new ShortEntryStream(symbol, timeframe);
+      AStream *longPrice = new LongEntryStream(symbol, timeframe, data);
+      AStream *shortPrice = new ShortEntryStream(symbol, timeframe, data);
       IEntryStrategy* entryStrategy = new PendingEntryStrategy(symbol, magic_number, slippage_points, longPrice, shortPrice, actions, ecn_broker);
    #endif
 
@@ -648,16 +700,17 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       case DirectLogic:
          longFilterCondition.Add(CreateLongFilterCondition(symbol, timeframe), false);
          shortFilterCondition.Add(CreateShortFilterCondition(symbol, timeframe), false);
-         longCondition.Add(CreateLongCondition(symbol, timeframe), false);
-         shortCondition.Add(CreateShortCondition(symbol, timeframe), false);
+         longCondition.Add(CreateLongCondition(symbol, timeframe, data), false);
+         shortCondition.Add(CreateShortCondition(symbol, timeframe, data), false);
          break;
       case ReversalLogic:
          shortFilterCondition.Add(CreateLongFilterCondition(symbol, timeframe), false);
          longFilterCondition.Add(CreateShortFilterCondition(symbol, timeframe), false);
-         longCondition.Add(CreateShortCondition(symbol, timeframe), false);
-         shortCondition.Add(CreateLongCondition(symbol, timeframe), false);
+         longCondition.Add(CreateShortCondition(symbol, timeframe, data), false);
+         shortCondition.Add(CreateLongCondition(symbol, timeframe, data), false);
          break;
    }
+   data.Release();
    if (position_cap)
    {
       ICondition* buyLimitCondition = new PositionLimitHitCondition(BuySide, magic_number, no_of_buy_position, no_of_positions, symbol);

@@ -192,6 +192,11 @@ input string trade_comment = ""; // Comment for orders
    DayOfWeek week_stop_day = DayOfWeekSaturday; // Stop day
    string week_stop_time = "235959"; // Stop time in hhmmss format
 #endif
+#ifdef USE_REGIONAL_TIMEZONES
+   input bool tokyo_tz = false; // Use Tokyo Timezone
+   input bool ny_tz = false; // Use New-York Timezone
+   input bool london_tz = false; // Use London Timezone
+#endif
 input bool print_log = false; // Print decisions into the log
 input string log_file = "log.csv"; // Log file name (empty for auto naming)
 
@@ -690,6 +695,24 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       longCondition.Add(tradingTimeCondition, true);
       shortCondition.Add(tradingTimeCondition, true);
       tradingTimeCondition.Release();
+   #endif
+   #ifdef USE_REGIONAL_TIMEZONES
+      OrCondition* regionalTimezonesCondition = new OrCondition();
+      if (tokyo_tz)
+      {
+         regionalTimezonesCondition.Add(new TokyoTimezoneCondition(), false);
+      }
+      if (ny_tz)
+      {
+         regionalTimezonesCondition.Add(new NewYorkTimezoneCondition(), false);
+      }
+      if (london_tz)
+      {
+         regionalTimezonesCondition.Add(new LondonTimezoneCondition(), false);
+      }
+      longCondition.Add(regionalTimezonesCondition, true);
+      shortCondition.Add(regionalTimezonesCondition, true);
+      regionalTimezonesCondition.Release();
    #endif
 
    AndCondition* longFilterCondition = new AndCondition();

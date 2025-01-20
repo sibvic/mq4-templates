@@ -40,6 +40,7 @@ input int min_button_width              = 30; // Min button width
    color    historical_Up_Color         = Green; // Historical up color
 #endif
 input color    Up_Color                 = Lime; // Up color
+input bool draw_arrows = false; // Draw arrows instead of text
 #ifdef USE_HISTORIC
    input color    historical_Dn_Color   = Red; // Historical down color
 #else
@@ -164,6 +165,11 @@ int init()
    #endif
    GridBuilder builder(x_shift, 50, display_mode == Vertical, corner, showHistorical, IndicatorObjPrefix);
    TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
+   if (draw_arrows)
+   {
+      factory.SetBuyText(CharToStr(225), "Wingdings");
+      factory.SetSellText(CharToStr(226), "Wingdings"); 
+   }
    factory.SetNeutralColor(neutral_color);
    factory.SetButtonTextColor(button_text_color);
    builder.AddCell(factory);

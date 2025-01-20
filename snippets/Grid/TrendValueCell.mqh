@@ -4,7 +4,7 @@
 #include <Grid/IValueFormatter.mqh>
 #include <Grid/ACell.mqh>
 
-// Trend value cell v6.0
+// Trend value cell v7.0
 
 #ifndef TrendValueCell_IMP
 #define TrendValueCell_IMP
@@ -124,8 +124,9 @@ public:
          if (_conditions[i].IsPass(_alertShift, date))
          {
             color textColor, bgColor;
-            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
-            MeasureItem(text, width, height);
+            string font;
+            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor, font);
+            MeasureItem(text, font, width, height);
             return;
          }
       }
@@ -135,8 +136,9 @@ public:
          return;
       }
       color textColor, bgColor;
-      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor);
-      MeasureItem(text, width, height);
+      string font;
+      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor, font);
+      MeasureItem(text, font, width, height);
    }
 
    virtual void Draw(int x, int y)
@@ -147,11 +149,12 @@ public:
          if (_conditions[i].IsPass(_alertShift, date))
          {
             color textColor, bgColor;
-            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
-            DrawItem(x, y, text, textColor, bgColor);
+            string font;
+            string text = _valueFormatters[i].FormatItem(_alertShift, date, textColor, bgColor, font);
+            DrawItem(x, y, text, textColor, bgColor, font);
             if (_signalFormatters[i] != NULL)
             {
-               text = _signalFormatters[i].FormatItem(_alertShift, date, textColor, bgColor);
+               text = _signalFormatters[i].FormatItem(_alertShift, date, textColor, bgColor, font);
                SendAlert(text, i);
             }
             return;
@@ -163,8 +166,9 @@ public:
          return;
       }
       color textColor, bgColor;
-      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor);
-      DrawItem(x, y, text, textColor, bgColor);
+      string font;
+      string text = _defaultValue.FormatItem(_alertShift, date, textColor, bgColor, font);
+      DrawItem(x, y, text, textColor, bgColor, font);
    }
 
 private:
@@ -178,8 +182,9 @@ private:
             if (_conditions[i].IsPass(period, date))
             {
                color textColor, bgColor;
-               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor);
-               MeasureItem(text, width, height);
+               string font;
+               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor, font);
+               MeasureItem(text, font, width, height);
                return;
             }
          }
@@ -195,36 +200,37 @@ private:
             if (_conditions[i].IsPass(period, date))
             {
                color textColor, bgColor;
-               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor);
-               DrawItem(x, y, text, textColor, bgColor);
+               string font;
+               string text = _historyValueFormatters[i].FormatItem(period, date, textColor, bgColor, font);
+               DrawItem(x, y, text, textColor, bgColor, font);
                return;
             }
          }
       }
    }
-   void MeasureItem(string text, int& width, int& height)
+   void MeasureItem(string text, string font, int& width, int& height)
    {
       string id = _id + "B";
       if (_outputMode == OutputLabels)
       {
          ObjectDelete(id);
-         Measure(text, "Arial", font_size, width, height); 
+         Measure(text, font, font_size, width, height); 
          return;
       }
       
-      TextSetFont("Arial", -font_size * 10);
+      TextSetFont(font, -font_size * 10);
       TextGetSize(text, width, height);
       width += 5;
       height += 5;
    }
 
-   void DrawItem(int x, int y, string text, color textColor, color bgColor)
+   void DrawItem(int x, int y, string text, color textColor, color bgColor, string font)
    {
       string id = _id + "B";
       if (_outputMode == OutputLabels)
       {
          ObjectDelete(id);
-         ObjectMakeLabel(id, x, y, text, textColor, _corner, WindowNumber, "Arial", font_size); 
+         ObjectMakeLabel(id, x, y, text, textColor, _corner, WindowNumber, font, font_size); 
       }
       else
       {
@@ -237,12 +243,12 @@ private:
          ObjectSet(id, OBJPROP_CORNER, _corner);
          ObjectSet(id, OBJPROP_XDISTANCE, x);
          ObjectSet(id, OBJPROP_YDISTANCE, y);
-         ObjectSetString(0, id, OBJPROP_FONT, "Arial");
+         ObjectSetString(0, id, OBJPROP_FONT, font);
          ObjectSetString(0, id, OBJPROP_TEXT, text);
          ObjectSetInteger(0, id, OBJPROP_COLOR, textColor);
          ObjectSetInteger(0, id, OBJPROP_BGCOLOR, bgColor);
          ObjectSetInteger(0, id, OBJPROP_FONTSIZE, font_size);
-         TextSetFont("Arial", -font_size * 10);
+         TextSetFont(font, -font_size * 10);
          int w, h;
          TextGetSize(text, w, h);
          w += 5;

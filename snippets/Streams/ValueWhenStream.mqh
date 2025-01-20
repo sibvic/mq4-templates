@@ -3,8 +3,8 @@
 #ifndef ValueWhenStream_IMP
 #define ValueWhenStream_IMP
 
-#include <AStreamBase.mqh>
-#include <../conditions/ICondition.mqh>
+#include <Streams/AStreamBase.mqh>
+#include <conditions/ICondition.mqh>
 
 class ValueWhenStream : public AStreamBase
 {

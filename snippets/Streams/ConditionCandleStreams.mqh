@@ -1,6 +1,6 @@
 // Condition candle streams v1.0
 
-#include <../Conditions/ICondition.mqh>
+#include <conditions/ICondition.mqh>
 
 #ifndef ConditionCandleStreams_IMP
 #define ConditionCandleStreams_IMP

@@ -2,7 +2,7 @@
 
 
 #include <conditions/ICondition.mqh>
-#include <../streams/IStream.mqh>
+#include <Streams/IStream.mqh>
 
 #ifndef TroughCondition_IMP
 #define TroughCondition_IMP

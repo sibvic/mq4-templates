@@ -1,6 +1,9 @@
 // ICondition v3.1
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
+#ifndef ICondition_DEF
+#define ICondition_DEF
+
 interface ICondition
 {
 public:
@@ -9,3 +12,4 @@ public:
    virtual bool IsPass(const int period, const datetime date) = 0;
    virtual string GetLogMessage(const int period, const datetime date) = 0;
 };
+#endif

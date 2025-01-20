@@ -150,17 +150,17 @@ public:
                      if (MathRound(MathAbs(rate - _stopLoss) / point) < minStopDistancePoints)
                         errorMessage = "Your stop loss level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
-                        errorMessage = "Invalid stop loss in the request. Do you have ECN broker and forget to enable ECN?";
+                        errorMessage = "Invalid stop loss in the request. Does your broker supports stop loss?";
                   }
                   else if (_takeProfit != 0.0)
                   {
                      if (MathRound(MathAbs(rate - _takeProfit) / point) < minStopDistancePoints)
                         errorMessage = "Your take profit level is too close. The minimal distance allowed is " + IntegerToString(minStopDistancePoints) + " points";
                      else
-                        errorMessage = "Invalid take profit in the request. Do you have ECN broker and forget to enable ECN?";
+                        errorMessage = "Invalid take profit in the request. Does your broker supports take profit?";
                   }
                   else
-                     errorMessage = "Invalid stop loss or take profit in the request. Do you have ECN broker and forget to enable ECN?";
+                     errorMessage = "Invalid stop loss or take profit in the request. Check your entry price?";
                }
                break;
             case ERR_INVALID_TRADE_PARAMETERS:

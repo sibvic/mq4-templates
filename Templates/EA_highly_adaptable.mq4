@@ -38,7 +38,7 @@ input string GeneralSection = ""; // == General ==
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
 input int price_shift = 10; // Price shift, pips
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
-input bool ecn_broker = false; // ECN Broker? 
+input bool ecn_broker = false; // Use hidden stop loss/take profit? 
 input TradingMode trigger_logic = TradingModeLive; // Trigger logic
 #include <Enums/PositionSizeType.mqh>
 enum LogicDirection

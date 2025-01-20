@@ -9,7 +9,7 @@ input double take_profit = 30; // Take Profit in Pips
 input double distance = 30; // Hedging Distance
 input int magic_number = 42; // Magic number
 input int slippage = 3; // Slippage, points
-input bool ecn_broker = false; // ECN Broker?
+input bool ecn_broker = false; // Use hidden stop loss/take profit?
 
 #include <TradingMonitor.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>

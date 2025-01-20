@@ -38,7 +38,7 @@ input string GeneralSection = ""; // == General ==
 input string symbols = ""; // Symbols to trade. Comma-separated. Use empty for on-chart symbol
 input string GeneralSectionDesc = "https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters"; // Description of parameters could be found at
 input ENUM_TIMEFRAMES trading_timeframe = PERIOD_CURRENT; // Trading timeframe
-input bool ecn_broker = false; // ECN Broker? 
+input bool ecn_broker = false; // Use hidden stop loss/take profit?
 input TradingMode entry_logic = TradingModeLive; // Entry logic
 #ifdef WITH_EXIT_LOGIC
    input TradingMode exit_logic = TradingModeLive; // Exit logic

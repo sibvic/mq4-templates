@@ -1,10 +1,10 @@
-// MA Conditions v4.0
+// MA Conditions v4.1
 
 #ifndef MAConditions_IMP
 #define MAConditions_IMP
 
-#include <ACondition.mqh>
-#include <../enums/TwoStreamsConditionType.mqh>
+#include <conditions/ACondition.mqh>
+#include <enums/TwoStreamsConditionType.mqh>
 
 class MAMACondition : public ACondition
 {

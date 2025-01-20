@@ -126,7 +126,7 @@ int CreateAlert(int id, ICondition* condition, IAction* action, int code, string
 int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
 {
    AndCondition* upCondition = new AndCondition();
-   upCondition.Add(new RegularBullishDivergenceCondition(indiMainStream, _Symbol, tf), false);
+   upCondition.Add(new RegularBullishDivergenceCondition(indiMainStream, _Symbol, tf, 2, 2), false);
    SetLastSignalAction* upAction = NULL;
    if (filter_consecutive)
    {
@@ -141,7 +141,7 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    }
    
    AndCondition* downCondition = new AndCondition();
-   downCondition.Add(new RegularBearishDivergenceCondition(indiMainStream, _Symbol, tf), false);
+   downCondition.Add(new RegularBearishDivergenceCondition(indiMainStream, _Symbol, tf, 2, 2), false);
    SetLastSignalAction* downAction = NULL;
    if (filter_consecutive)
    {
@@ -156,7 +156,7 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    }
 
    upCondition = new AndCondition();
-   upCondition.Add(new HiddenBullishDivergenceCondition(indiMainStream, _Symbol, tf), false);
+   upCondition.Add(new HiddenBullishDivergenceCondition(indiMainStream, _Symbol, tf, 2, 2), false);
    upAction = NULL;
    if (filter_consecutive)
    {
@@ -171,7 +171,7 @@ int CreateAlert(int id, ENUM_TIMEFRAMES tf, color upColor, color downColor)
    }
    
    downCondition = new AndCondition();
-   downCondition.Add(new HiddenBearishDivergenceCondition(indiMainStream, _Symbol, tf), false);
+   downCondition.Add(new HiddenBearishDivergenceCondition(indiMainStream, _Symbol, tf, 2, 2), false);
    downAction = NULL;
    if (filter_consecutive)
    {
@@ -286,7 +286,16 @@ int deinit()
    return 0;
 }
 
-int start()
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
 {
    int counted_bars = IndicatorCounted();
    if (counted_bars <= 0 || counted_bars > Bars)

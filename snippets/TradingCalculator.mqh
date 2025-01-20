@@ -221,7 +221,7 @@ private:
          return false;
       }
       double maxVolume = SymbolInfoDouble(_symbol.GetSymbol(), SYMBOL_VOLUME_MAX);
-      if (maxVolume < lots)
+      if (maxVolume != 0 && maxVolume < lots)
       {
          error = "Max. allowed lot size is " + DoubleToString(maxVolume);
          return false;

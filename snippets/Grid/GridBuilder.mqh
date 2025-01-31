@@ -3,7 +3,7 @@
 #include <Grid/EmptyCell.mqh>
 #include <Grid/LabelCell.mqh>
 
-// Grid builder v6.0
+// Grid builder v7.0
 
 #ifndef GridBuilder_IMP
 #define GridBuilder_IMP
@@ -20,9 +20,11 @@ class GridBuilder
    ENUM_BASE_CORNER _corner;
    bool _showHistorical;
    string prefix;
+   int windowNumber;
 public:
-   GridBuilder(int x, int y, bool verticalMode, ENUM_BASE_CORNER __corner, bool showHistorical, string prefix)
+   GridBuilder(int x, int y, bool verticalMode, ENUM_BASE_CORNER __corner, bool showHistorical, string prefix, int windowNumber)
    {
+      this.windowNumber = windowNumber;
       this.prefix = prefix;
       _showHistorical = showHistorical;
       _corner = __corner;
@@ -67,7 +69,7 @@ public:
          {
             row = grid.AddRow();
             string id = prefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, 0));
+            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, windowNumber));
          }
       }
       else
@@ -78,7 +80,7 @@ public:
          for (int i = 0; i < _symbolsCount; i++)
          {
             string id = prefix + _symbols[i] + "_Name";
-            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, 0));
+            row.Add(new LabelCell(id, _symbols[i], _corner, 12, clrGray, windowNumber));
          }
       }
    }
@@ -90,7 +92,7 @@ public:
       {
          int startIndex = 1;
          Row* header = grid.GetRow(0);
-         header.Add(new LabelCell(prefix + label + "_h", label, _corner, 12, clrGray, 0));
+         header.Add(new LabelCell(prefix + label + "_h", label, _corner, 12, clrGray, windowNumber));
          if (cellFactorySize > 1)
          {
             ++startIndex;
@@ -101,7 +103,7 @@ public:
                {
                   header.Add(new EmptyCell());
                }
-               subHeader.Add(new LabelCell(prefix + label + "_sh" + IntegerToString(i), _cellFactory[i].GetHeader(), _corner, 12, clrGray, 0));
+               subHeader.Add(new LabelCell(prefix + label + "_sh" + IntegerToString(i), _cellFactory[i].GetHeader(), _corner, 12, clrGray, windowNumber));
             }
          }
          

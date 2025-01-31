@@ -1,6 +1,10 @@
 // ProfitRobots Dashboard template v3.1
 // You can find more templates at https://github.com/sibvic/mq4-templates
 
+// Implement UpCondition and DownCondition!
+string IndicatorName = "...";
+string IndicatorShortName = "indi_short";
+
 #property indicator_separate_window
 #property strict
 
@@ -146,7 +150,6 @@ void OnChartEvent(const int id,
    grid.HandleButtonClicks();
 }
 
-string IndicatorName = "...";
 int init()
 {
    if (!IsDllsAllowed() && advanced_alert)
@@ -155,7 +158,7 @@ int init()
       return INIT_FAILED;
    }
 
-   IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
+   IndicatorObjPrefix = GenerateIndicatorPrefix(IndicatorShortName);
    IndicatorShortName(IndicatorName);
 
    #ifdef USE_HISTORIC
@@ -163,7 +166,7 @@ int init()
    #else
    bool showHistorical = false;
    #endif
-   GridBuilder builder(x_shift, 50, display_mode == Vertical, corner, showHistorical, IndicatorObjPrefix);
+   GridBuilder builder(x_shift, 50, display_mode == Vertical, corner, showHistorical, IndicatorObjPrefix, ChartWindowFind());
    TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
    if (draw_arrows)
    {

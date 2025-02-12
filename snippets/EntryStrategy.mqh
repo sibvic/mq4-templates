@@ -45,14 +45,16 @@ public:
       _slippagePoints = slippagePoints;
       _symbol = symbol;
       _longEntryPrice = longEntryPrice;
+      _longEntryPrice.AddRef();
       _shortEntryPrice = shortEntryPrice;
+      _shortEntryPrice.AddRef();
       _references = 1;
    }
 
    ~PendingEntryStrategy()
    {
-      delete _longEntryPrice;
-      delete _shortEntryPrice;
+      _longEntryPrice.Release();
+      _shortEntryPrice.Release();;
    }
 
    virtual void AddRef()

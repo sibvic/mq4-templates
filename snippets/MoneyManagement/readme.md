@@ -57,3 +57,11 @@ Uses highest/lowest price of n last bars.
 ## RiskBalanceStopLossStrategy
 
 Calculate stop loss to risk % of balance.
+
+## ConstLotsValueProvider
+
+Always returns constant lot value.
+
+## MoneyManagementStrategyFactory
+
+Factory for the MoneyManagementStrategy

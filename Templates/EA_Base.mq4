@@ -643,6 +643,7 @@ void CreateMartingale(TradingCalculator* tradingCalculator, string symbol, ENUM_
    martingaleAction.Release();
 }
 #endif
+#include <MoneyManagement/MoneyManagementStrategyFactory.mqh>
 
 TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES timeframe, string algoId, string &error)
 {
@@ -879,12 +880,12 @@ TradingController *CreateController(const string symbol, const ENUM_TIMEFRAMES t
       condition.Release();
    }
    
-   IMoneyManagementStrategy* longMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, true, 
+   IMoneyManagementStrategy* longMoneyManagement = MoneyManagementStrategyFactory::Create(tradingCalculator, symbol, timeframe, true, 
       lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
    IAction* openLongAction = new EntryAction(entryStrategy, BuySide, longMoneyManagement, "", orderHandlers);
    longPosition.AddAction(openLongAction);
    openLongAction.Release();
-   IMoneyManagementStrategy* shortMoneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe, false, 
+   IMoneyManagementStrategy* shortMoneyManagement = MoneyManagementStrategyFactory::Create(tradingCalculator, symbol, timeframe, false, 
       lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
    IAction* openShortAction = new EntryAction(entryStrategy, SellSide, shortMoneyManagement, "", orderHandlers);
    shortPosition.AddAction(openShortAction);

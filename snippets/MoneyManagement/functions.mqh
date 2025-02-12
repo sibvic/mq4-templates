@@ -93,25 +93,4 @@ ITakeProfitStrategy* CreateTakeProfitStrategy(TradingCalculator* tradingCalculat
    return new DefaultTakeProfitStrategy(tradingCalculator, StopLimitDoNotUse, takeProfitValue, isBuy);
 }
 
-MoneyManagementStrategy* CreateMoneyManagementStrategy(TradingCalculator* tradingCalculator, string symbol,
-   ENUM_TIMEFRAMES timeframe, bool isBuy, PositionSizeType lotsType, double lotsValue,
-   StopLossType stopLossType, double stopLossValue, double stopLossAtrMultiplicator,
-   TakeProfitType takeProfitType, double takeProfitValue, double takeProfitAtrMultiplicator)
-{
-   ILotsProvider* lots = NULL;
-   IStopLossStrategy* stopLoss = NULL;
-   switch (lotsType)
-   {
-      case PositionSizeRisk:
-         stopLoss = CreateStopLossStrategy(tradingCalculator, symbol, timeframe, isBuy, stopLossType, stopLossValue, stopLossAtrMultiplicator);
-         lots = new RiskLotsProvider(tradingCalculator, lotsType, lotsValue, stopLoss);
-         break;
-      default:
-         lots = new DefaultLotsProvider(tradingCalculator, lotsType, lotsValue);
-         stopLoss = CreateStopLossStrategyForLots(lots, tradingCalculator, symbol, timeframe, isBuy, stopLossType, stopLossValue, stopLossAtrMultiplicator);
-         break;
-   }
-   ITakeProfitStrategy* tp = CreateTakeProfitStrategy(tradingCalculator, symbol, timeframe, isBuy, takeProfitType, takeProfitValue, takeProfitAtrMultiplicator);
-   return new MoneyManagementStrategy(lots, stopLoss, tp);
-}
 #endif

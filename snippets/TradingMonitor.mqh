@@ -1,8 +1,8 @@
 // Trades monitor v3.0
 
 #include <actions/IAction.mqh>
-#ifndef TradingMonitor_IMP
-#define TradingMonitor_IMP
+#ifndef TradingMonitor_IMPL
+#define TradingMonitor_IMPL
 
 class TradingMonitor
 {

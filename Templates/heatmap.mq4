@@ -1,4 +1,5 @@
 // Heatmap v1.0
+// You need to implement LongCondition and ShortCondition
 
 #property version   "1.0"
 #property indicator_separate_window
@@ -99,7 +100,7 @@ int init()
    IndicatorObjPrefix = GenerateIndicatorPrefix("indi_short");
    IndicatorShortName("...");
 
-   int rows = 3;
+   int rows = 9;
    int size = ArraySize(conditions);
    ArrayResize(conditions, size + rows);
    IndicatorBuffers(3 * rows);
@@ -182,7 +183,10 @@ int start()
    {
       for (int conditionIndex = 0; conditionIndex < ArraySize(conditions); ++conditionIndex)
       {
-         conditions[conditionIndex].UpdateValue(i);
+         if (conditions[conditionIndex] != NULL)
+         {
+            conditions[conditionIndex].UpdateValue(i);
+         }
       }
    }
    return 0;

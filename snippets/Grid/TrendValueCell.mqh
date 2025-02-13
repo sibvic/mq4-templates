@@ -1,4 +1,4 @@
-#include <conditions/ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 #include <Signaler.mqh>
 #include <functions.mqh>
 #include <Grid/IValueFormatter.mqh>

@@ -1,4 +1,4 @@
-#include <conditions/ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 #include <actions/IAction.mqh>
 #include <Logic/IActionOnConditionController.mqh>
 

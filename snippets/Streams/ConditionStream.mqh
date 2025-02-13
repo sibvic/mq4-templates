@@ -1,5 +1,5 @@
 #include <Streams/AStreamBase.mqh>
-#include <conditions/ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 
 //AOnStream v1.0
 

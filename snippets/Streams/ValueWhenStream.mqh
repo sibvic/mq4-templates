@@ -4,7 +4,7 @@
 #define ValueWhenStream_IMP
 
 #include <Streams/AStreamBase.mqh>
-#include <conditions/ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 
 class ValueWhenStream : public AStreamBase
 {

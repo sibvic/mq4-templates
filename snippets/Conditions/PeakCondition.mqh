@@ -1,6 +1,6 @@
 // Peak Condition v2.0
 
-#include <conditions/ICondition.mqh>
+#include <Conditions/ICondition.mqh>
 #include <Streams/IStream.mqh>
 
 #ifndef PeakCondition_IMP

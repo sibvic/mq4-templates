@@ -1,4 +1,4 @@
-// Candles stream v.1.4
+// Candles stream v.1.5
 class CandleStreamsData
 {
 public:
@@ -18,6 +18,11 @@ public:
 
    void Clear(const int index)
    {
+      int size = ArraySize(OpenStream);
+      if (index < 0 || index >= size)
+      {
+         return;
+      }
       OpenStream[index] = EMPTY_VALUE;
       CloseStream[index] = EMPTY_VALUE;
       HighStream[index] = EMPTY_VALUE;
@@ -44,6 +49,11 @@ public:
 
    void AddTick(const int index, const double val)
    {
+      int size = ArraySize(OpenStream);
+      if (index < 0 || index >= size)
+      {
+         return;
+      }
       if (OpenStream[index] == EMPTY_VALUE)
       {
          Set(index, val, val, val, val);
@@ -56,6 +66,11 @@ public:
 
    void Set(const int index, const double open, const double high, const double low, const double close)
    {
+      int size = ArraySize(OpenStream);
+      if (index < 0 || index >= size)
+      {
+         return;
+      }
       OpenStream[index] = open;
       HighStream[index] = high;
       LowStream[index] = low;

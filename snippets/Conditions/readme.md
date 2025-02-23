@@ -265,3 +265,15 @@ Returns true when given order older that given number of bars.
 ## StreamValueCondition
 
 Compares stream value with a fixed value.
+
+## FallingCondition
+
+Stream falling condition
+
+## IConditionFactory
+
+Interface for a condition factory
+
+## RisingCondition
+
+Stream rising condition

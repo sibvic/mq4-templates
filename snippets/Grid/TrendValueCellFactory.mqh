@@ -1,8 +1,9 @@
 #include <Grid/ICellFactory.mqh>
 #include <Grid/TrendValueCell.mqh>
 #include <Grid/FixedTextFormatter.mqh>
+#include <Conditions/IConditionFactory.mqh>
 
-// Trend value cell factory v7.0
+// Trend value cell factory v7.1
 
 #ifndef TrendValueCellFactory_IMP
 #define TrendValueCellFactory_IMP
@@ -20,9 +21,11 @@ class TrendValueCellFactory : public ICellFactory
    string _buyFont;
    string _sellText;
    string _sellFont;
+   IConditionFactory* _conditionFactory;
 public:
-   TrendValueCellFactory(int alertShift = 0, color upColor = Green, color downColor = Red, color historicalUpColor = Lime, color historicalDownColor = Pink)
+   TrendValueCellFactory(IConditionFactory* conditionFactory, int alertShift = 0, color upColor = Green, color downColor = Red, color historicalUpColor = Lime, color historicalDownColor = Pink)
    {
+      _conditionFactory = conditionFactory;
       _buyFont = "Arial";
       _sellFont = "Arial";
       _buyText = "Buy";
@@ -67,7 +70,7 @@ public:
       TrendValueCell* cell = new TrendValueCell(id, corner, symbol, timeframe, _alertShift, defaultValue, output_mode);
       defaultValue.Release();
 
-      ICondition* upCondition = new UpCondition(symbol, timeframe);
+      ICondition* upCondition = _conditionFactory.CreateUpCondition(symbol, timeframe);
       IValueFormatter* upValue = new FixedTextFormatter(_buyText, GetTextColor(_upColor), GetBackgroundColor(_upColor), _buyFont);
       IValueFormatter* historyUpValue = NULL;
       if (showHistorical)
@@ -82,7 +85,7 @@ public:
          historyUpValue.Release();
       }
 
-      ICondition* downCondition = new DownCondition(symbol, timeframe);
+      ICondition* downCondition = _conditionFactory.CreateDownCondition(symbol, timeframe);
       IValueFormatter* downValue = new FixedTextFormatter(_sellText, GetTextColor(_downColor), GetBackgroundColor(_downColor), _sellFont);
       IValueFormatter* historyDownValue = NULL;
       if (showHistorical)

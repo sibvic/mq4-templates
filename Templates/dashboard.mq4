@@ -150,6 +150,34 @@ void OnChartEvent(const int id,
    grid.HandleButtonClicks();
 }
 
+#include <Conditions/IConditionFactory.mqh>
+
+class ConditionFactory : public IConditionFactory
+{
+public:
+   ICondition* CreateUpCondition(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   {
+      return new UpCondition(symbol, timeframe);
+   }
+   ICondition* CreateDownCondition(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   {
+      return new DownCondition(symbol, timeframe);
+   }
+};
+
+TrendValueCellFactory* Create(IConditionFactory* conditionFactory)
+{
+   TrendValueCellFactory* factory = new TrendValueCellFactory(conditionFactory, alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
+   if (draw_arrows)
+   {
+      factory.SetBuyText(CharToStr(225), "Wingdings");
+      factory.SetSellText(CharToStr(226), "Wingdings"); 
+   }
+   factory.SetNeutralColor(neutral_color);
+   factory.SetButtonTextColor(button_text_color);
+   return factory;
+}
+
 int init()
 {
    if (!IsDllsAllowed() && advanced_alert)
@@ -167,15 +195,7 @@ int init()
    bool showHistorical = false;
    #endif
    GridBuilder builder(x_shift, 50, display_mode == Vertical, corner, showHistorical, IndicatorObjPrefix, ChartWindowFind());
-   TrendValueCellFactory* factory = new TrendValueCellFactory(alert_on_close ? 1 : 0, Up_Color, Dn_Color, historical_Up_Color, historical_Dn_Color);
-   if (draw_arrows)
-   {
-      factory.SetBuyText(CharToStr(225), "Wingdings");
-      factory.SetSellText(CharToStr(226), "Wingdings"); 
-   }
-   factory.SetNeutralColor(neutral_color);
-   factory.SetButtonTextColor(button_text_color);
-   builder.AddCell(factory);
+   builder.AddCell(Create(new ConditionFactory()));
    builder.SetSymbols(Pairs);
 
    if (Include_M1)

@@ -21,7 +21,7 @@ public:
       if (range < size)
       {
          ArrayResize(_buffer, size);
-         for (int i = range; i < Bars; ++i)
+         for (int i = range; i < size; ++i)
          {
             _buffer[i] = EMPTY_VALUE;
          }

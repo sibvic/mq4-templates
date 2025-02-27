@@ -37,3 +37,7 @@ Implements reference counting for IBoxStream.
 ## ADateTimeStream
 
 Implements reference counting for IDateTimeStream.
+
+## AStringStream
+
+Implements reference counting for IStringStream.

@@ -33,3 +33,7 @@ Interface for box stream. Similar to IStream located in the directory above, but
 ## IDateTimeStream
 
 Interface for date/time stream. Similar to IStream located in the directory above, but returns datetime
+
+## IStringStream
+
+Interface for string stream. Similar to IStream located in the directory above, but returns string

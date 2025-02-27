@@ -1,5 +1,5 @@
 // Float array stream v1.0
-#include <Array/IFloatArray.mqh>
+#include <PineScript/Array/IFloatArray.mqh>
 
 interface IFloatArrayStream
 {

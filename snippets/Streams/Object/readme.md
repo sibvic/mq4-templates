@@ -17,3 +17,7 @@ Stream of box arrays.
 ## BoxStream
 
 Stream of boxes.
+
+## StringStream
+
+Stream of strings.

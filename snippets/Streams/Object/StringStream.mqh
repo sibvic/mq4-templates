@@ -41,7 +41,7 @@ public:
       _stream[index] = value;
    }
 
-   virtual bool GetValues(const int period, string &val)
+   virtual bool GetValue(const int period, string &val)
    {
       int size = iBars(_Symbol, _Period);
       int oldPos = size - period - 1;

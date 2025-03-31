@@ -13,3 +13,7 @@ str.* functions
 ## Request
 
 request.* functions
+
+## PlotShape
+
+PS-like helper functions for plotshape

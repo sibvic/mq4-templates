@@ -1,13 +1,20 @@
 #ifndef CustomTypeArray_IMPL
 #define CustomTypeArray_IMPL
+#include <PineScript/Array/ITArray.mqh>
 template <typename CLASS_TYPE>
-class CustomTypeArray
+interface ICustomTypeArray : public ITArray<CLASS_TYPE>
 {
-   CLASS_TYPE* _array[];
-   int _defaultSize;
-   CLASS_TYPE* _defaultValue;
 public:
-   CustomTypeArray(int size, CLASS_TYPE* defaultValue)
+   virtual ICustomTypeArray<CLASS_TYPE>* Clear() = 0;
+};
+template <typename CLASS_TYPE>
+class CustomTypeArray : public ICustomTypeArray<CLASS_TYPE>
+{
+   CLASS_TYPE _array[];
+   int _defaultSize;
+   CLASS_TYPE _defaultValue;
+public:
+   CustomTypeArray(int size, CLASS_TYPE defaultValue)
    {
       _defaultSize = size;
       Clear();
@@ -17,8 +24,8 @@ public:
    {
       Clear();
    }
-
-   void Clear()
+   
+   ICustomTypeArray<CLASS_TYPE>* Clear()
    {
       int size = ArraySize(_array);
       int i;
@@ -26,6 +33,7 @@ public:
       {
          if (_array[i] != NULL)
          {
+            DeleteItem(_array[i]);
             _array[i].Release();
          }
       }
@@ -34,9 +42,10 @@ public:
       {
          _array[i] = _defaultValue;
       }
+      return &this;
    }
 
-   void Unshift(CLASS_TYPE* value)
+   void Unshift(CLASS_TYPE value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -56,7 +65,7 @@ public:
       return ArraySize(_array);
    }
 
-   void Push(CLASS_TYPE* value)
+   void Push(CLASS_TYPE value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -67,10 +76,10 @@ public:
       }
    }
 
-   CLASS_TYPE* Pop()
+   CLASS_TYPE Pop()
    {
       int size = ArraySize(_array);
-      CLASS_TYPE* value = _array[size - 1];
+      CLASS_TYPE value = _array[size - 1];
       ArrayResize(_array, size - 1);
       if (value != NULL && value.Release() == 0)
       {
@@ -79,12 +88,12 @@ public:
       return value;
    }
 
-   CLASS_TYPE* Shift()
+   CLASS_TYPE Shift()
    {
       return Remove(0);
    }
 
-   CLASS_TYPE* Get(int index)
+   CLASS_TYPE Get(int index)
    {
       if (index < 0 || index >= Size())
       {
@@ -93,7 +102,7 @@ public:
       return _array[index];
    }
    
-   void Set(int index, CLASS_TYPE* value)
+   void Set(int index, CLASS_TYPE value)
    {
       if (index < 0 || index >= Size())
       {
@@ -110,10 +119,10 @@ public:
       }
    }
    
-   CLASS_TYPE* Remove(int index)
+   CLASS_TYPE Remove(int index)
    {
       int size = ArraySize(_array);
-      test* value = _array[index];
+      CLASS_TYPE value = _array[index];
       for (int i = index; i < size - 1; ++i)
       {
          _array[i] = _array[i + 1];
@@ -126,7 +135,7 @@ public:
       return value;
    }
    
-   int Includes(CLASS_TYPE* value)
+   int Includes(CLASS_TYPE value)
    {
       int size = ArraySize(_array);
       for (int i = 0; i < size; ++i)
@@ -137,6 +146,10 @@ public:
          }
       }
       return false;
+   }
+protected:
+   virtual void DeleteItem(CLASS_TYPE item)
+   {
    }
 };
 #endif

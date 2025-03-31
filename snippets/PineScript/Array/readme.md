@@ -2,7 +2,7 @@
 
 Interfaces for an array.
 
-## Array, IntArray, LineArray, FloatArray, BoxArray, BoolArray, ColorArray, StringArray, CustomTypeArray
+## Array, IntArray, LineArray, FloatArray, BoxArray, BoolArray, ColorArray, StringArray, CustomTypeArray, LabelArray
 
 Array implementations similar to PineScript arrays
 

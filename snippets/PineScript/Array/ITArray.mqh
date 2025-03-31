@@ -1,7 +1,7 @@
 // Template for array interface v1.0
 
 template <typename CLASS_TYPE>
-class ITArray
+interface ITArray
 {
 public:
    virtual void Unshift(CLASS_TYPE value) = 0;

@@ -1,4 +1,4 @@
-// Line object v1.3
+// Line object v1.4
 
 class Line
 {
@@ -15,9 +15,11 @@ class Line
    string _collectionId;
    int _window;
    bool global;
+   string _extend;
 public:
    Line(int x1, double y1, int x2, double y2, string id, string collectionId, int window, bool global)
    {
+      _extend = "none";
       _refs = 1;
       _x1 = x1;
       _x2 = x2;
@@ -58,9 +60,33 @@ public:
       return _collectionId;
    }
 
+   static void SetStyle(Line* line, string style)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetStyle(style);
+   }
+   
    Line* SetStyle(string style)
    {
       _style = style;
+      return &this;
+   }
+   
+   static void SetExtend(Line* line, string extend)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetExtend(extend);
+   }
+   
+   Line* SetExtend(string extend)
+   {
+      _extend = extend;
       return &this;
    }
 
@@ -114,6 +140,24 @@ public:
    {
       _clr = clr;
       return &this;
+   }
+   
+   static void SetColor(Line* line, color clr)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetColor(clr);
+   }
+
+   static void SetWidth(Line* line, int width)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetWidth(width);
    }
 
    Line* SetWidth(int width)

@@ -72,6 +72,10 @@ public:
 
    static Line* Create(string id, int x1, double y1, int x2, double y2, datetime dateId, bool global = false)
    {
+      if (_all == NULL)
+      {
+         Clear();
+      }
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x1 - 1);
       string lineId = id + "_" 

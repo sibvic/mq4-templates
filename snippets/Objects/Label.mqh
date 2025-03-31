@@ -1,4 +1,4 @@
-// Label v1.5
+// Label v1.6
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -93,7 +93,12 @@ public:
    static void SetX(Label* label, int x) { if (label == NULL) { return; } label.SetX(x); }
    void SetY(double y) { _y = y; }
    static void SetY(Label* label, double y) { if (label == NULL) { return; } label.SetY(y); }
-   static void SetXY(Label* label, int x, double y) { if (label == NULL) { return; } label.SetX(x); label.SetY(y); }
+   static void SetXY(Label* label, int x, double y)
+   {
+      if (label == NULL) { return; }
+      label.SetX(x);
+      label.SetY(y);
+  }
 
    Label* SetSize(string size)
    {
@@ -123,12 +128,29 @@ public:
       label.SetYLoc(yloc);
    }
    
+   static void SetColor(Label* label, color clr)
+   {
+      if (label == NULL)
+      {
+         return;
+      }
+      label.SetColor(clr);
+   }
+   
    Label* SetColor(color clr)
    {
       _color = clr;
       return &this;
    }
    
+   static void SetTextColor(Label* label, color clr)
+   {
+      if (label == NULL)
+      {
+         return;
+      }
+      label.SetTextColor(clr);
+   }
    Label* SetTextColor(color clr)
    {
       _textColor = clr;

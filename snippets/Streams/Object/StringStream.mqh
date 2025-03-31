@@ -50,11 +50,11 @@ public:
          return false;  
       }
       EnsureStreamHasProperSize(size);
-      if (_stream[period] == NULL)
+      if (_stream[oldPos] == NULL)
       {
          return false;
       }
-      val = _stream[period];
+      val = _stream[oldPos];
       return true;
    }
 private:

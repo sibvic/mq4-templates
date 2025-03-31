@@ -13,3 +13,7 @@ Boolean stream
 ## IntToFloatStreamWrapper
 
 Integer to float stream adapter
+
+## BoolToFloatStreamWrapper
+
+Boolean to float stream adapter

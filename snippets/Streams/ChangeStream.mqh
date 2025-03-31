@@ -1,9 +1,10 @@
-// Change stream v1.1
+// Change stream v1.2
 
 #ifndef ChangeStream_IMP
 #define ChangeStream_IMP
 #include <Streams/AOnStream.mqh>
 #include <Streams/Custom/IntToFloatStreamWrapper.mqh>
+#include <Streams/Custom/BoolToFloatStreamWrapper.mqh>
 
 class ChangeStream : public AOnStream
 {
@@ -16,6 +17,13 @@ public:
    }
    ChangeStream(IIntStream* stream, int period = 1)
       :AOnStream(new IntToFloatStreamWrapper(stream))
+   {
+      _source.Release();
+      _period = period;
+   }
+   
+   ChangeStream(IBoolStream* stream, int period = 1)
+      :AOnStream(new BoolToFloatStreamWrapper(stream))
    {
       _source.Release();
       _period = period;

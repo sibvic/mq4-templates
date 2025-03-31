@@ -119,6 +119,10 @@ public:
 
    static Label* Create(string id, int x, double y, datetime dateId, bool globalLabel = false)
    {
+      if (_all == NULL)
+      {
+         Clear();
+      }
       ResetLastError();
       dateId = iTime(_Symbol, _Period, iBars(_Symbol, _Period) - x - 1);
       string labelId = id + "_" 
@@ -195,7 +199,7 @@ private:
    void DeleteLabel(Label* label)
    {
       RemoveLabel(label);
-      delete label;
+      label.Release();
    }
    void Add(Label* label)
    {

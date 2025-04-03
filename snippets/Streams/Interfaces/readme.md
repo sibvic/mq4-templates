@@ -37,3 +37,7 @@ Interface for date/time stream. Similar to IStream located in the directory abov
 ## IStringStream
 
 Interface for string stream. Similar to IStream located in the directory above, but returns string
+
+## TIStream
+
+Template for stream interface.

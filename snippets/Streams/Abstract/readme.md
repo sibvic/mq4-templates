@@ -41,3 +41,7 @@ Implements reference counting for IDateTimeStream.
 ## AStringStream
 
 Implements reference counting for IStringStream.
+
+## TAStream
+
+Templtate for abstract implementation of stream.

@@ -81,57 +81,6 @@ datetime Timestamp(int year, int month, int day, int hour, int minute, int secon
    return StructToTime(time);
 }
 
-class PineScriptTime
-{
-public:
-   static int Hour(datetime dt)
-   {
-      MqlDateTime date;
-      TimeToStruct(dt, date);
-      return date.hour;
-   }
-   static int Year(datetime dt)
-   {
-      MqlDateTime date;
-      TimeToStruct(dt, date);
-      return date.year;
-   }
-   static int DayOfWeek(datetime dt)
-   {
-      MqlDateTime date;
-      TimeToStruct(dt, date);
-      return date.day_of_week;
-   }
-   static int Sunday()
-   {
-      return 0;
-   }
-   static int Monday()
-   {
-      return 1;
-   }
-   static int Tuesday()
-   {
-      return 2;
-   }
-   static int Wednesday()
-   {
-      return 3;
-   }
-   static int Thursday()
-   {
-      return 4;
-   }
-   static int Friday()
-   {
-      return 5;
-   }
-   static int Saturday()
-   {
-      return 6;
-   }
-};
-
 class Runtime
 {
 public:

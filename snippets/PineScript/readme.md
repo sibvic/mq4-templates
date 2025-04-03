@@ -17,3 +17,7 @@ request.* functions
 ## PlotShape
 
 PS-like helper functions for plotshape
+
+## Time
+
+PS-like time functions

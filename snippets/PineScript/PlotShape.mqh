@@ -1,17 +1,17 @@
-// PlotShape v1.0
+// PlotShape v1.1
 #ifndef PlotShape_IMPL
 #define PlotShape_IMPL
 
 class PlotShape
 {
-public:
-   static void Set(double& plot[], int period, string location, double seriesValue, double& high[], double& low[], int shift)
+private:
+   static void SetNA(double& plot[], int period)
    {
-      if (seriesValue == EMPTY_VALUE)
-      {
-         plot[period] = EMPTY_VALUE;
-         return;
-      }
+      plot[period] = EMPTY_VALUE;
+   }
+   
+   static void SetValue(double& plot[], int period, string location, double seriesValue, const double& high[], const double& low[], int shift)
+   {
       if (location == "abovebar" || location == "top")
       {
          plot[period] = high[period + shift];
@@ -23,6 +23,36 @@ public:
          return;
       }
       plot[period] = seriesValue;
+   }
+public:
+   static void Set(double& plot[], int period, string location, double seriesValue, const double& high[], const double& low[], int shift)
+   {
+      if (seriesValue == EMPTY_VALUE)
+      {
+         SetNA(plot, period);
+         return;
+      }
+      SetValue(plot, period, location, seriesValue, high, low, shift);
+   }
+   
+   static void Set(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift)
+   {
+      if (seriesValue == INT_MIN)
+      {
+         SetNA(plot, period);
+         return;
+      }
+      SetValue(plot, period, location, seriesValue, high, low, shift);
+   }
+   
+   static void SetBool(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift)
+   {
+      if (seriesValue == -1)
+      {
+         SetNA(plot, period);
+         return;
+      }
+      SetValue(plot, period, location, seriesValue, high, low, shift);
    }
 };
 

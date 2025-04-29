@@ -98,7 +98,8 @@ Set of averages.
 Shows alerts.
 
 How to use:
-
+    
+    Signaler *signaler;
     int OnInit()
     {
         if (!IsDllsAllowed() && advanced_alert)
@@ -107,8 +108,8 @@ How to use:
             return INIT_FAILED;
         }
         //...
-        Signaler *signaler = new Signaler(_Symbol, (ENUM_TIMEFRAMES)_Period);
-        signaler.SetMessagePrefix(_Symbol + "/" + signaler.GetTimeframeStr() + ": ");
+        signaler = new Signaler("once_per_bar");
+        signaler.SetMessagePrefix(_Symbol + ": ");
         //...
     }
     

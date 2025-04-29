@@ -289,7 +289,7 @@ Usage:
 
     void deinit()
     {
-        _visibility.Deinit();
+        _visibility.DeInit();
     }
 
     int start()

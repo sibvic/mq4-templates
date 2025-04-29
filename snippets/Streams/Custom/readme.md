@@ -18,6 +18,10 @@ Integer to float stream adapter
 
 Boolean to float stream adapter
 
+## DateTimeToFloatStreamWrapper
+
+Datetime to float stream adapter
+
 ## TStream
 
 Template for stream implementation.

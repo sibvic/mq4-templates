@@ -283,22 +283,34 @@ Usage:
     int init() 
     {
         //...
-        _visibility.Init("CloseButton", "My indicator", "Show/Hide", button_x, button_y);
+        _visibility.Init("CloseButton", "My indicator", button_x, button_y);
         return (0);
+    }
+
+    void deinit()
+    {
+        _visibility.Deinit();
     }
 
     int start()
     {
         _visibility.HandleButtonClicks();
-        if (!_visibility.IsVisible())
+        int limit = ...;
+        if (_visibility.IsRecalcNeeded())
         {
-            Clean();
-            return 0;
+            if (_visibility.IsVisible())
+            {
+                limit = Bars - IndicatorCounted() - 1;//reset limit to the start
+            }
+            else
+            {
+                //delete all objects
+                ArrayInitialize(out, EMPTY_VALUE);//erase all streams
+                _visibility.ResetRecalc();
+                return 0;
+            }
+            _visibility.ResetRecalc();
         }
-        int limit = Bars - 2;
-        if (IndicatorCounted() > 2 && !_visibility.IsRecalcNeeded()) 
-            limit = Bars - IndicatorCounted() - 1;
-        _visibility.ResetRecalc();
         //calc data
     }
 
@@ -308,7 +320,10 @@ Usage:
                     const string &sparam)
     {
         if (_visibility.HandleButtonClicks())
+        {
+            ChartRedraw();
             start();
+        }
     }
 
 ## TradingMonitor

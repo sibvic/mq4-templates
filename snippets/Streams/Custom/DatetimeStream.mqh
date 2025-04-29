@@ -13,7 +13,7 @@ public:
       : TStream<datetime>(symbol, timeframe, INT_MIN)
    {
    }
-   DatetimeStream(const string symbol, const string psTimeframe)
+   DatetimeStream(const string symbol, const string psTimeframe, string param1, string param2)
       : TStream<datetime>(symbol, Timeframe::GetTimeframe(psTimeframe), INT_MIN)
    {
    }

@@ -21,3 +21,7 @@ Stream of boxes.
 ## StringStream
 
 Stream of strings.
+
+## LabelStream
+
+Stream of labels.

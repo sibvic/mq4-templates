@@ -1,13 +1,5 @@
 # Objects snippets
 
-## Label
-
-Pine script like implementation of label
-
-## LabelCollection
-
-Manages lifetime of labels
-
 ## LinesCollection
 
 Collection of lines. Imitates behavior of PineScript lines.

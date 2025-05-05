@@ -21,7 +21,10 @@ public:
    }
    void Init()
    {
-      ArrayInitialize(_stream, _emptyValue);
+      for (int i = 0; i < ArraySize(_stream); ++i)
+      {
+         _stream[i] = _emptyValue;
+      }
    }
 
    virtual int Size()

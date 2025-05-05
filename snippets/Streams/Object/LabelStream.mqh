@@ -4,13 +4,13 @@
 #define LabelStream_IMPL
 
 #include <Streams/Custom/TStream.mqh>
-#include <Objects/Label.mqh>
+#include <PineScript/Objects/Label.mqh>
 
 class LabelStream : public TStream<Label*>
 {
 public:
    LabelStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-      : (symbol, timeframe, NULL)
+      : TStream<Label*>(symbol, timeframe, NULL)
    {
    }
 };

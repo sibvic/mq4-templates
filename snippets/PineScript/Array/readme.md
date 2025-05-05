@@ -1,4 +1,4 @@
-## IArray, IIntArray, ILineArray, IFloatArray, IBoxArray, IBoolArray, IColorArray, IStringArray, ILabelArray
+## IArray, IIntArray, ILineArray, IFloatArray, IBoxArray, IBoolArray, IColorArray, IStringArray
 
 Interfaces for an array.
 

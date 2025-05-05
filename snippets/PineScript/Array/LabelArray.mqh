@@ -2,7 +2,7 @@
 #define LabelArray_IMPL
 // Label array v1.0
 #include <PineScript/Array/CustomTypeArray.mqh>
-#include <Objects/LabelsCollection.mqh>
+#include <PineScript/Objects/LabelsCollection.mqh>
 
 class LabelArray : public CustomTypeArray<Label*>
 {

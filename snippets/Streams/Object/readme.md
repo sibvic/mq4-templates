@@ -10,6 +10,10 @@ Stream of int arrays.
 
 Stream of line arrays.
 
+## LabelArrayStream
+
+Stream of label arrays.
+
 ## BoxArrayStream
 
 Stream of box arrays.

@@ -2,7 +2,7 @@
 #define BoxArray_IMPL
 // Box array v1.4
 #include <PineScript/Array/IBoxArray.mqh>
-#include <Objects/BoxesCollection.mqh>
+#include <PineScript/Objects/BoxesCollection.mqh>
 
 class BoxArray : public IBoxArray
 {

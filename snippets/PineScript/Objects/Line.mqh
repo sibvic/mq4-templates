@@ -46,6 +46,20 @@ public:
       return refs;
    }
    
+   void CopyTo(Line* line)
+   {
+      line._x1 = _x1;
+      line._y1 = _y1;
+      line._x2 = _x2;
+      line._y2 = _y2;
+      line._clr = _clr;
+      line._width = _width;
+      line._timeframe = _timeframe;
+      line._style = _style;
+      line._window = _window;
+      line._extend = _extend;
+   }
+   
    bool IsGlobal()
    {
       return global;
@@ -168,6 +182,10 @@ public:
 
    void Redraw()
    {
+      if (_y1 == EMPTY_VALUE || _y2 == EMPTY_VALUE)
+      {
+         return;
+      }
       int pos1 = iBars(_Symbol, _timeframe) - _x1 - 1;
       datetime x1 = iTime(_Symbol, _timeframe, pos1);
       int pos2 = iBars(_Symbol, _timeframe) - _x2 - 1;

@@ -3,7 +3,7 @@
 #ifndef LinesCollection_IMPL
 #define LinesCollection_IMPL
 
-#include <Objects/Line.mqh>
+#include <PineScript/Objects/Line.mqh>
 
 class LinesCollection
 {

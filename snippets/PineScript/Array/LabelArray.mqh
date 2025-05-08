@@ -12,6 +12,16 @@ public:
    }
 
 protected:
+   virtual Label* Clone(Label* item, int index)
+   {
+      if (item == NULL)
+      {
+         return NULL;
+      }
+      Label* clone = LabelsCollection::Create(item.GetId() + index, item.GetX(), item.GetY(), 0, item.IsGlobal());
+      item.CopyTo(clone);
+      return clone;
+   }
    virtual void DeleteItem(Label* item)
    {
       LabelsCollection::Delete(item);

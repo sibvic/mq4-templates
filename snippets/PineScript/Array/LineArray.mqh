@@ -1,151 +1,30 @@
 #ifndef LineArray_IMPL
 #define LineArray_IMPL
 // Line array v1.3
-#include <PineScript/Array/ILineArray.mqh>
-#include <Objects/LinesCollection.mqh>
+#include <PineScript/Array/CustomTypeArray.mqh>
+#include <PineScript/Objects/LinesCollection.mqh>
 
-class LineArray : public ILineArray
+class LineArray : public CustomTypeArray<Line*>
 {
-   Line* _array[];
-   int _defaultSize;
-   Line* _defaultValue;
 public:
    LineArray(int size, Line* defaultValue)
+      :CustomTypeArray(size, defaultValue)
    {
-      _defaultSize = size;
-      Clear();
    }
-
-   ~LineArray()
+protected:
+   virtual Line* Clone(Line* item, int index)
    {
-      Clear();
-   }
-
-   ILineArray* Clear()
-   {
-      int size = ArraySize(_array);
-      for (int i = 0; i < size; i++)
-      {
-         if (_array[i] != NULL)
-         {
-            LinesCollection::Delete(_array[i]);
-            _array[i].Release();
-         }
-      }
-      ArrayResize(_array, _defaultSize);
-      for (int i = 0; i < _defaultSize; ++i)
-      {
-         _array[i] = _defaultValue;
-      }
-      return &this;
-   }
-
-   void Unshift(Line* value)
-   {
-      int size = ArraySize(_array);
-      ArrayResize(_array, size + 1);
-      for (int i = size - 1; i >= 0; --i)
-      {
-         _array[i + 1] = _array[i];
-      }
-      _array[0] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-   }
-
-   int Size()
-   {
-      return ArraySize(_array);
-   }
-
-   void Push(Line* value)
-   {
-      int size = ArraySize(_array);
-      ArrayResize(_array, size + 1);
-      _array[size] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-   }
-
-   Line* Pop()
-   {
-      int size = ArraySize(_array);
-      Line* value = _array[size - 1];
-      ArrayResize(_array, size - 1);
-      if (value.Release() == 0)
+      if (item == NULL)
       {
          return NULL;
       }
-      return value;
+      Line* clone = LinesCollection::Create(item.GetId() + index, item.GetX1(), item.GetY1(), item.GetX2(), item.GetY2(), 0, item.IsGlobal());
+      item.CopyTo(clone);
+      return clone;
    }
-
-   Line* Shift()
+   virtual void DeleteItem(Line* item)
    {
-      return Remove(0);
-   }
-
-   Line* Get(int index)
-   {
-      if (index < 0 || index >= Size())
-      {
-         return NULL;
-      }
-      return _array[index];
-   }
-   
-   void Set(int index, Line* value)
-   {
-      if (index < 0 || index >= Size())
-      {
-         return;
-      }
-      if (_array[index] != NULL)
-      {
-         _array[index].Release();
-      }
-      _array[index] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-   }
-   
-   ILineArray* Slice(int from, int to)
-   {
-      return NULL; //TODO;
-   }
-
-   Line* Remove(int index)
-   {
-      int size = ArraySize(_array);
-      Line* value = _array[index];
-      for (int i = index; i < size - 1; ++i)
-      {
-         _array[i] = _array[i + 1];
-      }
-      ArrayResize(_array, size - 1);
-      if (value.Release() == 0)
-      {
-         return NULL;
-      }
-      return value;
-   }
-   
-   int Includes(Line* value)
-   {
-      int size = ArraySize(_array);
-      for (int i = 0; i < size; ++i)
-      {
-         if (_array[i] == value)
-         {
-            return true;
-         }
-      }
-      return false;
+      LinesCollection::Delete(item);
    }
 };
 #endif

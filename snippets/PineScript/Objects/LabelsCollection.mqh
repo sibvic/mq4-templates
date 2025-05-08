@@ -27,7 +27,10 @@ public:
    {
       for (int i = 0; i < ArraySize(_labels); ++i)
       {
-         delete _labels[i];
+         if (_labels[i] != NULL)
+         {
+            _labels[i].Release();
+         }
       }
       ArrayResize(_labels, 0);
    }
@@ -195,6 +198,7 @@ private:
          _labels[i - 1] = _labels[i];
       }
       ArrayResize(_labels, size - 1);
+      label.Release();
    }
    void DeleteLabel(Label* label)
    {
@@ -208,6 +212,10 @@ private:
       int size = ArraySize(_labels);
       ArrayResize(_labels, size + 1);
       _labels[size] = label;
+      if (label != NULL)
+      {
+         label.AddRef();
+      }
    }
 
    void RedrawLabels()

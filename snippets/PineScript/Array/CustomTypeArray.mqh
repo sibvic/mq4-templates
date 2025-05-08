@@ -13,9 +13,16 @@ class CustomTypeArray : public ICustomTypeArray<CLASS_TYPE>
    CLASS_TYPE _array[];
    int _defaultSize;
    CLASS_TYPE _defaultValue;
+   int _refs;
 public:
    CustomTypeArray(int size, CLASS_TYPE defaultValue)
    {
+      _refs = 1;
+      _defaultValue = defaultValue;
+      if (_defaultValue != NULL)
+      {
+         _defaultValue.AddRef();
+      }
       _defaultSize = size;
       Clear();
    }
@@ -23,7 +30,14 @@ public:
    ~CustomTypeArray()
    {
       Clear();
+      if (_defaultValue != NULL)
+      {
+         _defaultValue.Release();
+      }
    }
+
+   void AddRef() { _refs++; }
+   int Release() { int refs = --_refs; if (refs == 0) { delete &this; } return refs; }
    
    ICustomTypeArray<CLASS_TYPE>* Clear()
    {
@@ -40,7 +54,7 @@ public:
       ArrayResize(_array, _defaultSize);
       for (i = 0; i < _defaultSize; ++i)
       {
-         _array[i] = _defaultValue;
+         _array[i] = Clone(_defaultValue, i);
       }
       return &this;
    }
@@ -148,6 +162,10 @@ public:
       return false;
    }
 protected:
+   virtual CLASS_TYPE Clone(CLASS_TYPE item, int index)
+   {
+      return NULL;
+   }
    virtual void DeleteItem(CLASS_TYPE item)
    {
    }

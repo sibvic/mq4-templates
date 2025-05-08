@@ -4,6 +4,8 @@ template <typename CLASS_TYPE>
 interface ITArray
 {
 public:
+   virtual void AddRef() = 0;
+   virtual int Release() = 0;
    virtual void Unshift(CLASS_TYPE value) = 0;
    virtual int Size() = 0;
    virtual void Push(CLASS_TYPE value) = 0;

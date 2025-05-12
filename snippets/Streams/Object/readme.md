@@ -29,3 +29,7 @@ Stream of strings.
 ## LabelStream
 
 Stream of labels.
+
+## LineStream
+
+Stream of lines.

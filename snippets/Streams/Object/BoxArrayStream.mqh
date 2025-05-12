@@ -12,4 +12,5 @@ public:
       : (symbol, timeframe, NULL)
    {
    }
+};
 #endif

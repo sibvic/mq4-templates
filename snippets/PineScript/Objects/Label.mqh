@@ -5,8 +5,8 @@
 
 class Label
 {
-   color _color;
-   color _textColor;
+   uint _color;
+   uint _textColor;
    string _text;
    string _labelId;
    string _collectionId;
@@ -144,7 +144,7 @@ public:
       label.SetYLoc(yloc);
    }
    
-   static void SetColor(Label* label, color clr)
+   static void SetColor(Label* label, uint clr)
    {
       if (label == NULL)
       {
@@ -153,13 +153,13 @@ public:
       label.SetColor(clr);
    }
    
-   Label* SetColor(color clr)
+   Label* SetColor(uint clr)
    {
       _color = clr;
       return &this;
    }
    
-   static void SetTextColor(Label* label, color clr)
+   static void SetTextColor(Label* label, uint clr)
    {
       if (label == NULL)
       {
@@ -167,7 +167,7 @@ public:
       }
       label.SetTextColor(clr);
    }
-   Label* SetTextColor(color clr)
+   Label* SetTextColor(uint clr)
    {
       _textColor = clr;
       return &this;
@@ -236,6 +236,10 @@ public:
          else if (_style == "down")
          {
             usedText = "\218";
+         }
+         else if (_style == "diamond")
+         {
+            usedText = "\116";
          }
       }
       ResetLastError();

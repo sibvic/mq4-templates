@@ -7,7 +7,7 @@ class Line
    double _y1;
    int _x2;
    double _y2;
-   color _clr;
+   uint _clr;
    int _width;
    ENUM_TIMEFRAMES _timeframe;
    string _style;
@@ -150,13 +150,12 @@ public:
    double GetY2() { return _y2; }
    static double GetY2(Line* line) { if (line == NULL) { return EMPTY_VALUE; } return line.GetY2(); }
 
-   Line* SetColor(color clr)
+   Line* SetColor(uint clr)
    {
       _clr = clr;
       return &this;
    }
-   
-   static void SetColor(Line* line, color clr)
+   static void SetColor(Line* line, uint clr)
    {
       if (line == NULL)
       {
@@ -193,7 +192,7 @@ public:
       if (ObjectFind(0, _id) == -1 && ObjectCreate(0, _id, OBJ_TREND, 0, x1, _y1, x2, _y2))
       {
          ObjectSetInteger(0, _id, OBJPROP_COLOR, _clr);
-         ObjectSetInteger(0, _id, OBJPROP_STYLE, STYLE_SOLID);
+         ObjectSetInteger(0, _id, OBJPROP_STYLE, GetStyleMQL());
          ObjectSetInteger(0, _id, OBJPROP_WIDTH, _width);
          ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, false);
       }
@@ -201,5 +200,18 @@ public:
       ObjectSetDouble(0, _id, OBJPROP_PRICE2, _y2);
       ObjectSetInteger(0, _id, OBJPROP_TIME1, x1);
       ObjectSetInteger(0, _id, OBJPROP_TIME2, x2);
+   }
+private:
+   int GetStyleMQL()
+   {
+      if (_style == "dashed")
+      {
+         return STYLE_DASH;
+      }
+      if (_style == "solid")
+      {
+         return STYLE_SOLID;
+      }
+      return STYLE_SOLID;
    }
 };

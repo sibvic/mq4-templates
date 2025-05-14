@@ -1,4 +1,4 @@
-// Float array stream v1.0
+// Float array stream v1.1
 
 #ifndef FloatArrayStream_IMPL
 #define FloatArrayStream_IMPL
@@ -10,9 +10,11 @@ class FloatArrayStream : public AFloatArrayStream
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
    IFloatArray* _stream[];
+   IFloatArray* _emptyValue;
 public:
-   FloatArrayStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   FloatArrayStream(const string symbol, const ENUM_TIMEFRAMES timeframe, IFloatArray* emptyValue = NULL)
    {
+      _emptyValue = emptyValue;
       _symbol = symbol;
       _timeframe = timeframe;
    }
@@ -20,7 +22,7 @@ public:
    {
       for (int i = 0; i < ArraySize(_stream); ++i)
       {
-         _stream[i] = NULL;
+         _stream[i] = _emptyValue;
       }
    }
 
@@ -52,7 +54,7 @@ public:
       EnsureStreamHasProperSize(totalBars);
       
       val = _stream[index];
-      return _stream[index] != NULL;
+      return _stream[index] != _emptyValue;
    }
 private:
    void EnsureStreamHasProperSize(int size)
@@ -63,7 +65,7 @@ private:
          ArrayResize(_stream, size);
          for (int i = currentSize; i < size; ++i)
          {
-            _stream[i] = NULL;
+            _stream[i] = _emptyValue;
          }
       }
    }

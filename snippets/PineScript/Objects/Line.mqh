@@ -1,4 +1,4 @@
-// Line object v1.4
+// Line object v1.5
 
 class Line
 {
@@ -194,7 +194,22 @@ public:
          ObjectSetInteger(0, _id, OBJPROP_COLOR, _clr);
          ObjectSetInteger(0, _id, OBJPROP_STYLE, GetStyleMQL());
          ObjectSetInteger(0, _id, OBJPROP_WIDTH, _width);
-         ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, false);
+         if (_extend == "right")
+         {
+            ObjectSetInteger(0, _id, OBJPROP_RAY, true);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, true);
+         }
+         else if (_extend == "left")
+         {
+            ObjectSetInteger(0, _id, OBJPROP_RAY, true);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_LEFT, true);
+         }
+         else if (_extend == "both")
+         {
+            ObjectSetInteger(0, _id, OBJPROP_RAY, true);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, true);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_LEFT, true);
+         }
       }
       ObjectSetDouble(0, _id, OBJPROP_PRICE1, _y1);
       ObjectSetDouble(0, _id, OBJPROP_PRICE2, _y2);

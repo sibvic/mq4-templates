@@ -1,4 +1,4 @@
-// Custom integer stream v1.1
+// Custom integer stream v1.2
 
 #ifndef IntStream_IMPL
 #define IntStream_IMPL
@@ -10,15 +10,17 @@ class IntStream : public AIntStream
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
    int _stream[];
+   int _emptyValue;
 public:
-   IntStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   IntStream(const string symbol, const ENUM_TIMEFRAMES timeframe, int emptyValue = IMT_MIN)
    {
       _symbol = symbol;
       _timeframe = timeframe;
+      _emptyValue = emptyValue;
    }
    void Init()
    {
-      ArrayInitialize(_stream, EMPTY_VALUE);
+      ArrayInitialize(_stream, _emptyValue);
    }
 
    virtual int Size()
@@ -49,7 +51,7 @@ public:
       EnsureStreamHasProperSize(totalBars);
       
       val = _stream[index];
-      return _stream[index] != EMPTY_VALUE;
+      return _stream[index] != _emptyValue;
    }
 private:
    void EnsureStreamHasProperSize(int size)
@@ -60,7 +62,7 @@ private:
          ArrayResize(_stream, size);
          for (int i = currentSize; i < size; ++i)
          {
-            _stream[i] = EMPTY_VALUE;
+            _stream[i] = _emptyValue;
          }
       }
    }

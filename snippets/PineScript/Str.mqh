@@ -37,6 +37,10 @@ public:
       StringReplace(source, target, replaceWith);
       return source;
    }
+   static bool Contains(string source, string str)
+   {
+      return StringFind(source, str) >= 0;
+   }
 };
 
 enum StrFormatValueType

@@ -122,5 +122,82 @@ public:
       }
       return false;
    }
+   
+   CLASS_TYPE PercentRank(int index)
+   {
+      int arraySize = Size();
+      if (arraySize == 0 || arraySize <= index) { return _emptyValue; }
+      CLASS_TYPE target = Get(index);
+      if (target == _emptyValue)
+      {
+         return _emptyValue;
+      }
+      int count = 0;
+      for (int i = 0; i < arraySize; ++i)
+      {
+         CLASS_TYPE current = Get(i);
+         if (current != _emptyValue && target >= current)
+         {
+            count++;
+         }
+      }
+      return (count * 100.0) / arraySize;
+   }
+   
+   CLASS_TYPE Max()
+   {
+      if (Size() == 0) { return _emptyValue; }
+      CLASS_TYPE max = Get(0);
+      for (int i = 1; i < Size(); ++i)
+      {
+         CLASS_TYPE current = Get(i);
+         if (max == _emptyValue || (current != _emptyValue && max < current))
+         {
+            max = current;
+         }
+      }
+      return max;
+   }
+   CLASS_TYPE Min()
+   {
+      if (array.Size() == 0) { return _emptyValue; }
+      CLASS_TYPE min = Get(0);
+      for (int i = 1; i < Size(); ++i)
+      {
+         CLASS_TYPE current = Get(i);
+         if (min == _emptyValue || (current != _emptyValue && min > current))
+         {
+            min = current;
+         }
+      }
+      return min;
+   }
+   
+   CLASS_TYPE Sum()
+   {
+      CLASS_TYPE sum = 0;
+      for (int i = 0; i < Size(); ++i)
+      {
+         sum += Get(i);
+      }
+      return sum;
+   }
+   double Stdev()
+   {
+      double sum = 0;
+      double ssum = 0;
+      int size = Size();
+      if (size < 2)
+      {
+         return 0;
+      }
+      for (int i = 0; i < size; i++)
+      {
+         CLASS_TYPE value = Get(i);
+         sum += value;
+         ssum += MathPow(value, 2);
+      }
+      return MathSqrt((ssum * size - sum * sum) / (size * (size - 1)));
+   }
 };
 #endif

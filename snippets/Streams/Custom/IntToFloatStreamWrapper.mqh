@@ -3,10 +3,10 @@
 
 #ifndef IntToFloatStreamWrapper_IMPL
 #define IntToFloatStreamWrapper_IMPL
-#include <Streams/Abstract/AFloatStream.mqh>
+#include <Streams/Abstract/TAStream.mqh>
 #include <Streams/Interfaces/IIntStream.mqh>
 
-class IntToFloatStreamWrapper : public AFloatStream
+class IntToFloatStreamWrapper : public TAStream<double>
 {
    IIntStream* _source;
 public:

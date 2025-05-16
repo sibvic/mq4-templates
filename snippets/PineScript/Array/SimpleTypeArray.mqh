@@ -160,7 +160,7 @@ public:
    }
    CLASS_TYPE Min()
    {
-      if (array.Size() == 0) { return _emptyValue; }
+      if (Size() == 0) { return _emptyValue; }
       CLASS_TYPE min = Get(0);
       for (int i = 1; i < Size(); ++i)
       {

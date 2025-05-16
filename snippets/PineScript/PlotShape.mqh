@@ -25,7 +25,7 @@ private:
       plot[period] = seriesValue;
    }
 public:
-   static void Set(double& plot[], int period, string location, double seriesValue, const double& high[], const double& low[], int shift)
+   static void Set(double& plot[], int period, string location, double seriesValue, const double& high[], const double& low[], int shift, uint clr = INT_MAX)
    {
       if (seriesValue == EMPTY_VALUE)
       {
@@ -35,7 +35,7 @@ public:
       SetValue(plot, period, location, seriesValue, high, low, shift);
    }
    
-   static void Set(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift)
+   static void Set(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift, uint clr = INT_MAX)
    {
       if (seriesValue == INT_MIN)
       {
@@ -45,7 +45,7 @@ public:
       SetValue(plot, period, location, seriesValue, high, low, shift);
    }
    
-   static void SetBool(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift)
+   static void SetBool(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift, uint clr = INT_MAX)
    {
       if (seriesValue == -1)
       {

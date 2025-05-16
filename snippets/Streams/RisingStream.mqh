@@ -1,12 +1,12 @@
-// Stream returns rising flag. Similar to ta.rising in PineScript v1.1
+// Stream returns rising flag. Similar to ta.rising in PineScript v2.0
 #include <Streams/Abstract/ABoolStream.mqh>
 
 class RisingStream : public ABoolStream
 {
-   IStream* _source;
+   TIStream<double>* _source;
    int _length;
 public:
-   RisingStream(IStream* source, int length)
+   RisingStream(TIStream<double>* source, int length)
    {
       _source = source;
       _source.AddRef();

@@ -7,7 +7,7 @@
 #include <InstrumentInfo.mqh>
 #include <OrdersIterator.mqh>
 
-// Entry strategy v4.1
+// Entry strategy v5.0
 
 interface IEntryStrategy
 {
@@ -25,8 +25,8 @@ class PendingEntryStrategy : public IEntryStrategy
    string _symbol;
    int _magicNumber;
    int _slippagePoints;
-   IStream* _longEntryPrice;
-   IStream* _shortEntryPrice;
+   TIStream<double>* _longEntryPrice;
+   TIStream<double>* _shortEntryPrice;
    ActionOnConditionLogic* _actions;
    int _references;
    bool _ecnBroker;
@@ -34,8 +34,8 @@ public:
    PendingEntryStrategy(const string symbol, 
       const int magicMumber, 
       const int slippagePoints, 
-      IStream* longEntryPrice, 
-      IStream* shortEntryPrice,
+      TIStream<double>* longEntryPrice, 
+      TIStream<double>* shortEntryPrice,
       ActionOnConditionLogic* actions,
       bool ecnBroker)
    {

@@ -1,4 +1,4 @@
-// Peak Condition v2.0
+// Peak Condition v3.0
 
 #include <Conditions/ICondition.mqh>
 #include <Streams/IStream.mqh>
@@ -8,11 +8,11 @@
 
 class PeakCondition : public AConditionBase
 {
-   IStream* _source;
+   TIStream<double>* _source;
    int _left;
    int _right;
 public:
-   PeakCondition(IStream* source, int left, int right)
+   PeakCondition(TIStream<double>* source, int left, int right)
    {
       _source = source;
       _source.AddRef();

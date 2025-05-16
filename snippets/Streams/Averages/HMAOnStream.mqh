@@ -1,4 +1,4 @@
-// HMA on stream v1.1
+// HMA on stream v2.0
 
 #ifndef HMAOnStream_IMP
 #define HMAOnStream_IMP
@@ -14,7 +14,7 @@ class HMAOnStream : public AOnStream
    WMAOnStream* wmaOnDiff;
    FloatStream* diff;
 public:
-   HMAOnStream(IStream *source, const int length)
+   HMAOnStream(TIStream<double>* source, const int length)
       : AOnStream(source)
    {
       _length = length;

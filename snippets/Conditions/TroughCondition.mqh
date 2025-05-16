@@ -1,5 +1,4 @@
-// Trough Condition v2.0
-
+// Trough Condition v3.0
 
 #include <Conditions/ICondition.mqh>
 #include <Streams/IStream.mqh>
@@ -9,11 +8,11 @@
 
 class TroughCondition : public AConditionBase
 {
-   IStream* _source;
+   TIStream<double>* _source;
    int _left;
    int _right;
 public:
-   TroughCondition(IStream* source, int left, int right)
+   TroughCondition(TIStream<double>* source, int left, int right)
    {
       _source = source;
       _source.AddRef();

@@ -1,4 +1,4 @@
-// Hidden bullush divergence condition v2.0
+// Hidden bullush divergence condition v3.0
 
 #ifndef HiddenBullishDivergenceCondition_IMP
 #define HiddenBullishDivergenceCondition_IMP
@@ -12,9 +12,9 @@ class HiddenBullishDivergenceCondition : public AConditionBase
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
-   IStream* _stream;
+   TIStream<double>* _stream;
 public:
-   HiddenBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
+   HiddenBullishDivergenceCondition(TIStream<double>* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
       :AConditionBase("Hidden bullish divergence")
    {
       _stream = stream;

@@ -101,11 +101,11 @@ public:
 
 class MeanDevStream : public IStream
 {
-   IStream *_source;
+   TIStream<double>* _source;
    int _length;
-   IStream *_avg;
+   TIStream<double>* _avg;
 public:
-   MeanDevStream(IStream *source, const int length, const MATypes maType)
+   MeanDevStream(TIStream<double>* source, const int length, const MATypes maType)
    {
       _source = source;
       _length = length;

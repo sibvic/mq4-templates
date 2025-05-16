@@ -1,12 +1,12 @@
-#include <Streams/IStream.mqh>
 #include <InstrumentInfo.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
-// Abstract stream v1.1
+// Abstract stream v2.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #ifndef AStream_IMP
 
-class AStream : public IStream
+class AStream : public TIStream<double>
 {
 protected:
    string _symbol;

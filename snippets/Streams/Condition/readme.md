@@ -1,4 +1,4 @@
-## CrossStreamV2
+## CrossStreamFactory
 
 Contains CrossStreamFactory used to create different conditional streams.
 

@@ -2,16 +2,16 @@
 #include <Streams/HighestHighStream.mqh>
 #include <Streams/LowestLowStream.mqh>
 
-// Stochastics on stream v1.0
+// Stochastics on stream v2.0
 
 class StochOnStream : public AStreamBase
 {
-   IStream* _closeStream;
+   TIStream<double>* _closeStream;
    HighestHighStream* _highest;
    LowestLowStream* _lowest;
    int _period;
 public:
-   StochOnStream(IStream* closeStream, IStream* highStream, IStream* lowStream, int period)
+   StochOnStream(TIStream<double>* closeStream, TIStream<double>* highStream, TIStream<double>* lowStream, int period)
       :AStreamBase()
    {
       _period = period;

@@ -1,11 +1,11 @@
-// Stream factory interface v1.0
+// Stream factory interface v2.0
 #ifndef IStreamFactory_IMP
 #define IStreamFactory_IMP
 
 interface IStreamFactory
 {
 public:
-   virtual IStream *Create(const int order) = 0;
+   virtual TIStream<double>* Create(const int order) = 0;
 };
 
 #endif

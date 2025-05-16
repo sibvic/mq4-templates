@@ -1,4 +1,4 @@
-// Change stream v1.3
+// Change stream v2.0
 
 #ifndef ChangeStream_IMP
 #define ChangeStream_IMP
@@ -11,7 +11,7 @@ class ChangeStream : public AOnStream
 {
    int _period;
 public:
-   ChangeStream(IStream* stream, int period = 1)
+   ChangeStream(TIStream<double>* stream, int period = 1)
       :AOnStream(stream)
    {
       _period = period;

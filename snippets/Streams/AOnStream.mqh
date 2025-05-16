@@ -1,15 +1,15 @@
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 //Base implementation of stream based on another stream 
-//v1.1
+//v2.0
 
-class AOnStream : public IStream
+class AOnStream : public TIStream<double>
 {
 protected:
-   IStream *_source;
+   TIStream<double> *_source;
    int _references;
 public:
-   AOnStream(IStream *source)
+   AOnStream(TIStream<double> *source)
    {
       _references = 1;
       _source = source;

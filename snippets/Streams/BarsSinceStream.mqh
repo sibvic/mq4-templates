@@ -9,7 +9,7 @@
 
 // Counts number of bars since last condition.
 // In case of stream check it's value equal to 1
-// v1.1
+// v2.0
 
 class BarsSinceStream : public AStream //obsolete
 {
@@ -25,7 +25,7 @@ public:
       _condition.AddRef();
    }
 
-   BarsSinceStream(string symbol, ENUM_TIMEFRAMES timeframe, IStream* condition)
+   BarsSinceStream(string symbol, ENUM_TIMEFRAMES timeframe, TIStream<double>* condition)
       :AStream(symbol, timeframe)
    {
       _stream = NULL;

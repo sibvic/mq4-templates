@@ -1,10 +1,10 @@
 #ifndef FloatStream_IMPL
 #define FloatStream_IMPL
 
-#include <Streams/AStreamBase.mqh>
-// Float stream v2.4
+#include <Streams/Abstract/TAStream.mqh>
+// Float stream v3.0
 
-class FloatStream : public AStreamBase
+class FloatStream : public TAStream<double>
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;

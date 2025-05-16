@@ -1,4 +1,4 @@
-// Rising condition v1.0
+// Rising condition v2.0
 
 #ifndef RisingCondition_IMPL
 #define RisingCondition_IMPL
@@ -6,10 +6,10 @@
 class RisingCondition : public ICondition
 {
    int refs;
-   IStream* _source;
+   TIStream<double>* _source;
    int _length;
 public:
-   RisingCondition(IStream* source, int length)
+   RisingCondition(TIStream<double>* source, int length)
    {
       refs = 1;
       _source = source;

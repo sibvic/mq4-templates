@@ -1,4 +1,4 @@
-// Falling condition v1.0
+// Falling condition v2.0
 
 #ifndef FallingCondition_IMPL
 #define FallingCondition_IMPL
@@ -6,10 +6,10 @@
 class FallingCondition : public ICondition
 {
    int refs;
-   IStream* _source;
+   TIStream<double>* _source;
    int _length;
 public:
-   FallingCondition(IStream* source, int length)
+   FallingCondition(TIStream<double>* source, int length)
    {
       refs = 1;
       _source = source;

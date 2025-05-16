@@ -2,7 +2,7 @@
 #include <Streams/SimplePriceStream.mqh>
 #include <enums/PriceType.mqh>
 
-// Lowest bars stream v1.0
+// Lowest bars stream v2.0
 
 class LowestBarsStream : public AOnStream
 {
@@ -14,7 +14,7 @@ public:
       _source.Release();
       _loopback = loopback;
    }
-   LowestBarsStream(IStream* source, int loopback)
+   LowestBarsStream(TIStream<double>* source, int loopback)
       :AOnStream(source)
    {
       _loopback = loopback;

@@ -1,4 +1,4 @@
-// Regilar bearish divergence condition v2.0
+// Regilar bearish divergence condition v3.0
 
 #ifndef RegularBearishDivergenceCondition_IMP
 #define RegularBearishDivergenceCondition_IMP
@@ -12,10 +12,10 @@ class RegularBearishDivergenceCondition : public AConditionBase
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
-   IStream* _data;
+   TIStream<double>* _data;
    int _right;
 public:
-   RegularBearishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
+   RegularBearishDivergenceCondition(TIStream<double>* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
       :AConditionBase("Regular bearish divergence")
    {
       _right = right;

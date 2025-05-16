@@ -1,4 +1,4 @@
-// Vwap on stream v1.2
+// Vwap on stream v2.0
 
 #include <Streams/AOnStream.mqh>
 #include <Streams/Interfaces/IIntStream.mqh>
@@ -202,7 +202,7 @@ public:
 class VwapOnStreamFactory
 {
 public:
-   static IStream* Create(const string symbol, ENUM_TIMEFRAMES timeframe, IStream *source)
+   static TIStream<double>* Create(const string symbol, ENUM_TIMEFRAMES timeframe, IStream *source)
    {
       VolumeStream* volume = new VolumeStream(symbol, timeframe);
       DateTimeStream* dates = new DateTimeStream(symbol, timeframe);
@@ -212,7 +212,7 @@ public:
       return stream;
    }
    
-   static IStream* Create(IStream *source, IIntStream* volume, IDateTimeStream* dates)
+   static TIStream<double>* Create(IStream *source, IIntStream* volume, IDateTimeStream* dates)
    {
       return new VwapOnStream(source, volume, dates);
    }

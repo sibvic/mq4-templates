@@ -1,12 +1,12 @@
-// Stream returns falling flag. Similar to ta.falling in PineScript v1.0
+// Stream returns falling flag. Similar to ta.falling in PineScript v2.0
 #include <Streams/Abstract/ABoolStream.mqh>
 
 class FallingStream : public ABoolStream
 {
-   IStream* _source;
+   TIStream<double>* _source;
    int _length;
 public:
-   FallingStream(IStream* source, int length)
+   FallingStream(TIStream<double>* source, int length)
    {
       _source = source;
       _source.AddRef();

@@ -1,12 +1,12 @@
 #include <Streams/AStreamBase.mqh>
-// Custom stream with a size of a parent stream v1.0
+// Custom stream with a size of a parent stream v2.0
 
 class CustomStreamOnStream : public AStreamBase
 {
-   IStream* _source;
+   TIStream<double>* _source;
    double _stream[];
 public:
-   CustomStreamOnStream(IStream* stream)
+   CustomStreamOnStream(TIStream<double>* stream)
    {
       _source = stream;
       _source.AddRef();

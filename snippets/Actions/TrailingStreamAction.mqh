@@ -4,15 +4,15 @@
 #include <TradingCommands.mqh>
 #include <Streams/IStream.mqh>
 
-// Trailiong stream action v1.0
+// Trailiong stream action v2.0
 
 class TrailingStreamAction : public AAction
 {
    IOrder* _order;
    InstrumentInfo* _instrument;
-   IStream* _stream;
+   TIStream<double>* _stream;
 public:
-   TrailingStreamAction(IOrder* order, IStream* stream)
+   TrailingStreamAction(IOrder* order, TIStream<double>* stream)
    {
       _stream = stream;
       _stream.AddRef();

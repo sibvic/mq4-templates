@@ -1,4 +1,4 @@
-// Boilinger Band Stream v1.0
+// Boilinger Band Stream v2.0
 
 #ifndef BoilingerBandStream_IMP
 #define BoilingerBandStream_IMP
@@ -11,11 +11,11 @@ class BoilingerBandStream : public IStream
 {
    double _dev;
    int _references;
-   IStream* _sma;
-   IStream* _stdev;
+   TIStream<double>* _sma;
+   TIStream<double>* _stdev;
    bool _up;
 public:
-   BoilingerBandStream(IStream* __source, int length, double dev, bool up)
+   BoilingerBandStream(TIStream<double>* __source, int length, double dev, bool up)
    {
       _references = 1;
       _sma = new SmaOnStream(__source, length);

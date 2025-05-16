@@ -1,11 +1,11 @@
-// Stream base v1.0
+// Stream base v2.0
 
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 #ifndef AStreamBase_IMP
 #define AStreamBase_IMP
 
-class AStreamBase : public IStream
+class AStreamBase : public TIStream<double>
 {
    int _references;
 public:

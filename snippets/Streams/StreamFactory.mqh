@@ -1,4 +1,4 @@
-// Stream factory dummy v1.0
+// Stream factory dummy v2.0
 
 #ifndef StreamFactory_IMP
 #define StreamFactory_IMP
@@ -16,7 +16,7 @@ public:
       _timeframe = timeframe;
    }
 
-   virtual IStream *Create(const int order)
+   virtual TIStream<double>* Create(const int order)
    {
       return NULL;
    }

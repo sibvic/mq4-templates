@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// SMA on stream v1.1
+// SMA on stream v2.0
 #ifndef SmaOnStream_IMP
 #define SmaOnStream_IMP
 
@@ -9,7 +9,7 @@ class SmaOnStream : public AOnStream
    int _length;
    double _buffer[];
 public:
-   SmaOnStream(IStream *source, const int length)
+   SmaOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

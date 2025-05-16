@@ -4,7 +4,7 @@
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Conditions/ProfitInRangeCondition.mqh>
 #include <Order/OrderByTicketId.mqh>
-// v1.1
+// v2.0
 
 #ifndef CreateTrailingStreamAction_IMP
 #define CreateTrailingStreamAction_IMP
@@ -12,11 +12,11 @@
 class CreateTrailingStreamAction : public AOrderAction
 {
    double _start;
-   IStream* _stream;
+   TIStream<double>* _stream;
    bool _startInPercent;
    ActionOnConditionLogic* _actions;
 public:
-   CreateTrailingStreamAction(double start, bool startInPercent, IStream* stream, ActionOnConditionLogic* actions)
+   CreateTrailingStreamAction(double start, bool startInPercent, TIStream<double>* stream, ActionOnConditionLogic* actions)
    {
       _stream = stream;
       _stream.AddRef();

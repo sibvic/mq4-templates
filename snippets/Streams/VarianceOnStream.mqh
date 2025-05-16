@@ -1,4 +1,4 @@
-// Variance on stream v1.0
+// Variance on stream v2.0
 
 #include <Streams/AOnStream.mqh>
 
@@ -7,7 +7,7 @@ class VarianceOnStream : public AOnStream
    int _length;
    bool _biased;
 public:
-   VarianceOnStream(IStream *source, int length, bool biased)
+   VarianceOnStream(TIStream<double>* source, int length, bool biased)
       :AOnStream(source)
    {
       _length = length;

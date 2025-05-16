@@ -1,4 +1,4 @@
-// Regilar bullush divergence condition v2.0
+// Regilar bullush divergence condition v3.0
 
 #ifndef RegularBullishDivergenceCondition_IMP
 #define RegularBullishDivergenceCondition_IMP
@@ -12,10 +12,10 @@ class RegularBullishDivergenceCondition : public AConditionBase
    ICondition* _priceCondition;
    ICondition* _indiCondition;
    SimplePriceStream* _price;
-   IStream* _data;
+   TIStream<double>* _data;
    int _right;
 public:
-   RegularBullishDivergenceCondition(IStream* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
+   RegularBullishDivergenceCondition(TIStream<double>* stream, string symbol, ENUM_TIMEFRAMES timeframe, int left, int right)
       :AConditionBase("Regular bullish divergence")
    {
       _right = right;

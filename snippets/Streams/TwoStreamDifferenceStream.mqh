@@ -1,13 +1,13 @@
 #include <Streams/AStreamBase.mqh>
 
-// Difference between two streams v1.0
+// Difference between two streams v2.0
 
 class TwoStreamDifferenceStream : public AStreamBase
 {
-   IStream* _first;
-   IStream* _second;
+   TIStream<double>* _first;
+   TIStream<double>* _second;
 public:
-   TwoStreamDifferenceStream(IStream* first, IStream* second)
+   TwoStreamDifferenceStream(TIStream<double>* first, TIStream<double>* second)
       :AStreamBase()
    {
       _first = first;

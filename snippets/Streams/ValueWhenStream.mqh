@@ -1,4 +1,4 @@
-// Value when stream v2.1
+// Value when stream v3.0
 
 #ifndef ValueWhenStream_IMP
 #define ValueWhenStream_IMP
@@ -9,14 +9,14 @@
 class ValueWhenStream : public AStreamBase
 {
    ICondition* _condition;
-   IStream* _source;
+   TIStream<double>* _source;
    int _periods[];
    double _values[];
    int _shift;
 public:
    double _stream[];
 
-   ValueWhenStream(ICondition* condition, IStream* source, int shift)
+   ValueWhenStream(ICondition* condition, TIStream<double>* source, int shift)
    {
       _shift = shift;
       _condition = condition;

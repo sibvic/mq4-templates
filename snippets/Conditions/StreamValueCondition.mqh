@@ -3,11 +3,11 @@
 #include <streams/IBarStream.mqh>
 #include <enums/TwoStreamsConditionType.mqh>
 
-// Stream-value condition v1.0
+// Stream-value condition v2.0
 
 class StreamValueCondition : public ACondition
 {
-   IStream* _stream1;
+   TIStream<double>* _stream1;
    int _periodShift1;
    string _name1;
    TwoStreamsConditionType _condition;
@@ -16,7 +16,7 @@ public:
    StreamValueCondition(const string symbol, 
       ENUM_TIMEFRAMES timeframe, 
       TwoStreamsConditionType condition,
-      IStream* stream1,
+      TIStream<double>* stream1,
       double value,
       string name1,
       int streamPeriodShift1 = 0)

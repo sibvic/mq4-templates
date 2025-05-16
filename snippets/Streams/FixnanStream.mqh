@@ -1,6 +1,6 @@
 #ifndef FixnanStream_IMP
 #define FixnanStream_IMP
-// Fix NAN stream v1.0
+// Fix NAN stream v2.0
 
 #include <Streams/AOnStream.mqh>
 
@@ -8,7 +8,7 @@ class FixnanStream : public AOnStream
 {
    int _maxLookback;
 public:
-   FixnanStream(IStream *source)
+   FixnanStream(TIStream<double>* source)
       :AOnStream(source)
    {
       _maxLookback = 1000;
@@ -31,7 +31,7 @@ public:
 class FixnanStreamFactory
 {
 public:
-   static IStream* Create(IStream* source)
+   static TIStream<double>* Create(TIStream<double>* source)
    {
       return new FixnanStream(source);
    }

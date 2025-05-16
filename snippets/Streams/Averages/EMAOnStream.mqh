@@ -1,19 +1,19 @@
 #include <Streams/IStream.mqh>
 
-// EMA on stream v1.0
+// EMA on stream v2.0
 
 #ifndef EMAOnStream_IMP
 #define EMAOnStream_IMP
 
 class EMAOnStream : public IStream
 {
-   IStream *_source;
+   TIStream<double>* _source;
    int _length;
    double _k;
    double _buffer[];
    int _references;
 public:
-   EMAOnStream(IStream *source, const int length)
+   EMAOnStream(TIStream<double>* source, const int length)
    {
       _source = source;
       _source.AddRef();

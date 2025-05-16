@@ -1,4 +1,4 @@
-// Alert signal v4.3
+// Alert signal v5.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 
 #include <Streams/CandleStreams.mqh>
@@ -53,7 +53,7 @@ public:
 class AlertSignalArrow : public IAlertSignalOutput
 {
    double _signals[];
-   IStream* _price;
+   TIStream<double>* _price;
 public:
    AlertSignalArrow()
    {
@@ -66,7 +66,7 @@ public:
          _price.Release();
    }
 
-   int Register(int id, string name, int code, color clr, IStream* price)
+   int Register(int id, string name, int code, color clr, TIStream<double>* price)
    {
       if (_price != NULL)
          _price.Release();
@@ -103,7 +103,7 @@ public:
 
 class MainChartAlertSignalArrow : public IAlertSignalOutput
 {
-   IStream* _price;
+   TIStream<double>* _price;
    string _labelId;
    color _color;
    uchar _code;
@@ -121,7 +121,7 @@ public:
          _price.Release();
    }
 
-   int Register(int id, string labelId, uchar code, color clr, IStream* price)
+   int Register(int id, string labelId, uchar code, color clr, TIStream<double>* price)
    {
       if (_price != NULL)
          _price.Release();
@@ -172,7 +172,7 @@ public:
 
 class MainChartAlertSignalText : public IAlertSignalOutput
 {
-   IStream* _price;
+   TIStream<double>* _price;
    string _labelId;
    color _color;
    string _text;
@@ -191,7 +191,7 @@ public:
          _price.Release();
    }
 
-   int Register(int id, string labelId, string text, color clr, IStream* price, ENUM_ANCHOR_POINT anchor)
+   int Register(int id, string labelId, string text, color clr, TIStream<double>* price, ENUM_ANCHOR_POINT anchor)
    {
       if (_price != NULL)
          _price.Release();
@@ -321,7 +321,7 @@ public:
       _condition.Release();
    }
 
-   int RegisterText(int id, string name, string labelId, string text, color clr, IStream* price, int fontSize, ENUM_ANCHOR_POINT anchor)
+   int RegisterText(int id, string name, string labelId, string text, color clr, TIStream<double>* price, int fontSize, ENUM_ANCHOR_POINT anchor)
    {
       _message = name;
       MainChartAlertSignalText* signalOutput = new MainChartAlertSignalText(fontSize);
@@ -329,7 +329,7 @@ public:
       return signalOutput.Register(id, labelId, text, clr, price, anchor);
    }
 
-   int RegisterArrows(int id, string name, string labelId, int code, color clr, IStream* price, int fontSize)
+   int RegisterArrows(int id, string name, string labelId, int code, color clr, TIStream<double>* price, int fontSize)
    {
       _message = name;
       MainChartAlertSignalArrow* signalOutput = new MainChartAlertSignalArrow(fontSize);
@@ -345,7 +345,7 @@ public:
       return signalOutput.Register(id, labelId, clr);
    }
 
-   int RegisterStreams(int id, string name, int code, color clr, IStream* price)
+   int RegisterStreams(int id, string name, int code, color clr, TIStream<double>* price)
    {
       _message = name;
       AlertSignalArrow* signalOutput = new AlertSignalArrow();

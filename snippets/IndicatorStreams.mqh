@@ -99,7 +99,7 @@ public:
    }
 };
 
-class MeanDevStream : public IStream
+class MeanDevStream : public TIStream<double>
 {
    TIStream<double>* _source;
    int _length;

@@ -1,4 +1,4 @@
-// Boilinger Band Stream v2.0
+// Boilinger Band Stream v3.0
 
 #ifndef BoilingerBandStream_IMP
 #define BoilingerBandStream_IMP
@@ -7,7 +7,7 @@
 #include <SmaOnStream.mqh>
 #include <StDevStream.mqh>
 
-class BoilingerBandStream : public IStream
+class BoilingerBandStream : public TIStream<double>
 {
    double _dev;
    int _references;

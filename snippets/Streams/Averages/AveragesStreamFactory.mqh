@@ -1,7 +1,7 @@
 // Averages stream factory v2.0
 
 #include <enums/MATypes.mqh>
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 #include <Streams/Averages/SMAOnStream.mqh>
 #include <Streams/Averages/EmaOnStream.mqh>
 #include <Streams/Averages/TemaOnStream.mqh>

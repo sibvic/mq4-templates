@@ -1,4 +1,4 @@
-// Zero lag TEMA on stream v1.0
+// Zero lag TEMA on stream v2.0
 
 #include <Streams/Averages/TemaOnStream.mqh>
 #include <Streams/AStreamBase.mqh>
@@ -11,7 +11,7 @@ class ZeroLagTEMAOnStream : public AStreamBase
    TemaOnStream *_tema1;
    TemaOnStream *_tema2;
 public:
-   ZeroLagTEMAOnStream(IStream *source, const int length)
+   ZeroLagTEMAOnStream(TIStream<double> *source, const int length)
    {
       _tema1 = new TemaOnStream(source, length);
       _tema2 = new TemaOnStream(_tema1, length);

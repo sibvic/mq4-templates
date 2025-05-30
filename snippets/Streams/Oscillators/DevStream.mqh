@@ -2,13 +2,13 @@
 #include <Streams/Averages/SMAOnStream.mqh>
 
 // Measure of difference between the series and it's SMA stream 
-// v1.0
+// v2.0
 
 class DevStream : public AOnStream
 {
    SmaOnStream* sma;
 public:
-   DevStream (IStream *source, const int length)
+   DevStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       sma = new SmaOnStream(source, length);

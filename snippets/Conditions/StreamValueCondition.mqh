@@ -1,5 +1,5 @@
 #include <Conditions/ACondition.mqh>
-#include <streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 #include <streams/IBarStream.mqh>
 #include <enums/TwoStreamsConditionType.mqh>
 

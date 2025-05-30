@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// WMA on stream v1.2
+// WMA on stream v2.0
 
 #ifndef WMAOnStream_IMP
 #define WMAOnStream_IMP
@@ -11,7 +11,7 @@ class WMAOnStream : public AOnStream
    double _k;
    double _buffer[];
 public:
-   WMAOnStream(IStream *source, const int length)
+   WMAOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

@@ -1,7 +1,7 @@
 #include <Streams/Averages/EmaOnStream.mqh>
 #include <Streams/AStreamBase.mqh>
 
-// TEMA on stream v1.0
+// TEMA on stream v2.0
 
 #ifndef TemaOnStream_IMP
 #define TemaOnStream_IMP
@@ -12,7 +12,7 @@ class TemaOnStream : public AStreamBase
    EMAOnStream *_ema2;
    EMAOnStream *_ema3;
 public:
-   TemaOnStream(IStream *source, const int length)
+   TemaOnStream(TIStream<double> *source, const int length)
    {
       _ema1 = new EMAOnStream(source, length);
       _ema2 = new EMAOnStream(_ema1, length);

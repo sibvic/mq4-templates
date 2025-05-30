@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// Zero lag MA on stream v1.1
+// Zero lag MA on stream v2.0
 
 #ifndef ZeroLagMAOnStream_IMP
 #define ZeroLagMAOnStream_IMP
@@ -11,7 +11,7 @@ class ZeroLagMAOnStream : public AOnStream
    double _buffer[];
    double _alpha;
 public:
-   ZeroLagMAOnStream(IStream *source, const int length)
+   ZeroLagMAOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

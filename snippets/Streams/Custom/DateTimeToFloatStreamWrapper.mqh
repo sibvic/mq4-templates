@@ -1,5 +1,5 @@
 // v1.0
-// Wraps IDateTimeStream and provides IStream
+// Wraps IDateTimeStream and provides TIStream<double>
 
 #ifndef DateTimeToFloatStreamWrapper_IMPL
 #define DateTimeToFloatStreamWrapper_IMPL

@@ -31,7 +31,7 @@ double temp = iCustom(NULL, 0, "averages", 0, 0);
       return INIT_FAILED;
    }
 
-class ArrayStream : public IStream
+class ArrayStream : public TIStream<double>
 {
 public:
    double Buffer[];

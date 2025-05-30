@@ -1,6 +1,6 @@
 #include <Actions/AOrderAction.mqh>
 #include <Actions/TrailingStreamAction.mqh>
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Conditions/ProfitInRangeCondition.mqh>
 #include <Order/OrderByTicketId.mqh>

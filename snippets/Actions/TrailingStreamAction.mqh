@@ -2,7 +2,7 @@
 #include <Actions/AAction.mqh>
 #include <InstrumentInfo.mqh>
 #include <TradingCommands.mqh>
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 // Trailiong stream action v2.0
 

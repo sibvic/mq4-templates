@@ -1,11 +1,11 @@
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
-// EMA on stream v2.0
+// EMA on stream v3.0
 
 #ifndef EMAOnStream_IMP
 #define EMAOnStream_IMP
 
-class EMAOnStream : public IStream
+class EMAOnStream : public TIStream<double>
 {
    TIStream<double>* _source;
    int _length;

@@ -1,12 +1,12 @@
 #include <Streams/AOnStream.mqh>
 
-// Rate of change stream v1.0
+// Rate of change stream v2.0
 
 class ROCOnStream : public AOnStream
 {
    double _length;
 public:
-   ROCOnStream(IStream *source, const int length)
+   ROCOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

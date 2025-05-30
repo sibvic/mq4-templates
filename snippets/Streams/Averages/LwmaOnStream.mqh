@@ -1,6 +1,6 @@
 #include <Streams/AOnStream.mqh>
 
-// LWMA on stream v1.0
+// LWMA on stream v2.0
 
 #ifndef LwmaOnStream_IMP
 #define LwmaOnStream_IMP
@@ -9,7 +9,7 @@ class LwmaOnStream : public AOnStream
 {
    int _length;
 public:
-   LwmaOnStream(IStream *source, const int length)
+   LwmaOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

@@ -1,5 +1,5 @@
 // v1.0
-// Wraps IBoolStream and provides IStream
+// Wraps IBoolStream and provides TIStream<double>
 
 #ifndef BoolToFloatStreamWrapper_IMPL
 #define BoolToFloatStreamWrapper_IMPL

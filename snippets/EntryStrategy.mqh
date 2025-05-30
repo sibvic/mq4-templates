@@ -1,5 +1,5 @@
 #include <enums/OrderSide.mqh>
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <MoneyManagement/IMoneyManagementStrategy.mqh>
 #include <OrderBuilder.mqh>

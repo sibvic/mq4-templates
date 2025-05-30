@@ -1,5 +1,6 @@
 #include <Streams/TrueRangeStream.mqh>
 #include <Streams/Averages/SMAOnStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 // Average true range stream v3.0
 

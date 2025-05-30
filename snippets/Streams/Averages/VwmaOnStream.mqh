@@ -1,4 +1,4 @@
-// VWMA on stream v2.0
+// VWMA on stream v3.0
 
 #include <Streams/AOnStream.mqh>
 #include <Streams/Interfaces/IIntStream.mqh>
@@ -12,7 +12,7 @@ class VwmaOnStream : public AOnStream
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
 public:
-   VwmaOnStream(string symbol, ENUM_TIMEFRAMES timeframe, IStream *source, const int length)
+   VwmaOnStream(string symbol, ENUM_TIMEFRAMES timeframe, TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _symbol = symbol;
@@ -49,7 +49,7 @@ class VwmaWithVolumeStreamOnStream : public AOnStream
    int _length;
    IIntStream* _volume;
 public:
-   VwmaWithVolumeStreamOnStream(IStream *source, IIntStream* volume, const int length)
+   VwmaWithVolumeStreamOnStream(TIStream<double> *source, IIntStream* volume, const int length)
       :AOnStream(source)
    {
       _volume = volume;
@@ -97,12 +97,12 @@ public:
 class VwmaOnStreamFactory
 {
 public:
-   static TIStream<double>* Create(string symbol, ENUM_TIMEFRAMES timeframe, IStream *source, const int length)
+   static TIStream<double>* Create(string symbol, ENUM_TIMEFRAMES timeframe, TIStream<double> *source, const int length)
    {
       return new VwmaOnStream(symbol, timeframe, source, length);
    }
    
-   static TIStream<double>* Create(IStream *source, IIntStream *volume, const int length)
+   static TIStream<double>* Create(TIStream<double> *source, IIntStream *volume, const int length)
    {
       return new VwmaWithVolumeStreamOnStream(source, volume, length);
    }

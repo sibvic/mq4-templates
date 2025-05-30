@@ -1,7 +1,7 @@
 // Trough Condition v3.0
 
 #include <Conditions/ICondition.mqh>
-#include <Streams/IStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 #ifndef TroughCondition_IMP
 #define TroughCondition_IMP

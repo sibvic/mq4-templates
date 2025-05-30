@@ -4,7 +4,7 @@
 #include <Streams/AbsStream.mqh>
 #include <Streams/SumOnStream.mqh>
 
-// CCI on stream v1.0
+// CCI on stream v2.0
 
 class CCIOnStream : public AOnStream
 {
@@ -13,7 +13,7 @@ class CCIOnStream : public AOnStream
    SumOnStream* _sum;
    double _mul;
 public:
-   CCIOnStream(IStream *source, const int length)
+   CCIOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;

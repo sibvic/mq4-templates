@@ -1,12 +1,12 @@
-// v1.0
+// v2.0
 // Wraps IDateTimeStream and provides TIStream<double>
 
 #ifndef DateTimeToFloatStreamWrapper_IMPL
 #define DateTimeToFloatStreamWrapper_IMPL
-#include <Streams/Abstract/AFloatStream.mqh>
+#include <Streams/Abstract/TAStream.mqh>
 #include <Streams/Interfaces/TIStream.mqh>
 
-class DateTimeToFloatStreamWrapper : public AFloatStream
+class DateTimeToFloatStreamWrapper : public TAStream<double>
 {
    TIStream<datetime>* _source;
 public:

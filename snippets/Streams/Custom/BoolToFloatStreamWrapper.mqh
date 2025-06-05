@@ -1,12 +1,12 @@
-// v1.0
+// v2.0
 // Wraps IBoolStream and provides TIStream<double>
 
 #ifndef BoolToFloatStreamWrapper_IMPL
 #define BoolToFloatStreamWrapper_IMPL
-#include <Streams/Abstract/AFloatStream.mqh>
+#include <Streams/Abstract/TAStream.mqh>
 #include <Streams/Interfaces/IBoolStream.mqh>
 
-class BoolToFloatStreamWrapper : public AFloatStream
+class BoolToFloatStreamWrapper : public TAStream<double>
 {
    IBoolStream* _source;
 public:

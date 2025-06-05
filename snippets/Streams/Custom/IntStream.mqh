@@ -12,7 +12,7 @@ class IntStream : public AIntStream
    int _stream[];
    int _emptyValue;
 public:
-   IntStream(const string symbol, const ENUM_TIMEFRAMES timeframe, int emptyValue = IMT_MIN)
+   IntStream(const string symbol, const ENUM_TIMEFRAMES timeframe, int emptyValue = INT_MIN)
    {
       _symbol = symbol;
       _timeframe = timeframe;

@@ -1,4 +1,4 @@
-// Array v1.5
+// Array v1.6
 #include <PineScript/Array/IArray.mqh>
 #include <PineScript/Array/LineArray.mqh>
 #include <PineScript/Array/LabelArray.mqh>
@@ -23,6 +23,9 @@ public:
    
    template <typename DUMMY_TYPE, typename ARRAY_TYPE>
    static int Size(ARRAY_TYPE array, int defaultValue) { if (array == NULL) { return INT_MIN;} return array.Size(); }
+
+   template <typename ARRAY_TYPE>
+   static void Clear(ARRAY_TYPE array) { if (array == NULL) { return;} array.Clear(); }
 
    static int Shift(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
    static Line* Shift(ILineArray* array) { if (array == NULL) { return NULL; } return array.Shift(); }

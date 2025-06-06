@@ -4,6 +4,14 @@
 class PineScriptTime
 {
 public:
+   static int Now()
+   {
+      return TimeCurrent() * 1000;
+   }
+   static int ToMS(datetime time)
+   {
+      return time * 1000;
+   }
    static int Year(datetime time)
    {
       return TimeYear(time);

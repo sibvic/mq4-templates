@@ -280,3 +280,7 @@ Returns datetime for the specified symbol/timeframe.
 ## VolumeStream
 
 Returns volume for the specified symbol/timeframe.
+
+## TimeCloseStream
+
+Return end time of the bar

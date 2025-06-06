@@ -1,5 +1,9 @@
 # MQL4/MT4/MetaTrader 4 templates
 
+## Goal of the project
+
+It's designed to make development of typical indicators and EA faster. And since PineScript is very popular right now there are a lot of functions to make convertion from PineScript easier.
+
 There are two ways to compile the template:
 
 - My injecting all code into the template using [MQ4Inject](https://github.com/sibvic/MQ4Inject)

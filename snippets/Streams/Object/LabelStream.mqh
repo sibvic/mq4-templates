@@ -1,4 +1,4 @@
-// Label stream v1.0
+// Label stream v1.1
 
 #ifndef LabelStream_IMPL
 #define LabelStream_IMPL
@@ -9,8 +9,8 @@
 class LabelStream : public TStream<Label*>
 {
 public:
-   LabelStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
-      : TStream<Label*>(symbol, timeframe, NULL)
+   LabelStream(const string symbol, const ENUM_TIMEFRAMES timeframe, Label* emptyValue = NULL)
+      : TStream<Label*>(symbol, timeframe, emptyValue)
    {
    }
 };

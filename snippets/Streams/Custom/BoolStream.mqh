@@ -1,24 +1,26 @@
-// Custom boolean stream v1.1
+// Custom boolean stream v2.0
 
 #ifndef BoolStream_IMPL
 #define BoolStream_IMPL
 
-#include <Streams/Abstract/ABoolStream.mqh>
+#include <Streams/Abstract/TAStream.mqh>
 
-class BoolStream : public ABoolStream
+class BoolStream : public TAStream<int>
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
    bool _stream[];
+   int _emptyValue;
 public:
-   BoolStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
+   BoolStream(const string symbol, const ENUM_TIMEFRAMES timeframe, int emptyValue = -1)
    {
+      _emptyValue = emptyValue;
       _symbol = symbol;
       _timeframe = timeframe;
    }
    void Init()
    {
-      ArrayInitialize(_stream, EMPTY_VALUE);
+      ArrayInitialize(_stream, _emptyValue);
    }
 
    virtual int Size()
@@ -49,7 +51,7 @@ public:
       EnsureStreamHasProperSize(totalBars);
       
       val = _stream[index];
-      return _stream[index] != EMPTY_VALUE;
+      return _stream[index] != _emptyValue;
    }
    
    bool GetValue(const int period, int &val)
@@ -63,7 +65,7 @@ public:
       EnsureStreamHasProperSize(totalBars);
       
       val = _stream[index];
-      return _stream[index] != EMPTY_VALUE;
+      return _stream[index] != _emptyValue;
    }
 private:
    void EnsureStreamHasProperSize(int size)
@@ -74,7 +76,7 @@ private:
          ArrayResize(_stream, size);
          for (int i = currentSize; i < size; ++i)
          {
-            _stream[i] = EMPTY_VALUE;
+            _stream[i] = _emptyValue;
          }
       }
    }

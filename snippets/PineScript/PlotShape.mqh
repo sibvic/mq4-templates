@@ -1,4 +1,4 @@
-// PlotShape v1.1
+// PlotShape v1.2
 #ifndef PlotShape_IMPL
 #define PlotShape_IMPL
 
@@ -47,7 +47,7 @@ public:
    
    static void SetBool(double& plot[], int period, string location, int seriesValue, const double& high[], const double& low[], int shift, uint clr = INT_MAX)
    {
-      if (seriesValue == -1)
+      if (seriesValue == -1 || seriesValue == 0)
       {
          SetNA(plot, period);
          return;

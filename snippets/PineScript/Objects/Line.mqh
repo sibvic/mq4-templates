@@ -1,4 +1,4 @@
-// Line object v1.5
+// Line object v1.6
 
 class Line
 {
@@ -209,6 +209,12 @@ public:
             ObjectSetInteger(0, _id, OBJPROP_RAY, true);
             ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, true);
             ObjectSetInteger(0, _id, OBJPROP_RAY_LEFT, true);
+         }
+         else if (_extend == "none")
+         {
+            ObjectSetInteger(0, _id, OBJPROP_RAY, false);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_RIGHT, false);
+            ObjectSetInteger(0, _id, OBJPROP_RAY_LEFT, false);
          }
       }
       ObjectSetDouble(0, _id, OBJPROP_PRICE1, _y1);

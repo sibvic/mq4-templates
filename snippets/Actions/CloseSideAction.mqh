@@ -1,8 +1,8 @@
 // Close buy/sell side action v1.0
 
-#include <AAction.mqh>
-#include <../OrdersIterator.mqh>
-#include <../TradingCommands.mqh>
+#include <Actions/AAction.mqh>
+#include <OrdersIterator.mqh>
+#include <TradingCommands.mqh>
 
 #ifndef CloseSideAction_IMP
 #define CloseSideAction_IMP

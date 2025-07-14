@@ -85,12 +85,6 @@ enum MartingaleType
    MartingaleDoNotUse, // Do not use
    MartingaleOnLoss // Open another position on loss
 };
-enum MartingaleLotSizingType
-{
-   MartingaleLotSizingNo, // No lot sizing
-   MartingaleLotSizingMultiplicator, // Using miltiplicator
-   MartingaleLotSizingAdd // Addition
-};
 enum MartingaleStepSizeType
 {
    MartingaleStepSizePips, // Pips
@@ -196,13 +190,13 @@ input string log_file = "log.csv"; // Log file name (empty for auto naming)
 #include <conditions/MaxSpreadCondition.mqh>
 #include <Streams/AStream.mqh>
 #include <Streams/PriceStream.mqh>
+#include <Streams/SimplePriceStream.mqh>
 #include <OrdersIterator.mqh>
 #include <TradingCalculator.mqh>
-#include <Order.mqh>
 #include <Actions/AAction.mqh>
 #include <Actions/CreateTrailingStreamAction.mqh>
 #include <Actions/PartialCloseOnProfitOrderAction.mqh>
-#include <Actions/CreateMartingaleAction.mqh>
+#include <Actions/OrderActions/CreateMartingaleAction.mqh>
 #include <Logic/ActionOnConditionController.mqh>
 #include <Logic/ActionOnConditionLogic.mqh>
 #include <Conditions/HitProfitCondition.mqh>

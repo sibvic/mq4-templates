@@ -491,9 +491,10 @@ IAction* CreateAction(TradingCalculator* tradingCalculator, string symbol,
    ENUM_TIMEFRAMES timeframe, OrderSide orderSide, OrderHandlers* orderHandlers, bool market,
    ActionOnConditionLogic* actions, TIStream<double>* price)
 {
-   IMoneyManagementStrategy* moneyManagement = CreateMoneyManagementStrategy(tradingCalculator, symbol, timeframe,
-      orderSide == BuySide, lots_type, lots_value, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator, 
-      take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   DefaultLotsProvider* lots = new DefaultLotsProvider(tradingCalculator, lots_type, lots_value);
+   IStopLossStrategy* stopLoss = CreateStopLossStrategyForLots(lots, tradingCalculator, symbol, timeframe, orderSide == BuySide, stop_loss_type, stop_loss_value, stop_loss_atr_multiplicator);
+   ITakeProfitStrategy* tp = CreateTakeProfitStrategy(tradingCalculator, symbol, timeframe, orderSide == BuySide, take_profit_type, take_profit_value, take_profit_atr_multiplicator);
+   IMoneyManagementStrategy* moneyManagement = new MoneyManagementStrategy(lots, stopLoss, tp);;
 
    IEntryStrategy* entryStrategy;
    if (market)

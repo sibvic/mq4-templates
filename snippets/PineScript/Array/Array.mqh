@@ -32,13 +32,11 @@ public:
 
    template <typename ARRAY_TYPE, typename VALUE_TYPE>
    static void Push(ARRAY_TYPE array, VALUE_TYPE value) { if (array == NULL) { return; } array.Push(value); }
+   template <typename VALUE_TYPE, typename ARRAY_TYPE>
+
    
-   static int Pop(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Pop(); }
-   static Line* Pop(ILineArray* array) { if (array == NULL) { return NULL; } return array.Pop(); }
-   static Box* Pop(IBoxArray* array) { if (array == NULL) { return NULL; } return array.Pop(); }
-   static string Pop(IStringArray* array) { if (array == NULL) { return NULL; } return array.Pop(); }
-   static int Pop(IBoolArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Pop(); }
-   static uint Pop(IColorArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Pop(); }
+   template <typename VALUE_TYPE, typename ARRAY_TYPE>
+   static VALUE_TYPE Pop(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Pop(); }
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static RETURN_TYPE Get(ARRAY_TYPE array, int index, RETURN_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Get(index); }

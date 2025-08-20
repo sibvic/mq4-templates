@@ -33,7 +33,11 @@ public:
    template <typename ARRAY_TYPE, typename VALUE_TYPE>
    static void Push(ARRAY_TYPE array, VALUE_TYPE value) { if (array == NULL) { return; } array.Push(value); }
    template <typename VALUE_TYPE, typename ARRAY_TYPE>
-
+   static VALUE_TYPE First(ARRAY_TYPE array, VALUE_TYPE defaultValue)
+   {
+      if (array == NULL || array.Size() == 0) { return defaultValue; } 
+      return array.Get(0);
+   }
    
    template <typename VALUE_TYPE, typename ARRAY_TYPE>
    static VALUE_TYPE Pop(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Pop(); }

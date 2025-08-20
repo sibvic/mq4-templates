@@ -14,12 +14,8 @@
 class Array
 {
 public:
-   static void Unshift(IIntArray* array, int value) { if (array == NULL) { return; } array.Unshift(value); }
-   static void Unshift(ILineArray* array, Line* value) { if (array == NULL) { return; } array.Unshift(value); }
-   static void Unshift(IBoxArray* array, Box* value) { if (array == NULL) { return; } array.Unshift(value); }
-   static void Unshift(IStringArray* array, string value) { if (array == NULL) { return; } array.Unshift(value); }
-   static void Unshift(IBoolArray* array, int value) { if (array == NULL) { return; } array.Unshift(value); }
-   static void Unshift(IColorArray* array, uint value) { if (array == NULL) { return; } array.Unshift(value); }
+   template <typename ARRAY_TYPE, typename VALUE_TYPE>
+   static void Unshift(ARRAY_TYPE array, VALUE_TYPE value) { if (array == NULL) { return; } array.Unshift(value); }
    
    template <typename DUMMY_TYPE, typename ARRAY_TYPE>
    static int Size(ARRAY_TYPE array, int defaultValue) { if (array == NULL) { return INT_MIN;} return array.Size(); }

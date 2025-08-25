@@ -61,3 +61,7 @@ VWAP average on stream
 ## SwmaOnStream
 
 SWMA average.
+
+## TrueRangeOnStream
+
+Calculates the True Range (TR) on a bar stream. The True Range is the greatest of the following: current high minus current low, absolute value of current high minus previous close, or absolute value of current low minus previous close. Useful for volatility and ATR calculations.

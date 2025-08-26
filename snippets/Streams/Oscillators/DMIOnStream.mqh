@@ -92,12 +92,12 @@ public:
    {
       int totalBars = _source.Size();
       double h, h1;
-      if (!_source.GetHigh(period, h) || !_source.GetHigh(period - 1, h1))
+      if (!_source.GetHigh(period, h) || !_source.GetHigh(period + 1, h1))
       {
          return false;
       }
       double l, l1;
-      if (!_source.GetLow(period, l) || !_source.GetLow(period - 1, l1))
+      if (!_source.GetLow(period, l) || !_source.GetLow(period + 1, l1))
       {
          return false;
       }

@@ -1,6 +1,7 @@
 // Variance on stream v2.0
 
 #include <Streams/AOnStream.mqh>
+#include <Streams/Custom/IntToFloatStreamWrapper.mqh>
 
 class VarianceOnStream : public AOnStream
 {
@@ -50,3 +51,20 @@ public:
       return true;
    }
 };
+
+class VarianceOnStreamFactory
+{
+public:
+   static VarianceOnStream* Create(TIStream<double>* source, int length, bool biased)
+   {
+      return new VarianceOnStream(source, length, biased);
+   }
+   static VarianceOnStream* Create(TIStream<int>* source, int length, bool biased)
+   {
+      IntToFloatStreamWrapper* wrapper = new IntToFloatStreamWrapper(source);
+      VarianceOnStream* stream = new VarianceOnStream(wrapper, length, biased);
+      wrapper.Release();
+      return stream;
+   }
+};
+

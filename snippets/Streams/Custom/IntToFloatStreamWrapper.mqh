@@ -1,16 +1,15 @@
-// v1.0
+// v2.0
 // Wraps IIntStream and provides TIStream<double>
 
 #ifndef IntToFloatStreamWrapper_IMPL
 #define IntToFloatStreamWrapper_IMPL
 #include <Streams/Abstract/TAStream.mqh>
-#include <Streams/Interfaces/IIntStream.mqh>
 
 class IntToFloatStreamWrapper : public TAStream<double>
 {
-   IIntStream* _source;
+   TIStream<int>* _source;
 public:
-   IntToFloatStreamWrapper(IIntStream* source)
+   IntToFloatStreamWrapper(TIStream<int>* source)
    {
       _source = source;
       _source.AddRef();

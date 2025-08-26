@@ -1,11 +1,11 @@
-// Custom integer stream v1.2
+// Custom integer stream v2.0
 
 #ifndef IntStream_IMPL
 #define IntStream_IMPL
 
-#include <Streams/Abstract/AIntStream.mqh>
+#include <Streams/Abstract/TAStream.mqh>
 
-class IntStream : public AIntStream
+class IntStream : public TAStream<int>
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;

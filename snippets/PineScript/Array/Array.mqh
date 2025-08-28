@@ -23,12 +23,8 @@ public:
    template <typename ARRAY_TYPE>
    static void Clear(ARRAY_TYPE array) { if (array == NULL) { return;} array.Clear(); }
 
-   static int Shift(IIntArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
-   static Line* Shift(ILineArray* array) { if (array == NULL) { return NULL; } return array.Shift(); }
-   static Box* Shift(IBoxArray* array) { if (array == NULL) { return NULL; } return array.Shift(); }
-   static string Shift(IStringArray* array) { if (array == NULL) { return NULL; } return array.Shift(); }
-   static int Shift(IBoolArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
-   static uint Shift(IColorArray* array) { if (array == NULL) { return EMPTY_VALUE; } return array.Shift(); }
+   template <typename ARRAY_TYPE, typename VALUE_TYPE>
+   static VALUE_TYPE Shift(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Shift(); }
 
    template <typename ARRAY_TYPE, typename VALUE_TYPE>
    static void Push(ARRAY_TYPE array, VALUE_TYPE value) { if (array == NULL) { return; } array.Push(value); }

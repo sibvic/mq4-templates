@@ -17,6 +17,22 @@ public:
    template <typename ARRAY_TYPE, typename VALUE_TYPE>
    static void Unshift(ARRAY_TYPE array, VALUE_TYPE value) { if (array == NULL) { return; } array.Unshift(value); }
    
+   static double Avg(ISimpleTypeArray<double>* array)
+   {
+      if (array == NULL || array.Size() == 0)
+      {
+         return EMPTY_VALUE;
+      }
+      return Sum(array) / array.Size();
+   }
+   static double Avg(ISimpleTypeArray<int>* array)
+   {
+      if (array == NULL || array.Size() == 0)
+      {
+         return EMPTY_VALUE;
+      }
+      return Sum(array) / array.Size();
+   }
    template <typename DUMMY_TYPE, typename ARRAY_TYPE>
    static int Size(ARRAY_TYPE array, int defaultValue) { if (array == NULL) { return INT_MIN;} return array.Size(); }
 

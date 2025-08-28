@@ -1,8 +1,48 @@
-// Base EA template
-// More templates and snippets on https://github.com/sibvic/mq4-templates
-// You need:
-// 1. To implement LongCondition, ShortCondition, ExitLongCondition and ExitShortCondition
-// 2. To replace all includes with code from the snippets folder. You can use https://github.com/sibvic/MQ4Inject for that.
+// EA_Base.mq4 - Advanced Expert Advisor Template for MetaTrader 4
+// 
+// DESCRIPTION:
+// This is a comprehensive, production-ready Expert Advisor template that provides
+// a solid foundation for building sophisticated trading strategies. It includes
+// extensive risk management features, position management, and trading logic
+// framework that can be easily customized for your specific trading needs.
+//
+// KEY FEATURES:
+// • Multi-symbol trading support (comma-separated symbols)
+// • Advanced risk management (stop loss, take profit, breakeven, trailing stops)
+// • Position sizing options (fixed lots, risk-based, percentage of balance)
+// • Trading time restrictions (daily and weekly schedules)
+// • Position capping and margin management
+// • Direct/Reversal logic support
+// • Live and on-bar-close execution modes
+// • ECN broker compatibility
+// • Comprehensive logging and dashboard
+// • Martingale strategies (on loss/profit)
+// • Two-level take profit system
+// • Custom stop loss and take profit strategies
+// • Exit logic support
+// • Spread filtering
+// • Account statistics display
+//
+// HOW TO USE:
+// 1. Implement your trading logic in these four classes:
+//    - LongCondition: Define when to enter long positions
+//    - ShortCondition: Define when to enter short positions  
+//    - ExitLongCondition: Define when to exit long positions
+//    - ExitShortCondition: Define when to exit short positions
+//
+// 2. Replace all #include statements with actual code from the snippets folder
+//    You can use MQ4Inject tool: https://github.com/sibvic/MQ4Inject
+//
+// 3. Configure the input parameters according to your strategy requirements
+//
+// 4. Test thoroughly in a demo account before live trading
+//
+// DOCUMENTATION:
+// Detailed parameter descriptions: https://github.com/sibvic/mq4-templates/wiki/EA_Base-template-parameters
+// More templates and snippets: https://github.com/sibvic/mq4-templates
+//
+// DEVELOPED BY: Victor Tereschenko (sibvic@gmail.com)
+// VERSION: 1.0
 
 #property version   "1.0"
 #property description "Developed by Victor Tereschenko: sibvic@gmail.com"

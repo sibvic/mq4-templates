@@ -82,9 +82,13 @@ public:
 
    CLASS_TYPE Get(int index)
    {
-      if (index < 0 || index >= Size())
+      if (index >= Size())
       {
          return _emptyValue;
+      }
+      if (index < 0)
+      {
+         index = Size() + index;
       }
       return _array[index];
    }

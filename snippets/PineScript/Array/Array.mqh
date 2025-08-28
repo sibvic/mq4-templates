@@ -33,6 +33,75 @@ public:
       }
       return Sum(array) / array.Size();
    }
+   
+   static double Min(ISimpleTypeArray<double>* array, int nth)
+   {
+      if (array == NULL || array.Size() == 0 || nth != 0)
+      {
+         return EMPTY_VALUE;
+      }
+      double minVal = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         double val = array.Get(i);
+         if (minVal > val)
+         {
+            minVal = val;
+         }
+      }
+      return minVal;
+   }
+   static int Min(ISimpleTypeArray<int>* array, int nth)
+   {
+      if (array == NULL || array.Size() == 0 || nth != 0)
+      {
+         return INT_MIN;
+      }
+      int minVal = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         int val = array.Get(i);
+         if (minVal > val)
+         {
+            minVal = val;
+         }
+      }
+      return minVal;
+   }
+   static double Max(ISimpleTypeArray<double>* array, int nth)
+   {
+      if (array == NULL || array.Size() == 0 || nth != 0)
+      {
+         return EMPTY_VALUE;
+      }
+      double maxVal = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         double val = array.Get(i);
+         if (maxVal < val)
+         {
+            maxVal = val;
+         }
+      }
+      return maxVal;
+   }
+   static int Max(ISimpleTypeArray<int>* array, int nth)
+   {
+      if (array == NULL || array.Size() == 0 || nth != 0)
+      {
+         return INT_MIN;
+      }
+      int maxVal = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         int val = array.Get(i);
+         if (maxVal < val)
+         {
+            maxVal = val;
+         }
+      }
+      return maxVal;
+   }
    template <typename DUMMY_TYPE, typename ARRAY_TYPE>
    static int Size(ARRAY_TYPE array, int defaultValue) { if (array == NULL) { return INT_MIN;} return array.Size(); }
 

@@ -134,7 +134,7 @@ public:
    template <typename ARRAY_TYPE>
    static void Clear(ARRAY_TYPE array) { if (array == NULL) { return;} array.Clear(); }
 
-   template <typename ARRAY_TYPE, typename VALUE_TYPE>
+   template <typename VALUE_TYPE, typename ARRAY_TYPE>
    static VALUE_TYPE Shift(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Shift(); }
 
    template <typename ARRAY_TYPE, typename VALUE_TYPE>
@@ -173,7 +173,7 @@ public:
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE PercentRank(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.PercentRank(index); }
-   
+
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE Stdev(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Stdev(); }
    

@@ -33,6 +33,32 @@ public:
       }
       return Sum(array) / array.Size();
    }
+   static double Sum(ISimpleTypeArray<double>* array)
+   {
+      if (array == NULL || array.Size() == 0)
+      {
+         return EMPTY_VALUE;
+      }
+      double sum = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         sum += array.Get(i);
+      }
+      return sum;
+   }
+   static int Sum(ISimpleTypeArray<int>* array)
+   {
+      if (array == NULL || array.Size() == 0)
+      {
+         return INT_MIN;
+      }
+      int sum = array.Get(0);
+      for (int i = 1; i < array.Size(); ++i)
+      {
+         sum += array.Get(i);
+      }
+      return sum;
+   }
    
    static double Min(ISimpleTypeArray<double>* array, int nth)
    {
@@ -147,9 +173,6 @@ public:
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE PercentRank(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.PercentRank(index); }
-
-   template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
-   static ARRAY_TYPE Sum(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Sum(); }
    
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE Stdev(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Stdev(); }

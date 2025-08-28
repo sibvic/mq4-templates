@@ -38,6 +38,12 @@ public:
       if (array == NULL || array.Size() == 0) { return defaultValue; } 
       return array.Get(0);
    }
+   template <typename VALUE_TYPE, typename ARRAY_TYPE>
+   static VALUE_TYPE Last(ARRAY_TYPE array, VALUE_TYPE defaultValue)
+   {
+      if (array == NULL || array.Size() == 0) { return defaultValue; } 
+      return array.Get(array.Size() - 1);
+   }
    
    template <typename VALUE_TYPE, typename ARRAY_TYPE>
    static VALUE_TYPE Pop(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Pop(); }
@@ -60,12 +66,6 @@ public:
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE PercentRank(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.PercentRank(index); }
-
-   template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
-   static ARRAY_TYPE Max(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Max(); }
-   
-   template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
-   static ARRAY_TYPE Min(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Min(); }
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE Sum(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Sum(); }

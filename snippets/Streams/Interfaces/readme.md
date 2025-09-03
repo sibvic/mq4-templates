@@ -14,10 +14,6 @@ Interface for int arrays stream
 
 Interface for line arrays stream
 
-## IIntStream
-
-Interface for integer stream. Similar to IStream located in the directory above, but returns int
-
 ## IBoolStream
 
 Interface for boolean stream. Similar to IStream located in the directory above, but returns bool

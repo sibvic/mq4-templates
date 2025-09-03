@@ -1,4 +1,4 @@
-// Averages stream factory v2.0
+// Averages stream factory v2.1
 
 #include <enums/MATypes.mqh>
 #include <Streams/Interfaces/TIStream.mqh>
@@ -19,7 +19,7 @@
 class AveragesStreamFactory
 {
 public:
-   static TIStream<double>* Create(TIStream<double>* source, const int length, const MATypes type, IIntStream* volume = NULL)
+   static TIStream<double>* Create(TIStream<double>* source, const int length, const MATypes type, TIStream<int>* volume = NULL)
    {
       switch (type)
       {

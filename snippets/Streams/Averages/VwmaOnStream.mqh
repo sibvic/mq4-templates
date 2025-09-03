@@ -1,7 +1,7 @@
-// VWMA on stream v3.0
+// VWMA on stream v3.1
 
 #include <Streams/AOnStream.mqh>
-#include <Streams/Interfaces/IIntStream.mqh>
+#include <Streams/Interfaces/TIStream.mqh>
 
 #ifndef VwmaOnStream_IMP
 #define VwmaOnStream_IMP
@@ -47,9 +47,9 @@ public:
 class VwmaWithVolumeStreamOnStream : public AOnStream
 {
    int _length;
-   IIntStream* _volume;
+   TIStream<int>* _volume;
 public:
-   VwmaWithVolumeStreamOnStream(TIStream<double> *source, IIntStream* volume, const int length)
+   VwmaWithVolumeStreamOnStream(TIStream<double> *source, TIStream<int>* volume, const int length)
       :AOnStream(source)
    {
       _volume = volume;
@@ -102,7 +102,7 @@ public:
       return new VwmaOnStream(symbol, timeframe, source, length);
    }
    
-   static TIStream<double>* Create(TIStream<double> *source, IIntStream *volume, const int length)
+   static TIStream<double>* Create(TIStream<double> *source, TIStream<int> *volume, const int length)
    {
       return new VwmaWithVolumeStreamOnStream(source, volume, length);
    }

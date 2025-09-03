@@ -1,4 +1,4 @@
-// Change stream v2.0
+// Change stream v2.1
 
 #ifndef ChangeStream_IMP
 #define ChangeStream_IMP
@@ -16,7 +16,7 @@ public:
    {
       _period = period;
    }
-   ChangeStream(IIntStream* stream, int period = 1)
+   ChangeStream(TIStream<int>* stream, int period = 1)
       :AOnStream(new IntToFloatStreamWrapper(stream))
    {
       _source.Release();

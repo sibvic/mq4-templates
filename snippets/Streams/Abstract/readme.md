@@ -10,10 +10,6 @@ Implements reference counting for IFloatArrayStream.
 
 Implements reference counting for IIntArrayStream.
 
-## AIntStream
-
-Implements reference counting for IIntStream.
-
 ## ABoolStream
 
 Implements reference counting for IBoolStream.

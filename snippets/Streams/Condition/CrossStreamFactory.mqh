@@ -6,7 +6,7 @@
 #include <enums/TwoStreamsConditionType.mqh>
 #include <Streams/Custom/IntToFloatStreamWrapper.mqh>
 
-//CrossStreamFactory v2.0
+//CrossStreamFactory v2.1
 
 class CrossStreamFactory
 {
@@ -28,7 +28,7 @@ public:
       condition.Release();
       return result;
    }
-   static IBoolStream* CreateCrossunder(TIStream<double> *left, IIntStream* right)
+   static IBoolStream* CreateCrossunder(TIStream<double> *left, TIStream<int>* right)
    {
       IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
       IBoolStream* condition = CreateCrossunder(left, rightWrapper);
@@ -43,7 +43,7 @@ public:
       condition.Release();
       return result;
    }
-   static IBoolStream* CreateCrossover(IIntStream *left, IIntStream* right)
+   static IBoolStream* CreateCrossover(TIStream<int> *left, TIStream<int>* right)
    {
       IntToFloatStreamWrapper* leftWrapper = new IntToFloatStreamWrapper(left);
       IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
@@ -52,7 +52,7 @@ public:
       rightWrapper.Release();
       return condition;
    }
-   static IBoolStream* CreateCrossover(TIStream<double> *left, IIntStream* right)
+   static IBoolStream* CreateCrossover(TIStream<double> *left, TIStream<int>* right)
    {
       IntToFloatStreamWrapper* rightWrapper = new IntToFloatStreamWrapper(right);
       IBoolStream* condition = CreateCrossover(left, rightWrapper);

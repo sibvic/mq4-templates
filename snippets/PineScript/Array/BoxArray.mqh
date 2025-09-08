@@ -1,6 +1,6 @@
 #ifndef BoxArray_IMPL
 #define BoxArray_IMPL
-// Box array v1.4
+// Box array v2.0
 #include <PineScript/Array/IBoxArray.mqh>
 #include <PineScript/Objects/BoxesCollection.mqh>
 
@@ -61,7 +61,7 @@ public:
       return ArraySize(_array);
    }
 
-   void Push(Box* value)
+   IBoxArray* Push(Box* value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -70,6 +70,7 @@ public:
       {
          value.AddRef();
       }
+      return &this;
    }
 
    Box* Pop()

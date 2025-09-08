@@ -79,7 +79,7 @@ public:
       return ArraySize(_array);
    }
 
-   void Push(CLASS_TYPE value)
+   ITArray<CLASS_TYPE>* Push(CLASS_TYPE value)
    {
       int size = ArraySize(_array);
       ArrayResize(_array, size + 1);
@@ -88,6 +88,7 @@ public:
       {
          value.AddRef();
       }
+      return &this;
    }
 
    CLASS_TYPE Pop()

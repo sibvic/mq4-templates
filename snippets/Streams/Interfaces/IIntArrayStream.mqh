@@ -1,5 +1,5 @@
 // Float array stream v1.0
-#include <Array/IIntArray.mqh>
+#include <Array/ITArray.mqh>
 
 interface IIntArrayStream
 {
@@ -8,5 +8,5 @@ public:
    virtual void Release() = 0;
    virtual int Size() = 0;
 
-   virtual bool GetValue(const int period, IIntArray* &val) = 0;
+   virtual bool GetValue(const int period, ITArray<int>* &val) = 0;
 };

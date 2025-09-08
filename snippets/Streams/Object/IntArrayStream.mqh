@@ -9,7 +9,7 @@ class IntArrayStream : public AIntArrayStream
 {
    string _symbol;
    ENUM_TIMEFRAMES _timeframe;
-   IIntArray* _stream[];
+   ITArray<int>* _stream[];
 public:
    IntArrayStream(const string symbol, const ENUM_TIMEFRAMES timeframe)
    {
@@ -29,7 +29,7 @@ public:
       return iBars(_symbol, _timeframe);
    }
 
-   void SetValue(const int period, IIntArray* value)
+   void SetValue(const int period, ITArray<int>* value)
    {
       int totalBars = Size();
       int index = totalBars - period - 1;
@@ -41,7 +41,7 @@ public:
       _stream[index] = value;
    }
 
-   bool GetValue(const int period, IIntArray* &val)
+   bool GetValue(const int period, ITArray<int>* &val)
    {
       int totalBars = Size();
       int index = totalBars - period - 1;

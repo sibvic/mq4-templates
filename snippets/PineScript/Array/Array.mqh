@@ -164,7 +164,7 @@ public:
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static RETURN_TYPE Remove(ARRAY_TYPE array, int index, RETURN_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Remove(index); }
    
-   static int Includes(IIntArray* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
+   static int Includes(ITArray<int>* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(ILineArray* array, Line* value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(IBoxArray* array, Box* value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(IStringArray* array, string value) { if (array == NULL) { return -1; } return array.Includes(value); }

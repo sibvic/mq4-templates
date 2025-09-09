@@ -18,6 +18,11 @@ public:
       return "1";
    }
    
+   static int InSeconds(string resolution)
+   {
+      return (int)GetTimeframe(resolution);
+   }
+   
    static bool Change(string timeframe, int pos)
    {
       int bars = iBars(_Symbol, _Period);

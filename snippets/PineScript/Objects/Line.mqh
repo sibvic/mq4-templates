@@ -1,4 +1,4 @@
-// Line object v1.6
+// Line object v1.7
 
 class Line
 {
@@ -7,6 +7,7 @@ class Line
    double _y1;
    int _x2;
    double _y2;
+   string _xloc;
    uint _clr;
    int _width;
    ENUM_TIMEFRAMES _timeframe;
@@ -176,6 +177,20 @@ public:
    Line* SetWidth(int width)
    {
       _width = width;
+      return &this;
+   }
+   
+   static void SetXLoc(Line* line, string xloc)
+   {
+      if (line == NULL)
+      {
+         return;
+      }
+      line.SetXLoc(xloc);
+   }
+   Line* SetXLoc(string xloc)
+   {
+      _xloc = xloc;
       return &this;
    }
 

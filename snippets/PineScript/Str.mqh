@@ -1,5 +1,5 @@
 // str.* functions from Pine Script
-// v1.0
+// v1.1
 
 class Str
 {
@@ -40,6 +40,10 @@ public:
    static bool Contains(string source, string str)
    {
       return StringFind(source, str) >= 0;
+   }
+   static int Length(string str)
+   {
+      return StringLen(str);
    }
 };
 

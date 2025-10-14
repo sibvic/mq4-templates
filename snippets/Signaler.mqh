@@ -1,4 +1,4 @@
-//Signaler v2.2
+//Signaler v3.0
 // More templates and snippets on https://github.com/sibvic/mq4-templates
 input string   AlertsSection            = ""; // == Alerts ==
 input bool     popup_alert              = false; // Popup message
@@ -63,7 +63,7 @@ public:
       _prefix = prefix;
    }
 
-   void Alert(string message, int position, datetime time)
+   void ShowAlert(string message, int position, datetime time)
    {
       if (position != 0)
       {

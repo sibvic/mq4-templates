@@ -1,153 +1,30 @@
 #ifndef BoxArray_IMPL
 #define BoxArray_IMPL
 // Box array v2.0
-#include <PineScript/Array/IBoxArray.mqh>
+#include <PineScript/Array/CustomTypeArray.mqh>
 #include <PineScript/Objects/BoxesCollection.mqh>
 
-class BoxArray : public IBoxArray
+class BoxArray : public CustomTypeArray<Box*>
 {
-   Box* _array[];
-   int _defaultSize;
-   Box* _defaultValue;
 public:
-   BoxArray(int size, Box* defaultValue)
+   BoxArray(int size, Box* defaultValue) : CustomTypeArray(size, defaultValue)
    {
-      _defaultSize = size;
-      Clear();
    }
 
-   ~BoxArray()
+protected:
+   virtual Box* Clone(Box* item, int index)
    {
-      Clear();
-   }
-
-   IBoxArray* Clear()
-   {
-      int size = ArraySize(_array);
-      int i;
-      for (i = 0; i < size; i++)
-      {
-         if (_array[i] != NULL)
-         {
-            BoxesCollection::Delete(_array[i]);
-            _array[i].Release();
-         }
-      }
-      ArrayResize(_array, _defaultSize);
-      for (i = 0; i < _defaultSize; ++i)
-      {
-         _array[i] = _defaultValue;
-      }
-      return &this;
-   }
-
-   void Unshift(Box* value)
-   {
-      int size = ArraySize(_array);
-      ArrayResize(_array, size + 1);
-      for (int i = size - 1; i >= 0; --i)
-      {
-         _array[i + 1] = _array[i];
-      }
-      _array[0] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-   }
-
-   int Size()
-   {
-      return ArraySize(_array);
-   }
-
-   IBoxArray* Push(Box* value)
-   {
-      int size = ArraySize(_array);
-      ArrayResize(_array, size + 1);
-      _array[size] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-      return &this;
-   }
-
-   Box* Pop()
-   {
-      int size = ArraySize(_array);
-      Box* value = _array[size - 1];
-      ArrayResize(_array, size - 1);
-      if (value != NULL && value.Release() == 0)
+      if (item == NULL)
       {
          return NULL;
       }
-      return value;
+      Box* clone = BoxesCollection::Create(item.GetId() + index, item.GetLeft(), item.GetTop(), item.GetRight(), item.GetBottom(), 0, item.IsGlobal());
+      item.CopyTo(clone);
+      return clone;
    }
-
-   Box* Shift()
+   virtual void DeleteItem(Box* item)
    {
-      return Remove(0);
-   }
-
-   Box* Get(int index)
-   {
-      if (index < 0 || index >= Size())
-      {
-         return NULL;
-      }
-      return _array[index];
-   }
-   
-   void Set(int index, Box* value)
-   {
-      if (index < 0 || index >= Size())
-      {
-         return;
-      }
-      if (_array[index] != NULL)
-      {
-         _array[index].Release();
-      }
-      _array[index] = value;
-      if (value != NULL)
-      {
-         value.AddRef();
-      }
-   }
-   
-   IBoxArray* Slice(int from, int to)
-   {
-      return NULL; //TODO;
-   }
-
-   Box* Remove(int index)
-   {
-      int size = ArraySize(_array);
-      Box* value = _array[index];
-      for (int i = index; i < size - 1; ++i)
-      {
-         _array[i] = _array[i + 1];
-      }
-      ArrayResize(_array, size - 1);
-      if (value.Release() == 0)
-      {
-         return NULL;
-      }
-      return value;
-   }
-   
-   int Includes(Box* value)
-   {
-      int size = ArraySize(_array);
-      for (int i = 0; i < size; ++i)
-      {
-         if (_array[i] == value)
-         {
-            return true;
-         }
-      }
-      return false;
+      BoxesCollection::Delete(item);
    }
 };
 #endif

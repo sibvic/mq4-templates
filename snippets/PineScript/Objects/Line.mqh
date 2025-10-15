@@ -200,10 +200,8 @@ public:
       {
          return;
       }
-      int pos1 = iBars(_Symbol, _timeframe) - _x1 - 1;
-      datetime x1 = iTime(_Symbol, _timeframe, pos1);
-      int pos2 = iBars(_Symbol, _timeframe) - _x2 - 1;
-      datetime x2 = iTime(_Symbol, _timeframe, pos2);
+      datetime x1 = GetX(_x1);
+      datetime x2 = GetX(_x2);
       if (ObjectFind(0, _id) == -1 && ObjectCreate(0, _id, OBJ_TREND, 0, x1, _y1, x2, _y2))
       {
          ObjectSetInteger(0, _id, OBJPROP_COLOR, _clr);
@@ -238,6 +236,15 @@ public:
       ObjectSetInteger(0, _id, OBJPROP_TIME2, x2);
    }
 private:
+   datetime GetX(int x)
+   {
+      if (_xloc == "bar_time")
+      {
+         return x;
+      }
+      int pos1 = iBars(_Symbol, _timeframe) - x - 1;
+      return iTime(_Symbol, _timeframe, pos1);
+   }
    int GetStyleMQL()
    {
       if (_style == "dashed")

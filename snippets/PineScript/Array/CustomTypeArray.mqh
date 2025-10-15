@@ -143,7 +143,7 @@ public:
          _array[i] = _array[i + 1];
       }
       ArrayResize(_array, size - 1);
-      if (value.Release() == 0)
+      if (value == NULL || value.Release() == 0)
       {
          return NULL;
       }

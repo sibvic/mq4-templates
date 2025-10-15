@@ -1,4 +1,4 @@
-// Array v1.6
+// Array v1.7
 #include <PineScript/Array/IArray.mqh>
 #include <PineScript/Array/LineArray.mqh>
 #include <PineScript/Array/LabelArray.mqh>
@@ -166,7 +166,7 @@ public:
    
    static int Includes(ITArray<int>* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(ILineArray* array, Line* value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(IBoxArray* array, Box* value) { if (array == NULL) { return -1; } return array.Includes(value); }
+   static int Includes(ITArray<Box*>* array, Box* value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(IStringArray* array, string value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(IBoolArray* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
    static int Includes(IColorArray* array, uint value) { if (array == NULL) { return -1; } return array.Includes(value); }

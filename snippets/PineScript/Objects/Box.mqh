@@ -54,6 +54,21 @@ public:
       }
       return refs;
    }
+   void CopyTo(Box* target)
+   {
+      target.SetLeft(_left);
+      target.SetTop(_top);
+      target.SetRight(_right);
+      target.SetBottom(_bottom);
+      target.SetBgColor(_bgcolor);
+      target.SetBorderColor(_borderColor);
+      target.SetExtend(_extend);
+      target.SetText(_text);
+      target.SetTextHAlign(_textHAlign);
+      target.SetTextVAlign(_textVAlign);
+      target.SetTextSize(_textSize);
+      target.SetTextColor(_textColor);
+   }
    bool IsGlobal()
    {
       return global;

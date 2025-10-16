@@ -1,5 +1,9 @@
 # Objects
 
+## IObjectDestructor
+
+Template interface for object destruction and memory management. Used to cleanup visual elements like Box, Line etc from Variable.
+
 ## LineFill
 
 Line fill stub

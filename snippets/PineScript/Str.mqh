@@ -6,6 +6,10 @@ class Str
 public:
    static string ToString(int value, string format)
    {
+      if (value == INT_MIN)
+      {
+         return "NaN";
+      }
       if (format == "percent")
       {
          return IntegerToString(value, 2) + "%";
@@ -14,6 +18,10 @@ public:
    }
    static string ToString(double value, string format)
    {
+      if (value == EMPTY_VALUE)
+      {
+         return "NaN";
+      }
       if (format == "percent")
       {
          return DoubleToString(value, 2) + "%";
@@ -22,10 +30,18 @@ public:
    }
    static string ToString(double value)
    {
+      if (value == EMPTY_VALUE)
+      {
+         return "NaN";
+      }
       return DoubleToString(value);
    }
    static string ToString(int value)
    {
+      if (value == INT_MIN)
+      {
+         return "NaN";
+      }
       return IntegerToString(value);
    }
    static string ToString(string value)

@@ -1,88 +1,46 @@
-// Trading time condition v3.2
+// Trading time condition v3.3
 
 #include <Conditions/AConditionBase.mqh>
 #include <Conditions/NoCondition.mqh>
 #include <enums/DayOfWeek.mqh>
+#include <PineScript/Time.mqh>
 
 #ifndef TradingTimeCondition_IMP
 #define TradingTimeCondition_IMP
-
-int ParseTime(const string time, string &error)
-{
-   string items[];
-   StringSplit(time, ':', items);
-   int hours;
-   int minutes;
-   int seconds;
-   if (ArraySize(items) > 1)
-   {
-      if (ArraySize(items) != 3)
-      {
-         error = "Bad format for " + time;
-         return -1;
-      }
-      //hh:mm:ss
-      seconds = (int)StringToInteger(items[2]);
-      minutes = (int)StringToInteger(items[1]);
-      hours = (int)StringToInteger(items[0]);
-   }
-   else
-   {
-      //hhmmss
-      int time_parsed = (int)StringToInteger(time);
-      seconds = time_parsed % 100;
-      
-      time_parsed /= 100;
-      minutes = time_parsed % 100;
-      time_parsed /= 100;
-      hours = time_parsed % 100;
-   }
-   if (hours > 24)
-   {
-      error = "Incorrect number of hours in " + time;
-      return -1;
-   }
-   if (minutes > 59)
-   {
-      error = "Incorrect number of minutes in " + time;
-      return -1;
-   }
-   if (seconds > 59)
-   {
-      error = "Incorrect number of seconds in " + time;
-      return -1;
-   }
-   if (hours == 24 && (minutes != 0 || seconds != 0))
-   {
-      error = "Incorrect date";
-      return -1;
-   }
-   return (hours * 60 + minutes) * 60 + seconds;
-}
 
 ICondition* CreateTradingTimeCondition(const string startTime, const string endTime, bool useWeekly,
    const DayOfWeek startDay, const string weekStartTime, const DayOfWeek stopDay, 
    const string weekEndTime, string &error)
 {
-   int _startTime = ParseTime(startTime, error);
+   int _startTime = PineScriptTime::ParseTime(startTime, error);
    if (_startTime == -1)
+   {
       return NULL;
-   int _endTime = ParseTime(endTime, error);
+   }
+   int _endTime = PineScriptTime::ParseTime(endTime, error);
    if (_endTime == -1)
+   {
       return NULL;
+   }
    if (!useWeekly)
    {
       if (_startTime == _endTime)
+      {
          return new NoCondition();
+      }
       return new TradingTimeCondition(_startTime, _endTime);
    }
 
-   int _weekStartTime = ParseTime(weekStartTime, error);
+   int _weekStartTime = PineScriptTime::ParseTime(weekStartTime, error);
    if (_weekStartTime == -1)
+   {
       return NULL;
-   int _weekEndTime = ParseTime(weekEndTime, error);
+   }
+   int _weekEndTime = PineScriptTime::ParseTime(weekEndTime, error);
    if (_weekEndTime == -1)
+   {
       return NULL;
+   }
 
    return new TradingTimeCondition(_startTime, _endTime, startDay, _weekStartTime, stopDay, _weekEndTime);
 }
@@ -123,7 +81,7 @@ public:
       MqlDateTime current_time;
       if (!TimeToStruct(TimeCurrent(), current_time))
          return false;
-      if (!IsIntradayTradingTime(current_time))
+      if (!PineScriptTime::IsIntradayTradingTime(current_time, _startTime, _endTime))
          return false;
       return IsWeeklyTradingTime(current_time);
    }
@@ -147,21 +105,6 @@ public:
       }
    }
 private:
-   bool IsIntradayTradingTime(const MqlDateTime &current_time)
-   {
-      if (_startTime == _endTime)
-         return true;
-      int current_t = TimeToInt(current_time);
-      if (_startTime > _endTime)
-         return current_t >= _startTime || current_t <= _endTime;
-      return current_t >= _startTime && current_t <= _endTime;
-   }
-
-   int TimeToInt(const MqlDateTime &current_time)
-   {
-      return (current_time.hour * 60 + current_time.min) * 60 + current_time.sec;
-   }
-
    bool IsWeeklyTradingTime(const MqlDateTime &current_time)
    {
       if (!_useWeekTime)

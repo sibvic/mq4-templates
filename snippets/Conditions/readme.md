@@ -156,6 +156,40 @@ Reference period is a main traiding period.
 
 Trading time condition. Returns true only during the selected time.
 
+## TimeFilterCondition
+
+Intraday time filter for trading conditions. Restricts trading activities to specific time periods within a trading day, helping to avoid trading during low-liquidity periods, news events, or other unfavorable market conditions.
+
+**Features:**
+- Intraday time filtering (e.g., 9:00 AM to 4:00 PM)
+- PineScript-compatible time handling
+- Easy integration with other trading conditions
+- Flexible start and end time configuration
+
+**Usage:**
+```mql4
+// Create a TimeFilterCondition with start and end times in HHMM format
+TimeFilterCondition* timeFilter = new TimeFilterCondition(900, 1600); // 9:00 AM to 4:00 PM
+condition.Add(timeFilter, true); // Add to your condition chain
+```
+
+**Time Format:**
+Times should be provided in HHMM format (24-hour):
+- 900 = 9:00 AM
+- 1330 = 1:30 PM  
+- 1600 = 4:00 PM
+- 2300 = 11:00 PM
+
+**Examples:**
+```mql4
+// Only trade between 9:00 AM and 4:00 PM
+TimeFilterCondition* tradingHours = new TimeFilterCondition(900, 1600);
+
+// Avoid trading during lunch break (12:00 PM to 1:00 PM)
+TimeFilterCondition* avoidLunch = new TimeFilterCondition(1200, 1300);
+NotCondition* notLunch = new NotCondition(avoidLunch);
+```
+
 ## ProfitInRangeCondition
 
 Returns true when profit of the order in the specified range.

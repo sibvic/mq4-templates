@@ -19,7 +19,7 @@ public:
    SimpleTypeArray(int size, CLASS_TYPE defaultValue, CLASS_TYPE emptyValue)
    {
       _refs = 1;
-      _defaultSize = size;
+      _defaultSize = size == INT_MAX ? 0 : size;
       _defaultValue = defaultValue;
       _emptyValue = emptyValue;
       Clear();

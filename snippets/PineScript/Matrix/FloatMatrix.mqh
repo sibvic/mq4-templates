@@ -9,16 +9,16 @@ class FloatMatrix : public IFloatMatrix
    double initialValue;
    double values[];
 public:
-   FloatMatrix(int rows, int columns, double initialValue)
+   FloatMatrix(int rows, int columns)
    {
       this.rows = rows;
       this.columns = columns;
-      this.initialValue = initialValue;
-      Clear();
+      Clear(EMPTY_VALUE);
    }
    
-   IFloatMatrix* Clear()
+   IFloatMatrix* Clear(double initialValue)
    {
+      this.initialValue = initialValue;
       ArrayResize(values, rows * columns);
       for (int row = 0; row < rows; ++row)
       {
@@ -29,6 +29,9 @@ public:
       }
       return &this;
    }
+
+   int Rows() { return rows; }
+   int Columns() { return columns; }
    
    double Get(int row, int col)
    {

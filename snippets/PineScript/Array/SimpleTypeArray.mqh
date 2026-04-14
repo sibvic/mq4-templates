@@ -6,6 +6,7 @@ interface ISimpleTypeArray : public ITArray<CLASS_TYPE>
 {
 public:
    virtual ISimpleTypeArray<CLASS_TYPE>* Clear() = 0;
+   virtual ISimpleTypeArray<CLASS_TYPE>* Copy() = 0;
 };
 template <typename CLASS_TYPE>
 class SimpleTypeArray : public ISimpleTypeArray<CLASS_TYPE>
@@ -19,7 +20,7 @@ public:
    SimpleTypeArray(int size, CLASS_TYPE defaultValue, CLASS_TYPE emptyValue)
    {
       _refs = 1;
-      _defaultSize = size == INT_MAX ? 0 : size;
+      _defaultSize = size == INT_MIN ? 0 : size;
       _defaultValue = defaultValue;
       _emptyValue = emptyValue;
       Clear();
@@ -42,6 +43,31 @@ public:
          _array[i] = _defaultValue;
       }
       return &this;
+   }
+   
+   ISimpleTypeArray<CLASS_TYPE>* Copy()
+   {
+      SimpleTypeArray* clone = new SimpleTypeArray(_defaultSize, _defaultValue, _emptyValue);
+      for (int i = 0; i < Size(); ++i)
+      {
+         clone.Push(Get(i));
+      }
+      return clone;
+   }
+
+   void Sort(bool ascending)
+   {
+      ArraySort(_array);
+      if (!ascending)
+      {
+         int n = ArraySize(_array);
+         for (int i = 0; i < n / 2; ++i)
+         {
+            CLASS_TYPE tmp = _array[i];
+            _array[i] = _array[n - 1 - i];
+            _array[n - 1 - i] = tmp;
+         }
+      }
    }
 
    void Unshift(CLASS_TYPE value)

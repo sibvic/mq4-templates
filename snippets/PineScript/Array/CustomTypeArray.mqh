@@ -74,6 +74,11 @@ public:
       }
    }
 
+   void Sort(bool order)
+   {
+      // do nothing
+   }
+
    int Size()
    {
       return ArraySize(_array);

@@ -8,5 +8,6 @@ class IFloatArray : public ITArray<double>
 public:
    virtual IFloatArray* Slice(int from, int to) = 0;
    virtual IFloatArray* Clear() = 0;
+   virtual void Sort(bool ascending) = 0;
 };
 #endif

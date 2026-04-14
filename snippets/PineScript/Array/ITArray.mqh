@@ -15,4 +15,5 @@ public:
    virtual CLASS_TYPE Shift() = 0;
    virtual CLASS_TYPE Remove(int index) = 0;
    virtual int Includes(CLASS_TYPE value) = 0;
+   virtual void Sort(bool ascending) = 0;
 };

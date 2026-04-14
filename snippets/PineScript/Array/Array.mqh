@@ -192,9 +192,54 @@ public:
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE PercentRank(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.PercentRank(index); }
 
-   template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
-   static ARRAY_TYPE Stdev(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.Stdev(); }
+   template<typename TYPE>
+   static double StdevImpl(ISimpleTypeArray<TYPE>* array, bool biased, TYPE emptyValue)
+   {
+      if (array == NULL)
+      {
+         return emptyValue;
+      }
+      int size = array.Size();
+      if (size == 0)
+      {
+         return emptyValue;
+      }
+      if (!biased && size < 2)
+      {
+         return emptyValue;
+      }
+      double sum = 0;
+      double ssum = 0;
+      for (int i = 0; i < size; i++)
+      {
+         double v = (double)array.Get(i);
+         sum += v;
+         ssum += v * v;
+      }
+      double num = size * ssum - sum * sum;
+      if (num < 0)
+      {
+         num = 0;
+      }
+      double denom = biased ? (double)size * (double)size : (double)size * (double)(size - 1);
+      return MathSqrt(num / denom);
+   }
+   template<typename TYPE>
+   static double StdevImpl(ISimpleTypeArray<TYPE>* array, TYPE emptyValue)
+   {
+      return StdevImpl(array, false, emptyValue);
+   }
+   static double Stdev(ISimpleTypeArray<int>* array, bool biased) { return StdevImpl<int>(array, biased, INT_MIN); }
+   static double Stdev(ISimpleTypeArray<double>* array, bool biased) { return StdevImpl<double>(array, biased, EMPTY_VALUE); }
+   static double Stdev(ISimpleTypeArray<int>* array) { return StdevImpl<int>(array, INT_MIN); }
+   static double Stdev(ISimpleTypeArray<double>* array) { return StdevImpl<double>(array, EMPTY_VALUE); }
    
+   template <typename ARRAY_TYPE, typename DUMMY_TYPE>
+   static ARRAY_TYPE Copy(ARRAY_TYPE array, ARRAY_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Copy(); }
+
+   template <typename ARRAY_TYPE, typename DUMMY_TYPE1>
+   static void Sort(ARRAY_TYPE array, string order) { if (array == NULL) { return; } array.Sort(order == "ascending"); }
+    
    static string Join(IStringArray* array, string concat)
    {
       string res = "";

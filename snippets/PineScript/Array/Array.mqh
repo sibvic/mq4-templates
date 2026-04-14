@@ -134,6 +134,24 @@ public:
    template <typename ARRAY_TYPE>
    static void Clear(ARRAY_TYPE array) { if (array == NULL) { return;} array.Clear(); }
 
+   template <typename RETURN_TYPE, typename ARRAY_TYPE, typename VALUE_TYPE>
+   static RETURN_TYPE IndexOf(ARRAY_TYPE array, VALUE_TYPE value, RETURN_TYPE notFoundValue)
+   {
+      if (array == NULL)
+      {
+         return notFoundValue;
+      }
+      int n = array.Size();
+      for (int i = 0; i < n; ++i)
+      {
+         if (array.Get(i) == value)
+         {
+            return (RETURN_TYPE)i;
+         }
+      }
+      return notFoundValue;
+   }
+
    template <typename VALUE_TYPE, typename ARRAY_TYPE>
    static VALUE_TYPE Shift(ARRAY_TYPE array, VALUE_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Shift(); }
 

@@ -172,6 +172,29 @@ public:
       _textColor = clr;
       return &this;
    }
+
+   static void SetTextAlign(Label* label, string textAlign)
+   {
+      if (label == NULL)
+      {
+         return;
+      }
+      label.SetTextAlign(textAlign);
+   }
+   Label* SetTextAlign(string textAlign)
+   {
+      StringToLower(textAlign);
+      if (textAlign == "left" || textAlign == "center" || textAlign == "right"
+         || textAlign == "top" || textAlign == "bottom")
+      {
+         _textAlign = textAlign;
+      }
+      else
+      {
+         _textAlign = "";
+      }
+      return &this;
+   }
    
    static void SetStyle(Label* label, string style)
    {
@@ -209,20 +232,6 @@ public:
       }
       return &this;
    }
-   
-   static void SetTextAlign(Label* label, string textAlign)
-   {
-      if (label == NULL)
-      {
-         return;
-      }
-      label.SetTextAlign(textAlign);
-   }
-   Label* SetTextAlign(string textAlign)
-   {
-      _textAlign = textAlign;
-      return &this;
-   }
 
    void Redraw()
    {
@@ -253,11 +262,11 @@ public:
          ObjectSetString(0, _labelId, OBJPROP_FONT, "Arial");
          ObjectSetInteger(0, _labelId, OBJPROP_FONTSIZE, getFontSize());
          ObjectSetInteger(0, _labelId, OBJPROP_COLOR, _textColor);
-         ObjectSetInteger(0, _labelId, OBJPROP_ANCHOR, GetAnchor());
       }
       ObjectSetInteger(0, _labelId, OBJPROP_TIME, x);
       ObjectSetDouble(0, _labelId, OBJPROP_PRICE1, y);
       ObjectSetString(0, _labelId, OBJPROP_TEXT, usedText);
+      ObjectSetInteger(0, _labelId, OBJPROP_ANCHOR, GetAnchor());
    }
 private:
    int GetAnchor()
@@ -269,6 +278,26 @@ private:
       if (_yloc == "belowbar")
       {
          return ANCHOR_UPPER;
+      }
+      if (_textAlign == "left")
+      {
+         return ANCHOR_LEFT;
+      }
+      if (_textAlign == "center")
+      {
+         return ANCHOR_CENTER;
+      }
+      if (_textAlign == "right")
+      {
+         return ANCHOR_RIGHT;
+      }
+      if (_textAlign == "top")
+      {
+         return ANCHOR_UPPER;
+      }
+      if (_textAlign == "bottom")
+      {
+         return ANCHOR_LOWER;
       }
       return ANCHOR_CENTER;
    }

@@ -201,12 +201,12 @@ private:
       }
       return -1;
    }
-   void RemoveLabel(Label* label)
+   bool RemoveLabel(Label* label)
    {
       int index = FindIndex(label);
       if (index == -1)
       {
-         return;
+         return false;
       }
       int size = ArraySize(_labels);
       for (int i = index + 1; i < size; ++i)
@@ -215,11 +215,14 @@ private:
       }
       ArrayResize(_labels, size - 1);
       label.Release();
+      return true;
    }
    void DeleteLabel(Label* label)
    {
-      RemoveLabel(label);
-      label.Release();
+      if (RemoveLabel(label))
+      {
+         label.Release();
+      }
    }
    void Add(Label* label)
    {

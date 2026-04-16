@@ -4,7 +4,7 @@
 class IntArray : public SimpleTypeArray<int>
 {
 public:
-   IntArray(int size, double defaultValue)
+   IntArray(int size, int defaultValue)
       :SimpleTypeArray(size, defaultValue, INT_MIN)
    {
    }

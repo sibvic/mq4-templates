@@ -182,12 +182,8 @@ public:
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static RETURN_TYPE Remove(ARRAY_TYPE array, int index, RETURN_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Remove(index); }
    
-   static int Includes(ITArray<int>* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(ILineArray* array, Line* value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(ITArray<Box*>* array, Box* value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(IStringArray* array, string value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(IBoolArray* array, int value) { if (array == NULL) { return -1; } return array.Includes(value); }
-   static int Includes(IColorArray* array, uint value) { if (array == NULL) { return -1; } return array.Includes(value); }
+   template <typename DUMMY_TYPE, typename ARRAY_TYPE, typename VALUE_TYPE>
+   static int Includes(ARRAY_TYPE* array, VALUE_TYPE value) { if (array == NULL) { return -1; } return array.Includes(value); }
 
    template <typename RETURN_TYPE, typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE PercentRank(ISimpleTypeArray<ARRAY_TYPE>* array) { if (array == NULL) { return -1; } return array.PercentRank(index); }

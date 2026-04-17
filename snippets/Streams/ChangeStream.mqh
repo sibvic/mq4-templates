@@ -47,6 +47,17 @@ public:
       val = src1 - src2;
       return true;
    }
+   
+   bool GetValue(const int period, int &val)
+   {
+      double src1, src2;
+      if (!_source.GetValue(period, src1) || !_source.GetValue(period + _period, src2))
+      {
+         return false;
+      }
+      val = (int)(src1 - src2);
+      return true;
+   }
 };
 
 #endif

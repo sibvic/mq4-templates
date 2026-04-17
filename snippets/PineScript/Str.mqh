@@ -14,6 +14,10 @@ public:
       {
          return IntegerToString(value, 2) + "%";
       }
+      if (format == "$")
+      {
+         return "$" + IntegerToString(value);
+      }
       if (format == "mintick")
       {
          int dec = DigitsForMintick(MintickFromPoint());

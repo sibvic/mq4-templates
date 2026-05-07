@@ -17,16 +17,11 @@ public:
 
    static Table* Get(ITableMatrix* _matrix, int row, int col) { if (_matrix == NULL) { return NULL; } return _matrix.Get(row, col); }
 
-   template <typename MATRIX_TYPE, typename DUMMY_TYPE, typename VALUE_TYPE>
+   template <typename MATRIX_TYPE, typename DUMMY_TYPE, typename DUMMY_TYPE2, typename VALUE_TYPE>
    static void Set(MATRIX_TYPE matrix, int row, int col, VALUE_TYPE value)
    {
       if (matrix == NULL) { return; }
       matrix.Set(row, col, value);
-   }
-
-   static void Set(IFloatMatrix* _matrix, int row, int col, double val)
-   {
-      Set<IFloatMatrix*, int, double>(_matrix, row, col, val);
    }
 
    static void Set(ITableMatrix* _matrix, int row, int col, Table* val) { if (_matrix == NULL) { return; } _matrix.Set(row, col, val); }

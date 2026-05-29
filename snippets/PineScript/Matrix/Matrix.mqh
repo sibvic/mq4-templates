@@ -56,14 +56,14 @@ public:
    template <typename ARRAY_IFACE, typename MATRIX_TYPE, typename ROW_INDEX_TYPE>
    struct MatrixRowDispatch
    {
-      static ARRAY_IFACE* Invoke(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row)
+      static ARRAY_IFACE Invoke(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row)
       {
          return MatrixRowDispatchImpl::Invoke(_matrix, row);
       }
    };
 
    template <typename ARRAY_IFACE, typename MATRIX_TYPE, typename ROW_INDEX_TYPE>
-   static ARRAY_IFACE* Row(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row, ARRAY_IFACE* emptyPlaceholder)
+   static ARRAY_IFACE Row(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row, ARRAY_IFACE emptyPlaceholder)
    {
       if (_matrix == NULL)
       {
@@ -104,14 +104,14 @@ public:
    template <typename ARRAY_IFACE, typename MATRIX_TYPE, typename ROW_INDEX_TYPE>
    struct MatrixRemoveRowDispatch
    {
-      static ARRAY_IFACE* Invoke(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row)
+      static ARRAY_IFACE Invoke(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row)
       {
          return MatrixRemoveRowDispatchImpl::Invoke(_matrix, row);
       }
    };
 
    template <typename ARRAY_IFACE, typename MATRIX_TYPE, typename ROW_INDEX_TYPE>
-   static ARRAY_IFACE* RemoveRow(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row, ARRAY_IFACE* emptyPlaceholder)
+   static ARRAY_IFACE RemoveRow(MATRIX_TYPE _matrix, ROW_INDEX_TYPE row, ARRAY_IFACE emptyPlaceholder)
    {
       if (_matrix == NULL)
       {

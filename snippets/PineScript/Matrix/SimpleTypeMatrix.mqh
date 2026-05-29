@@ -76,7 +76,7 @@ public:
       return refs;
    }
 
-   ISimpleTypeArray<CLASS_TYPE>* Clear()
+   ISimpleTypeMatrix<CLASS_TYPE>* Clear()
    {
       rows = _defaultRows;
       columns = _defaultColumns;
@@ -89,26 +89,10 @@ public:
       return &this;
    }
 
-   ISimpleTypeArray<CLASS_TYPE>* Clear(CLASS_TYPE initialValue)
+   ISimpleTypeMatrix<CLASS_TYPE>* Clear(CLASS_TYPE initialValue)
    {
       _defaultValue = initialValue;
       return Clear();
-   }
-
-   ISimpleTypeArray<CLASS_TYPE>* Copy()
-   {
-      SimpleTypeMatrix* clone = new SimpleTypeMatrix(_defaultRows, _defaultColumns, _defaultValue, _emptyValue);
-      clone.rows = rows;
-      clone.columns = columns;
-      clone._defaultRows = _defaultRows;
-      clone._defaultColumns = _defaultColumns;
-      int sz = ArraySize(values);
-      ArrayResize(clone.values, sz);
-      for (int i = 0; i < sz; ++i)
-      {
-         clone.values[i] = values[i];
-      }
-      return clone;
    }
 
    ISimpleTypeMatrix<CLASS_TYPE>* Fill(CLASS_TYPE initialValue)
@@ -233,7 +217,7 @@ public:
       return ArraySize(values);
    }
 
-   ITArray<CLASS_TYPE>* Push(CLASS_TYPE value)
+   ISimpleTypeMatrix<CLASS_TYPE>* Push(CLASS_TYPE value)
    {
       int sz = ArraySize(values);
       if (columns <= 0 && sz == 0)

@@ -115,9 +115,14 @@ public:
 
    CLASS_TYPE Get(int index)
    {
-      if (index < 0 || index >= Size())
+      int size = Size();
+      if (index >= size || size == 0)
       {
          return NULL;
+      }
+      if (index < 0)
+      {
+         index = size + index;
       }
       return _array[index];
    }

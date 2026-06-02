@@ -71,3 +71,51 @@ private:
       return true;
    }
 };
+
+class DynamicSumOnStream
+{
+   SumOnStream* impl;
+   TIStream<double>* _source;
+   int _length;
+   int _references;
+public:
+   DynamicSumOnStream(TIStream<double>* source)
+   {
+      impl = NULL;
+      _source = source;
+      _references = 1;
+   }
+   ~DynamicSumOnStream()
+   {
+      ReleaseImpl();
+   }
+   void AddRef()
+   {
+      ++_references;
+   }
+   void Release()
+   {
+      --_references;
+      if (_references == 0)
+         delete &this;
+   }
+   bool GetValue(const int period, int length, double &val)
+   {
+      if (_length != length)
+      {
+         ReleaseImpl();
+         _length = length;
+         impl = new SumOnStream(_source, _length);
+      }
+      return impl.GetValue(period, val);
+   }
+private:
+   void ReleaseImpl()
+   {
+      if (impl != NULL)
+      {
+         impl.Release();
+         impl = NULL;
+      }
+   }
+};

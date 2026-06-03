@@ -123,6 +123,9 @@ public:
          {
             ObjectSetInteger(0, lineId, OBJPROP_COLOR, _lineColor);
             ObjectSetInteger(0, lineId, OBJPROP_WIDTH, _lineWidth);
+            ObjectSetInteger(0, lineId, OBJPROP_RAY, false);
+            ObjectSetInteger(0, lineId, OBJPROP_RAY_RIGHT, false);
+            ObjectSetInteger(0, lineId, OBJPROP_RAY_LEFT, false);
          }
          ObjectSetInteger(0, lineId, OBJPROP_STYLE, LineStyleMql());
          ObjectSetDouble(0, lineId, OBJPROP_PRICE, 0, prev.GetPrice());

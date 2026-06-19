@@ -66,6 +66,7 @@ public:
          ObjectSetInteger(0, _id + "rect", OBJPROP_YSIZE, _height);
          ObjectSetInteger(0, _id + "rect", OBJPROP_COLOR, _color);
          ObjectSetInteger(0, _id + "rect", OBJPROP_CORNER, _corner);
+         ObjectSetInteger(0, _id + "rect", OBJPROP_BACK, true);
       }
       string lines[];
       int linesCount = StringSplit(_text, '\n', lines);
@@ -87,12 +88,15 @@ public:
    
    bool SetBgColor(uint clr)
    {
-      if (_bgColor == clr)
+      int transp = GetTranparency(clr);
+      clr = GetColorOnly(clr);
+      bool withBackground = transp <= 50;
+      if (_bgColor == clr && _withBackground == withBackground)
       {
          return false;
       }
       _bgColor = clr;
-      _withBackground = true;
+      _withBackground = withBackground;
       return true;
    }
 

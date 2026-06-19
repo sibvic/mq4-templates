@@ -1,4 +1,4 @@
-// Array v1.8
+// Array v1.9
 #include <PineScript/Array/IArray.mqh>
 #include <PineScript/Array/LineArray.mqh>
 #include <PineScript/Array/LabelArray.mqh>
@@ -232,6 +232,9 @@ public:
    
    template <typename ARRAY_TYPE, typename DUMMY_TYPE>
    static ARRAY_TYPE Copy(ARRAY_TYPE array, ARRAY_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Copy(); }
+
+   template <typename ARRAY_TYPE, typename DUMMY_TYPE1, typename DUMMY_TYPE2, typename DUMMY_TYPE3>
+   static ARRAY_TYPE Slice(ARRAY_TYPE array, int from, int to, ARRAY_TYPE emptyValue) { if (array == NULL) { return emptyValue; } return array.Slice(from, to); }
 
    template <typename ARRAY_TYPE, typename DUMMY_TYPE1>
    static void Sort(ARRAY_TYPE array, string order) { if (array == NULL) { return; } array.Sort(order == "ascending"); }

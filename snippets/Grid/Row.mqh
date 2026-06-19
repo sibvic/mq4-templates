@@ -40,6 +40,22 @@ public:
       int count = ArraySize(_cells); 
       for (int i = 0; i < count; ++i) 
       { 
+         if (_cells[i].IsMergeSkipped())
+         {
+            x += rowSizes.GetWidth(i);
+            continue;
+         }
+         int drawWidth = 0;
+         int tillColumn = _cells[i].GetMergeTillColumn();
+         if (tillColumn >= i)
+         {
+            drawWidth = rowSizes.GetWidth(i);
+            for (int j = i + 1; j <= tillColumn && j < count; ++j)
+            {
+               drawWidth += rowSizes.GetWidth(j);
+            }
+         }
+         _cells[i].SetDrawWidth(drawWidth);
          _cells[i].Draw(x, y);
          x += rowSizes.GetWidth(i);
       } 

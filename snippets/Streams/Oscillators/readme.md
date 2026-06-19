@@ -29,3 +29,7 @@ Measure of difference between the series and it's SMA stream
 ## DMIOnStream
 
 Calculates the Directional Movement Index (DMI) and related values (such as +DI, -DI, and ADX) on a bar stream. Useful for identifying trend strength and direction by analyzing the relationship between upward and downward price movements over a specified period. Can be used for trend-following and filtering strategies.
+
+## SupertrendOnStream
+
+Supertrend indicator stream. Returns the supertrend line value and trend direction based on ATR bands.

@@ -19,6 +19,20 @@ public:
       _timeframe = timeframe;
       _emptyValue = emptyValue;
    }
+   static T GetValue(TStream<T>* stream, const int period, T emptyValue = NULL)
+   {
+      if (stream == NULL)
+      {
+         return emptyValue;
+      }
+      T val;
+      if (!stream.GetValue(period, val))
+      {
+         return emptyValue;
+      }
+      return val;
+   }
+
    void Init()
    {
       for (int i = 0; i < ArraySize(_stream); ++i)

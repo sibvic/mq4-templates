@@ -1,4 +1,5 @@
 #include <Grid/ACell.mqh>
+#include <PineScriptUtils.mqh>
 
 // Label cell v4.0
 

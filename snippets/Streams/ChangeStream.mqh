@@ -1,4 +1,4 @@
-// Change stream v2.1
+// Change stream v2.2
 
 #ifndef ChangeStream_IMP
 #define ChangeStream_IMP
@@ -50,12 +50,12 @@ public:
    
    bool GetValue(const int period, int &val)
    {
-      double src1, src2;
-      if (!_source.GetValue(period, src1) || !_source.GetValue(period + _period, src2))
+      double tmp;
+      if (!GetValue(period, tmp))
       {
          return false;
       }
-      val = (int)(src1 - src2);
+      val = (int)tmp;
       return true;
    }
 };

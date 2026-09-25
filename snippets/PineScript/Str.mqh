@@ -124,6 +124,37 @@ public:
    {
       return StringLen(str);
    }
+   // begin_pos is inclusive, end_pos is exclusive. INT_MIN end_pos runs through the end of source.
+   // StringSubstr(s, 0, 0) returns the whole string in MQL4, so an empty range returns "" first.
+   static string Substring(string source, int begin_pos, int end_pos = INT_MIN)
+   {
+      if (begin_pos == INT_MIN)
+      {
+         return "";
+      }
+      int len = StringLen(source);
+      if (begin_pos < 0)
+      {
+         begin_pos = 0;
+      }
+      if (begin_pos > len)
+      {
+         begin_pos = len;
+      }
+      if (end_pos == INT_MIN || end_pos > len)
+      {
+         end_pos = len;
+      }
+      else if (end_pos < 0)
+      {
+         end_pos = 0;
+      }
+      if (begin_pos >= end_pos)
+      {
+         return "";
+      }
+      return StringSubstr(source, begin_pos, end_pos - begin_pos);
+   }
    // Empty separator yields one element per character. Empty pieces are kept ("a,,b" -> "a", "", "b").
    static ITArray<string>* Split(string source, string separator)
    {

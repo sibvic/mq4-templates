@@ -1,5 +1,5 @@
 // syminfo.* functions from Pine Script
-// v1.2
+// v1.3
 
 class SymInfo
 {
@@ -30,5 +30,10 @@ public:
    static string Currency()
    {
       return SymbolInfoString(_Symbol, SYMBOL_CURRENCY_BASE);
+   }
+
+   static string Timezone()
+   {
+      return "";
    }
 };

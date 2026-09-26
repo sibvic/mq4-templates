@@ -1,36 +1,12 @@
 #include <Streams/Abstract/TAStream.mqh>
 #include <PineScript/Timeframe.mqh>
-#include <PineScript/Time.mqh>
-#include <Conditions/TimeFilterCondition.mqh>
+#include <Conditions/NoCondition.mqh>
+#include <Conditions/TimeSessionCondition.mqh>
 
-// Date/time stream v1.2
+// Date/time stream v1.4
 
 #ifndef DateTimeStream_IMP
 #define DateTimeStream_IMP
-
-TimeFilterCondition* CreateTimeFilter(string session)
-{
-   string items[];
-   StringSplit(session, '-', items);
-   if (ArraySize(items) != 2)
-   {
-      return NULL;
-   }
-   string error;
-   int startTime = PineScriptTime::ParseTime(items[0], error);
-   if (startTime == -1)
-   {
-      Print(error);
-      return NULL;
-   }
-   int endTime = PineScriptTime::ParseTime(items[1], error);
-   if (endTime == -1)
-   {
-      Print(error);
-      return NULL;
-   }
-   return new TimeFilterCondition(startTime, endTime);
-}
 
 class DateTimeStream : public TAStream<datetime>
 {
@@ -41,14 +17,14 @@ class DateTimeStream : public TAStream<datetime>
 public:
    DateTimeStream(const string symbol, ENUM_TIMEFRAMES timeframe)
    {
-      _timeFilter = NULL;
+      _timeFilter = new NoCondition();
       _symbol = symbol;
       _timeframe = timeframe;
       _targetTimeframe = timeframe;
    }
    DateTimeStream(const string symbol, ENUM_TIMEFRAMES timeframe, string targetTimeframe, string session, string timezone)
    {
-      _timeFilter = CreateTimeFilter(session);
+      _timeFilter = new TimeSessionCondition(session);
       _symbol = symbol;
       _timeframe = timeframe;
       _targetTimeframe = Timeframe::GetTimeframe(targetTimeframe);
@@ -57,7 +33,7 @@ public:
    {
       if (_timeFilter != NULL)
       {
-         delete _timeFilter;
+         _timeFilter.Release();
       }
    }
 

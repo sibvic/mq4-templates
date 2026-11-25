@@ -1,4 +1,4 @@
-// Label v1.6
+// Label v1.7
 
 #ifndef Label_IMPL
 #define Label_IMPL
@@ -17,6 +17,8 @@ class Label
    string _style;
    string _size;
    string _yloc;
+   string _tooltip;
+   bool _hasTooltip;
    ENUM_TIMEFRAMES _timeframe;
    int _refs;
    int _window;
@@ -33,6 +35,8 @@ public:
       _collectionId = collectionId;
       _font = "Arial";
       _textAlign = "";
+      _tooltip = "";
+      _hasTooltip = false;
       _timeframe = (ENUM_TIMEFRAMES)_Period;
       this.globalLabel = globalLabel;
    }
@@ -62,6 +66,8 @@ public:
       label._style = _style;
       label._size = _size;
       label._yloc = _yloc;
+      label._tooltip = _tooltip;
+      label._hasTooltip = _hasTooltip;
       label._timeframe = _timeframe;
       label._window = _window;
    }
@@ -233,6 +239,21 @@ public:
       return &this;
    }
 
+   static void SetTooltip(Label* label, string tooltip)
+   {
+      if (label == NULL)
+      {
+         return;
+      }
+      label.SetTooltip(tooltip);
+   }
+   Label* SetTooltip(string tooltip)
+   {
+      _hasTooltip = true;
+      _tooltip = tooltip;
+      return &this;
+   }
+
    void Redraw()
    {
       string usedText = _text;
@@ -267,6 +288,15 @@ public:
       ObjectSetDouble(0, _labelId, OBJPROP_PRICE1, y);
       ObjectSetString(0, _labelId, OBJPROP_TEXT, usedText);
       ObjectSetInteger(0, _labelId, OBJPROP_ANCHOR, GetAnchor());
+      if (_hasTooltip)
+      {
+         string tooltip = _tooltip;
+         if (StringLen(tooltip) == 0)
+         {
+            tooltip = "\n";
+         }
+         ObjectSetString(0, _labelId, OBJPROP_TOOLTIP, tooltip);
+      }
    }
 private:
    int GetAnchor()

@@ -126,7 +126,7 @@ public:
    
    bool SetBgColor(uint clr)
    {
-      int transp = GetTranparency(clr);
+      int transp = GetTransparency(clr);
       clr = GetColorOnly(clr);
       bool withBackground = transp <= 50;
       if (_bgColor == clr && _withBackground == withBackground)

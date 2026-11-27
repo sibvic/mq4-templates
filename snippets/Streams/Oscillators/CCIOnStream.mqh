@@ -1,47 +1,64 @@
 #include <Streams/AOnStream.mqh>
-#include <Streams/Averages/SMAOnStream.mqh>
-#include <Streams/TwoStreamDifferenceStream.mqh>
-#include <Streams/AbsStream.mqh>
-#include <Streams/SumOnStream.mqh>
 
-// CCI on stream v2.0
+// CCI on stream v3.0
+// cci = (source - sma) / (0.015 * meanDeviation)
+// meanDeviation is the average of abs(source - sma) over the same window.
+// A flat window (mean deviation 0) returns 0.
+
+#ifndef CCIOnStream_IMP
+#define CCIOnStream_IMP
 
 class CCIOnStream : public AOnStream
 {
-   double _length;
-   TwoStreamDifferenceStream* _diff;
-   SumOnStream* _sum;
-   double _mul;
+   int _length;
 public:
    CCIOnStream(TIStream<double> *source, const int length)
       :AOnStream(source)
    {
       _length = length;
-      SmaOnStream* mov = new SmaOnStream(source, length);
-      _mul = 0.015 / length;
-      _diff = new TwoStreamDifferenceStream(source, mov);
-      mov.Release();
-      AbsStream* diffAbs = new AbsStream(_diff);
-      _sum = new SumOnStream(diffAbs, length);
-      diffAbs.Release();
-   }
-
-   ~CCIOnStream()
-   {
-      _diff.Release();
-      _sum.Release();
    }
 
    bool GetValue(const int period, double &val)
    {
-      double sum = 0;
-      double diff = 0;
-      if (!_sum.GetValue(period, sum) || !_diff.GetValue(period, diff))
+      if (_length < 1)
       {
          return false;
       }
-      sum *= _mul;
-      val = diff / sum;
+      double sum = 0;
+      for (int i = 0; i < _length; ++i)
+      {
+         double price;
+         if (!_source.GetValue(period + i, price))
+         {
+            return false;
+         }
+         sum += price;
+      }
+      double mean = sum / _length;
+      double devSum = 0;
+      for (int i = 0; i < _length; ++i)
+      {
+         double price;
+         if (!_source.GetValue(period + i, price))
+         {
+            return false;
+         }
+         devSum += MathAbs(price - mean);
+      }
+      double meanDev = devSum / _length;
+      if (meanDev == 0.0)
+      {
+         val = 0.0;
+         return true;
+      }
+      double src;
+      if (!_source.GetValue(period, src))
+      {
+         return false;
+      }
+      val = (src - mean) / (0.015 * meanDev);
       return true;
    }
 };
+
+#endif

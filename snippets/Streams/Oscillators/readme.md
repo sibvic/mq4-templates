@@ -16,7 +16,7 @@ Stochastics on stream.
 
 ## CCIOnStream
 
-CCI oscillator on stream.
+Commodity Channel Index on stream. `(source - sma) / (0.015 * meanDeviation)`, where mean deviation is the average absolute distance from that same SMA. A flat window returns 0.
 
 ## CorrelationStream
 

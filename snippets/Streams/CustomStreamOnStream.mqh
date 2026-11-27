@@ -1,6 +1,9 @@
 #include <Streams/AStreamBase.mqh>
 // Custom stream with a size of a parent stream v2.0
 
+#ifndef CustomStreamOnStream_IMP
+#define CustomStreamOnStream_IMP
+
 class CustomStreamOnStream : public AStreamBase
 {
    TIStream<double>* _source;
@@ -49,3 +52,5 @@ private:
       }
    }
 };
+
+#endif

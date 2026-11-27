@@ -2,7 +2,9 @@
 #include <Streams/HighestHighStream.mqh>
 #include <Streams/LowestLowStream.mqh>
 
-// Stochastics on stream v2.0
+// Stochastics on stream v2.1
+// 100 * (source - lowest(low, length)) / (highest(high, length) - lowest(low, length))
+// A flat range or a missing value returns no value.
 
 class StochOnStream : public AStreamBase
 {
@@ -50,8 +52,16 @@ public:
       {
          return false;
       }
-      double diff = (highest - lowest);
-      val = diff == 0 ? 0 : 100 * (close - lowest) / diff;
+      if (close == EMPTY_VALUE || highest == EMPTY_VALUE || lowest == EMPTY_VALUE)
+      {
+         return false;
+      }
+      double diff = highest - lowest;
+      if (diff == 0)
+      {
+         return false;
+      }
+      val = 100 * (close - lowest) / diff;
       return true;
    }
 };

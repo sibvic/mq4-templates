@@ -139,8 +139,16 @@ public:
       {
          return;
       }
+      // Pointer compare only. A label that is already gone must not be touched.
+      if (_all.FindIndex(label) < 0)
+      {
+         return;
+      }
       string collectionId = label.GetCollectionId();
-      _all.RemoveLabel(label);
+      if (!_all.RemoveLabel(label))
+      {
+         return;
+      }
       LabelsCollection* collection = FindCollection(collectionId);
       if (collection == NULL || collection == _all)
       {

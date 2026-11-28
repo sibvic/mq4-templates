@@ -1,5 +1,5 @@
 // PineScript timeframe.* functions
-// v1.1
+// v1.2
 
 class Timeframe
 {
@@ -25,7 +25,70 @@ public:
    
    static int InSeconds(string resolution)
    {
-      return (int)GetTimeframe(resolution);
+      if (resolution == NULL || StringLen(resolution) == 0)
+      {
+         return 0;
+      }
+      if (resolution == "t")
+      {
+         return 1;
+      }
+      string suffix = LastChar(resolution);
+      if (resolution == "D" || suffix == "D")
+      {
+         int days = resolution == "D" ? 1 : (int)StringToInteger(resolution);
+         return days * 86400;
+      }
+      if (resolution == "W" || suffix == "W")
+      {
+         int weeks = resolution == "W" ? 1 : (int)StringToInteger(resolution);
+         return weeks * 604800;
+      }
+      if (resolution == "M" || suffix == "M")
+      {
+         int months = resolution == "M" ? 1 : (int)StringToInteger(resolution);
+         return months * 2592000;
+      }
+      if (suffix == "H")
+      {
+         return (int)StringToInteger(resolution) * 3600;
+      }
+      if (suffix == "S")
+      {
+         return (int)StringToInteger(resolution);
+      }
+      int minutes = (int)StringToInteger(resolution);
+      if (minutes <= 0)
+      {
+         return 0;
+      }
+      return minutes * 60;
+   }
+
+   // Pine timeframe.from_seconds: months (30d), then weeks, days, minutes, otherwise seconds.
+   static string FromSeconds(int seconds)
+   {
+      if (seconds <= 0)
+      {
+         return "";
+      }
+      if (seconds % 2592000 == 0)
+      {
+         return IntegerToString(seconds / 2592000) + "M";
+      }
+      if (seconds % 604800 == 0)
+      {
+         return IntegerToString(seconds / 604800) + "W";
+      }
+      if (seconds % 86400 == 0)
+      {
+         return IntegerToString(seconds / 86400) + "D";
+      }
+      if (seconds % 60 == 0)
+      {
+         return IntegerToString(seconds / 60);
+      }
+      return IntegerToString(seconds) + "S";
    }
 
    static int Multiplier()
@@ -69,16 +132,19 @@ public:
    
    static ENUM_TIMEFRAMES GetTimeframe(string resolution)
    {
-      if (resolution == "1") { return PERIOD_M1; }
-      if (resolution == "5") { return PERIOD_M5; }
-      if (resolution == "15") { return PERIOD_M15; }
-      if (resolution == "30") { return PERIOD_M30; }
-      if (resolution == "60") { return PERIOD_H1; }
-      if (resolution == "240") { return PERIOD_H4; }
-      if (resolution == "D") { return PERIOD_D1; }
-      if (resolution == "W") { return PERIOD_W1; }
-      if (resolution == "M") { return PERIOD_MN1; }
-      return PERIOD_CURRENT;
+      if (resolution == "D" || resolution == "1D") { return PERIOD_D1; }
+      if (resolution == "W" || resolution == "1W") { return PERIOD_W1; }
+      if (resolution == "M" || resolution == "1M") { return PERIOD_MN1; }
+      string suffix = LastChar(resolution);
+      if (suffix == "H")
+      {
+         return MinutesToTimeframe((int)StringToInteger(resolution) * 60);
+      }
+      if (suffix == "S" || suffix == "D" || suffix == "W" || suffix == "M")
+      {
+         return PERIOD_CURRENT;
+      }
+      return MinutesToTimeframe((int)StringToInteger(resolution));
    }
 
    static bool IsIntraday()
@@ -106,5 +172,26 @@ public:
             return 4;
       }
       return INT_MIN;
+   }
+
+private:
+   static string LastChar(string resolution)
+   {
+      int len = StringLen(resolution);
+      if (len <= 0)
+      {
+         return "";
+      }
+      return StringSubstr(resolution, len - 1, 1);
+   }
+
+   // MQL4 timeframe enum values are the period length in minutes.
+   static ENUM_TIMEFRAMES MinutesToTimeframe(int minutes)
+   {
+      if (minutes <= 0)
+      {
+         return PERIOD_CURRENT;
+      }
+      return (ENUM_TIMEFRAMES)minutes;
    }
 };
